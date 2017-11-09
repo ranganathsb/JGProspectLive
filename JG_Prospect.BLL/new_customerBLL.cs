@@ -23,7 +23,7 @@ namespace JG_Prospect.BLL
         public static new_customerBLL Instance
         {
             get { return m_new_customerBLL; }
-            set { ;}
+            set {; }
         }
 
         public int SearchEmailId(string email, string addedby)
@@ -57,7 +57,7 @@ namespace JG_Prospect.BLL
 
         public void UpdateCustomerFollowUpDate(DateTime followupDate, int custId)
         {
-            new_customerDAL.Instance.UpdateCustomerFollowUpDate(followupDate,custId);
+            new_customerDAL.Instance.UpdateCustomerFollowUpDate(followupDate, custId);
         }
 
         public DataSet GetAutoSuggestiveCustomers(string prefix)
@@ -78,7 +78,7 @@ namespace JG_Prospect.BLL
 
         public DataSet GetHRCount(string SourceId, string fromDate, string ToDate)
         {
-            return new_customerDAL.Instance.GetHRCount(SourceId,fromDate,ToDate);
+            return new_customerDAL.Instance.GetHRCount(SourceId, fromDate, ToDate);
         }
 
         public DataSet GetRejected(string SourceId, string fromDate, string ToDate)
@@ -89,7 +89,7 @@ namespace JG_Prospect.BLL
 
         public DataSet SearchCustomers(string searchparameter, string searchstring, string user)
         {
-            return new_customerDAL.Instance.SearchCustomers(searchparameter, searchstring,user);
+            return new_customerDAL.Instance.SearchCustomers(searchparameter, searchstring, user);
         }
 
         public DataSet SearchProspect(string searchparameter, string searchstring, string user)
@@ -181,9 +181,9 @@ namespace JG_Prospect.BLL
         {
             return new_customerDAL.Instance.GetCustomerJobPackets(soldJobId);
         }
-        public DataSet GetCustomerJobPackets(int CustomerId,int productId,int productTypeID)
+        public DataSet GetCustomerJobPackets(int CustomerId, int productId, int productTypeID)
         {
-            return new_customerDAL.Instance.GetCustomerJobPackets(CustomerId,productId,productTypeID);
+            return new_customerDAL.Instance.GetCustomerJobPackets(CustomerId, productId, productTypeID);
         }
         public DataSet GetSoldjobsforprocurement()
         {
@@ -195,7 +195,7 @@ namespace JG_Prospect.BLL
         }
         public void AddAnnualEvent(AnnualEvent Event)
         {
-             new_customerDAL.Instance.AddAnnualEvent(Event);
+            new_customerDAL.Instance.AddAnnualEvent(Event);
         }
 
         public DataSet CheckDuplicateAnnualEvent(AnnualEvent Event)
@@ -227,35 +227,35 @@ namespace JG_Prospect.BLL
         {
             new_customerDAL.Instance.DeleteAnnualEvent(Event);
         }
-        
-        
+
+
         public DataSet FetchCustomerCallSheet(string status, string user, string usertyp)
         {
             return new_customerDAL.Instance.FetchCustomerCallSheet(status, user, usertyp);
         }
 
-        public bool AddCustomerDocs(int customerid, int productid, string originalFileName, string documenttype, string temporaryFileName, int productTypeId,int vendorId)
+        public bool AddCustomerDocs(int customerid, int productid, string originalFileName, string documenttype, string temporaryFileName, int productTypeId, int vendorId)
         {
-            return new_customerDAL.Instance.AddCustomerDocs(customerid, productid, originalFileName, documenttype, temporaryFileName, productTypeId,vendorId);
+            return new_customerDAL.Instance.AddCustomerDocs(customerid, productid, originalFileName, documenttype, temporaryFileName, productTypeId, vendorId);
         }
         //public bool AddCustomerDocs(int customerid, int productid, string originalFileName, string documenttype, string temporaryFileName)
         //{
         //    return new_customerDAL.Instance.AddCustomerDocs(customerid, productid, originalFileName, documenttype, temporaryFileName);
         //}
-       
+
         public bool AddCustomerLocationPics(int customerid, string PictureNm)
         {
             return new_customerDAL.Instance.AddCustomerLocationPics(customerid, PictureNm);
         }
 
-        public void SaveMapImage(string Map1, string CustomerStreet, string Cityname, string Statename, string ZipCode,string DestinationPath)
+        public void SaveMapImage(string Map1, string CustomerStreet, string Cityname, string Statename, string ZipCode, string DestinationPath)
         {
             StringBuilder queryAddress = new StringBuilder();
             //Appending the Basic format of the Staticmap from Google maps Here
             queryAddress.Append("http://maps.google.com/maps/api/staticmap?size=600x500&zoom=14&maptype=roadmap&markers=size:mid|color:red|");
             string location = CustomerStreet + " " + Cityname + " , " + Statename + " " + ZipCode;
             queryAddress.Append(location + ',' + '+');
-            queryAddress.Append("&sensor=false");             
+            queryAddress.Append("&sensor=false");
             string filename = Map1;
             string path = DestinationPath + "/" + filename;
             string url = queryAddress.ToString();
@@ -274,7 +274,7 @@ namespace JG_Prospect.BLL
             queryAddress.Append(location + ',' + '+');
             queryAddress.Append('|');
             queryAddress.Append("220 krams Ave Manayunk, PA 19127");
-            queryAddress.Append("&sensor=false");          
+            queryAddress.Append("&sensor=false");
             string filename = Map2;
             string path = DestinationPath + "/" + filename;
             string url = queryAddress.ToString();
@@ -410,6 +410,11 @@ namespace JG_Prospect.BLL
         public string CheckDuplicateSalesUser(string ValueForValidation, int ValidationType, int UserId, int PhoneTypeID)
         {
             return new_customerDAL.Instance.CheckDuplicateSalesUser(ValueForValidation, ValidationType, UserId, PhoneTypeID);
+        }
+        public Boolean CheckForNewCustomerByEmaiID(string userEmail)
+        {
+            return new_customerDAL.Instance.CheckForNewCustomerByEmaiID(userEmail);
+
         }
     }
 }

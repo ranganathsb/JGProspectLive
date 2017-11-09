@@ -195,3 +195,33 @@ BEGIN
 
 END
 GO
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[usp_CheckNewCustomerFromOtherSite]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+    BEGIN
+ 
+    DROP PROCEDURE usp_CheckNewCustomerFromOtherSite
+
+    END  
+GO    
+
+  
+-- =============================================    
+-- Author:  Yogesh    
+-- Create date: 09 Sep 2017    
+-- Description: Checks if a customer is registered for first time or not.
+-- =============================================    
+CREATE PROCEDURE [dbo].[usp_CheckNewCustomerFromOtherSite]   
+ (
+ @Email VARCHAR(250)
+ )
+AS  
+BEGIN  
+ 
+ SELECT ISNULL(IsFirstTime, 0) AS NewCustomer FROM new_customer WHERE Email = @Email
+  
+ 
+END  

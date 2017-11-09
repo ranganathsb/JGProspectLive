@@ -1,4 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="login.aspx.cs" Inherits="JG_Prospect.login" %>
+
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <%--<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>--%>
 <%--<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>--%>
@@ -8,14 +9,14 @@
 
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-    
+
 <head id="Head1" runat="server">
-   <%-- <script type="text/javascript" src="../js/jquery-latest.js"></script>--%>
-  <%--  <script type="text/javascript" src="../js/jquery.printElement.min.js"></script>--%>
+    <%-- <script type="text/javascript" src="../js/jquery-latest.js"></script>--%>
+    <%--  <script type="text/javascript" src="../js/jquery.printElement.min.js"></script>--%>
     <link href="../datetime/css/jquery-ui-1.7.1.custom.css" rel="stylesheet" type="text/css" />
     <link href="../datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
 
-     <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
     <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
     <link rel="stylesheet" href="/resources/demos/style.css" />
@@ -25,25 +26,25 @@
     <title>JG Prospect</title>
     <link href="css/screen.css" rel="stylesheet" media="screen" type="text/css" />
     <link href="css/jquery.ui.theme.css" rel="stylesheet" media="screen" type="text/css" />
-   
-<%--    <script type="text/javascript"  src="http://code.jquery.com/jquery-latest.js"></script>
+
+    <%--    <script type="text/javascript"  src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="/js/jquery-latest.js"></script>--%>
     <!--accordion jquery-->
     <script type="text/javascript" src="/js/ddaccordion.js"></script>
- 
+    <script src="js/Custom/JgPopUp.js" type="text/javascript"></script>
 
-   
+
     <script type="text/javascript">
-      $(function () {
-          $("#txtDateOfBith").datepicker({
+        $(function () {
+            $("#txtDateOfBith").datepicker({
                 changeMonth: true,
                 changeYear: true,
                 yearRange: '1950:2050',
                 maxDate: 'today'
             });
         });
-          </script>
-   <%-- <script type="text/javascript">
+    </script>
+    <%-- <script type="text/javascript">
         $(function () {
             // Tabs
             $('#tabs').tabs();
@@ -60,53 +61,65 @@
         .auto-style1 {
             width: 100%;
         }
+
         input[type="radio"] {
             line-height: 20px !important;
-            height:20px;
-            float:left;
-            margin:0 5px 0 0 !important;
+            height: 20px;
+            float: left;
+            margin: 0 5px 0 0 !important;
         }
+
         input[type="checkbox"] {
             line-height: 20px !important;
-            height:20px;
-            float:left;
-            margin:0 5px 0 0 !important;
+            height: 20px;
+            float: left;
+            margin: 0 5px 0 0 !important;
         }
+
         label {
             float: left;
         }
-        .fg-urs  {
-    float: left;
-    margin: 0 0 0 11em;
-}
-          .fg-prs  {
-    float: left;
-    margin: 0 0 0 -1.4em;
-}
+
+        .fg-urs {
+            float: left;
+            margin: 0 0 0 11em;
+        }
+
+        .fg-prs {
+            float: left;
+            margin: 0 0 0 -1.4em;
+        }
     </style>
     <script type="text/javascript">
 
-        function SessionExpire()
-        {
+        function SessionExpire() {
             alert('Your session has expired,login to continue');
         }
-        
+
         function loginFailMessage() {
             //var loginFailMsg = 'We could not found Username and Password you entered. Please check possible resion for that.\n\n';
             //loginFailMsg += '1) Caps Lock on your keyboard might be open.\n\n';
             //loginFailMsg += '2) You might have selected "Customer" radio button isteade of Staff radio button to login for your staff account.\n\n';
             //loginFailMsg += '3) You might have entered wrong Username or passwor.\n';
 
-            var loginFailMsg ='';
+            var loginFailMsg = '';
             loginFailMsg += 'User Name or Password is incorrect.\n';
             loginFailMsg += 'If you believe you have the correct login ID and password, try selecting the customer or staff toggle to confirm you are logging into correct site.\n';
             loginFailMsg += 'If you still can not log in you may recover your user login and password by selecting forgot username &/or forgot password link!';
 
             alert(loginFailMsg);
         }
-        
+
+         function AutoLoginApplicant(email, pwd) {
+            $('#<%=txtloginid.ClientID%>').val(email);
+            $('#<%=txtpassword.ClientID%>').val(pwd);
+
+            $('#<%=btnsubmit.ClientID%>').click();
+
+        }
+
     </script>
-    
+
 
 </head>
 <body>
@@ -330,13 +343,12 @@
                 <li><a href="#">Privacy Policy</a></li>
             </ul>
         </div>
-        
+
 
     </form>
-    
+
 
 </body>
-    
+
 </html>
 
- 
