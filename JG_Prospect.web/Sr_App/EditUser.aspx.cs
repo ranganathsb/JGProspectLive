@@ -672,6 +672,11 @@ namespace JG_Prospect
                                     e.Row.Attributes["style"] = "background-color: #565656";
                                     break;
                                 }
+                            case JGConstant.InstallUserStatus.InterviewDateExpired:
+                                {
+                                    e.Row.Attributes["style"] = "background-color: #AAAAAA";
+                                    break;
+                                }
                             default:
                                 break;
                         }
