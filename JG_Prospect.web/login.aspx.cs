@@ -25,6 +25,7 @@ using System.Globalization;
 using DotNetOpenAuth.AspNet.Clients;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using JG_Prospect.App_Code;
 
 namespace JG_Prospect
 {
@@ -841,11 +842,19 @@ namespace JG_Prospect
                 // Check if request is coming from www.jmgroveconstruction.com's Employment page, for new applicant user.
                 Uri UrlReferer = Request.UrlReferrer;
 
+                CommonFunction.UpdateLog("URL Referal is: ");
+                if (UrlReferer != null)
+                {
+                    CommonFunction.UpdateLog(UrlReferer.Host);
+                    CommonFunction.UpdateLog(UrlReferer.AbsolutePath);
+                }
+
                 if (UrlReferer != null && UrlReferer.Host.Contains("jmgroveconstruction.com") && UrlReferer.AbsolutePath.Contains("form.php"))
                 {
                     // New user request : Welcome email and Login
                     if (!string.IsNullOrEmpty(Request.QueryString["ID"]) && !string.IsNullOrEmpty(Request.QueryString["Email"]))
                     {
+                        CommonFunction.UpdateLog("Reached Query String check");
                         CheckForNewCustomerFromOtherSite(Convert.ToString(Request.QueryString["Email"]), Convert.ToInt32(Request.QueryString["ID"]));
                     }
                 }
@@ -1329,6 +1338,9 @@ namespace JG_Prospect
 
             if(blnIsNewCustomer)
             {
+
+                CommonFunction.UpdateLog("FirstTime user check passed");
+
                 //DataSet ds = InstallUserBLL.Instance.getuserdetails(UserID);
                 //DataRow drUser = null;
                 //if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)

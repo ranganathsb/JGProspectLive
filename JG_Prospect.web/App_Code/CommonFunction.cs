@@ -1180,6 +1180,38 @@ namespace JG_Prospect.App_Code
             }
         }
 
+        public static void UpdateLog(string LogText)
+        {
+            string logDirectoryPath = HttpContext.Current.Server.MapPath(@"~\Log");
+
+            if (!Directory.Exists(logDirectoryPath))
+            {
+                Directory.CreateDirectory(logDirectoryPath);
+            }
+
+            string path = String.Concat(logDirectoryPath, "\\Log.txt");
+
+            if (!File.Exists(path))
+            {
+
+                using (TextWriter tw = File.CreateText(path))
+                {
+                    tw.WriteLine(LogText + "  - " + DateTime.Now);
+                    tw.Close();
+                }
+
+
+            }
+            else if (File.Exists(path))
+            {
+                using (var tw = new StreamWriter(path, true))
+                {
+                    tw.WriteLine(LogText + "  - " + DateTime.Now);
+                    tw.Close();
+                }
+            }
+        }
+
         internal static DataSet GetDesignations()
         {
             DataSet dsDesignation = new DataSet();
