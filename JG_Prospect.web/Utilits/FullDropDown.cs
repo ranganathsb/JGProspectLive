@@ -118,6 +118,11 @@ namespace JG_Prospect.Utilits
             objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString();
             lstUserStatus.Add(objUserStatus);
 
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Interview Date Expired";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.InterviewDateExpired).ToString();
+            lstUserStatus.Add(objUserStatus);
+
             ddlUserStatus.DataSource = lstUserStatus;
             ddlUserStatus.DataTextField = "Status";
             ddlUserStatus.DataValueField = "StatusValue";
