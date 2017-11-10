@@ -2003,8 +2003,9 @@
 
                 <div id="examPassed">
                     <span id="InterviewDateHeader">Dear Applicant,
-                <label ID="ltlApplicantName"></label>&nbsp;-&nbsp;<label ID="ltlApplicantId" ></label>, Thank you for applying to JMGrove Construction
-                <label ID="ltlDesignation" ></label>
+                <label id="ltlApplicantName"></label>
+                        &nbsp;-&nbsp;<label id="ltlApplicantId"></label>, Thank you for applying to JMGrove Construction
+                <label id="ltlDesignation"></label>
                         &nbsp; position. You have been selected for technical interview. We will be interviewing for your technical ability and will be requesting a sample of your work for technical analysis. Please have the following points below ready. In order to appear in the technical interview please follow below steps:
 
                     </span>
@@ -2180,10 +2181,10 @@
                     <br />
                     <table>
                         <tr>
-                            <td width="50%" align="left" style="vertical-align:top;"><span><strong><span class="bluetext">*</span>Interview Date & Time: </strong>
+                            <td width="50%" align="left" style="vertical-align: top;"><span><strong><span class="bluetext">*</span>Interview Date & Time: </strong>
                                 <label id="InterviewDateTime"></label>
                             </span></td>
-                            <td align="right" style="vertical-align:top;">
+                            <td align="right" style="vertical-align: top;">
                                 <table>
                                     <tr>
                                         <td align="left" valign="top"><a href="#" style="color: blue;">REC-001</a><br />
@@ -2339,7 +2340,7 @@
                 </div>
             </div>
         </div>
-        <asp:HiddenField id="hdnUserId" runat="server"/>
+        <asp:HiddenField ID="hdnUserId" runat="server" />
     </div>
 
 
@@ -2418,6 +2419,7 @@
             $("#ddlSelectUserClosedTask").chosen({ no_results_text: "No users found!" });
             $("#ddlSelectFrozenTask").chosen();
 
+            
             //ddlSelectFrozenTask,lblLoadingFrozen
 
             //InProAssigned
@@ -2469,9 +2471,10 @@
             $("#ddlUserStatus").msDropDown();
         });
 
-               
+
 
         $(window).load(function () {
+            checkNShowTaskPopup();
             sequenceScope.ForDashboard = true;
             var desId = "";
             debugger;
@@ -2556,9 +2559,6 @@
 
             // Load initial tasks for user.
             ShowTaskSequenceDashBoard(desId, 0);
-
-
-
             //Load Closed Tasks
             desIds = $(".chosen-select-multi").val();
             if (desIds == undefined) { desIds = ''; }
@@ -2574,9 +2574,6 @@
                 ShowFrozenTaskSequenceDashBoard($('.' + ddlDesigSeqClientIDFrozenTasks).val(), 0);
                 ShowNonFrozenTaskSequenceDashBoard($('.' + ddlDesigSeqClientIDFrozenTasks).val(), 0);
             });
-
-            checkNShowTaskPopup();
-
 
         });
 
@@ -2631,8 +2628,8 @@
                         result = JSON.parse(data.d);
                         $.each(result, function () {
                             var names = this.FristName.split(' - ');
-                            var name = names[0] +'&nbsp;-&nbsp;';
-                            var link = names[1] != null && names[1] != '' ? '<a style="color:blue;" href="javascript:;" onclick=redir("/Sr_App/ViewSalesUser.aspx?id=' + this.Id +'")>' + names[1] + '</a>' : '';
+                            var name = names[0] + '&nbsp;-&nbsp;';
+                            var link = names[1] != null && names[1] != '' ? '<a style="color:blue;" href="javascript:;" onclick=redir("/Sr_App/ViewSalesUser.aspx?id=' + this.Id + '")>' + names[1] + '</a>' : '';
                             options.append($("<option />").val(this.Id).html(name + link));
                         });
                         //$("#" + fillDDL).prop('disabled', false);
@@ -2803,24 +2800,29 @@
         //    return false;
         //});
         function checkNShowTaskPopup() {
-
             var TaskId = getUrlVars()["TaskId"];
+            var PopupWithoutTask = getUrlVars()["PWT"];
+
             if (TaskId) {
-
-                
-                GetEmployeeInterviewDetails();
-
-                $('#HighLightedTask').removeClass('hide');
-
-                var $dialog = $('#HighLightedTask').dialog({
-                    autoOpen: true,
-                    modal: false,
-                    height: 500,
-                    width: 1100,
-                    title: 'Important Interview Information'
-                });
-
+                showInterviewPopup();
             }
+            else if (PopupWithoutTask) {// If no task available hide task div.
+                showInterviewPopup();
+                $('#tblIntTechSeq').hide();
+            }
+        }
+
+        function showInterviewPopup() {
+            GetEmployeeInterviewDetails();
+            $('#HighLightedTask').removeClass('hide');
+            var $dialog = $('#HighLightedTask').dialog({
+                autoOpen: true,
+                modal: false,
+                height: 500,
+                width: 1100,
+                title: 'Important Interview Information'
+            });
+
         }
 
         // Read a page's GET URL variables and return them as an associative array.
@@ -2942,9 +2944,83 @@
 
                         ShowAllClosedTasksDashBoard(desIds.join(), 0, pageSize);
                         $('#<%= txtSearchClosedTasks.ClientID %>').removeClass("ui-autocomplete-loading");
+                        return false;
+                    }
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchterm: request.term }),
+                        success: function (data) {
+                            //debugger;
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
+                                ////debugger;
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $('#<%= txtSearchClosedTasks.ClientID %>').removeClass("ui-autocomplete-loading");
+                         }
+                     });
+                },
+                minLength: 0,
+                select: function (event, ui) {
+                    debugger;
+                    //alert(ui.item.value);
+                    //alert(ui.item.id);
+                    $('#<%= txtSearchClosedTasks.ClientID %>').val(ui.item.value);
+                     //TriggerSearch();
+                     desIds = $(".chosen-select-multi").val();
+                     if (desIds == undefined) { desIds = ''; }
+                     ShowAllClosedTasksDashBoard("", ui.item.id, pageSize);
+                 }
+            });
+         }
+
+         function SetClosedTaskAutoSuggestionUI() {
+             //debugger;
+             //console.log("SetClosedTaskAutoSuggestionUI called");
+             $.widget("custom.catcomplete", $.ui.autocomplete, {
+                 _create: function () {
+                     this._super();
+                     this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                 },
+                 _renderMenu: function (ul, items) {
+                     //debugger;
+                     var that = this,
+                         currentCategory = "";
+                     $.each(items, function (index, item) {
+                         var li;
+                         if (item.Category != currentCategory) {
+                             ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                             currentCategory = item.Category;
+                         }
+                         li = that._renderItemData(ul, item);
+                         if (item.Category) {
+                             li.attr("aria-label", item.Category + " : " + item.label);
+                         }
+                     });
+
+                 }
+             });
+         }
+
+
+         function SetFrozenTaskAutoSuggestion() {
+
+             $("#txtSearchUserFrozen").catcomplete({
+                 delay: 500,
+                 source: function (request, response) {
+
+                     if (request.term == "") {
+                         ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                         ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                         $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
                          return false;
                      }
-
 
                      $.ajax({
                          type: "POST",
@@ -2953,180 +3029,106 @@
                          contentType: "application/json; charset=utf-8",
                          data: JSON.stringify({ searchterm: request.term }),
                          success: function (data) {
-                             //debugger;
                              // Handle 'no match' indicated by [ "" ] response
                              if (data.d) {
                                  ////debugger;
                                  response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
                              }
                              // remove loading spinner image.                                
-                             $('#<%= txtSearchClosedTasks.ClientID %>').removeClass("ui-autocomplete-loading");
-                        }
+                             $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
+                         }
                      });
                  },
                  minLength: 0,
                  select: function (event, ui) {
-                     debugger;
+                     //debugger;
                      //alert(ui.item.value);
                      //alert(ui.item.id);
-                     $('#<%= txtSearchClosedTasks.ClientID %>').val(ui.item.value);
-                    //TriggerSearch();
-                    desIds = $(".chosen-select-multi").val();
-                    if (desIds == undefined) { desIds = ''; }
-                    ShowAllClosedTasksDashBoard("", ui.item.id, pageSize);
-                }
-            });
-        }
+                     $("#txtSearchUserFrozen").val(ui.item.value);
+                     //TriggerSearch();
+                     ShowFrozenTaskSequenceDashBoard(0, ui.item.id);
+                     ShowNonFrozenTaskSequenceDashBoard(0, ui.item.id);
+                 }
+             });
+         }
 
-        function SetClosedTaskAutoSuggestionUI() {
-            //debugger;
-            //console.log("SetClosedTaskAutoSuggestionUI called");
-            $.widget("custom.catcomplete", $.ui.autocomplete, {
-                _create: function () {
-                    this._super();
-                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                },
-                _renderMenu: function (ul, items) {
-                    //debugger;
-                    var that = this,
-                        currentCategory = "";
-                    $.each(items, function (index, item) {
-                        var li;
-                        if (item.Category != currentCategory) {
-                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                            currentCategory = item.Category;
-                        }
-                        li = that._renderItemData(ul, item);
-                        if (item.Category) {
-                            li.attr("aria-label", item.Category + " : " + item.label);
-                        }
-                    });
+         function SetInProTaskAutoSuggestion() {
 
-                }
-            });
-        }
+             $("#txtSearchUser").catcomplete({
+                 delay: 500,
+                 source: function (request, response) {
 
+                     if (request.term == "") {
+                         ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), 0);
+                         $("#txtSearchUser").removeClass("ui-autocomplete-loading");
+                         return false;
+                     }
 
-        function SetFrozenTaskAutoSuggestion() {
+                     $.ajax({
+                         type: "POST",
+                         url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
+                         dataType: "json",
+                         contentType: "application/json; charset=utf-8",
+                         data: JSON.stringify({ searchterm: request.term }),
+                         success: function (data) {
+                             // Handle 'no match' indicated by [ "" ] response
+                             if (data.d) {
+                                 ////debugger;
+                                 response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                             }
+                             // remove loading spinner image.                                
+                             $("#txtSearchUser").removeClass("ui-autocomplete-loading");
+                         }
+                     });
+                 },
+                 minLength: 0,
+                 select: function (event, ui) {
+                     //debugger;
+                     //alert(ui.item.value);
+                     //alert(ui.item.id);
+                     $("#txtSearchUser").val(ui.item.value);
+                     //TriggerSearch();
+                     ShowTaskSequenceDashBoard(0, ui.item.id);
+                 }
+             });
+         }
 
-            $("#txtSearchUserFrozen").catcomplete({
-                delay: 500,
-                source: function (request, response) {
-
-                    if (request.term == "") {
-                        ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-                        ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-                        $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
-                        return false;
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({ searchterm: request.term }),
-                        success: function (data) {
-                            // Handle 'no match' indicated by [ "" ] response
-                            if (data.d) {
-                                ////debugger;
-                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                            }
-                            // remove loading spinner image.                                
-                            $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
-                        }
-                    });
-                },
-                minLength: 0,
-                select: function (event, ui) {
-                    //debugger;
-                    //alert(ui.item.value);
-                    //alert(ui.item.id);
-                    $("#txtSearchUserFrozen").val(ui.item.value);
-                    //TriggerSearch();
-                    ShowFrozenTaskSequenceDashBoard(0, ui.item.id);
-                    ShowNonFrozenTaskSequenceDashBoard(0, ui.item.id);
-                }
-            });
-        }
-
-        function SetInProTaskAutoSuggestion() {
-
-            $("#txtSearchUser").catcomplete({
-                delay: 500,
-                source: function (request, response) {
-
-                    if (request.term == "") {
-                        ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), 0);
-                        $("#txtSearchUser").removeClass("ui-autocomplete-loading");
-                        return false;
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({ searchterm: request.term }),
-                        success: function (data) {
-                            // Handle 'no match' indicated by [ "" ] response
-                            if (data.d) {
-                                ////debugger;
-                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                            }
-                            // remove loading spinner image.                                
-                            $("#txtSearchUser").removeClass("ui-autocomplete-loading");
-                        }
-                    });
-                },
-                minLength: 0,
-                select: function (event, ui) {
-                    //debugger;
-                    //alert(ui.item.value);
-                    //alert(ui.item.id);
-                    $("#txtSearchUser").val(ui.item.value);
-                    //TriggerSearch();
-                    ShowTaskSequenceDashBoard(0, ui.item.id);
-                }
-            });
-        }
-
-        function SetInProTaskAutoSuggestionUI() {
-            //debugger;
-            //console.log("SetInProTaskAutoSuggestionUI called");
-            $.widget("custom.catcomplete", $.ui.autocomplete, {
-                _create: function () {
-                    this._super();
-                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                },
-                _renderMenu: function (ul, items) {
-                    var that = this,
-                        currentCategory = "";
-                    $.each(items, function (index, item) {
-                        //debugger;
-                        var li;
-                        if (item.Category != currentCategory) {
-                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                            currentCategory = item.Category;
-                        }
-                        li = that._renderItemData(ul, item);
-                        if (item.Category) {
-                            li.attr("aria-label", item.Category + " : " + item.label);
-                        }
-                    });
-                }
-            });
-        }
+         function SetInProTaskAutoSuggestionUI() {
+             //debugger;
+             //console.log("SetInProTaskAutoSuggestionUI called");
+             $.widget("custom.catcomplete", $.ui.autocomplete, {
+                 _create: function () {
+                     this._super();
+                     this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                 },
+                 _renderMenu: function (ul, items) {
+                     var that = this,
+                         currentCategory = "";
+                     $.each(items, function (index, item) {
+                         //debugger;
+                         var li;
+                         if (item.Category != currentCategory) {
+                             ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                             currentCategory = item.Category;
+                         }
+                         li = that._renderItemData(ul, item);
+                         if (item.Category) {
+                             li.attr("aria-label", item.Category + " : " + item.label);
+                         }
+                     });
+                 }
+             });
+         }
 
 
-        function SetTaskCounterPopup() {
+         function SetTaskCounterPopup() {
 
-            $('#' +'<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
+             $('#' + '<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
                 debugger;
                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
             });
-            $('#' +'<%=lblFrozenTaskCounter.ClientID%>').click(function () {
+            $('#' + '<%=lblFrozenTaskCounter.ClientID%>').click(function () {
                 debugger;
                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
@@ -3233,10 +3235,10 @@
             }
         }
 
-      
+
 
         function SetInterviewDatePopupEmployeeInstructions(DesigId) {
-           
+
             var postData;
             var MethodToCall = "GetEmployeeInstructionByDesignationId";
             postData = {
@@ -3260,7 +3262,7 @@
         function GetEmployeeInterviewDetails() {
 
             var EmployeeId = $('#<%=hdnUserId.ClientID%>').val();
-            alert(EmployeeId);
+           // alert(EmployeeId);
             var postData;
             var MethodToCall = "GetEmployeeInterviewDetails";
             postData = {
@@ -3273,7 +3275,7 @@
             function OnEmployeeInterviewDetailsSuccess(data) {
                 if (data.d) {
                     var responseObj = JSON.parse(data.d);
-                    
+
                     if (responseObj) {
                         $('#ltlApplicantName').html(responseObj[0].FristName + " " + responseObj[0].LastName);
                         $('#ltlApplicantId').html(responseObj[0].UserInstallId);
