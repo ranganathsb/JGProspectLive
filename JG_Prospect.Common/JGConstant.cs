@@ -241,7 +241,8 @@ namespace JG_Prospect.Common
                 ,
             ReferralApplicant = 10
                 , Deleted = 11,
-            Hidden = 15
+            Hidden = 15,
+            InterviewDateExpired = 16
         }
 
         public enum UserRoles
