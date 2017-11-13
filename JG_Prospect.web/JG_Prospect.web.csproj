@@ -1480,6 +1480,8 @@
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITSN043_I_e_v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\script Feb v0.1.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Procedures.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Tables.sql" />
     <Content Include="Database Scripts\Kapil\Script_Sep.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\Database Script.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\03-04-2017.sql" />
