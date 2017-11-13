@@ -1369,13 +1369,13 @@ namespace JG_Prospect
                         // InsertAssignedTaskSequenceInfo(Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), this.DesignationID, Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["AvailableSequence"]), true);
 
 
-                        SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString());
+                        SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString(),false);
 
                         ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
                     }
                     else //If task is not available and not assigned to user than show success popup without assigned task information.
                     {
-                        SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString());
+                        SetExamPassedMessage(String.Empty, String.Empty,0, 0, String.Empty,true);
 
                         ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
                     }
@@ -1392,23 +1392,35 @@ namespace JG_Prospect
             return alertMessage;
         }
 
-        private void SetExamPassedMessage(String InstallId, String TaskTitle, Int64 TaskId, Int64 ParentTaskId, String ParentTaskTitle)
+        private void SetExamPassedMessage(String InstallId, String TaskTitle, Int64 TaskId, Int64 ParentTaskId, String ParentTaskTitle, Boolean IsWithOutTask)
         {
             SetInterviewDateNTime();
             ltlUDesg.Text = this.DesignationName;
-            ltlTaskInstallID.Text = InstallId;
-            ltlTaskTitle.Text = TaskTitle;
-            ltlParentTask.Text = ParentTaskTitle;
 
-            ltlAssignTo.Text = String.Concat(txtfirstname.Text, " ", txtlastname.Text, " - ");
+            // IF task is assigned to user.
+            if (!IsWithOutTask)
+            {
+                ltlTaskInstallID.Text = InstallId;
+                ltlTaskTitle.Text = TaskTitle;
+                ltlParentTask.Text = ParentTaskTitle;
 
-            ltlAssignToInstallID.Text = hlnkUserID.Text;
+                ltlAssignTo.Text = String.Concat(txtfirstname.Text, " ", txtlastname.Text, " - ");
+
+                ltlAssignToInstallID.Text = hlnkUserID.Text;
+
+                hypTaskLink.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
+                hypTaskLink1.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
+
+                divTaskAssigned.Visible = true;
+            }
 
             #region "-- User Details in Popup --"
+
             lblFirstName.Text = txtfirstname.Text;
             lblLastName.Text = txtlastname.Text;
 
             drpDesig.SelectedIndex = ddldesignation.SelectedIndex;
+            ddlEmployeeType.SelectedIndex = ddlEmployeeType.SelectedIndex;
 
             divCountryCode.Attributes.Add("class",ddlCountry.SelectedValue);
 
@@ -1424,14 +1436,15 @@ namespace JG_Prospect
 
             hypExam.HRef = String.Concat(hypExam.HRef, this.UserID);
 
-            hypTaskLink.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
-            hypTaskLink1.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
+         
             //Only for programming designations
             if (ShowGithubField)
             {
                 txtGithubUsername.Text = InstallUserBLL.Instance.GetUserGithubUserName(this.UserID);
             }
+
             trConfirmInterview.Visible = true;
+
             ChangetoInterviewdateStatusandSendEmailtoUser();
 
         }
@@ -5042,8 +5055,6 @@ namespace JG_Prospect
 
         protected void btnAcceptTask_Click(object sender, EventArgs e)
         {
-            TaskGeneratorBLL.Instance.AcceptUserAssignedWithSequence(this.AssignedSequenceID);
-
             ChangePassword();
 
             //Only for selected IT designations
@@ -5057,7 +5068,16 @@ namespace JG_Prospect
                 CommonFunction.AddUserAsGitcollaborator(GithubUsername, JGConstant.GitRepo.Interview);
 
             }
-            ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
+
+            if (divTaskAssigned.Visible)
+            {
+                TaskGeneratorBLL.Instance.AcceptUserAssignedWithSequence(this.AssignedSequenceID);
+                ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
+            }
+            else
+            {
+                Response.Redirect("~/Sr_App/ITDashboard.aspx?PWT=1");
+            }
         }
 
         private void ChangePassword()
@@ -5067,6 +5087,10 @@ namespace JG_Prospect
             // string UserType = (string)Session["usertype"];
             bool result = false;
             result = UserBLL.Instance.changepassword(id, txtChangePassword1.Text, JGSession.IsCustomer);//, UserType
+            if (result)
+            {
+                JGSession.IsFirstTime = false;
+            }
         }
 
         protected void btnRejectTask_Click(object sender, EventArgs e)
@@ -6489,6 +6513,7 @@ namespace JG_Prospect
                 ddlPositionAppliedFor.DataValueField = "ID";
                 ddlPositionAppliedFor.DataBind();
             }
+            drpDesig.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--Select--", "0"));
             ddldesignation.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--Select--", "0"));
             ddlPositionAppliedFor.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--Select--", "0"));
         }

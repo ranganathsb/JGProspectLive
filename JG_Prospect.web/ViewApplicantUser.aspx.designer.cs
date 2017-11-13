@@ -3109,6 +3109,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.TextBox txtExt;
         
         /// <summary>
+        /// divTaskAssigned control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divTaskAssigned;
+        
+        /// <summary>
         /// hypTaskLink control.
         /// </summary>
         /// <remarks>

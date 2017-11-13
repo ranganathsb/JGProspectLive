@@ -5383,10 +5383,10 @@
         </span>
         <br />
         <br />
-        <table id="tblProfile">
+        <table id="tblProfile" style="border: solid 1px gray; margin: 10px; padding: 5px;">
             <tr>
                 <td style="width: 10%;">
-                    <asp:Image Style="width: 100%; margin-top: -20px" ID="imgprofile" runat="server"></asp:Image></td>
+                    <asp:Image Style="width: 100%;" ID="imgprofile" runat="server"></asp:Image></td>
                 <td style="width: 20%;">
                     <a id="hypExam" runat="server" class="bluetext" href="ViewApplicantUser.aspx?Id=">
                         <asp:Literal ID="ltlAssignToInstallID" runat="server"></asp:Literal></a><br />
@@ -5422,7 +5422,7 @@
                     </div>
                     <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server"></asp:Label>
                     <br />
-                    <ul class="contactGrid">
+                    <ul class="contactGrid hide">
                         <li>
                             <asp:CheckBox ID="chkEmailPrimary" CssClass="liCheck" runat="server"></asp:CheckBox>&nbsp;
                                                 <asp:DropDownList runat="server" CssClass="mail" ID="ddlEmail"></asp:DropDownList>
@@ -5450,91 +5450,93 @@
                 </td>
             </tr>
         </table>
-        <div id="divTechAssignment">
-            Your first Tech assignment is <strong><a id="hypTaskLink" target="_blank" style="color: blue;" runat="server">
-                <asp:Literal ID="ltlTaskInstallID" runat="server"></asp:Literal>
-            </a></strong>&nbsp; , details in grid below. Please review your assignment and Either ACCEPT or REJECT. If accepted your interview date with recruiter, This assignment is due for this Interview Date. IF NOT ACCEPTED in 48 HOURS, your assigned task will be REASSIGNED TO SOME ONE ELSE. if REJECTED, you will be reassigned a new task, with a reason.
-        </div>
-
-        <br />
-        <br />
-        <div id="tblTechSeq" class="div-table tableSeqTask">
-            <div class="div-table-row-header">
-                <div class="div-table-col seq-number">Sequence#</div>
-                <div class="div-table-col seq-taskid">
-                    ID#<div>Designation</div>
-                </div>
-                <div class="div-table-col seq-tasktitle">
-                    Parent Task
-                                            <div>SubTask Title</div>
-                </div>
-                <div class="div-table-col seq-taskstatus">
-                    Status<div>Assigned To</div>
-                </div>
-                <div class="div-table-col seq-taskduedate">Due Date</div>
-                <div class="div-table-col seq-notes">Notes</div>
+        <div id="divTaskAssigned"  visible ="false" runat="server">
+            <div id="divTechAssignment">
+                Your first Tech assignment is <strong><a id="hypTaskLink" target="_blank" style="color: blue;" runat="server">
+                    <asp:Literal ID="ltlTaskInstallID" runat="server"></asp:Literal>
+                </a></strong>&nbsp; , details in grid below. Please review your assignment and Either ACCEPT or REJECT. If accepted your interview date with recruiter, This assignment is due for this Interview Date. IF NOT ACCEPTED in 48 HOURS, your assigned task will be REASSIGNED TO SOME ONE ELSE. if REJECTED, you will be reassigned a new task, with a reason.
             </div>
-            <div id="divMasterTask" class="div-table-row">
 
-                <!-- Sequence# starts -->
-                <div class="div-table-col seq-number">
-                    <a href="javascript:void(0);" class="badge-hyperlink autoclickSeqEdit"><span class="badge badge-success badge-xstext">
-                        <label></label>
-                    </span></a>
+            <br />
+            <br />
+            <div id="tblTechSeq" class="div-table tableSeqTask">
+                <div class="div-table-row-header">
+                    <div class="div-table-col seq-number">Sequence#</div>
+                    <div class="div-table-col seq-taskid">
+                        ID#<div>Designation</div>
+                    </div>
+                    <div class="div-table-col seq-tasktitle">
+                        Parent Task
+                                            <div>SubTask Title</div>
+                    </div>
+                    <div class="div-table-col seq-taskstatus">
+                        Status<div>Assigned To</div>
+                    </div>
+                    <div class="div-table-col seq-taskduedate">Due Date</div>
+                    <div class="div-table-col seq-notes">Notes</div>
                 </div>
-                <!-- Sequence# ends -->
+                <div id="divMasterTask" class="div-table-row">
 
-                <!-- ID# and Designation starts -->
-                <div class="div-table-col seq-taskid">
-                    <a id="hypTaskLink1" runat="server" class="bluetext" target="_blank"></a>
+                    <!-- Sequence# starts -->
+                    <div class="div-table-col seq-number">
+                        <a href="javascript:void(0);" class="badge-hyperlink autoclickSeqEdit"><span class="badge badge-success badge-xstext">
+                            <label></label>
+                        </span></a>
+                    </div>
+                    <!-- Sequence# ends -->
+
+                    <!-- ID# and Designation starts -->
+                    <div class="div-table-col seq-taskid">
+                        <a id="hypTaskLink1" runat="server" class="bluetext" target="_blank"></a>
+                        <br />
+                        <asp:Literal ID="ltlUDesg" runat="server"></asp:Literal>
+
+                    </div>
+                    <!-- ID# and Designation ends -->
+
+                    <!-- Parent Task & SubTask Title starts -->
+                    <div class="div-table-col seq-tasktitle">
+                        <asp:Literal ID="ltlParentTask" runat="server"></asp:Literal>
+                        <br />
+                        <asp:Literal ID="ltlTaskTitle" runat="server"></asp:Literal>
+                    </div>
+                    <!-- Parent Task & SubTask Title ends -->
+
+                    <!-- Status & Assigned To starts -->
+                    <div class="div-table-col seq-taskstatus">
+                        Assigned
                     <br />
-                    <asp:Literal ID="ltlUDesg" runat="server"></asp:Literal>
+                        <asp:Literal ID="ltlAssignTo" runat="server"></asp:Literal>
+                    </div>
+                    <!-- Status & Assigned To ends -->
 
-                </div>
-                <!-- ID# and Designation ends -->
-
-                <!-- Parent Task & SubTask Title starts -->
-                <div class="div-table-col seq-tasktitle">
-                    <asp:Literal ID="ltlParentTask" runat="server"></asp:Literal>
-                    <br />
-                    <asp:Literal ID="ltlTaskTitle" runat="server"></asp:Literal>
-                </div>
-                <!-- Parent Task & SubTask Title ends -->
-
-                <!-- Status & Assigned To starts -->
-                <div class="div-table-col seq-taskstatus">
-                    Assigned
-                    <br />
-                    <asp:Literal ID="ltlAssignTo" runat="server"></asp:Literal>
-                </div>
-                <!-- Status & Assigned To ends -->
-
-                <!-- DueDate starts -->
-                <div class="div-table-col seq-taskduedate">
-                    <div class="seqapprovalBoxes">
-                        <div style="width: 65%; float: left;">
-                            <input type="checkbox" id="chkngUser" class="fz fz-user" title="User" />
-                            <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                            <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
-                            <br />
-                            <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                            <input type="checkbox" id="chkngITLead" class="fz fz-techlead" title="IT Lead" />
-                            <input type="checkbox" id="chkngAdmin" class="fz fz-admin" title="Admin" />
-                        </div>
-                        <div style="width: 30%; float: right;">
-                            <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                            <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                    <!-- DueDate starts -->
+                    <div class="div-table-col seq-taskduedate">
+                        <div class="seqapprovalBoxes">
+                            <div style="width: 65%; float: left;">
+                                <input type="checkbox" id="chkngUser" class="fz fz-user" title="User" />
+                                <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
+                                <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                <br />
+                                <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
+                                <input type="checkbox" id="chkngITLead" class="fz fz-techlead" title="IT Lead" />
+                                <input type="checkbox" id="chkngAdmin" class="fz fz-admin" title="Admin" />
+                            </div>
+                            <div style="width: 30%; float: right;">
+                                <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- DueDate ends -->
+                    <!-- DueDate ends -->
 
-                <!-- Notes starts -->
-                <div class="div-table-col seq-notes">
-                    Notes
-                </div>
-                <!-- Notes ends -->
+                    <!-- Notes starts -->
+                    <div class="div-table-col seq-notes">
+                        Notes
+                    </div>
+                    <!-- Notes ends -->
 
+                </div>
             </div>
         </div>
         <br />
