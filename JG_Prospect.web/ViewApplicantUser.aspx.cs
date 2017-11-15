@@ -1296,6 +1296,13 @@ namespace JG_Prospect
 
                         //Page.ClientScript.RegisterStartupScript(Page.GetType(), Guid.NewGuid().ToString(), "ShowPopupWithTitle('#" + divStartTest.ClientID + "','Apptitude Test');", true);
                     }
+                    else if(Request.QueryString.Count > 0 && !String.IsNullOrEmpty(Request.QueryString["Exp"]))
+                    {
+                        DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetUserAssignedTaskHistory(this.UserID);
+                        SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString());
+
+                        ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
+                    }
                     else
                     {
                         //fill designation information alert converted to jquery dialog.

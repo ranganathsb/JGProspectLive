@@ -32,7 +32,7 @@ namespace JG_Prospect.BLL
 
         public DataSet GetAllTasksforSubSequencing(Int32 DesignationId, String DesiSeqCode, bool IsTechTask, Int64 TaskId)
         {
-            return TaskGeneratorDAL.Instance.GetAllTasksforSubSequencing(DesignationId,DesiSeqCode,IsTechTask,TaskId);
+            return TaskGeneratorDAL.Instance.GetAllTasksforSubSequencing(DesignationId, DesiSeqCode, IsTechTask, TaskId);
 
         }
 
@@ -79,7 +79,7 @@ namespace JG_Prospect.BLL
 
         public DataSet GetAllPartialFrozenUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId)
         {
-            return TaskGeneratorDAL.Instance.GetAllPartialFrozenUserTaskWithSequence(page, pageSize,IsTechTask, UserId);
+            return TaskGeneratorDAL.Instance.GetAllPartialFrozenUserTaskWithSequence(page, pageSize, IsTechTask, UserId);
         }
 
         public int UpdateTaskSequence(Int64 Sequence, Int64 TaskID, Int32 DesignationID, bool IsTechTask)
@@ -90,13 +90,13 @@ namespace JG_Prospect.BLL
 
         public DataSet GetInterviewDateSequences(Int32 DesignationId, Int32 UserCount)
         {
-            return TaskGeneratorDAL.Instance.GetInterviewDateSequences(DesignationId,UserCount);
+            return TaskGeneratorDAL.Instance.GetInterviewDateSequences(DesignationId, UserCount);
 
         }
 
         public bool UpdateTaskSubSequence(Int64 TaskID, Int64 TaskIdSeq, Int64 SubSeqTaskId, Int64 DesignationId)
         {
-            return TaskGeneratorDAL.Instance.UpdateTaskSubSequence( TaskID,  TaskIdSeq,  SubSeqTaskId,   DesignationId);
+            return TaskGeneratorDAL.Instance.UpdateTaskSubSequence(TaskID, TaskIdSeq, SubSeqTaskId, DesignationId);
 
         }
 
@@ -378,7 +378,7 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.AcceptUserAssignedWithSequence(SequenceId);
         }
-        
+
         public DataSet GetDesignationTaskToAssignWithSequence(Int32 DesignationId, bool IsTechTask)
         {
             return TaskGeneratorDAL.Instance.GetDesignationTaskToAssignWithSequence(DesignationId, IsTechTask);
@@ -388,7 +388,10 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetUserAssignedWithSequence(DesignationId, IsTechTask, UserID);
         }
-
+        public DataSet GetUserAssignedTaskHistory(Int32 UserID)
+        {
+            return TaskGeneratorDAL.Instance.GetUserAssignedTaskHistory(UserID);
+        }
         public DataSet RejectUserAssignedWithSequence(Int64 SequenceID, Int32 UserID, Int32 RejectedUserID)
         {
             return TaskGeneratorDAL.Instance.RejectUserAssignedWithSequence(SequenceID, UserID, RejectedUserID);
