@@ -724,5 +724,11 @@ namespace JG_Prospect.BLL
 
         }
 
+        public DataSet GetEmployeeInterviewDetails(int UserID)
+        {
+            return InstallUserDAL.Instance.GetEmployeeInterviewDetails(UserID);
+
+        }
+
     }
 }

@@ -1,30 +1,16 @@
-﻿using JG_Prospect.BLL;
-using JG_Prospect.Common.modal;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Configuration;
-using System.Web;
-using System.Text;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using System.Net;
-using System.Net.Mail;
-using JG_Prospect.Common.Logger;
+﻿using JG_Prospect.App_Code;
+using JG_Prospect.BLL;
 using JG_Prospect.Common;
-
-using JG_Prospect.App_Code;
-using System.Collections;
 using JG_Prospect.DAL.Database;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
-using System.Data.SqlClient;
+using System;
 using System.Data;
 using System.Data.Common;
-using JG_Prospect.DAL.Database;
-using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
+using System.Linq;
+using System.Text;
+using System.Web.UI;
 using System.Web.UI.HtmlControls;
+using System.Web.UI.WebControls;
 
 namespace JG_Prospect.Sr_App
 {
@@ -42,6 +28,7 @@ namespace JG_Prospect.Sr_App
 
             if (!Page.IsPostBack)
             {
+                hdnUserId.Value = JGSession.UserId.ToString();
                 //Session["AppType"] = "SrApp";
                 //if ((string)Session["usertype"] == "SM" || (string)Session["usertype"] == "SSE" || (string)Session["usertype"] == "MM")
                 //{
@@ -490,18 +477,18 @@ namespace JG_Prospect.Sr_App
         {
             DataSet dsDesignation = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
 
-            ddlDesigSeq.Items.Clear();
-            ddlDesigSeq.DataSource = dsDesignation.Tables[0];
-            ddlDesigSeq.DataTextField = "DesignationName";
-            ddlDesigSeq.DataValueField = "ID";
-            ddlDesigSeq.DataBind();
+            //ddlDesigSeq.Items.Clear();
+            //ddlDesigSeq.DataSource = dsDesignation.Tables[0];
+            //ddlDesigSeq.DataTextField = "DesignationName";
+            //ddlDesigSeq.DataValueField = "ID";
+            //ddlDesigSeq.DataBind();
 
             //ddlDesigIdsFrozenTasks
-            ddlDesigIdsFrozenTasks.Items.Clear();
-            ddlDesigIdsFrozenTasks.DataSource = dsDesignation.Tables[0];
-            ddlDesigIdsFrozenTasks.DataTextField = "DesignationName";
-            ddlDesigIdsFrozenTasks.DataValueField = "ID";
-            ddlDesigIdsFrozenTasks.DataBind();
+            //ddlDesigIdsFrozenTasks.Items.Clear();
+            //ddlDesigIdsFrozenTasks.DataSource = dsDesignation.Tables[0];
+            //ddlDesigIdsFrozenTasks.DataTextField = "DesignationName";
+            //ddlDesigIdsFrozenTasks.DataValueField = "ID";
+            //ddlDesigIdsFrozenTasks.DataBind();
 
             //drpDesigInProgress .Items.Clear();
 

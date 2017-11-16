@@ -471,6 +471,7 @@ namespace JG_Prospect
                         //Session["installId"] = ds.Tables[0].Rows[0][62].ToString();
 
                         Session["IdGenerated"] = ds.Tables[0].Rows[0][62].ToString();
+                        imgprofile.ImageUrl = String.Concat("~/Employee/ProfilePictures/", ds.Tables[0].Rows[0]["Picture"].ToString());
                         GenerateBarCode(Convert.ToString(Session["installId"]));
                         txtfirstname.Text = ds.Tables[0].Rows[0][1].ToString();
                         Session["FirstName"] = ds.Tables[0].Rows[0][1].ToString();
@@ -1362,6 +1363,7 @@ namespace JG_Prospect
                     //Get latest task to be assigned for user's designation.
                     DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetUserAssignedWithSequence(this.DesignationID, true, this.UserID);
 
+                    // If task is assigned to user than show success popup with assigned task information.
                     if (dsTaskToBeAssigned != null && dsTaskToBeAssigned.Tables.Count > 0 && dsTaskToBeAssigned.Tables[0].Rows.Count > 0)
                     {
                         this.AssignedSequenceID = Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["Id"]);
@@ -1374,6 +1376,12 @@ namespace JG_Prospect
                         // InsertAssignedTaskSequenceInfo(Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), this.DesignationID, Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["AvailableSequence"]), true);
 
 
+                        SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString());
+
+                        ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
+                    }
+                    else //If task is not available and not assigned to user than show success popup without assigned task information.
+                    {
                         SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString());
 
                         ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
@@ -1400,12 +1408,31 @@ namespace JG_Prospect
             ltlParentTask.Text = ParentTaskTitle;
 
             ltlAssignTo.Text = String.Concat(txtfirstname.Text, " ", txtlastname.Text, " - ");
+
             ltlAssignToInstallID.Text = hlnkUserID.Text;
+
+            #region "-- User Details in Popup --"
+            lblFirstName.Text = txtfirstname.Text;
+            lblLastName.Text = txtlastname.Text;
+
+            drpDesig.SelectedIndex = ddldesignation.SelectedIndex;
+
+            divCountryCode.Attributes.Add("class",ddlCountry.SelectedValue);
+
+            lblCity.Text = txtCity.Text;
+            lblZip.Text = txtZip.Text;
+
+            lbtnEmail.Text = hidExtEmail.Value;
+
+            lblPrimaryPhone.Text = txtPhone.Text;
+            lblExt.Text = txtExt.Text;
+
+            #endregion
 
             hypExam.HRef = String.Concat(hypExam.HRef, this.UserID);
 
             hypTaskLink.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
-
+            hypTaskLink1.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
             //Only for programming designations
             if (ShowGithubField)
             {
@@ -6457,6 +6484,12 @@ namespace JG_Prospect
                 ddldesignation.DataTextField = "DesignationName";
                 ddldesignation.DataValueField = "ID";
                 ddldesignation.DataBind();
+
+                drpDesig.DataSource = dsDesignation.Tables[0];
+                drpDesig.DataTextField = "DesignationName";
+                drpDesig.DataValueField = "ID";
+                drpDesig.DataBind();
+
 
                 ddlPositionAppliedFor.DataSource = dsDesignation.Tables[0];
                 ddlPositionAppliedFor.DataTextField = "DesignationName";

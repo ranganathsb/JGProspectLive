@@ -1538,6 +1538,30 @@ namespace JG_Prospect.DAL
             }
             return returndata;
         }
-    
+
+        public Boolean CheckForNewCustomerByEmaiID(string userEmail)
+        {
+            DataSet dsResult = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_CheckNewCustomerFromOtherSite");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Email", DbType.String, userEmail);
+                   
+
+                    //dsResult = database.ExecuteDataSet(command);
+
+                    Boolean lResult = Convert.ToBoolean(database.ExecuteScalar(command));
+                    return lResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
     }
 }

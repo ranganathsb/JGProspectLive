@@ -104,6 +104,8 @@
     <Compile Include="Roles_ApplicationFeaturesBLL.cs" />
     <Compile Include="ShutterPriceControlBLL.cs" />
     <Compile Include="shuttersBLL.cs" />
+    <Compile Include="EmployeeInstructionBLL.cs" />
+    <Compile Include="EmployeeLegalDesclaimerBLL.cs" />
     <Compile Include="TaskCommentBLL.cs" />
     <Compile Include="TimeAndMaterialBLL.cs" />
     <Compile Include="TaskGeneratorBLL.cs" />

@@ -1581,8 +1581,9 @@ input.fz-Beta, .fz-Beta > input {
 .greentext {
     color: darkgreen !important;
 }
+
 .blacktext {
-color: black !important;
+    color: black !important;
 }
 
 .haligncenter {
@@ -2363,7 +2364,7 @@ p.mcqQuestion {
 .div-table-nested {
     display: table;
     border-spacing: 2px; /* cellspacing:poor IE support for  this */
-    width: 95%;
+    width: 99%;
     border: 1px solid #a1a0a0;
     margin: 10px;
     border-radius: 5px;
@@ -2395,15 +2396,15 @@ p.mcqQuestion {
 }
 
 .seq-taskid {
-    width: 15%;
+    width: 9%;
 }
 
 .seq-tasktitle {
-    width: 30%;
+    width: 24%;
 }
 
 .seq-taskstatus {
-    width: 10%;
+    width: 14%;
 }
 
 .seq-taskduedate {
@@ -2411,7 +2412,7 @@ p.mcqQuestion {
 }
 
 .seq-notes {
-    width: 17%;
+    width: 26%;
 }
 
 input[type='checkbox'].largecheckbox {
@@ -2428,16 +2429,42 @@ input[type='checkbox']:checked.largecheckbox {
 }
 
 .rejectedUser {
-background-color: #AEAEAE;
+    background-color: #AEAEAE;
 }
 
 .gridtbl tbody {
-max-height:40px !important;
+    max-height: 40px !important;
 }
 
 .gridtbl thead tr:after {
-    content:none !important;
+    content: none !important;
 }
+
 .gridtbl thead th {
     background-color: #000;
+}
+
+.legaldesclaimer {
+    font-size: 8px;
+    color: gray;
+    border: 1px solid gray;
+    padding: 15px;
+    max-height: 100px;
+    /* min-height: 100px; */
+    margin: 10px 0;
+    /* -webkit-border-radius: 12px; */
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+
+.employeeinstruction {
+    font-size: 10px;
+    border: 1px solid gray;
+    padding: 15px;
+    max-height: 100px;
+    /* min-height: 100px; */
+    margin: 10px 0;
+    /* -webkit-border-radius: 12px; */
+    -moz-border-radius: 8px;
+    border-radius: 8px;
 }

@@ -31,11 +31,16 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
     $scope.SelectedParentTaskDesignation;
     $scope.UserSelectedDesigIds = [];
     $scope.DesignationSelectModel = [];
+    $scope.UserStatus = 1;
+    $scope.StartDate = '';
+    $scope.EndDate = '';
     $scope.IsTechTask = true;
     $scope.ForDashboard = false;
     $scope.UserId = 0;
     $scope.vSearch = "";
-
+    $scope.pageFrom = "0";
+    $scope.pageTo = "0";
+    $scope.pageOf = "0";
     $scope.SeqSubsets = [];
 
 
@@ -83,6 +88,13 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
    
     $scope.getTasks = function (page) {
 
+        if (sequenceScope.UserStatus == undefined)
+            sequenceScope.UserStatus = 0;
+        if (sequenceScope.StartDate == undefined)
+            sequenceScope.StartDate = "";
+        if (sequenceScope.EndDate == undefined)
+            sequenceScope.EndDate = "";
+
         if (!$scope.IsTechTask) {
             console.log("Url: " + url);
             console.log("Staff Task called....");
@@ -91,9 +103,9 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
 
             // make it blank so TechTask grid don't bind.
             $scope.TechTasks = [];
-            //debugger;
+            debugger;
             //get all Customers
-            getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard }).then(function (data) {
+            getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard, UserStatus: $scope.UserStatus, StartDate: $scope.StartDate, EndDate: $scope.EndDate }).then(function (data) {
                 console.log(data);
                 //debugger;
                 $scope.loader.loading = false;
@@ -108,6 +120,21 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
                 $scope.Tasks = $scope.correctDataforAngular(results.Tasks);
                 if ($scope.Tasks != null)
                     $scope.TaskSelected = $scope.Tasks[0];
+
+                if ($scope.TotalRecords > 0) {
+                    $scope.pageFrom = ($scope.page * $scope.pageSize) + 1;
+                    if ($scope.TotalRecords <= $scope.pageSize) {
+                        $scope.pageTo = $scope.TotalRecords;
+                    }
+                    else {
+                        $scope.pageTo = ($scope.page + 1) * $scope.pageSize;
+                    }
+                    $scope.pageOf = $scope.TotalRecords;
+                }
+                else {
+                    $scope.pageFrom = $scope.pageOf = $scope.pageTo = 0;
+                }
+                
                 //console.log($scope.Tasks[0].SubSeqTasks);
                 //console.log('Counting Data...');
                 //console.log(results.RecordCount.PageIndex);
@@ -121,6 +148,12 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
 
     $scope.getTechTasks = function (page) {
        
+        if (sequenceScope.UserStatus == undefined)
+            sequenceScope.UserStatus = 0;
+        if (sequenceScope.StartDate == undefined)
+            sequenceScope.StartDate = "";
+        if (sequenceScope.EndDate == undefined)
+            sequenceScope.EndDate = "";
 
         if ($scope.IsTechTask) {
             //console.log("Tech Task called....");
@@ -132,7 +165,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
 
 
             //get all Customers
-            getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.Techpage, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: true, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard }).then(function (data) {
+            getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.Techpage, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: true, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard, UserStatus: $scope.UserStatus, StartDate: $scope.StartDate, EndDate: $scope.EndDate }).then(function (data) {
                 $scope.loader.loading = false;
                 $scope.IsTechTask = true;
                 $scope.DesignationSelectModel = [];

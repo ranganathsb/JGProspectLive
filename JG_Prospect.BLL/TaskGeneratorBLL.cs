@@ -46,9 +46,9 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetAllTaskWithSequence(page, pageSize, DesignationIds, IsTechTask, HighlightedTaskID);
         }
 
-        public DataSet GetAllInProAssReqTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask, Int64 HighlightedTaskID)
+        public DataSet GetAllInProAssReqTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, int UserStatus, string StartDate, string EndDate)
         {
-            return TaskGeneratorDAL.Instance.GetAllInProAssReqTaskWithSequence(page, pageSize, DesignationIds, IsTechTask, HighlightedTaskID);
+            return TaskGeneratorDAL.Instance.GetAllInProAssReqTaskWithSequence(page, pageSize, DesignationIds, UserStatus, StartDate, EndDate);
         }
 
         public DataSet GetAllPartialFrozenTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask)
@@ -72,9 +72,9 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetAllNonFrozenUserTaskWithSequence(page, pageSize, IsTechTask, UserId);
         }
 
-        public DataSet GetAllInProAssReqUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId)
+        public DataSet GetAllInProAssReqUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId, bool ForDashboard)
         {
-            return TaskGeneratorDAL.Instance.GetAllInProAssReqUserTaskWithSequence(page, pageSize, IsTechTask, UserId);
+            return TaskGeneratorDAL.Instance.GetAllInProAssReqUserTaskWithSequence(page, pageSize, IsTechTask, UserId, ForDashboard);
         }
 
         public DataSet GetAllPartialFrozenUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId)

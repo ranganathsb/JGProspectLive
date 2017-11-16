@@ -1415,6 +1415,7 @@
     <Content Include="css\msdropdown\title-bg.gif" />
     <Content Include="css\pgwslideshow.min.css" />
     <Content Include="css\TimeCircles.css" />
+    <Content Include="Customer_Panel.aspx" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_Insert_Country.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_V2.sql" />
@@ -1501,7 +1502,8 @@
     <Content Include="Database Scripts\Leo\Scripts_May-2017_GitUserNameColumn Added.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script July v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script August v0.1.sql" />
-    <Content Include="Database Scripts\yogesh\Script October v0.1.sql" />
+    <Content Include="Database Scripts\executed\yogesh\Script October v0.1.sql" />
+    <Content Include="Database Scripts\yogesh\Script November v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
     <Content Include="datetime\jq\jquery.ui.timepicker.js" />
@@ -1855,8 +1857,10 @@
     <Content Include="img\folder.png" />
     <Content Include="img\gplus.png" />
     <Content Include="img\image-icon.png" />
+    <Content Include="img\jg-construction.jpg" />
     <Content Include="img\JG-Logo-white.gif" />
     <Content Include="img\JG-Logo.gif" />
+    <Content Include="img\JgLogo.jpg" />
     <Content Include="img\Loading-ring-alt.gif" />
     <Content Include="img\LoginwithFB.jpg" />
     <Content Include="img\LogoJG_PDF.png" />
@@ -2414,6 +2418,20 @@
     </Compile>
     <Compile Include="ckeditor\plugins\uploadimage\fileuploader.aspx.designer.cs">
       <DependentUpon>fileuploader.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Customer_Panel.aspx.cs">
+      <DependentUpon>Customer_Panel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Customer_Panel.aspx.designer.cs">
+      <DependentUpon>Customer_Panel.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="JGCustomer.Master.cs">
+      <DependentUpon>JGCustomer.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="JGCustomer.Master.designer.cs">
+      <DependentUpon>JGCustomer.Master</DependentUpon>
     </Compile>
     <Compile Include="JGApplicant.Master.cs">
       <DependentUpon>JGApplicant.Master</DependentUpon>
@@ -3546,6 +3564,7 @@
     <Content Include="JGCalender\JsonResponse.ashx" />
     <Content Include="js\JCarousel.js.rej" />
     <Content Include="JGApplicant.Master" />
+    <Content Include="JGCustomer.Master" />
     <None Include="PDFS\Escrow_a.pdfEscrow_a.pdf" />
     <None Include="PDFS\Escrow_shyam.pdfEscrow_shyam.pdf" />
     <None Include="PDFS\FacePage_ennavation.pdfFacePage_ennavation.pdf" />
