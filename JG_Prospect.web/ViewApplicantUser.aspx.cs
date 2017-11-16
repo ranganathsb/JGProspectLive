@@ -1290,12 +1290,20 @@ namespace JG_Prospect
                 }
                 else
                 {
-                    //User has cleared all exam then show him success popup.
-                    if (Request.QueryString.Count > 0 && !String.IsNullOrEmpty(Request.QueryString["IE"]))
+                    //Condition 1: User has cleared all exam  and came from Apptitude test page with flag IE then show him success popup.
+                    //Condition 2: User is applicant and redirected from login page, check if he has already given test, if given then directly show success popup.
+                    if ((Request.QueryString.Count > 0 && !String.IsNullOrEmpty(Request.QueryString["IE"]) && UserGivenAllTests(this.UserID))||(UserGivenAllTests(this.UserID)))
                     {
                         SetAutoTaskSequence();
 
                         //Page.ClientScript.RegisterStartupScript(Page.GetType(), Guid.NewGuid().ToString(), "ShowPopupWithTitle('#" + divStartTest.ClientID + "','Apptitude Test');", true);
+                    }
+                    else if(Request.QueryString.Count > 0 && !String.IsNullOrEmpty(Request.QueryString["Exp"]))
+                    {
+                        DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetUserAssignedTaskHistory(this.UserID);
+                        SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString(),false);
+
+                        ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
                     }
                     else
                     {
@@ -1339,48 +1347,56 @@ namespace JG_Prospect
             pnlFngPrint.Visible = false;
         }
 
-        private void SetAutoTaskSequence()
+        private bool UserGivenAllTests(int userID)
         {
             bool isAllExamGiven = false;
             double overAllPercentageScored = 0;
 
-
+            //Check if user has given exam and is above acceptable percentage.
             overAllPercentageScored = AptitudeTestBLL.Instance.GetExamsResultByUserID(this.UserID, ref isAllExamGiven);
 
-
-            if (isAllExamGiven)// if user has finished attempting all available designation exams then check pass or fail result.
+            if (isAllExamGiven && overAllPercentageScored > JGApplicationInfo.GetAcceptiblePrecentage()) // if user has finished attempting all available designation exams then check pass or fail result.
             {
-                if (overAllPercentageScored > JGApplicationInfo.GetAcceptiblePrecentage())
-                {
-
-                    //Get latest task to be assigned for user's designation.
-                    DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetUserAssignedWithSequence(this.DesignationID, true, this.UserID);
-
-                    // If task is assigned to user than show success popup with assigned task information.
-                    if (dsTaskToBeAssigned != null && dsTaskToBeAssigned.Tables.Count > 0 && dsTaskToBeAssigned.Tables[0].Rows.Count > 0)
-                    {
-                        this.AssignedSequenceID = Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["Id"]);
-
-                        // Assign automatic task to user.
-                        AssignedTaskToUser(this.UserID, Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["Title"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"]));
-
-                        //Update automatic task sequence  assignment
-                        //TODO:Uncomment after full spec implementation.
-                        // InsertAssignedTaskSequenceInfo(Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), this.DesignationID, Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["AvailableSequence"]), true);
-
-
-                        SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString(),false);
-
-                        ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
-                    }
-                    else //If task is not available and not assigned to user than show success popup without assigned task information.
-                    {
-                        SetExamPassedMessage(String.Empty, String.Empty,0, 0, String.Empty,true);
-
-                        ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
-                    }
-                }
+                isAllExamGiven = true;   
             }
+            else
+            {
+                isAllExamGiven = false;
+            }
+
+            return isAllExamGiven;
+        }
+
+        private void SetAutoTaskSequence()
+        {
+
+            //Get latest task to be assigned for user's designation.
+            DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetUserAssignedWithSequence(this.DesignationID, true, this.UserID);
+
+            // If task is assigned to user than show success popup with assigned task information.
+            if (dsTaskToBeAssigned != null && dsTaskToBeAssigned.Tables.Count > 0 && dsTaskToBeAssigned.Tables[0].Rows.Count > 0)
+            {
+                this.AssignedSequenceID = Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["Id"]);
+
+                // Assign automatic task to user.
+                AssignedTaskToUser(this.UserID, Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToUInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["Title"]), Convert.ToString(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"]));
+
+                //Update automatic task sequence  assignment
+                //TODO:Uncomment after full spec implementation.
+                // InsertAssignedTaskSequenceInfo(Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), this.DesignationID, Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["AvailableSequence"]), true);
+                
+                SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString(), false);
+
+                ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
+            }
+            else //If task is not available and not assigned to user than show success popup without assigned task information.
+            {
+                SetExamPassedMessage(String.Empty, String.Empty, 0, 0, String.Empty, true);
+
+                ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
+            }
+
+           
         }
 
         private string GetViewSalesUserAlertPopup()
@@ -1444,8 +1460,7 @@ namespace JG_Prospect
             }
 
             trConfirmInterview.Visible = true;
-
-            ChangetoInterviewdateStatusandSendEmailtoUser();
+                       
 
         }
 
@@ -1546,8 +1561,17 @@ namespace JG_Prospect
 
             ddlInterviewDTOptions.SelectedIndex = 0;
 
+            #region "-- old cold commented --"
+            /// Modified By: Yogesh Keraliya
+            /// Modified Date: 11/16/2017
+            /// Description: Flow changed after discussion with JG, http://web.jmgrovebuildingsupply.com/Sr_App/TaskGenerator.aspx?TaskId=686&hstid=722
+            /// Point X. 2,3
+            /// If user successfully completed test, but haven't accepted task their status is still in "Applicant"
+
             // set user status to Interview Date with automatic 
-            UpdateUserStatusAsInterviewDateWithReason(InterviewDate);
+            //UpdateUserStatusAsInterviewDateWithReason(InterviewDate);
+
+            #region
 
         }
 
@@ -5055,7 +5079,11 @@ namespace JG_Prospect
 
         protected void btnAcceptTask_Click(object sender, EventArgs e)
         {
+            // Change user set password.
             ChangePassword();
+
+            //Set user's status to InterviewDate.
+            ChangetoInterviewdateStatusandSendEmailtoUser();
 
             //Only for selected IT designations
             if (ShowGithubField)
@@ -5078,6 +5106,7 @@ namespace JG_Prospect
             {
                 Response.Redirect("~/Sr_App/ITDashboard.aspx?PWT=1");
             }
+            
         }
 
         private void ChangePassword()

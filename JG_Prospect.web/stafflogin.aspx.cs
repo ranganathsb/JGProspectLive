@@ -889,10 +889,19 @@ namespace JG_Prospect
                             {
                                 strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID;
                             }
+                            else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDateExpired)
+                            {
+                                strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&Exp=1";
+                            }
                             // if user has passed exam and didn't assigned sequence he should be redirect to view applicant page for auto sequence assignment.
                             else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDate && ds.Tables[0].Rows[0]["AssignedSequence"].ToString() == "0")
                             {
                                 Response.Redirect("~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&IE=1");
+                            }
+                            //If user has interview date status it should always see interview instruction with them.
+                            else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDate)
+                            {
+                                Response.Redirect("~/Sr_App/ITDashboard.aspx?PWT=1");
                             }
                             else
                             {
@@ -976,6 +985,48 @@ namespace JG_Prospect
                                 }
 
                             }
+                            }
+                            else
+                            {
+                                JGSession.UserLoginId = null;
+                                JGSession.GuIdAtLogin = null;
+                                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
+                            }
+
+                            #endregion
+                        }
+                        else
+                        {
+                            DataSet ds1 = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim(), true);
+
+                            if (ds1 != null && ds1.Tables.Count > 0 && ds1.Tables[0].Rows.Count > 0 &&
+                                Convert.ToInt32(ds1.Tables[0].Rows[0]["Status"]) == Convert.ToInt32(JGConstant.InstallUserStatus.Rejected))
+                            {
+                                string strMessage = "Unfortunately you did NOT pass the apptitude test for the designation you applied for. ";
+                                strMessage += "If you feel you reached this message in error you will need to contact a JG MNGR represenative to unlock your account and allow you to take another test.  ";
+                                strMessage += "Thank you for applying with JMG.";
+                                Page.ClientScript.RegisterStartupScript(this.GetType(), Guid.NewGuid().ToString(), "alert('" + strMessage + "');", true);
+                                return;
+                            }
+                        }
+
+                        #endregion
+
+                        // redirects user to the last accessed page.
+                        if (!string.IsNullOrEmpty(strRedirectUrl))
+                        {
+                            if (!string.IsNullOrEmpty(Request.QueryString["returnurl"]))
+                            {
+                                if (strRedirectUrl.ToLower().Contains("sr_app") && Request.QueryString["returnurl"].ToLower().Contains("sr_app"))
+                                {
+                                    strRedirectUrl = HttpUtility.UrlDecode(Request.Url.Query.Replace("?returnurl=", ""));
+                                }
+                                else if (!strRedirectUrl.ToLower().Contains("sr_app") && !Request.QueryString["returnurl"].ToLower().Contains("sr_app"))
+                                {
+                                    strRedirectUrl = HttpUtility.UrlDecode(Request.Url.Query.Replace("?returnurl=", ""));
+                                }
+                            }
+                            Response.Redirect(strRedirectUrl);
                         }
                         else
                         {
@@ -983,84 +1034,42 @@ namespace JG_Prospect
                             JGSession.GuIdAtLogin = null;
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
                         }
+                    }
+                    else if (rdCustomer.Checked)
+                    {
+                        #region Customer User
+
+                        ds = null;
+                        ds = InstallUserBLL.Instance.getCustomerUserLogin(txtloginid.Text.Trim(), txtpassword.Text.Trim());
+                        if (ds.Tables[0].Rows.Count > 0)
+                        {
+                            if (Convert.ToString(ds.Tables[0].Rows[0][0]) != "")
+                            {
+                                JGSession.UserLoginId = txtloginid.Text.Trim();
+                                JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                JGSession.UserPassword = txtpassword.Text.Trim();
+                                JGSession.Username = ds.Tables[0].Rows[0]["CustomerName"].ToString();
+                                // Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                                // Response.Redirect("50.191.13.206/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                                // Uri url = new Uri("http://50.191.13.206:82/JGP/Customer_Panel.php");                          
+                                Uri uri = Context.Request.Url;
+                                string host = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":82";
+                                //  Response.Redirect(host + "/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+
+                                //Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                                Response.Redirect("~/Sr_App/Customer_Profile.aspx?CustomerId=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                            }
+                        }
+                        else
+                        {
+                            JGSession.UserLoginId = null;
+                            JGSession.GuIdAtLogin = null;
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Name or Password is incorrect');", true);
+                        }
 
                         #endregion
                     }
-                    else
-                    {
-                        DataSet ds1 = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim(), true);
-
-                        if (ds1 != null && ds1.Tables.Count > 0 && ds1.Tables[0].Rows.Count > 0 &&
-                            Convert.ToInt32(ds1.Tables[0].Rows[0]["Status"]) == Convert.ToInt32(JGConstant.InstallUserStatus.Rejected))
-                        {
-                            string strMessage = "Unfortunately you did NOT pass the apptitude test for the designation you applied for. ";
-                            strMessage += "If you feel you reached this message in error you will need to contact a JG MNGR represenative to unlock your account and allow you to take another test.  ";
-                            strMessage += "Thank you for applying with JMG.";
-                            Page.ClientScript.RegisterStartupScript(this.GetType(), Guid.NewGuid().ToString(), "alert('" + strMessage + "');", true);
-                            return;
-                        }
-                    }
-
-                    #endregion
-
-                    // redirects user to the last accessed page.
-                    if (!string.IsNullOrEmpty(strRedirectUrl))
-                    {
-                        if (!string.IsNullOrEmpty(Request.QueryString["returnurl"]))
-                        {
-                            if (strRedirectUrl.ToLower().Contains("sr_app") && Request.QueryString["returnurl"].ToLower().Contains("sr_app"))
-                            {
-                                strRedirectUrl = HttpUtility.UrlDecode(Request.Url.Query.Replace("?returnurl=", ""));
-                            }
-                            else if (!strRedirectUrl.ToLower().Contains("sr_app") && !Request.QueryString["returnurl"].ToLower().Contains("sr_app"))
-                            {
-                                strRedirectUrl = HttpUtility.UrlDecode(Request.Url.Query.Replace("?returnurl=", ""));
-                            }
-                        }
-                        Response.Redirect(strRedirectUrl);
-                    }
-                    else
-                    {
-                        JGSession.UserLoginId = null;
-                        JGSession.GuIdAtLogin = null;
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
-                    }
                 }
-                else if (rdCustomer.Checked)
-                {
-                    #region Customer User
-
-                    ds = null;
-                    ds = InstallUserBLL.Instance.getCustomerUserLogin(txtloginid.Text.Trim(), txtpassword.Text.Trim());
-                    if (ds.Tables[0].Rows.Count > 0)
-                    {
-                        if (Convert.ToString(ds.Tables[0].Rows[0][0]) != "")
-                        {
-                            JGSession.UserLoginId = txtloginid.Text.Trim();
-                            JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
-                            JGSession.UserPassword = txtpassword.Text.Trim();
-                            JGSession.Username = ds.Tables[0].Rows[0]["CustomerName"].ToString();
-                            // Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
-                            // Response.Redirect("50.191.13.206/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
-                            // Uri url = new Uri("http://50.191.13.206:82/JGP/Customer_Panel.php");                          
-                            Uri uri = Context.Request.Url;
-                            string host = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":82";
-                            //  Response.Redirect(host + "/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
-
-                            //Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
-                            Response.Redirect("~/Sr_App/Customer_Profile.aspx?CustomerId=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
-                        }
-                    }
-                    else
-                    {
-                        JGSession.UserLoginId = null;
-                        JGSession.GuIdAtLogin = null;
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Name or Password is incorrect');", true);
-                    }
-
-                    #endregion
-                }
-            }
             catch (Exception ex)
             {
                 //logErr.writeToLog(ex, this.Page.ToString(), Request.ServerVariables["remote_addr"].ToString());
