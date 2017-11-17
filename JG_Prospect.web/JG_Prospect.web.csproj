@@ -1485,7 +1485,7 @@
     <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_IsValidInstallerUser.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Procedures.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Tables.sql" />
-    <Content Include="Database Scripts\Kapil\Script_Sep.sql" />
+    <Content Include="Database Scripts\Kapil\Latest.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\Database Script.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\03-04-2017.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\06-04-2017\GetFrozenTasks.sql" />
