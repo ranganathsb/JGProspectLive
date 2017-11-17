@@ -1571,7 +1571,7 @@ namespace JG_Prospect
             // set user status to Interview Date with automatic 
             //UpdateUserStatusAsInterviewDateWithReason(InterviewDate);
 
-            #region
+            #endregion
 
         }
 
