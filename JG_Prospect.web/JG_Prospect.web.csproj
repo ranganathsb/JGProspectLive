@@ -1503,6 +1503,7 @@
     <Content Include="Database Scripts\executed\yogesh\Script July v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script August v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script October v0.1.sql" />
+    <Content Include="Database Scripts\yogesh\FreeProjectQuote.sql" />
     <Content Include="Database Scripts\yogesh\Script November v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />

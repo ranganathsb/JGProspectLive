@@ -227,16 +227,53 @@
         .right_panel {
             margin: 0 0 0 0 !important;
         }
-        .notes-container{display:inline;}
-        .notes-table{height: auto;width: 100%;margin: 0 5px;}
-        .notes-table tbody{height:auto !important;}
-        .notes-table th{color:#fff;padding:5px !important;background: #000;border:none;}
-        .notes-table td{padding:5px !important;}
-        .notes-table tr:nth-child(even) {background: #A33E3F;color:#fff;}
-        .notes-table tr:nth-child(odd) {background: #FFF;color:#000;}
-        .notes-table tr th:nth-child(1),.notes-table tr td:nth-child(1){    width: 17%;}
-        .notes-table tr th:nth-child(2),.notes-table tr td:nth-child(2){    width: 43%;}
-        .notes-table tr th:nth-child(3),.notes-table tr td:nth-child(3){    width: 76px;}
+
+        .notes-container {
+            display: inline;
+        }
+
+        .notes-table {
+            height: auto;
+            width: 100%;
+            margin: 0 5px;
+        }
+
+            .notes-table tbody {
+                height: auto !important;
+            }
+
+            .notes-table th {
+                color: #fff;
+                padding: 5px !important;
+                background: #000;
+                border: none;
+            }
+
+            .notes-table td {
+                padding: 5px !important;
+            }
+
+            .notes-table tr:nth-child(even) {
+                background: #A33E3F;
+                color: #fff;
+            }
+
+            .notes-table tr:nth-child(odd) {
+                background: #FFF;
+                color: #000;
+            }
+
+            .notes-table tr th:nth-child(1), .notes-table tr td:nth-child(1) {
+                width: 17%;
+            }
+
+            .notes-table tr th:nth-child(2), .notes-table tr td:nth-child(2) {
+                width: 43%;
+            }
+
+            .notes-table tr th:nth-child(3), .notes-table tr td:nth-child(3) {
+                width: 76px;
+            }
     </style>
     <style type="text/css">
         #hint {
@@ -297,7 +334,7 @@
 
         .noMargin span {
             margin: 0px !important;
-        }        
+        }
     </style>
     <script type="text/javascript">
 
@@ -893,7 +930,7 @@
                                         <%-- <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image> --%>
                                         <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
                                         <a href='<%# String.Concat("ViewSalesUser.aspx?ID=", Eval("Id")) %>'>
-                                            <asp:Image Style="width: 100%;margin-top: -20px" ID="imgprofile" runat="server"></asp:Image></a>
+                                            <asp:Image Style="width: 100%; margin-top: -20px" ID="imgprofile" runat="server"></asp:Image></a>
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                         <%--<asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
                                         <%-- <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
@@ -1052,7 +1089,7 @@
                                                 <asp:Button ID="btnAddContact" CssClass="GrdBtnAdd" runat="server" Text="Add" CommandName="AddNewContact"
                                                     CommandArgument='<%# Eval("Id") %>'></asp:Button>
                                             </li>
-                                        </ul>                                        
+                                        </ul>
                                         <asp:Label ID="lblExt" CssClass="ext" runat="server" Visible="false"></asp:Label>
                                         <asp:TextBox ID="txtExt" Visible="false" placeholder="Ext" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>
                                         <%-- <div class="GrdContainer" style="width: 90%">
@@ -1110,7 +1147,7 @@
                                         <a href='<%# "~/Employee/Resume/"+Eval("Resumepath") %>' id="aReasumePath" runat="server" target="_blank"><%# System.IO.Path.GetFileName(Eval("Resumepath").ToString()) %></a>
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
-                                </asp:TemplateField>                                
+                                </asp:TemplateField>
                                 <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="17%"
                                     ItemStyle-Width="17%" ItemStyle-CssClass="noMargin">
                                     <HeaderTemplate>
@@ -1158,7 +1195,7 @@
                                                     <th>User ID</th>
                                                     <th>Date&nbsp;&&nbsp;Time</th>
                                                     <th>Note/Status</th>
-                                                </tr>                                           
+                                                </tr>
                                                 <tr>
                                                     <td>1234</td>
                                                     <td><%=String.Format("{0:g}", DateTime.UtcNow) %></td>
@@ -1184,26 +1221,26 @@
                                                     <td><%=String.Format("{0:g}", DateTime.UtcNow) %></td>
                                                     <td>Test Note5...</td>
                                                 </tr>
-                                        </table>
+                                            </table>
                                         </div>
                                         <div style="text-align: left;">
                                             <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"
-                                                Style="vertical-align: middle; padding: 0px!important; width: 68%;float: left; margin-right: 5px;" CssClass="textbox"></asp:TextBox><br />
+                                                Style="vertical-align: middle; padding: 0px!important; width: 68%; float: left; margin-right: 5px;" CssClass="textbox"></asp:TextBox><br />
                                             <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
                                                 CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle; overflow: hidden;" />
 
                                         </div>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                        </Columns>
+                            </Columns>
                         </asp:GridView>
                     </ContentTemplate>
-                    <triggers>
+                    <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="lbtnDeactivateSelected" EventName="Click" />
                         <asp:AsyncPostBackTrigger ControlID="lbtnDeleteSelected" EventName="Click" />
                         <asp:AsyncPostBackTrigger ControlID="lbtnChangeStatusForSelected" EventName="Click" />
-                    </triggers>
-                                        </asp:UpdatePanel>
+                    </Triggers>
+                </asp:UpdatePanel>
             </div>
             <asp:UpdatePanel ID="upnlBulkUpload" runat="server">
                 <ContentTemplate>
@@ -1261,262 +1298,262 @@
                     <asp:AsyncPostBackTrigger ControlID="btnUploadNew" EventName="Click" />
                 </Triggers>
             </asp:UpdatePanel>
-                                        <br />
-                                        <br />
-                                        <div class="btn_sec">
-                                            <asp:Button ID="btnExport" runat="server" Text="Export" OnClick="btnExport_Click" /><br />
-                                            <br />
-                                            <asp:Label ID="Label1" runat="server" />
-                                        </div>
-                                        </div>
+            <br />
+            <br />
+            <div class="btn_sec">
+                <asp:Button ID="btnExport" runat="server" Text="Export" OnClick="btnExport_Click" /><br />
+                <br />
+                <asp:Label ID="Label1" runat="server" />
+            </div>
+        </div>
     </div>
     <%--Modal Popup Stars--%>
-                                        <div id="divModalPopups">
-                                            <%--<asp:UpdatePanel ID="updatepanel1" runat="server">
+    <div id="divModalPopups">
+        <%--<asp:UpdatePanel ID="updatepanel1" runat="server">
                         <ContentTemplate>--%>
-                                            <asp:Button ID="Button1" Style="display: none;" runat="server" Text="Button" />
-                                            <cc1:ModalPopupExtender ID="mp1" runat="server" PopupControlID="Panel1" TargetControlID="Button1"
-                                                CancelControlID="btnClose" BackgroundCssClass="modalBackground">
-                                            </cc1:ModalPopupExtender>
-                                            <asp:Panel ID="Panel1" runat="server" CssClass="modalPopup" align="center" Style="display: none">
-                                                <asp:Image ID="img_InstallerImage" runat="server" Height="150px" Width="118px" />
-                                                <br />
-                                                <asp:Button ID="btnClose" runat="server" Text="Close" />
-                                            </asp:Panel>
+        <asp:Button ID="Button1" Style="display: none;" runat="server" Text="Button" />
+        <cc1:ModalPopupExtender ID="mp1" runat="server" PopupControlID="Panel1" TargetControlID="Button1"
+            CancelControlID="btnClose" BackgroundCssClass="modalBackground">
+        </cc1:ModalPopupExtender>
+        <asp:Panel ID="Panel1" runat="server" CssClass="modalPopup" align="center" Style="display: none">
+            <asp:Image ID="img_InstallerImage" runat="server" Height="150px" Width="118px" />
+            <br />
+            <asp:Button ID="btnClose" runat="server" Text="Close" />
+        </asp:Panel>
 
-                                            <asp:Panel ID="panelPopup" runat="server">
-                                                <div id="light" class="white_content">
-                                                    <h3>Reason
-                                                    </h3>
-                                                    <a href="javascript:void(0)" onclick="document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close</a>
-                                                    <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 70%"
-                                                        cellpadding="0" cellspacing="0">
-                                                        <tr>
-                                                            <td align="center" colspan="2" style="height: 15px;">
-                                                                <asp:TextBox ID="txtReason" runat="server" placeholder="Enter Reason" TextMode="MultiLine"></asp:TextBox>
-                                                                <asp:RequiredFieldValidator ID="reqReason" runat="server" ErrorMessage="Enter reason" ControlToValidate="txtReason" ValidationGroup="Reason"></asp:RequiredFieldValidator>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="center">
-                                                                <asp:Button ID="btnSaveReason" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
-                                                                    Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="Reason"
-                                                                    TabIndex="119" OnClick="btnSaveReason_Click" />
-                                                                <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                            </asp:Panel>
-                                            <div id="fade" class="black_overlay">
-                                            </div>
-                                            <ucStatusChange:PoPup ID="UcStatusPopUp" runat="server"></ucStatusChange:PoPup>
-                                            <asp:Panel ID="panel2" runat="server">
-                                                <div id="interviewDatelite" class="white_content" style="height: auto;">
-                                                    <h3>Interview Details
-                                                    </h3>
-                                                    <%--<a href="javascript:void(0)" onclick="">Close</a>--%>
-                                                    <asp:UpdatePanel runat="server" UpdateMode="Always">
-                                                        <ContentTemplate>
-                                                            <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
-                                                                cellpadding="0" cellspacing="0">
-                                                                <tr>
-                                                                    <td colspan="3" align="center">Name:
+        <asp:Panel ID="panelPopup" runat="server">
+            <div id="light" class="white_content">
+                <h3>Reason
+                </h3>
+                <a href="javascript:void(0)" onclick="document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close</a>
+                <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 70%"
+                    cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td align="center" colspan="2" style="height: 15px;">
+                            <asp:TextBox ID="txtReason" runat="server" placeholder="Enter Reason" TextMode="MultiLine"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="reqReason" runat="server" ErrorMessage="Enter reason" ControlToValidate="txtReason" ValidationGroup="Reason"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <asp:Button ID="btnSaveReason" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                                Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="Reason"
+                                TabIndex="119" OnClick="btnSaveReason_Click" />
+                            <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </asp:Panel>
+        <div id="fade" class="black_overlay">
+        </div>
+        <ucStatusChange:PoPup ID="UcStatusPopUp" runat="server"></ucStatusChange:PoPup>
+        <asp:Panel ID="panel2" runat="server">
+            <div id="interviewDatelite" class="white_content" style="height: auto;">
+                <h3>Interview Details
+                </h3>
+                <%--<a href="javascript:void(0)" onclick="">Close</a>--%>
+                <asp:UpdatePanel runat="server" UpdateMode="Always">
+                    <ContentTemplate>
+                        <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
+                            cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td colspan="3" align="center">Name:
                                     <asp:Label ID="lblName_InterviewDetails" runat="server" /></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td align="center" style="height: 15px;">Date :
+                            </tr>
+                            <tr>
+                                <td align="center" style="height: 15px;">Date :
                         <asp:TextBox ID="dtInterviewDate" placeholder="Select Date" runat="server" ClientIDMode="Static" onkeypress="return false" TabIndex="104" Width="127px"></asp:TextBox>
-                                                                        <cc1:CalendarExtender ID="CalendarExtender1" TargetControlID="dtInterviewDate" Format="MM/dd/yyyy" runat="server"></cc1:CalendarExtender>
-                                                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="Select Date" ControlToValidate="dtInterviewDate" ValidationGroup="InterviewDate"></asp:RequiredFieldValidator>
-                                                                    </td>
-                                                                    <td align="center"></td>
-                                                                    <td>Time :
+                                    <cc1:CalendarExtender ID="CalendarExtender1" TargetControlID="dtInterviewDate" Format="MM/dd/yyyy" runat="server"></cc1:CalendarExtender>
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="Select Date" ControlToValidate="dtInterviewDate" ValidationGroup="InterviewDate"></asp:RequiredFieldValidator>
+                                </td>
+                                <td align="center"></td>
+                                <td>Time :
                             <asp:DropDownList ID="ddlInsteviewtime" runat="server" TabIndex="105" Width="112px"></asp:DropDownList>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td align="right">Recruiter</td>
-                                                                    <td>: </td>
-                                                                    <td align="left">
-                                                                        <asp:DropDownList ID="ddlUsers" runat="server" />
-                                                                        <asp:RequiredFieldValidator ID="rfvddlUsers" runat="server" ErrorMessage="Select Recruiter" ControlToValidate="ddlUsers"
-                                                                            ValidationGroup="InterviewDate" InitialValue="0" />
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td align="right">Designation</td>
-                                                                    <td>: </td>
-                                                                    <td align="left">
-                                                                        <asp:DropDownList ID="ddlDesignationForTask" runat="server" Width="140px" EnableViewState="true" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignationForTask_SelectedIndexChanged"></asp:DropDownList>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td align="right">Task</td>
-                                                                    <td>: </td>
-                                                                    <td align="left">
-                                                                        <asp:DropDownList ID="ddlTechTask" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlTechTask_SelectedIndexChanged" />
-                                                                        <asp:RequiredFieldValidator ID="rfvTechTask" runat="server" ControlToValidate="ddlTechTask" ErrorMessage="Select Tech Task"
-                                                                            InitialValue="0" ValidationGroup="InterviewDate" />
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td align="right">Sub Task</td>
-                                                                    <td>: </td>
-                                                                    <td align="left">
-                                                                        <asp:DropDownList ID="ddlTechSubTask" runat="server" />
-                                                                        <asp:RequiredFieldValidator ID="rfvTechSubTask" runat="server" ControlToValidate="ddlTechSubTask" ErrorMessage="Select Sub Task"
-                                                                            InitialValue="0" ValidationGroup="InterviewDate" />
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td align="center" colspan="3">
-                                                                        <asp:Button ID="btnSaveInterview" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
-                                                                            Style="height: 26px; font-weight: 700; line-height: 1em;" Text="OK" Width="100px" ValidationGroup="InterviewDate"
-                                                                            TabIndex="119" OnClick="btnSaveInterview_Click" />
-                                                                        <asp:Button ID="btnCancelInterview" runat="server" Text="Cancel" OnClick="btnCancelInterview_Click" Width="100px"
-                                                                            Style="height: 26px; font-weight: 700; line-height: 1em;"
-                                                                            OnClientClick="javascript:document.getElementById('interviewDatelite').style.display='none';document.getElementById('interviewDatefade').style.display='none'" />
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </ContentTemplate>
-                                                    </asp:UpdatePanel>
-                                                </div>
-                                            </asp:Panel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">Recruiter</td>
+                                <td>: </td>
+                                <td align="left">
+                                    <asp:DropDownList ID="ddlUsers" runat="server" />
+                                    <asp:RequiredFieldValidator ID="rfvddlUsers" runat="server" ErrorMessage="Select Recruiter" ControlToValidate="ddlUsers"
+                                        ValidationGroup="InterviewDate" InitialValue="0" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">Designation</td>
+                                <td>: </td>
+                                <td align="left">
+                                    <asp:DropDownList ID="ddlDesignationForTask" runat="server" Width="140px" EnableViewState="true" AutoPostBack="true" OnSelectedIndexChanged="ddlDesignationForTask_SelectedIndexChanged"></asp:DropDownList>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">Task</td>
+                                <td>: </td>
+                                <td align="left">
+                                    <asp:DropDownList ID="ddlTechTask" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlTechTask_SelectedIndexChanged" />
+                                    <asp:RequiredFieldValidator ID="rfvTechTask" runat="server" ControlToValidate="ddlTechTask" ErrorMessage="Select Tech Task"
+                                        InitialValue="0" ValidationGroup="InterviewDate" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">Sub Task</td>
+                                <td>: </td>
+                                <td align="left">
+                                    <asp:DropDownList ID="ddlTechSubTask" runat="server" />
+                                    <asp:RequiredFieldValidator ID="rfvTechSubTask" runat="server" ControlToValidate="ddlTechSubTask" ErrorMessage="Select Sub Task"
+                                        InitialValue="0" ValidationGroup="InterviewDate" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" colspan="3">
+                                    <asp:Button ID="btnSaveInterview" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                                        Style="height: 26px; font-weight: 700; line-height: 1em;" Text="OK" Width="100px" ValidationGroup="InterviewDate"
+                                        TabIndex="119" OnClick="btnSaveInterview_Click" />
+                                    <asp:Button ID="btnCancelInterview" runat="server" Text="Cancel" OnClick="btnCancelInterview_Click" Width="100px"
+                                        Style="height: 26px; font-weight: 700; line-height: 1em;"
+                                        OnClientClick="javascript:document.getElementById('interviewDatelite').style.display='none';document.getElementById('interviewDatefade').style.display='none'" />
+                                </td>
+                            </tr>
+                        </table>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+        </asp:Panel>
 
-                                            <asp:Panel ID="panel3" runat="server">
-                                                <div id="litePassword" class="white_content">
-                                                    <h3>Password
-                                                    </h3>
-                                                    <a href="javascript:void(0)" onclick="document.getElementById('litePassword').style.display='none';document.getElementById('fadePassword').style.display='none'">Close</a>
-                                                    <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 70%"
-                                                        cellpadding="0" cellspacing="0">
-                                                        <tr>
-                                                            <td align="center" style="height: 54px; width: 200px;">Enter Password To Change Status
-                                                            </td>
-                                                            <td align="center" style="height: 54px;">
-                                                                <asp:TextBox ID="txtPassword" runat="server" placeholder="Enter Password" TextMode="Password"></asp:TextBox>
-                                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ErrorMessage="Enter Password" ControlToValidate="txtPassword" ValidationGroup="Password"></asp:RequiredFieldValidator>
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td align="center" colspan="2" style="height: 54px;">
-                                                                <asp:Button ID="btnChangeStatus" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
-                                                                    Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="Password"
-                                                                    TabIndex="119" OnClick="btnChangeStatus_Click" />
-                                                                <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
-                                                            </td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-                                            </asp:Panel>
-                                            <div id="fadePassword" class="black_overlay">
-                                            </div>
+        <asp:Panel ID="panel3" runat="server">
+            <div id="litePassword" class="white_content">
+                <h3>Password
+                </h3>
+                <a href="javascript:void(0)" onclick="document.getElementById('litePassword').style.display='none';document.getElementById('fadePassword').style.display='none'">Close</a>
+                <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 70%"
+                    cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td align="center" style="height: 54px; width: 200px;">Enter Password To Change Status
+                        </td>
+                        <td align="center" style="height: 54px;">
+                            <asp:TextBox ID="txtPassword" runat="server" placeholder="Enter Password" TextMode="Password"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ErrorMessage="Enter Password" ControlToValidate="txtPassword" ValidationGroup="Password"></asp:RequiredFieldValidator>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" colspan="2" style="height: 54px;">
+                            <asp:Button ID="btnChangeStatus" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                                Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="Password"
+                                TabIndex="119" OnClick="btnChangeStatus_Click" />
+                            <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </asp:Panel>
+        <div id="fadePassword" class="black_overlay">
+        </div>
 
-                                            <asp:Panel ID="panel4" runat="server">
-                                                <div id="DivOfferMade" class="white_content" style="height: auto;">
-                                                    <h3>Offer Made Details</h3>
-                                                    <asp:UpdatePanel runat="server" UpdateMode="Always">
-                                                        <ContentTemplate>
-                                                            <asp:HiddenField ID="hdnFirstName" runat="server" />
-                                                            <asp:HiddenField ID="hdnLastName" runat="server" />
-                                                            <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
-                                                                cellpadding="0" cellspacing="0">
-                                                                <tr>
-                                                                    <td align="right"><strong>Name: </strong></td>
-                                                                    <td align="left">
-                                                                        <asp:Label ID="lblName_OfferMade" runat="server" />
-                                                                    </td>
-                                                                </tr>
+        <asp:Panel ID="panel4" runat="server">
+            <div id="DivOfferMade" class="white_content" style="height: auto;">
+                <h3>Offer Made Details</h3>
+                <asp:UpdatePanel runat="server" UpdateMode="Always">
+                    <ContentTemplate>
+                        <asp:HiddenField ID="hdnFirstName" runat="server" />
+                        <asp:HiddenField ID="hdnLastName" runat="server" />
+                        <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
+                            cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td align="right"><strong>Name: </strong></td>
+                                <td align="left">
+                                    <asp:Label ID="lblName_OfferMade" runat="server" />
+                                </td>
+                            </tr>
 
-                                                                <tr align="right">
-                                                                    <td><strong>Designation:
+                            <tr align="right">
+                                <td><strong>Designation:
                                     
-                                                                    </strong></td>
-                                                                    <td align="left">
-                                                                        <asp:Label ID="lblDesignation_OfferMade" runat="server" />
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td align="right" style="height: 15px;">
-                                                                        <br />
-                                                                        <label>
-                                                                            Email<span><asp:Label ID="lblReqEmail" Text="*" runat="server" ForeColor="Red"></asp:Label></span></label>
-                                                                    </td>
-                                                                    <td>
-                                                                        <asp:TextBox ID="txtEmail" runat="server" MaxLength="40" Width="242px"
-                                                                            Enabled="false" ReadOnly="true"></asp:TextBox>
-                                                                        <br />
-                                                                        <asp:RequiredFieldValidator ID="rqEmail" Display="Dynamic" runat="server" ControlToValidate="txtEmail"
-                                                                            ValidationGroup="OfferMade" ForeColor="Red" ErrorMessage="Please Enter Email"></asp:RequiredFieldValidator>
-                                                                        <asp:RegularExpressionValidator ID="reEmail" ControlToValidate="txtEmail" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
-                                                                            Display="Dynamic" runat="server" ForeColor="Red" ErrorMessage="Please Enter a valid Email"
-                                                                            ValidationGroup="OfferMade">
-                                                                        </asp:RegularExpressionValidator>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td align="right" style="height: 15px;">
-                                                                        <label>
-                                                                            Password<asp:Label ID="lblPassReq" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
-                                                                    </td>
-                                                                    <td>
-                                                                        <asp:TextBox ID="txtPassword1" runat="server" TextMode="Password" MaxLength="30"
-                                                                            autocomplete="off" Width="242px"></asp:TextBox>
-                                                                        <br />
-                                                                        <label>
-                                                                        </label>
-                                                                        <asp:RequiredFieldValidator ID="rqPass" runat="server" ControlToValidate="txtPassword1"
-                                                                            ValidationGroup="OfferMade" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Enter Password"></asp:RequiredFieldValidator><br />
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td align="right" style="height: 15px;">
-                                                                        <label>
-                                                                            Confirm Password<asp:Label ID="lblConfirmPass" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
-                                                                    </td>
-                                                                    <td>
-                                                                        <asp:TextBox ID="txtpassword2" runat="server" TextMode="Password" autocomplete="off"
-                                                                            MaxLength="30" EnableViewState="false" AutoCompleteType="None" Width="242px"></asp:TextBox>
-                                                                        <br />
-                                                                        <label>
-                                                                        </label>
-                                                                        <asp:CompareValidator ID="password" runat="server" ControlToValidate="txtpassword2"
-                                                                            Display="Dynamic" ControlToCompare="txtPassword1" ForeColor="Red" ErrorMessage="Password didn't matched"
-                                                                            ValidationGroup="OfferMade">
-                                                                        </asp:CompareValidator>
-                                                                        <asp:RequiredFieldValidator ID="rqConPass" runat="server" ControlToValidate="txtpassword2"
-                                                                            ForeColor="Red" ValidationGroup="OfferMade" ErrorMessage="Enter Confirm Password"></asp:RequiredFieldValidator>
+                                </strong></td>
+                                <td align="left">
+                                    <asp:Label ID="lblDesignation_OfferMade" runat="server" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right" style="height: 15px;">
+                                    <br />
+                                    <label>
+                                        Email<span><asp:Label ID="lblReqEmail" Text="*" runat="server" ForeColor="Red"></asp:Label></span></label>
+                                </td>
+                                <td>
+                                    <asp:TextBox ID="txtEmail" runat="server" MaxLength="40" Width="242px"
+                                        Enabled="false" ReadOnly="true"></asp:TextBox>
+                                    <br />
+                                    <asp:RequiredFieldValidator ID="rqEmail" Display="Dynamic" runat="server" ControlToValidate="txtEmail"
+                                        ValidationGroup="OfferMade" ForeColor="Red" ErrorMessage="Please Enter Email"></asp:RequiredFieldValidator>
+                                    <asp:RegularExpressionValidator ID="reEmail" ControlToValidate="txtEmail" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
+                                        Display="Dynamic" runat="server" ForeColor="Red" ErrorMessage="Please Enter a valid Email"
+                                        ValidationGroup="OfferMade">
+                                    </asp:RegularExpressionValidator>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right" style="height: 15px;">
+                                    <label>
+                                        Password<asp:Label ID="lblPassReq" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
+                                </td>
+                                <td>
+                                    <asp:TextBox ID="txtPassword1" runat="server" TextMode="Password" MaxLength="30"
+                                        autocomplete="off" Width="242px"></asp:TextBox>
+                                    <br />
+                                    <label>
+                                    </label>
+                                    <asp:RequiredFieldValidator ID="rqPass" runat="server" ControlToValidate="txtPassword1"
+                                        ValidationGroup="OfferMade" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Enter Password"></asp:RequiredFieldValidator><br />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right" style="height: 15px;">
+                                    <label>
+                                        Confirm Password<asp:Label ID="lblConfirmPass" runat="server" Text="*" ForeColor="Red"></asp:Label></label>
+                                </td>
+                                <td>
+                                    <asp:TextBox ID="txtpassword2" runat="server" TextMode="Password" autocomplete="off"
+                                        MaxLength="30" EnableViewState="false" AutoCompleteType="None" Width="242px"></asp:TextBox>
+                                    <br />
+                                    <label>
+                                    </label>
+                                    <asp:CompareValidator ID="password" runat="server" ControlToValidate="txtpassword2"
+                                        Display="Dynamic" ControlToCompare="txtPassword1" ForeColor="Red" ErrorMessage="Password didn't matched"
+                                        ValidationGroup="OfferMade">
+                                    </asp:CompareValidator>
+                                    <asp:RequiredFieldValidator ID="rqConPass" runat="server" ControlToValidate="txtpassword2"
+                                        ForeColor="Red" ValidationGroup="OfferMade" ErrorMessage="Enter Confirm Password"></asp:RequiredFieldValidator>
 
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td align="center" colspan="2">
-                                                                        <asp:Button ID="btnSaveOfferMade" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
-                                                                            Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="OfferMade"
-                                                                            TabIndex="119" />
-                                                                        <asp:Button ID="btnCancelOfferMade" runat="server" Text="Cancel" Width="100px" Style="height: 26px; font-weight: 700; line-height: 1em;" />
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </ContentTemplate>
-                                                    </asp:UpdatePanel>
-                                                </div>
-                                            </asp:Panel>
-                                            <div id="DivOfferMadefade" class="black_overlay">
-                                            </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" colspan="2">
+                                    <asp:Button ID="btnSaveOfferMade" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                                        Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="OfferMade"
+                                        TabIndex="119" />
+                                    <asp:Button ID="btnCancelOfferMade" runat="server" Text="Cancel" Width="100px" Style="height: 26px; font-weight: 700; line-height: 1em;" />
+                                </td>
+                            </tr>
+                        </table>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+        </asp:Panel>
+        <div id="DivOfferMadefade" class="black_overlay">
+        </div>
 
-                                            <asp:Panel ID="pnlUploadBulk" runat="server">
+        <asp:Panel ID="pnlUploadBulk" runat="server">
 
-                                                <div id="lightUploadBulk" class="white_content" style="text-align: center">
-                                                    <a class="close" href="#" onclick="CloseAddUserPopUp()">&times;</a>
+            <div id="lightUploadBulk" class="white_content" style="text-align: center">
+                <a class="close" href="#" onclick="CloseAddUserPopUp()">&times;</a>
 
-                                                    <asp:Panel ID="pnlDuplicate" runat="server">
-                                                        <asp:Label ID="lblDuplicateCount" runat="server"></asp:Label>
+                <asp:Panel ID="pnlDuplicate" runat="server">
+                    <asp:Label ID="lblDuplicateCount" runat="server"></asp:Label>
 
-                                                        <div style="padding: 20px; margin: auto;">
-                                                            <center>
+                    <div style="padding: 20px; margin: auto;">
+                        <center>
                                 <table width="60%" class="uploadBulkTab" cellpadding="0">
                                 <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
                                     <td><span>Full Name</span></td>
@@ -1536,27 +1573,27 @@
                                 </asp:ListView>
                             </table>
                             </center>
-                                                        </div>
-                                                        <div style="padding: 20px; margin: auto;">
-                                                            Email or Phone number of above users already exists, do you want to update the existing record?
-                                                        </div>
-                                                        <div style="padding: 10px; margin: auto;">
-                                                            <asp:Button ID="btnYesEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
-                                                                Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Yes" Width="100px"
-                                                                ValidationGroup="IndiCred" TabIndex="119" OnClick="btnYesEdit_Click" />
-                                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+                    <div style="padding: 20px; margin: auto;">
+                        Email or Phone number of above users already exists, do you want to update the existing record?
+                    </div>
+                    <div style="padding: 10px; margin: auto;">
+                        <asp:Button ID="btnYesEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
+                            Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Yes" Width="100px"
+                            ValidationGroup="IndiCred" TabIndex="119" OnClick="btnYesEdit_Click" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <asp:Button ID="btnNoEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
                             Style="height: 26px; font-weight: 700; line-height: 1em;" Text="No" Width="100px"
                             ValidationGroup="IndiCred" TabIndex="119" OnClick="btnNoEdit_Click" />
-                                                        </div>
+                    </div>
 
-                                                        <hr />
-                                                        <br />
-                                                    </asp:Panel>
+                    <hr />
+                    <br />
+                </asp:Panel>
 
-                                                    <asp:Panel ID="pnlAddNewUser" runat="server">
-                                                        <asp:Label ID="lblNewRecordAddedCount" runat="server"></asp:Label>
-                                                        <center>
+                <asp:Panel ID="pnlAddNewUser" runat="server">
+                    <asp:Label ID="lblNewRecordAddedCount" runat="server"></asp:Label>
+                    <center>
                     <table width="60%" class="uploadBulkTab" cellpadding="0" style="margin-top:20px;">
                         <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
                             <td><span>Full Name</span></td>
@@ -1576,278 +1613,278 @@
                         </asp:ListView>
                     </table>
                     </center>
-                                                    </asp:Panel>
+                </asp:Panel>
 
-                                                </div>
-                                            </asp:Panel>
-                                            <div id="fadeUploadBulk" class="black_overlay">
-                                            </div>
-                                            <div id="interviewDatefade" class="black_overlay">
-                                            </div>
-                                        </div>
-                                        <%--Modal Popup Ends--%>
-                                        <%--Popup Stars--%>
-                                        <div class="hide">
-                                            <div id="divBulkUploadUserErrors" runat="server" title="Information" data-width="900px">
-                                                <div style="padding: 5px 10px;">
-                                                    Below records contain empty values for mandatory fields. Please update cells marked by <span style="color: blue; font-weight: bold; text-align: center; font-size: 20px;">x</span> below in your file and upload again. If you see several empty rows at the end of the records, please delete those empty lines from your file.
-                                                </div>
-                                                <div style="max-height: 500px; height: 500px; overflow: auto;">
-                                                    <asp:UpdatePanel ID="upnlBUPError" runat="server" UpdateMode="Conditional">
-                                                        <ContentTemplate>
-                                                            <asp:GridView ID="grdBulkUploadUserErrors" runat="server" AutoGenerateColumns="false"
-                                                                CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical">
-                                                                <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
-                                                                <HeaderStyle CssClass="trHeader " />
-                                                                <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
-                                                                <AlternatingRowStyle CssClass="AlternateRow " />
-                                                                <Columns>
-                                                                    <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
-                                                                        <ItemTemplate>
-                                                                            <%#Eval("FirstName")%>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-                                                                    <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
-                                                                        <ItemTemplate>
-                                                                            <%#Eval("LastName")%>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-                                                                    <asp:TemplateField HeaderText="Email*" HeaderStyle-Width="90" ItemStyle-Width="90">
-                                                                        <ItemTemplate>
-                                                                            <%#Eval("Email")%>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-                                                                    <asp:TemplateField HeaderText="Designation*" HeaderStyle-Width="75" ItemStyle-Width="75">
-                                                                        <ItemTemplate>
-                                                                            <%#Eval("Designation")%>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-                                                                    <asp:TemplateField HeaderText="Status*" HeaderStyle-Width="50" ItemStyle-Width="50">
-                                                                        <ItemTemplate>
-                                                                            <%#Eval("Status")%>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-                                                                    <asp:TemplateField HeaderText="Source*" HeaderStyle-Width="60" ItemStyle-Width="60">
-                                                                        <ItemTemplate>
-                                                                            <%#Eval("Source")%>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-                                                                    <asp:TemplateField HeaderText="Primary Contact Phone*" HeaderStyle-Width="90" ItemStyle-Width="90">
-                                                                        <ItemTemplate>
-                                                                            <%#Eval("Phone1")%>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-                                                                    <asp:TemplateField HeaderText="Phone Type*" HeaderStyle-Width="60" ItemStyle-Width="60">
-                                                                        <ItemTemplate>
-                                                                            <%#Eval("Phone1Type")%>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-                                                                    <asp:TemplateField HeaderText="Zip*" HeaderStyle-Width="50" ItemStyle-Width="50">
-                                                                        <ItemTemplate>
-                                                                            <%#Eval("Zip")%>
-                                                                        </ItemTemplate>
-                                                                    </asp:TemplateField>
-                                                                </Columns>
-                                                            </asp:GridView>
-                                                        </ContentTemplate>
-                                                    </asp:UpdatePanel>
-                                                </div>
-                                                <br />
-                                            </div>
-                                            <%--Send Email To User Popup--%>
-                                            <div id="divSendEmailToUser" runat="server" title="Send Email">
-                                                <asp:UpdatePanel ID="upSendEmailToUser" runat="server" UpdateMode="Conditional">
-                                                    <ContentTemplate>
-                                                        <asp:ValidationSummary ID="vsEmailToUser" runat="server" ValidationGroup="vgEmailToUser" ShowSummary="False" ShowMessageBox="True" />
-                                                        <fieldset>
-                                                            <legend>
-                                                                <asp:Label ID="lblEmailTo" runat="server" /><asp:HiddenField ID="hdnEmailTo" runat="server" />
-                                                            </legend>
-                                                            <table cellspacing="3" cellpadding="3" width="100%">
-                                                                <tr>
-                                                                    <td>Subject:<br />
-                                                                        <asp:TextBox ID="txtEmailSubject" runat="server" CssClass="textbox" Width="90%" ReadOnly="true" />
-                                                                        <asp:RequiredFieldValidator ID="rfvEmailSubject" ValidationGroup="vgEmailToUser"
-                                                                            runat="server" ControlToValidate="txtEmailSubject" ForeColor="Red" ErrorMessage="Please enter email subject." Display="None" />
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Custom Message:<br />
-                                                                        <asp:TextBox ID="txtEmailCustomMessage" runat="server" CssClass="textbox" TextMode="MultiLine" Width="90%" />
-                                                                        <asp:RequiredFieldValidator ID="rfvEmailCustomMessage" ValidationGroup="vgEmailToUser" Display="None"
-                                                                            runat="server" ControlToValidate="txtEmailCustomMessage" ForeColor="Red" ErrorMessage="Please enter custom message for email." />
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Email Body:<br />
-                                                                        <asp:TextBox ID="txtEmailBody" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="4" Width="90%" />
-                                                                        <asp:RequiredFieldValidator ID="rfvEmailBody" ValidationGroup="vgEmailToUser"
-                                                                            runat="server" ControlToValidate="txtEmailBody" ForeColor="Red" ErrorMessage="Please enter email body." Display="None" />
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <div class="btn_sec">
-                                                                            <asp:Button ID="btnSendEmailToUser" runat="server" ValidationGroup="vgEmailToUser" OnClick="btnSendEmailToUser_Click"
-                                                                                CssClass="ui-button" Text="Send" />
-                                                                            <asp:Button ID="btnCancelSendEmailToUser" runat="server" OnClick="btnCancelSendEmailToUser_Click"
-                                                                                Text="Cancel" />
-                                                                        </div>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </fieldset>
-                                                    </ContentTemplate>
-                                                </asp:UpdatePanel>
-                                            </div>
+            </div>
+        </asp:Panel>
+        <div id="fadeUploadBulk" class="black_overlay">
+        </div>
+        <div id="interviewDatefade" class="black_overlay">
+        </div>
+    </div>
+    <%--Modal Popup Ends--%>
+    <%--Popup Stars--%>
+    <div class="hide">
+        <div id="divBulkUploadUserErrors" runat="server" title="Information" data-width="900px">
+            <div style="padding: 5px 10px;">
+                Below records contain empty values for mandatory fields. Please update cells marked by <span style="color: blue; font-weight: bold; text-align: center; font-size: 20px;">x</span> below in your file and upload again. If you see several empty rows at the end of the records, please delete those empty lines from your file.
+            </div>
+            <div style="max-height: 500px; height: 500px; overflow: auto;">
+                <asp:UpdatePanel ID="upnlBUPError" runat="server" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <asp:GridView ID="grdBulkUploadUserErrors" runat="server" AutoGenerateColumns="false"
+                            CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical">
+                            <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                            <HeaderStyle CssClass="trHeader " />
+                            <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
+                            <AlternatingRowStyle CssClass="AlternateRow " />
+                            <Columns>
+                                <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
+                                    <ItemTemplate>
+                                        <%#Eval("FirstName")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
+                                    <ItemTemplate>
+                                        <%#Eval("LastName")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Email*" HeaderStyle-Width="90" ItemStyle-Width="90">
+                                    <ItemTemplate>
+                                        <%#Eval("Email")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Designation*" HeaderStyle-Width="75" ItemStyle-Width="75">
+                                    <ItemTemplate>
+                                        <%#Eval("Designation")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Status*" HeaderStyle-Width="50" ItemStyle-Width="50">
+                                    <ItemTemplate>
+                                        <%#Eval("Status")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Source*" HeaderStyle-Width="60" ItemStyle-Width="60">
+                                    <ItemTemplate>
+                                        <%#Eval("Source")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Primary Contact Phone*" HeaderStyle-Width="90" ItemStyle-Width="90">
+                                    <ItemTemplate>
+                                        <%#Eval("Phone1")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Phone Type*" HeaderStyle-Width="60" ItemStyle-Width="60">
+                                    <ItemTemplate>
+                                        <%#Eval("Phone1Type")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Zip*" HeaderStyle-Width="50" ItemStyle-Width="50">
+                                    <ItemTemplate>
+                                        <%#Eval("Zip")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+            <br />
+        </div>
+        <%--Send Email To User Popup--%>
+        <div id="divSendEmailToUser" runat="server" title="Send Email">
+            <asp:UpdatePanel ID="upSendEmailToUser" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <asp:ValidationSummary ID="vsEmailToUser" runat="server" ValidationGroup="vgEmailToUser" ShowSummary="False" ShowMessageBox="True" />
+                    <fieldset>
+                        <legend>
+                            <asp:Label ID="lblEmailTo" runat="server" /><asp:HiddenField ID="hdnEmailTo" runat="server" />
+                        </legend>
+                        <table cellspacing="3" cellpadding="3" width="100%">
+                            <tr>
+                                <td>Subject:<br />
+                                    <asp:TextBox ID="txtEmailSubject" runat="server" CssClass="textbox" Width="90%" ReadOnly="true" />
+                                    <asp:RequiredFieldValidator ID="rfvEmailSubject" ValidationGroup="vgEmailToUser"
+                                        runat="server" ControlToValidate="txtEmailSubject" ForeColor="Red" ErrorMessage="Please enter email subject." Display="None" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Custom Message:<br />
+                                    <asp:TextBox ID="txtEmailCustomMessage" runat="server" CssClass="textbox" TextMode="MultiLine" Width="90%" />
+                                    <asp:RequiredFieldValidator ID="rfvEmailCustomMessage" ValidationGroup="vgEmailToUser" Display="None"
+                                        runat="server" ControlToValidate="txtEmailCustomMessage" ForeColor="Red" ErrorMessage="Please enter custom message for email." />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Email Body:<br />
+                                    <asp:TextBox ID="txtEmailBody" runat="server" CssClass="textbox" TextMode="MultiLine" Rows="4" Width="90%" />
+                                    <asp:RequiredFieldValidator ID="rfvEmailBody" ValidationGroup="vgEmailToUser"
+                                        runat="server" ControlToValidate="txtEmailBody" ForeColor="Red" ErrorMessage="Please enter email body." Display="None" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="btn_sec">
+                                        <asp:Button ID="btnSendEmailToUser" runat="server" ValidationGroup="vgEmailToUser" OnClick="btnSendEmailToUser_Click"
+                                            CssClass="ui-button" Text="Send" />
+                                        <asp:Button ID="btnCancelSendEmailToUser" runat="server" OnClick="btnCancelSendEmailToUser_Click"
+                                            Text="Cancel" />
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </fieldset>
+                </ContentTemplate>
+            </asp:UpdatePanel>
+        </div>
 
-                                            <div id="divChangeStatusForSelected" runat="server" title="Change Status">
-                                                <asp:UpdatePanel ID="upChangeStatusForSelected" runat="server" UpdateMode="Conditional">
-                                                    <ContentTemplate>
-                                                        <asp:ValidationSummary ID="vsChangeStatus" runat="server" ValidationGroup="vgChangeStatus" ShowMessageBox="true" ShowSummary="false" />
-                                                        <div>
-                                                            Status:
+        <div id="divChangeStatusForSelected" runat="server" title="Change Status">
+            <asp:UpdatePanel ID="upChangeStatusForSelected" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <asp:ValidationSummary ID="vsChangeStatus" runat="server" ValidationGroup="vgChangeStatus" ShowMessageBox="true" ShowSummary="false" />
+                    <div>
+                        Status:
                         <asp:DropDownList ID="ddlStatus_Popup" Width="400px" runat="server" AutoPostBack="true" OnPreRender="ddlStatus_Popup_PreRender" OnSelectedIndexChanged="ddlStatus_Popup_SelectedIndexChanged" />
-                                                            <asp:RequiredFieldValidator ID="rfvStatus_Popup" runat="server" ErrorMessage="Please select recruiter." InitialValue="0"
-                                                                ControlToValidate="ddlStatus_Popup" ValidationGroup="vgChangeStatus" Display="None" />
-                                                        </div>
-                                                        <br />
-                                                        <div id="divInterviewDate" runat="server" visible="false">
-                                                            Recruiter:
+                        <asp:RequiredFieldValidator ID="rfvStatus_Popup" runat="server" ErrorMessage="Please select recruiter." InitialValue="0"
+                            ControlToValidate="ddlStatus_Popup" ValidationGroup="vgChangeStatus" Display="None" />
+                    </div>
+                    <br />
+                    <div id="divInterviewDate" runat="server" visible="false">
+                        Recruiter:
                         <asp:DropDownList ID="ddlRecruiter_Popup" runat="server" />
-                                                            <asp:RequiredFieldValidator ID="rfvRecruiter_Popup" runat="server" ErrorMessage="Please select recruiter." InitialValue="0"
-                                                                ControlToValidate="ddlRecruiter_Popup" ValidationGroup="vgChangeStatus" Display="None" />
-                                                        </div>
-                                                        <br />
-                                                        <asp:GridView ID="grdUsers_Popup" runat="server" AutoGenerateColumns="false" DataKeyNames="Id,DesignationID"
-                                                            CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical"
-                                                            OnRowDataBound="grdUsers_Popup_RowDataBound">
-                                                            <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
-                                                            <HeaderStyle CssClass="trHeader " />
-                                                            <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
-                                                            <AlternatingRowStyle CssClass="AlternateRow " />
-                                                            <Columns>
-                                                                <asp:TemplateField HeaderText="Name" ItemStyle-Width="150">
-                                                                    <ItemTemplate>
-                                                                        <asp:Literal ID="ltrlFirstName" runat="server" Text='<%#Eval("FirstName") %>' />&nbsp;<asp:Literal ID="ltrlLastName" runat="server" Text='<%#Eval("LastName") %>' />
-                                                                    </ItemTemplate>
-                                                                </asp:TemplateField>
-                                                                <asp:TemplateField HeaderText="Designation" ItemStyle-Width="150">
-                                                                    <ItemTemplate>
-                                                                        <asp:Literal ID="ltrlDesignation" runat="server" Text='<%#Eval("Designation") %>' />
-                                                                    </ItemTemplate>
-                                                                </asp:TemplateField>
-                                                                <asp:TemplateField HeaderText="Interview" Visible="false">
-                                                                    <ItemTemplate>
-                                                                        <asp:TextBox ID="txtInterviewDate" placeholder="Select Date" runat="server"
-                                                                            onkeypress="return false" Width="127px" Text='<%#Eval("InterviewDate")%>' />
-                                                                        <cc1:CalendarExtender ID="ceInterviewDate" TargetControlID="txtInterviewDate" Format="MM/dd/yyyy" runat="server" />
-                                                                        <asp:RequiredFieldValidator ID="rfvInterviewDate" runat="server" ErrorMessage="Please select interview date."
-                                                                            ControlToValidate="txtInterviewDate" ValidationGroup="vgChangeStatus" Display="None" />
-                                                                        <br />
-                                                                        <asp:DropDownList ID="ddlInterviewTime" runat="server" Width="112px" />
-                                                                    </ItemTemplate>
-                                                                </asp:TemplateField>
-                                                                <asp:TemplateField HeaderText="Tech Task" Visible="false" ItemStyle-Width="100">
-                                                                    <ItemTemplate>
-                                                                        Tech Task:
+                        <asp:RequiredFieldValidator ID="rfvRecruiter_Popup" runat="server" ErrorMessage="Please select recruiter." InitialValue="0"
+                            ControlToValidate="ddlRecruiter_Popup" ValidationGroup="vgChangeStatus" Display="None" />
+                    </div>
+                    <br />
+                    <asp:GridView ID="grdUsers_Popup" runat="server" AutoGenerateColumns="false" DataKeyNames="Id,DesignationID"
+                        CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical"
+                        OnRowDataBound="grdUsers_Popup_RowDataBound">
+                        <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                        <HeaderStyle CssClass="trHeader " />
+                        <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
+                        <AlternatingRowStyle CssClass="AlternateRow " />
+                        <Columns>
+                            <asp:TemplateField HeaderText="Name" ItemStyle-Width="150">
+                                <ItemTemplate>
+                                    <asp:Literal ID="ltrlFirstName" runat="server" Text='<%#Eval("FirstName") %>' />&nbsp;<asp:Literal ID="ltrlLastName" runat="server" Text='<%#Eval("LastName") %>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Designation" ItemStyle-Width="150">
+                                <ItemTemplate>
+                                    <asp:Literal ID="ltrlDesignation" runat="server" Text='<%#Eval("Designation") %>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Interview" Visible="false">
+                                <ItemTemplate>
+                                    <asp:TextBox ID="txtInterviewDate" placeholder="Select Date" runat="server"
+                                        onkeypress="return false" Width="127px" Text='<%#Eval("InterviewDate")%>' />
+                                    <cc1:CalendarExtender ID="ceInterviewDate" TargetControlID="txtInterviewDate" Format="MM/dd/yyyy" runat="server" />
+                                    <asp:RequiredFieldValidator ID="rfvInterviewDate" runat="server" ErrorMessage="Please select interview date."
+                                        ControlToValidate="txtInterviewDate" ValidationGroup="vgChangeStatus" Display="None" />
+                                    <br />
+                                    <asp:DropDownList ID="ddlInterviewTime" runat="server" Width="112px" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Tech Task" Visible="false" ItemStyle-Width="100">
+                                <ItemTemplate>
+                                    Tech Task:
                                     <asp:DropDownList ID="ddlTechTask" runat="server" Width="95" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_Popup_ddlTechTask_SelectedIndexChanged" />
-                                                                        <asp:RequiredFieldValidator ID="rfvTechTask" runat="server" ErrorMessage="Please select tech task." InitialValue="0"
-                                                                            ControlToValidate="ddlTechTask" ValidationGroup="vgChangeStatus" Display="None" />
-                                                                        <br />
-                                                                        Sub Task:
+                                    <asp:RequiredFieldValidator ID="rfvTechTask" runat="server" ErrorMessage="Please select tech task." InitialValue="0"
+                                        ControlToValidate="ddlTechTask" ValidationGroup="vgChangeStatus" Display="None" />
+                                    <br />
+                                    Sub Task:
                                     <asp:DropDownList ID="ddlTechSubTask" runat="server" Width="95" />
-                                                                        <asp:RequiredFieldValidator ID="rfvTechSubTask" runat="server" ErrorMessage="Please select tech sub task." InitialValue="0"
-                                                                            ControlToValidate="ddlTechSubTask" ValidationGroup="vgChangeStatus" Display="None" />
-                                                                    </ItemTemplate>
-                                                                </asp:TemplateField>
-                                                                <asp:TemplateField HeaderText="Reason" Visible="false">
-                                                                    <ItemTemplate>
-                                                                        <asp:TextBox ID="txtReason" runat="server" TextMode="MultiLine" Rows="3" Width="95%" />
-                                                                        <asp:RequiredFieldValidator ID="rfvReason" runat="server" ErrorMessage="Please enter reason for status change."
-                                                                            ControlToValidate="txtReason" ValidationGroup="vgChangeStatus" Display="None" />
-                                                                    </ItemTemplate>
-                                                                </asp:TemplateField>
-                                                            </Columns>
-                                                        </asp:GridView>
-                                                        <br />
-                                                        <br />
-                                                        <div class="btn_sec">
-                                                            <asp:Button ID="btnSaveStatusForSelected" runat="server" Text="Change Status" ValidationGroup="vgChangeStatus"
-                                                                OnClick="btnSaveStatusForSelected_Click" />&nbsp;
+                                    <asp:RequiredFieldValidator ID="rfvTechSubTask" runat="server" ErrorMessage="Please select tech sub task." InitialValue="0"
+                                        ControlToValidate="ddlTechSubTask" ValidationGroup="vgChangeStatus" Display="None" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Reason" Visible="false">
+                                <ItemTemplate>
+                                    <asp:TextBox ID="txtReason" runat="server" TextMode="MultiLine" Rows="3" Width="95%" />
+                                    <asp:RequiredFieldValidator ID="rfvReason" runat="server" ErrorMessage="Please enter reason for status change."
+                                        ControlToValidate="txtReason" ValidationGroup="vgChangeStatus" Display="None" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
+                    <br />
+                    <br />
+                    <div class="btn_sec">
+                        <asp:Button ID="btnSaveStatusForSelected" runat="server" Text="Change Status" ValidationGroup="vgChangeStatus"
+                            OnClick="btnSaveStatusForSelected_Click" />&nbsp;
                     <asp:Button ID="btnCancelChangeStatusForSelected" runat="server" Text="Cancel" OnClick="btnCancelChangeStatusForSelected_Click" />
-                                                            <br />
-                                                            <br />
-                                                        </div>
-                                                    </ContentTemplate>
-                                                </asp:UpdatePanel>
-                                            </div>
-                                        </div>
-                                        <div id="divEditUserNG" data-ng-controller="EditUserController">
+                        <br />
+                        <br />
+                    </div>
+                </ContentTemplate>
+            </asp:UpdatePanel>
+        </div>
+    </div>
+    <div id="divEditUserNG" data-ng-controller="EditUserController">
 
-                                            <div id="EditUsersModal" class="modal hide">
+        <div id="EditUsersModal" class="modal hide">
 
-                                                <table class="scroll" cellspacing="0" rules="all" border="1" id="tblEditUserPopup" style="width: 100%; border-collapse: collapse;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th style="width: 10%; text-align: center;">Action
+            <table class="scroll" cellspacing="0" rules="all" border="1" id="tblEditUserPopup" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="width: 10%; text-align: center;">Action
                             <br>
-                                                                Picture</th>
-                                                            <th style="width: 16%; text-align: center;"><a href="javascript:void(0);">Staff ID#
+                            Picture</th>
+                        <th style="width: 16%; text-align: center;"><a href="javascript:void(0);">Staff ID#
                             <br>
-                                                                Designation<br>
-                                                                F&amp;LName
+                            Designation<br>
+                            F&amp;LName
                           
-                                                            </a></th>
-                                                            <th style="width: 16%; text-align: center;">
-                                                                <a href="javascript:void(0);">Interview Status
+                        </a></th>
+                        <th style="width: 16%; text-align: center;">
+                            <a href="javascript:void(0);">Interview Status
                             <br>
-                                                                    Interview Date&Time
+                                Interview Date&Time
                                 <br>
-                                                                    TaskID# - Sub ID#
-                                                                </a>
-                                                            </th>
-                                                            <th style="width: 10%; text-align: center;"><a href="javascript:void(0);">Source<br>
-                                                                Added By<br>
-                                                                Added On</a></th>
-                                                            <th style="width: 10%; text-align: center;"><a href="javascript:void(0);">Country-Zip-City<br>
-                                                                Type-Apptitude Test %<br>
-                                                                Resume Attachment</a></th>
-                                                            <th style="width: 17%; text-align: left;"><a href="javascript:void(0);">Email<br>
-                                                                Phone Type - Phone</a></th>
-                                                            <th style="width: 17%; text-align: center;">Notes<br>
-                                                                <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
-                                                                    <thead>
-                                                                        <tr>
-                                                                            <th>User ID</th>
-                                                                            <th>Date&Time</th>
-                                                                            <th>Note/Status</th>
+                                TaskID# - Sub ID#
+                            </a>
+                        </th>
+                        <th style="width: 10%; text-align: center;"><a href="javascript:void(0);">Source<br>
+                            Added By<br>
+                            Added On</a></th>
+                        <th style="width: 10%; text-align: center;"><a href="javascript:void(0);">Country-Zip-City<br>
+                            Type-Apptitude Test %<br>
+                            Resume Attachment</a></th>
+                        <th style="width: 17%; text-align: left;"><a href="javascript:void(0);">Email<br>
+                            Phone Type - Phone</a></th>
+                        <th style="width: 17%; text-align: center;">Notes<br>
+                            <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                        <th>User ID</th>
+                                        <th>Date&Time</th>
+                                        <th>Note/Status</th>
 
-                                                                        </tr>
-                                                                    </thead>
-                                                                </table>
-                                                            </th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody style="height: 400px !important;">
-                                                        <tr data-ng-repeat="EditSalesUser in EditSalesUsers" ng-class="{rejectedUser: EditSalesUser.Status == '9'}" repeat-end="onEditUserBindEnd()">
-                                                            <td style="width: 10%; text-align: center;">
+                                    </tr>
+                                </thead>
+                            </table>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody style="height: 400px !important;">
+                    <tr data-ng-repeat="EditSalesUser in EditSalesUsers" ng-class="{rejectedUser: EditSalesUser.Status == '9'}" repeat-end="onEditUserBindEnd()">
+                        <td style="width: 10%; text-align: center;">
 
-                                                                <a ng-href="ViewSalesUser.aspx?id={{EditSalesUser.Id}}">
-                                                                    <img id="ContentPlaceHolder1_grdUsers_imgprofile_0" ng-src="{{EditSalesUser.picture}}" style="width: 100%; height: 85%;"></a>
+                            <a ng-href="ViewSalesUser.aspx?id={{EditSalesUser.Id}}">
+                                <img id="ContentPlaceHolder1_grdUsers_imgprofile_0" ng-src="{{EditSalesUser.picture}}" style="width: 100%; height: 85%;"></a>
 
-                                                            </td>
-                                                            <td style="width: 16%; text-align: center;">
+                        </td>
+                        <td style="width: 16%; text-align: center;">
 
-                                                                <a class="bluetext" ng-href="ViewSalesUser.aspx?id={{EditSalesUser.Id}}">{{EditSalesUser.UserInstallId}}</a>
-                                                                <br>
-                                                                <label>{{EditSalesUser.Designation}}</label>
-                                                                <br />
-                                                                <label class="blacktext">{{EditSalesUser.FristName}} {{EditSalesUser.LastName}}</label>
-                                                            </td>
-                                                            <td style="width: 16%; text-align: center;" class="SeqAssignment">
+                            <a class="bluetext" ng-href="ViewSalesUser.aspx?id={{EditSalesUser.Id}}">{{EditSalesUser.UserInstallId}}</a>
+                            <br>
+                            <label>{{EditSalesUser.Designation}}</label>
+                            <br />
+                            <label class="blacktext">{{EditSalesUser.FristName}} {{EditSalesUser.LastName}}</label>
+                        </td>
+                        <td style="width: 16%; text-align: center;" class="SeqAssignment">
 
-                                                                <any ng-switch="EditSalesUser.Status">
+                            <any ng-switch="EditSalesUser.Status">
                     <ANY ng-switch-when="1">Active</ANY>
                     <ANY ng-switch-when="2">Applicant</ANY>
                     <ANY ng-switch-when="3">Deactive</ANY>
@@ -1860,33 +1897,33 @@
                     <ANY ng-switch-when="10">ReferralApplicant</ANY>                  
                     
                 </any>
-                                                                <br />
-                                                                <input ng-attr-id="intdt{{EditSalesUser.Id}}" style="width: 80px" class="interviewDate" ng-attr-data-email="{{EditSalesUser.Email}}" ng-attr-data-userid="{{EditSalesUser.Id}}" type="text">
-                                                                <input ng-attr-id="inttime{{EditSalesUser.Id}}" style="width: 70px" class="interviewTime" type="text">
-                                                                <br />
-                                                                <a href="javascript:void(0);" class="badge-hyperlink"><span class="badge badge-success badge-xstext">
-                                                                    <label class="seqLable"></label>
-                                                                </span></a><a class="seqTaskURL" data-taskid="" href=""></a>
+                            <br />
+                            <input ng-attr-id="intdt{{EditSalesUser.Id}}" style="width: 80px" class="interviewDate" ng-attr-data-email="{{EditSalesUser.Email}}" ng-attr-data-userid="{{EditSalesUser.Id}}" type="text">
+                            <input ng-attr-id="inttime{{EditSalesUser.Id}}" style="width: 70px" class="interviewTime" type="text">
+                            <br />
+                            <a href="javascript:void(0);" class="badge-hyperlink"><span class="badge badge-success badge-xstext">
+                                <label class="seqLable"></label>
+                            </span></a><a class="seqTaskURL" data-taskid="" href=""></a>
 
-                                                            </td>
-                                                            <td style="width: 10%; text-align: center;">
+                        </td>
+                        <td style="width: 10%; text-align: center;">
 
-                                                                <span>{{EditSalesUser.Source}}</span>
-                                                                <br>
-                                                                <span>{{EditSalesUser.AddedBy}}</span>
-                                                                <a ng-href="ViewSalesUser.aspx?id={{EditSalesUser.AddedById}}">- {{EditSalesUser.AddedByUserInstallId}}</a>
-                                                                <br>
-                                                                <span>{{EditSalesUser.CreatedDateTime | date:'M/d/yyyy'}}</span>&nbsp;<span ng-class="redtext">{{EditSalesUser.CreatedDateTime | date:'h:mma'}}</span>&nbsp;<span>(EST)</span>
-                                                            </td>
-                                                            <td style="width: 10%; text-align: center;">
+                            <span>{{EditSalesUser.Source}}</span>
+                            <br>
+                            <span>{{EditSalesUser.AddedBy}}</span>
+                            <a ng-href="ViewSalesUser.aspx?id={{EditSalesUser.AddedById}}">- {{EditSalesUser.AddedByUserInstallId}}</a>
+                            <br>
+                            <span>{{EditSalesUser.CreatedDateTime | date:'M/d/yyyy'}}</span>&nbsp;<span ng-class="redtext">{{EditSalesUser.CreatedDateTime | date:'h:mma'}}</span>&nbsp;<span>(EST)</span>
+                        </td>
+                        <td style="width: 10%; text-align: center;">
 
-                                                                <div ng-attr-title='{{EditSalesUser.Country}}' style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 22px; width: 24px; margin-top: -5px;" class="us">
-                                                                </div>
-                                                                <span>- {{EditSalesUser.Zip}}</span>
-                                                                <span>{{EditSalesUser.City}}</span>
-                                                                <br />
+                            <div ng-attr-title='{{EditSalesUser.Country}}' style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 22px; width: 24px; margin-top: -5px;" class="us">
+                            </div>
+                            <span>- {{EditSalesUser.Zip}}</span>
+                            <span>{{EditSalesUser.City}}</span>
+                            <br />
 
-                                                                <any ng-switch="EditSalesUser.EmpType">
+                            <any ng-switch="EditSalesUser.EmpType">
                     <ANY ng-switch-when="1">Temp</ANY>
                     <ANY ng-switch-when="2">Internship</ANY>
                     <ANY ng-switch-when="3">Part Time - Remote</ANY>
@@ -1900,100 +1937,100 @@
                     
                 </any>
 
-                                                                <span ng-class="{'redtext': EditSalesUser.Aggregate < 33, 'greentext': EditSalesUser.Aggregate > 33, 'hide': EditSalesUser.Aggregate == null}">{{EditSalesUser.Aggregate | number:2}}%</span>
-                                                                <br>
-                                                                <a ng-class="hide" ng-href="http://jmgroveconstruction.com/Resumes/{{EditSalesUser.Resumepath}}" target="_blank">{{EditSalesUser.Resumepath}}</a>
+                            <span ng-class="{'redtext': EditSalesUser.Aggregate < 33, 'greentext': EditSalesUser.Aggregate > 33, 'hide': EditSalesUser.Aggregate == null}">{{EditSalesUser.Aggregate | number:2}}%</span>
+                            <br>
+                            <a ng-class="hide" ng-href="http://jmgroveconstruction.com/Resumes/{{EditSalesUser.Resumepath}}" target="_blank">{{EditSalesUser.Resumepath}}</a>
 
-                                                            </td>
-                                                            <td style="width: 17%; text-align: left;">
+                        </td>
+                        <td style="width: 17%; text-align: left;">
 
-                                                                <ul class="contactGrid">
-                                                                    <li>{{EditSalesUser.Email}}
-                                                                    </li>
-                                                                    <li>{{EditSalesUser.Phone}}
-                                                                    </li>
-                                                                </ul>
-                                                            </td>
-                                                            <td class="noMargin" style="width: 21%; text-align: center;"></td>
-                                                        </tr>
+                            <ul class="contactGrid">
+                                <li>{{EditSalesUser.Email}}
+                                </li>
+                                <li>{{EditSalesUser.Phone}}
+                                </li>
+                            </ul>
+                        </td>
+                        <td class="noMargin" style="width: 21%; text-align: center;"></td>
+                    </tr>
 
 
-                                                    </tbody>
-                                                </table>
-                                                <div ng-show="loader.loading" style="position: absolute; top: 50%; left: 50%;">
-                                                    Loading...
+                </tbody>
+            </table>
+            <div ng-show="loader.loading" style="position: absolute; top: 50%; left: 50%;">
+                Loading...
                 <img src="../img/ajax-loader.gif" />
-                                                </div>
-                                                <div class="btn_sec">
-                                                    <h3>
-                                                        <label id="ediPopupStatusSuccess"></label>
-                                                    </h3>
-                                                    <input type="button" value="Save" style="background: url(img/main-header-bg.png) repeat-x; color: #fff; height: 30px; width: 80px;" id="btnSaveMultipleStatuses" onclick="SetMultipleInterviewDate(this);" class="GrdBtnAdd" title="Save" />
+            </div>
+            <div class="btn_sec">
+                <h3>
+                    <label id="ediPopupStatusSuccess"></label>
+                </h3>
+                <input type="button" value="Save" style="background: url(img/main-header-bg.png) repeat-x; color: #fff; height: 30px; width: 80px;" id="btnSaveMultipleStatuses" onclick="SetMultipleInterviewDate(this);" class="GrdBtnAdd" title="Save" />
 
-                                                </div>
-                                                <%--   <div class="text-center">
+            </div>
+            <%--   <div class="text-center">
                 <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getEditUsers(page)"></jgpager>
             </div>--%>
-                                            </div>
+        </div>
 
-                                        </div>
-                                        <%--Popup Ends--%>
-                                        <script src="../Scripts/angular.min.js"></script>
-                                        <script src="../js/angular/scripts/jgapp.js"></script>
-                                        <script src="../js/angular/scripts/edituser-angular.js"></script>
-                                        <script src="../js/jquery.dd.min.js"></script>
-                                        <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
-                                        <script src="../js/edituser.js"></script>
+    </div>
+    <%--Popup Ends--%>
+    <script src="../Scripts/angular.min.js"></script>
+    <script src="../js/angular/scripts/jgapp.js"></script>
+    <script src="../js/angular/scripts/edituser-angular.js"></script>
+    <script src="../js/jquery.dd.min.js"></script>
+    <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
+    <script src="../js/edituser.js"></script>
 
-                                        <script type="text/javascript">
+    <script type="text/javascript">
 
-                                            var UserGridId = "#<%=grdUsers.ClientID%>";
+        var UserGridId = "#<%=grdUsers.ClientID%>";
 
-                                            Dropzone.autoDiscover = false;
+        Dropzone.autoDiscover = false;
 
-                                            var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+        var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
 
-                                            prmTaskGenerator.add_beginRequest(function () {
-                                                DestroyCKEditors();
-                                            });
+        prmTaskGenerator.add_beginRequest(function () {
+            DestroyCKEditors();
+        });
 
-                                            prmTaskGenerator.add_endRequest(function () {
-                                                EditUser_Initialize();
-                                            });
+        prmTaskGenerator.add_endRequest(function () {
+            EditUser_Initialize();
+        });
 
-                                            $(document).ready(function () {
-                                                EditUser_Initialize();
-                                            });
+        $(document).ready(function () {
+            EditUser_Initialize();
+        });
 
-                                            function EditUser_Initialize() {
+        function EditUser_Initialize() {
 
-                                                SetSalesUserAutoSuggestion();
-                                                SetSalesUserAutoSuggestionUI();
+            SetSalesUserAutoSuggestion();
+            SetSalesUserAutoSuggestionUI();
 
-                                                ApplyDropZone();
+            ApplyDropZone();
 
-                                                try {
-                                                    $("#<%=drpUser.ClientID%>").msDropDown();
-                $("#<%=ddlStatus_Popup.ClientID%>").msDropDown();
-                $("#<%=ddlUserStatus.ClientID%>").msDropDown();
-                $(".grd-status").msDropDown();
-            } catch (e) {
-                alert(e.message);
-            }
-        }
+            try {
+                $("#<%=drpUser.ClientID%>").msDropDown();
+                                                    $("#<%=ddlStatus_Popup.ClientID%>").msDropDown();
+                                                    $("#<%=ddlUserStatus.ClientID%>").msDropDown();
+                                                    $(".grd-status").msDropDown();
+                                                } catch (e) {
+                                                    alert(e.message);
+                                                }
+                                            }
 
-        var objBulkUploadFileDropzone;
+                                            var objBulkUploadFileDropzone;
 
-        function ApplyDropZone() {
-            //debugger;
-            ////User's drag and drop file attachment related code
+                                            function ApplyDropZone() {
+                                                //debugger;
+                                                ////User's drag and drop file attachment related code
 
-            //remove already attached dropzone.
-            if (objBulkUploadFileDropzone) {
-                objBulkUploadFileDropzone.destroy();
-                objBulkUploadFileDropzone = null;
-            }
-            objBulkUploadFileDropzone = GetWorkFileDropzone("div#divBulkUploadFile", 'div#divBulkUploadFilePreview', '#<%= hdnBulkUploadFile.ClientID %>');
+                                                //remove already attached dropzone.
+                                                if (objBulkUploadFileDropzone) {
+                                                    objBulkUploadFileDropzone.destroy();
+                                                    objBulkUploadFileDropzone = null;
+                                                }
+                                                objBulkUploadFileDropzone = GetWorkFileDropzone("div#divBulkUploadFile", 'div#divBulkUploadFilePreview', '#<%= hdnBulkUploadFile.ClientID %>');
         }
 
         function SetSalesUserAutoSuggestion() {
@@ -2258,6 +2295,6 @@
 
         //============== End DP ==============
 
-                                        </script>
+    </script>
 </asp:Content>
 

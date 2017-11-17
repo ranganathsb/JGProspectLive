@@ -898,6 +898,11 @@ namespace JG_Prospect
                             {
                                 Response.Redirect("~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&IE=1");
                             }
+                            //If user has interview date status it should always see interview instruction with them.
+                            else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDate)
+                            {
+                                Response.Redirect("~/Sr_App/ITDashboard.aspx?PWT=1");
+                            }
                             else
                             {
                                 if (JGSession.IsFirstTime == true)
