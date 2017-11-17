@@ -1904,21 +1904,29 @@ namespace JG_Prospect.WebServices
 
             String strInstruction = string.Empty;
 
-            DataSet EmployeeInstruction = EmployeeInstructionBLL.Instance.GetEmployeeInstructionByDesignationId(DesignationId, UsedFor);
+           DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.InterviewDateAutoEmail, DesignationId.ToString());
 
-            if (EmployeeInstruction != null && EmployeeInstruction.Tables.Count > 0)
+            //DataSet EmployeeInstruction = EmployeeInstructionBLL.Instance.GetEmployeeInstructionByDesignationId(DesignationId, UsedFor);
+            
+
+            //if (EmployeeInstruction != null && EmployeeInstruction.Tables.Count > 0)
+
+            if(objHTMLTemplate != null)
             {
-                DataTable dtResult = EmployeeInstruction.Tables[0];
+                //DataTable dtResult = EmployeeInstruction.Tables[0];
 
 
-                if (dtResult != null)
-                {
-                    strInstruction = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
-                }
-                else
-                {
-                    strInstruction = String.Empty;
-                }
+                //if (dtResult != null)
+                //{
+                //    strInstruction = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+                //}
+
+                strInstruction = objHTMLTemplate.Body;  
+                
+            }
+            else
+            {
+                strInstruction = String.Empty;
             }
 
             return strInstruction;

@@ -3251,10 +3251,11 @@
 
             function OnInterviewDatePopupEmployeeInstructionsSuccess(data) {
                 if (data.d) {
-                    var responseObj = JSON.parse(data.d);
-                    if (responseObj) {
-                        $('#InterviewInstructions').html(responseObj[0].InstructionText);
-                    }
+                    //console.log(data.d);
+                    //var responseObj = JSON.parse(data.d);
+                   // if (responseObj) {
+                        $('#InterviewInstructions').html(data.d);
+                    //}
                 }
             }
         }
