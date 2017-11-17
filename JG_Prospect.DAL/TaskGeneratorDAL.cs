@@ -329,6 +329,30 @@ namespace JG_Prospect.DAL
 
         }
 
+        public DataSet GetUserAssignedTaskHistory(Int32 UserID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetUserAssignedTaskHistory");
+                    database.AddInParameter(command, "@UserID", SqlDbType.Int, UserID);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
         public DataSet RejectUserAssignedWithSequence(Int64 SequenceID, Int32 UserID, Int32 RejectedUserID)
         {
             try

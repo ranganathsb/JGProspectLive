@@ -227,6 +227,16 @@
         .right_panel {
             margin: 0 0 0 0 !important;
         }
+        .notes-container{display:inline;}
+        .notes-table{height: auto;width: 100%;margin: 0 5px;}
+        .notes-table tbody{height:auto !important;}
+        .notes-table th{color:#fff;padding:5px !important;background: #000;border:none;}
+        .notes-table td{padding:5px !important;}
+        .notes-table tr:nth-child(even) {background: #A33E3F;color:#fff;}
+        .notes-table tr:nth-child(odd) {background: #FFF;color:#000;}
+        .notes-table tr th:nth-child(1),.notes-table tr td:nth-child(1){    width: 17%;}
+        .notes-table tr th:nth-child(2),.notes-table tr td:nth-child(2){    width: 43%;}
+        .notes-table tr th:nth-child(3),.notes-table tr td:nth-child(3){    width: 76px;}
     </style>
     <style type="text/css">
         #hint {
@@ -1008,14 +1018,17 @@
                                     </ItemTemplate>
                                 </asp:TemplateField>
 
-                                <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="25%" ItemStyle-Width="25%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
-                                    <ItemTemplate>                                        
+                                <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="18%" ItemStyle-Width="18%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
+                                    <ItemTemplate>
+                                        <%-- ControlStyle-CssClass="wordBreak" <asp:Label ID="lblPhone" runat="server" Text='<%# Bind("Phone") %>'></asp:Label>--%>
+                                        <%--onclick="<%# "javascript:grdUsers_Email_OnClick(this,'" + Eval("Email") + "');"%>"--%>
                                         <div class="GrdPrimaryEmail">
                                             <asp:LinkButton ID="lbtnEmail" runat="server" Text='<%# Eval("Email") %>' ToolTip='<%# Eval("Email") %>'
                                                 CommandName="send-email" CommandArgument='<%# Container.DataItemIndex %>' />
                                         </div>
                                         <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
-                                        <br />                                      
+                                        <br />
+                                        <%-- <label style="font-size: 16px; color: red;"><%#Eval("Id") %></label><br />--%>
                                         <ul class="contactGrid">
                                             <li>
                                                 <asp:CheckBox ID="chkEmailPrimary" CssClass="liCheck" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>&nbsp;
@@ -1041,13 +1054,36 @@
                                             </li>
                                         </ul>                                        
                                         <asp:Label ID="lblExt" CssClass="ext" runat="server" Visible="false"></asp:Label>
-                                        <asp:TextBox ID="txtExt" Visible="false" placeholder="Ext" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>                                        
+                                        <asp:TextBox ID="txtExt" Visible="false" placeholder="Ext" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>
+                                        <%-- <div class="GrdContainer" style="width: 90%">
+                                            <div class="GrdHeader">
+                                                <span>Click To Add Phone /Email</span>
+                                            </div>
+                                            <div class="GrdContent">                                                
+                                               <ul style="padding-left: 0px;">
+                                                    <li>
+                                                        <asp:CheckBox ID="chkIsPrimaryPhone" Text=" Is Primary contact" runat="server"></asp:CheckBox></li>
+                                                    <li>
+                                                        <asp:DropDownList ID="ddlContactType" runat="server">
+                                                            <asp:ListItem Text="Home Phone"></asp:ListItem>
+                                                            <asp:ListItem Text="Office Phone"></asp:ListItem>
+                                                            <asp:ListItem Text="Alt Phone"></asp:ListItem>
+                                                            <asp:ListItem Text="Email"></asp:ListItem>
+                                                        </asp:DropDownList></li>
+                                                    <li>
+                                                        <asp:TextBox ID="txtNewContact" runat="server"></asp:TextBox></li>
+                                                    <li>
+                                                        <asp:Button ID="btnAddPhone" CssClass="GrdBtnAdd" runat="server" Text="Add" CommandName="AddNewContact" CommandArgument='<%# Eval("Id") %>'></asp:Button></li>
+                                                </ul>
+                                            </div>
+                                        </div>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="4%" ItemStyle-Width="4%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
                                     <ItemTemplate>
                                         <div title='<%#Eval("Country") %>' style='<%# string.IsNullOrEmpty(Eval("CountryCode").ToString()) == true ? "": "background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px;" %>' class='<%#Eval("CountryCode").ToString().ToLower()%>'>
-                                        </div>                                      
+                                        </div>
+                                        <%--<span><%# Eval("Zip") %></span>--%>
                                         <asp:Label ID="lblCity" runat="server" Text='<%#Eval("City") %>'></asp:Label>
                                         <asp:Label ID="lblZip" runat="server" Text='<%# " - " + Eval("Zip") %>'></asp:Label>
 
@@ -1079,17 +1115,15 @@
                                     ItemStyle-Width="17%" ItemStyle-CssClass="noMargin">
                                     <HeaderTemplate>
                                         Notes
-                                        <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                        <%--<table class="table gridtbl notes-table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
                                             <thead>
                                                 <tr class="trHeader " style="color: White;">
-                                                    <th scope="col" style="width: 19%;">User ID</th>
-
-                                                    <th scope="col" style="width: 25%;">Date&Time</th>
-                                                    <th scope="col" style="width: 56%;">Note/Status</th>
-
+                                                    <th>User ID</th>
+                                                    <th>Date&nbsp;&&nbsp;Time</th>
+                                                    <th>Note/Status</th>
                                                 </tr>
                                             </thead>
-                                        </table>
+                                        </table>--%>
                                     </HeaderTemplate>
                                     <ItemTemplate>
                                         <%--<div class="GrdContainer">
@@ -1101,8 +1135,8 @@
                                             </div>
                                         </div>--%>
                                         <%--<asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>--%>
-                                        <div style="max-height: 200px; overflow: auto;">
-                                            <asp:Repeater ID="rptNotes" runat="server">
+                                        <div class="notes-container">
+                                            <%--<asp:Repeater ID="rptNotes" runat="server">
                                                 <HeaderTemplate>
                                                     <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse; font-size: 11px;">
                                                         <tbody>
@@ -1118,11 +1152,43 @@
                                                     </tbody>
                                                 </table>
                                                 </FooterTemplate>
-                                            </asp:Repeater>
+                                            </asp:Repeater>--%>
+                                            <table class="notes-table" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <th>User ID</th>
+                                                    <th>Date&nbsp;&&nbsp;Time</th>
+                                                    <th>Note/Status</th>
+                                                </tr>                                           
+                                                <tr>
+                                                    <td>1234</td>
+                                                    <td><%=String.Format("{0:g}", DateTime.UtcNow) %></td>
+                                                    <td>Test Note1...</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>564</td>
+                                                    <td><%=String.Format("{0:g}", DateTime.UtcNow) %></td>
+                                                    <td>Test Note2...</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>879</td>
+                                                    <td><%=String.Format("{0:g}", DateTime.UtcNow) %></td>
+                                                    <td>Test Note3...</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>5421</td>
+                                                    <td><%=String.Format("{0:g}", DateTime.UtcNow) %></td>
+                                                    <td>Test Note4...</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>5421</td>
+                                                    <td><%=String.Format("{0:g}", DateTime.UtcNow) %></td>
+                                                    <td>Test Note5...</td>
+                                                </tr>
+                                        </table>
                                         </div>
                                         <div style="text-align: left;">
                                             <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"
-                                                Style="vertical-align: middle; padding: 0px!important; width: 100%" CssClass="textbox"></asp:TextBox><br />
+                                                Style="vertical-align: middle; padding: 0px!important; width: 68%;float: left; margin-right: 5px;" CssClass="textbox"></asp:TextBox><br />
                                             <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
                                                 CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle; overflow: hidden;" />
 
@@ -1752,11 +1818,10 @@
                                                             <th style="width: 17%; text-align: center;">Notes<br>
                                                                 <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
                                                                     <thead>
-                                                                        <tr class="trHeader " style="color: White;">
-                                                                            <th scope="col" style="width: 19%;">User ID</th>
-
-                                                                            <th scope="col" style="width: 25%;">Date&Time</th>
-                                                                            <th scope="col" style="width: 56%;">Note/Status</th>
+                                                                        <tr>
+                                                                            <th>User ID</th>
+                                                                            <th>Date&Time</th>
+                                                                            <th>Note/Status</th>
 
                                                                         </tr>
                                                                     </thead>
