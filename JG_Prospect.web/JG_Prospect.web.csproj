@@ -1479,6 +1479,8 @@
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITSN043_I_e_v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\script Feb v0.1.sql" />
+    <Content Include="Database Scripts\Kapil\Latest.sql" />
+    <Content Include="Database Scripts\Kapil\Executed.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\Database Script.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\03-04-2017.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\06-04-2017\GetFrozenTasks.sql" />
@@ -1935,6 +1937,8 @@
     <Content Include="JrAnnualCalendar.aspx" />
     <Content Include="js\angular\scripts\jgappfactories.js" />
     <Content Include="js\angular\scripts\edituser-angular.js" />
+    <Content Include="js\angular\scripts\TaskGenerator.js" />
+    <Content Include="js\angular\scripts\TaskGeneratorHelper.js" />
     <Content Include="js\angular\scripts\TaskSequence-UiGrid.js" />
     <Content Include="js\angular\templates\sequence-header-template.html" />
     <Content Include="js\angular\templates\pager-template.html" />
@@ -2087,6 +2091,7 @@
     <Content Include="MCQTest\ObjectiveExamSummary.aspx" />
     <Content Include="MCQTest\StartExam.aspx" />
     <Content Include="MCQTest\ViewResults.aspx" />
+    <Content Include="posttest.html" />
     <Content Include="Properties\PublishProfiles\DeveloperProfile.pubxml.user" />
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular.js" />
@@ -2351,6 +2356,7 @@
     <Content Include="Scripts\jquery-1.4.1.min.js" />
     <Content Include="Synapse.aspx" />
     <Content Include="TestGoogleMap.aspx" />
+    <Content Include="updateuserdetails.aspx" />
     <Content Include="upload.aspx" />
     <Content Include="UploadedFiles\7162015111634AMKoala.jpg" />
     <Content Include="UploadedFiles\7162015111655AMJellyfish.jpg" />
@@ -2603,6 +2609,13 @@
     </Compile>
     <Compile Include="stafflogin.aspx.designer.cs">
       <DependentUpon>stafflogin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="updateuserdetails.aspx.cs">
+      <DependentUpon>updateuserdetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="updateuserdetails.aspx.designer.cs">
+      <DependentUpon>updateuserdetails.aspx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\ucRenewSession.ascx.cs">
       <DependentUpon>ucRenewSession.ascx</DependentUpon>
