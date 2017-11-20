@@ -1949,6 +1949,8 @@
     <Content Include="js\angular\scripts\FrozenTask.js" />
     <Content Include="js\angular\scripts\jgappfactories.js" />
     <Content Include="js\angular\scripts\edituser-angular.js" />
+    <Content Include="js\angular\scripts\TaskGenerator.js" />
+    <Content Include="js\angular\scripts\TaskGeneratorHelper.js" />
     <Content Include="js\angular\scripts\TaskSequence-UiGrid.js" />
     <Content Include="js\angular\templates\sequence-header-template.html" />
     <Content Include="js\angular\templates\pager-template.html" />
