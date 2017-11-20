@@ -95,54 +95,47 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
         if (sequenceScope.EndDate == undefined)
             sequenceScope.EndDate = "";
 
-        if (!$scope.IsTechTask) {
-            console.log("Url: " + url);
-            console.log("Staff Task called....");
-            $scope.loader.loading = true;
-            $scope.page = page || 0;
+        //if (!$scope.IsTechTask) {
+        console.log("Url: " + url);
+        console.log("Staff Task called....");
+        $scope.loader.loading = true;
+        $scope.page = page || 0;
 
-            // make it blank so TechTask grid don't bind.
-            $scope.TechTasks = [];
-            debugger;
-            //get all Customers
-            getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard, UserStatus: $scope.UserStatus, StartDate: $scope.StartDate, EndDate: $scope.EndDate }).then(function (data) {
-                console.log(data);
-                //debugger;
-                $scope.loader.loading = false;
-                $scope.IsTechTask = false;
-                $scope.DesignationSelectModel = [];
-                var resultArray = JSON.parse(data.data.d);
-                var results = resultArray.TasksData;
-                console.log(results);
-                $scope.page = results.RecordCount.PageIndex;
-                $scope.TotalRecords = results.RecordCount.TotalRecords;
-                $scope.pagesCount = results.RecordCount.TotalPages;
-                $scope.Tasks = $scope.correctDataforAngular(results.Tasks);
-                if ($scope.Tasks != null)
-                    $scope.TaskSelected = $scope.Tasks[0];
+        // make it blank so TechTask grid don't bind.
+        $scope.TechTasks = [];
+        //debugger;
+        //get all Customers
+        getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard, UserStatus: $scope.UserStatus, StartDate: $scope.StartDate, EndDate: $scope.EndDate }).then(function (data) {
+            console.log(data);
+            //debugger;
+            $scope.loader.loading = false;
+            $scope.IsTechTask = false;
+            $scope.DesignationSelectModel = [];
+            var resultArray = JSON.parse(data.data.d);
+            var results = resultArray.TasksData;
+            console.log(results);
+            $scope.page = results.RecordCount.PageIndex;
+            $scope.TotalRecords = results.RecordCount.TotalRecords;
+            $scope.pagesCount = results.RecordCount.TotalPages;
+            $scope.Tasks = $scope.correctDataforAngular(results.Tasks);
+            if ($scope.Tasks != null)
+                $scope.TaskSelected = $scope.Tasks[0];
 
-                if ($scope.TotalRecords > 0) {
-                    $scope.pageFrom = ($scope.page * $scope.pageSize) + 1;
-                    if ($scope.TotalRecords <= $scope.pageSize) {
-                        $scope.pageTo = $scope.TotalRecords;
-                    }
-                    else {
-                        $scope.pageTo = ($scope.page + 1) * $scope.pageSize;
-                    }
-                    $scope.pageOf = $scope.TotalRecords;
+            if ($scope.TotalRecords > 0) {
+                $scope.pageFrom = ($scope.page * $scope.pageSize) + 1;
+                if ($scope.TotalRecords <= $scope.pageSize) {
+                    $scope.pageTo = $scope.TotalRecords;
                 }
                 else {
-                    $scope.pageFrom = $scope.pageOf = $scope.pageTo = 0;
+                    $scope.pageTo = ($scope.page + 1) * $scope.pageSize;
                 }
-                
-                //console.log($scope.Tasks[0].SubSeqTasks);
-                //console.log('Counting Data...');
-                //console.log(results.RecordCount.PageIndex);
-                //console.log(results.RecordCount.TotalRecords);
-                //console.log(results.RecordCount.TotalPages);
-
-            });
-        }
+                $scope.pageOf = $scope.TotalRecords;
+            }
+            else {
+                $scope.pageFrom = $scope.pageOf = $scope.pageTo = 0;
+            }
+        });
+        //}
 
     };
 
@@ -242,6 +235,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
     }
 
     $scope.getAssignUsers = function () {
+        debugger;
 
         getDesignationAssignUsers($http, "GetAssignUsers", { TaskDesignations: $scope.UserSelectedDesigIds.join() }).then(function (data) {
 
@@ -316,7 +310,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
         }
         else {
             $scope.getTasks();
-        }
+        }        
     };
 
     $scope.getDesignationString = function (Designations) {
@@ -370,6 +364,19 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
         //console.log(strSequence + strDesigntionID + seqSuffix);
         var sequenceText = "#SEQ#-#DESGPREFIX#:#TORS#";
         sequenceText = sequenceText.replace("#SEQ#", strSequence).replace("#DESGPREFIX#", $scope.GetInstallIDPrefixFromDesignationIDinJS(parseInt(strDesigntionID))).replace("#TORS#", seqSuffix);
+        return sequenceText;
+    };
+
+    $scope.getSequenceDisplayText_ = function (strSequence, strDesigntionID, seqSuffix) {
+        var sequenceText = "#SEQ#-#DESGPREFIX#:#TORS#";
+
+        if (strSequence == "N.A.") {
+            sequenceText = strSequence;
+        }
+        else {
+            //console.log(strSequence + strDesigntionID + seqSuffix);            
+            sequenceText = sequenceText.replace("#SEQ#", strSequence).replace("#DESGPREFIX#", $scope.GetInstallIDPrefixFromDesignationIDinJS(parseInt(strDesigntionID))).replace("#TORS#", seqSuffix);
+        }
         return sequenceText;
     };
 

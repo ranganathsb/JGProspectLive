@@ -806,6 +806,36 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public String GetSubTasks(Int32 TaskId, string strSortExpression, string vsearch = "", Int32? intPageIndex = 0, Int32? intPageSize = 0, int intHighlightTaskId = 0)
+        {
+            DataSet dtResult = null;
+            String strMessage = string.Empty;
+            dtResult = TaskGeneratorBLL.Instance.GetSubTasks
+                                                (
+                                                    TaskId,
+                                                    CommonFunction.CheckAdminAndItLeadMode(),
+                                                    strSortExpression,
+                                                    "",
+                                                    intPageIndex,
+                                                    intPageSize,
+                                                    0
+                                                );
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                dtResult.Tables[0].TableName = "Tasks";
+                dtResult.Tables[1].TableName = "RecordCount";
+                dtResult.Tables[3].TableName = "TaskFiles";
+                dtResult.DataSetName = "TaskData";
+
+                System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                doc.LoadXml(dtResult.GetXml());
+                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+            }
+
+            return strMessage;
+        }
+
+        [WebMethod(EnableSession = true)]
         public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID, string UserId, bool ForDashboard, int UserStatus, string StartDate, string EndDate)
         {
             string strMessage = string.Empty;

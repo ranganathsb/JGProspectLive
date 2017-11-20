@@ -391,40 +391,40 @@ namespace JG_Prospect.Sr_App.Controls {
         protected global::System.Web.UI.WebControls.DropDownList drpPageSize;
         
         /// <summary>
-        /// divSubTasks_List control.
+        /// upAttachmentsData1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTasks_List;
+        protected global::System.Web.UI.UpdatePanel upAttachmentsData1;
         
         /// <summary>
-        /// lstbUsersMaster control.
+        /// hdnAttachments1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox lstbUsersMaster;
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnAttachments1;
         
         /// <summary>
-        /// repSubTasks control.
+        /// divSubTaskDropzonePreview1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater repSubTasks;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTaskDropzonePreview1;
         
         /// <summary>
-        /// repSubTasks_CustomPager control.
+        /// liImage control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::JG_Prospect.Controls.CustomPager repSubTasks_CustomPager;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl liImage;
         
         /// <summary>
         /// divSubTasks_Empty control.

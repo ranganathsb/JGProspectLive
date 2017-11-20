@@ -30,7 +30,7 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
         // console.log("Splited designation ids are:", $.trim(DesignationToSelect));
 
-        // sequenceScope.UserSelectedDesigIds = DesignationIds.split(",");
+        sequenceScope.UserSelectedDesigIds = DesignationIds.split(",");
         $(ddlDesigSeqClientID).val($.trim(DesignationToSelect));
         //    $.each(DesignationIds.split(","), function (index, value) {
 
@@ -66,7 +66,7 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
     var defaultTabIndex;
 
-    if (TechTask == true) {
+    if (TechTask == true || TechTask === 'true') {
         defaultTabIndex = 1;
     }
     else {
@@ -89,7 +89,7 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
     //console.log(TechTask);
 
-    if (TechTask === 'True') {
+    if (TechTask === 'True' || TechTask === 'true') {
         //console.log("calling search tech task after popup initialized....");
         sequenceScope.IsTechTask = true;
         sequenceScope.getTechTasks();
@@ -205,13 +205,10 @@ function ShowNonFrozenTaskSequenceDashBoard(DesId, UserId) {
 
 function ShowTaskSequenceDashBoard(DesId, UserId) {
 
-    debugger;
+    //debugger;
     //var TechTask = false;
     var DesignationIds = DesId;
-    //console.log("Task designation is: " + DesignationIds);    
-    //debugger;
-    //Set if tech task than load tech task related sequencing.
-    //sequenceScope.IsTechTask = TechTask;
+
     sequenceScope.UserId = UserId;    
     //search initially all tasks with sequencing.
 
@@ -817,12 +814,14 @@ function applyTaskSequenceTabs(activeTab) {
                 var UserStatus = $('#ddlUserStatus').val();
                 sequenceScope.UserStatus = UserStatus;
                 sequenceScope.IsTechTask = true;
+                sequenceScope.getAssignUsers();
                 sequenceScope.getTechTasks();
             }
             else {
                 var UserStatus = $('#ddlUserStatus').val();
                 sequenceScope.UserStatus = UserStatus;
                 sequenceScope.IsTechTask = false;
+                sequenceScope.getAssignUsers();
                 sequenceScope.getTasks();
             }
         }

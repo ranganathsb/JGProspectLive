@@ -22,6 +22,12 @@
     <script src="../ckeditor/ckeditor.js"></script>    
     <script src="../js/clipboard.min.js"></script>
     <script type="text/javascript" src="../js/dropzone.js"></script>
+    
+    
+    <script src="../js/jquery.dd.min.js"></script>
+    <script src="../js/angular/scripts/jgapp.js"></script>
+    <script src="../js/angular/scripts/TaskGenerator.js"></script>
+    <script src="../js/angular/scripts/TaskGeneratorHelper.js"></script>
    
 
     <div class="right_panel">
@@ -44,59 +50,45 @@
                             <asp:Literal ID="ltrlAssigningManager" runat="server" /></td>
                     </tr>
                 </table>
-                <div class="form_panel_custom">
+                <div class="form_panel_custom" data-ng-controller="TaskGeneratorController">
                     <table id="tblAdminTaskView" runat="server" class="tablealign"
                         width="100%" cellspacing="5">
                         <tr>
-                            <td style="width: 40%;">Designation <span style="color: red;">*</span>: 
-                               
-
-                                <asp:UpdatePanel ID="upnlDesignation" runat="server" RenderMode="Inline">
-                                    <ContentTemplate>
-                                        <asp:DropDownCheckBoxes ID="ddlUserDesignation" runat="server" UseSelectAllNode="false" AutoPostBack="true" OnSelectedIndexChanged="ddlUserDesignation_SelectedIndexChanged">
-                                            <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
-                                            <Items>
-                                                <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
-                                                <asp:ListItem Text="ITLead" Value="ITLead"></asp:ListItem>
-                                                <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
-                                                <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
-                                                <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
-                                                <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
-                                                <asp:ListItem Text="Sales Manager" Value="Sales Manager"></asp:ListItem>
-                                                <asp:ListItem Text="Sr. Sales" Value="Sr. Sales"></asp:ListItem>
-                                                <asp:ListItem Text="IT - Network Admin" Value="ITNetworkAdmin"></asp:ListItem>
-                                                <asp:ListItem Text="IT - Jr .Net Developer" Value="ITJr.NetDeveloper"></asp:ListItem>
-                                                <asp:ListItem Text="IT - Sr .Net Developer" Value="ITSr.NetDeveloper"></asp:ListItem>
-                                                <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
-                                                <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
-                                                <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>
-                                                <asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
-                                                <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
-                                                <asp:ListItem Text="Installer - Mechanic" Value="InstallerMechanic"></asp:ListItem>
-                                                <asp:ListItem Text="Installer - Lead mechanic" Value="InstallerLeadMechanic"></asp:ListItem>
-                                                <asp:ListItem Text="Installer - Foreman" Value="InstallerForeman"></asp:ListItem>
-                                                <asp:ListItem Text="Commercial Only" Value="CommercialOnly"></asp:ListItem>
-                                                <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>
-                                            </Items>
-                                        </asp:DropDownCheckBoxes>
-                                        <asp:CustomValidator ID="cvDesignations" runat="server" ValidationGroup="Submit" ErrorMessage="Please Select Designation" Display="None" ClientValidationFunction="checkDesignations"></asp:CustomValidator>
-                                        <%--<asp:DropDownList ID="ddlUserDesignation" runat="server" CssClass="textbox" AutoPostBack="True" OnSelectedIndexChanged="txtDesignation_SelectedIndexChanged">
-                                </asp:DropDownList>--%>
-                                    </ContentTemplate>
-                                </asp:UpdatePanel>
+                            <td style="width: 30%;">Designation <span style="color: red;">*</span>: 
+                               <select data-placeholder="Select Designation" class="chosen-input" multiple style="width: 95%;" id="ddlDesignationSeq" runat="server">
+                                   <option value="1">Admin</option>
+                                   <option value="2">Jr. Sales</option>
+                                   <option value="3">Jr Project Manager</option>
+                                   <option value="4">Office Manager</option>
+                                   <option value="5">Recruiter</option>
+                                   <option value="6">Sales Manager</option>
+                                   <option value="7">Sr. Sales</option>
+                                   <option value="8">IT - Network Admin</option>
+                                   <option value="9">IT - Jr .Net Developer</option>
+                                   <option value="10">IT - Sr .Net Developer</option>
+                                   <option value="11">IT - Android Developer</option>
+                                   <option value="12">IT - Sr. PHP Developer</option>
+                                   <option value="13">IT – JR SEO/Backlinking/Content</option>
+                                   <option value="14">Installer - Helper</option>
+                                   <option value="15">Installer - Journeyman</option>
+                                   <option value="16">Installer - Mechanic</option>
+                                   <option value="17">Installer - Lead mechanic</option>
+                                   <option value="18">Installer - Foreman</option>
+                                   <option value="19">Commercial Only</option>
+                                   <option value="20">SubContractor</option>
+                                   <option value="22">Admin-Sales</option>
+                                   <option value="23">Admin Recruiter</option>
+                                   <option value="24">IT - Senior QA</option>
+                                   <option value="25">IT - Junior QA</option>
+                                   <option value="26">IT - Jr. PHP Developer</option>
+                                   <option value="27">IT – Sr SEO Developer</option>
+                               </select>
+                                <asp:HiddenField ID="hdnSelectedDesig" runat="server" />
                             </td>
                             <td>Assigned:    
-
-                                <asp:UpdatePanel ID="upnlAssigned" runat="server" RenderMode="Inline">
-                                    <ContentTemplate>
-                                        <asp:DropDownCheckBoxes ID="ddlAssignedUsers" runat="server" UseSelectAllNode="false"
-                                            AutoPostBack="true" OnSelectedIndexChanged="ddlAssignedUsers_SelectedIndexChanged">
-                                            <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
-                                            <Texts SelectBoxCaption="--Open--" />
-                                        </asp:DropDownCheckBoxes>
-                                        <%--<asp:LinkButton ID="lbtnViewAcceptanceLog" runat="server" Text="View Acceptance Log" OnClick="lbtnViewAcceptanceLog_Click" />--%>
-                                    </ContentTemplate>
-                                </asp:UpdatePanel>
+                                <select id="ddlUsers" data-placeholder="Select Users" multiple style="width: 85%;" class="chosen-input" runat="server">
+                                </select><span id="lblLoading" style="display: none">Loading...</span>
+                                <asp:HiddenField ID="hdnSelectedUsers" runat="server" />
                                 <span style="padding-left: 20px;">
                                     <asp:CheckBox ID="chkTechTask" runat="server" Checked="false" Text=" Tech Task" />
                                 </span>
@@ -104,8 +96,9 @@
                         </tr>
                         <tr>
                             <td class="valigntop">Task Title <span style="color: red;">*</span>:<br />
+                                
                                 <asp:TextBox ID="txtTaskTitle" runat="server" Style="width: 90%" CssClass="textbox"></asp:TextBox>
-                                <%--<ajax:Editor ID="txtTaskTitle" Width="100%" Height="20px" runat="server" ActiveMode="Design" AutoFocus="true" />--%>
+                                
                                 <asp:RequiredFieldValidator ID="rfvTaskTitle" ValidationGroup="Submit"
                                     runat="server" ControlToValidate="txtTaskTitle" ForeColor="Red" ErrorMessage="Please Enter Task Title" Display="None">                                 
                                 </asp:RequiredFieldValidator>
@@ -508,6 +501,91 @@
 
     <script type="text/javascript">
 
+        /**
+         * Added By Kapil Pancholi
+         * For Angular
+         */
+        $(document).ready(function () {
+            //Load Chosen
+            $('.chosen-input').chosen();
+
+            //Update Chosen
+            $(".chosen-input").bind("DOMSubtreeModified", function () {
+                $('.chosen-input').trigger("chosen:updated");
+            });
+            
+        });
+
+        $(window).load(function () {
+            //For Users
+            var ddlDesig = '#<%=ddlDesignationSeq.ClientID%>';
+            var ddlUsers = '#<%=ddlUsers.ClientID%>';
+
+            //Load All Designations
+            fillUsers(ddlDesig, ddlUsers, '#lblLoading');
+
+            //Load SubTasks
+            LoadSubTasks();
+
+            $(ddlDesig).change(function (e) {
+                //resetChosen('#ddlDesignationSeq');
+                fillUsers(ddlDesig, ddlUsers, '#lblLoading');
+            });
+
+            $(ddlDesig).change(function () {
+                $('#<%=hdnSelectedDesig.ClientID%>').val($(this).val());
+            });
+
+            $(ddlUsers).change(function () {
+                $('#<%=hdnSelectedUsers.ClientID%>').val($(this).val());
+            });
+        });
+       
+        function fillUsers(selector, fillDDL, loader) {
+            var did = $(selector).val().join();
+            var options = $(fillDDL);
+            var selectedUsersString = '<%=hdnSelectedUsers.Value%>';
+
+            var arrUsers = [];
+            if (selectedUsersString.length > 0) {
+                arrUsers = selectedUsersString.split(',');
+                for (var i = 0; i < arrUsers.length; i++)
+                    arrUsers[i] = +arrUsers[i];
+            }
+
+            $(loader).show();
+            $.ajax({
+                type: "POST",
+                url: "ajaxcalls.aspx/GetUsersByDesignationId",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({ designationId: did }),
+                success: function (data) {
+                    options.empty();
+                    //options.append($("<option selected='selected' />").val('0').text('All'));
+                    // Handle 'no match' indicated by [ "" ] response
+                    if (data.d) {
+
+                        var result = [];
+                        result = JSON.parse(data.d);
+                        $.each(result, function () {
+                            var names = this.FristName.split(' - ');
+                            var name = names[0] + '&nbsp;-&nbsp;';
+                            var link = names[1] != null && names[1] != '' ? '<a style="color:blue;" href="javascript:;" onclick=redir("/Sr_App/ViewSalesUser.aspx?id=' + this.Id + '")>' + names[1] + '</a>' : '';
+                            if ($.inArray(this.Id, arrUsers) >= 0)
+                                options.append($("<option selected='selected' />").val(this.Id).html(name + link));
+                            else
+                                options.append($("<option />").val(this.Id).html(name + link));
+                        });
+                        //$("#" + fillDDL).prop('disabled', false);
+                    }
+                    options.trigger("chosen:updated");
+                    $(loader).hide();
+                }
+            });
+        }
+        /*************END***************/
+
         var workspecEditor;
 
         Dropzone.autoDiscover = false;
@@ -603,7 +681,7 @@
 
         // check if user has selected any designations or not.
         function checkDesignations(oSrc, args) {
-            args.IsValid = ($("#<%= ddlUserDesignation.ClientID%> input:checked").length > 0);
+            
         }
 
         var objWorkFileDropzone;
