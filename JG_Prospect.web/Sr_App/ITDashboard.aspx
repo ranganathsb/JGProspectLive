@@ -403,7 +403,7 @@
 
                                 <!-- Status & Assigned To starts -->
                                 <div class="div-table-col seq-taskstatus">
-                                    <select id="drpStatusSubsequence2" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
+                                    <select id="drpStatusSubsequenceFrozen" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
                                         <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
                                         <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
                                         <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -431,7 +431,7 @@
                                             data-chosen="1" data-placeholder="Select Users" ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id" ng-model="DesignationAssignUsersModel"
                                             AutoPostBack="false">--%>
 
-                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssignedFrozen" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                         <option
                                             ng-repeat="item in DesignationAssignUsers"
                                             value="{{item.Id}}"
@@ -450,17 +450,17 @@
                                 <div class="div-table-col seq-taskduedate">
                                     <div class="seqapprovalBoxes">
                                         <div style="width: 65%; float: left;">
-                                            <input type="checkbox" id="chkngUser" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                            <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                            <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                            <input type="checkbox" id="chkngUserFrozen" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                            <input type="checkbox" id="chkQAFrozen" class="fz fz-QA" title="QA" />
+                                            <input type="checkbox" id="chkAlphaUserFrozen" class="fz fz-Alpha" title="AlphaUser" />
                                             <br />
-                                            <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                            <input type="checkbox" id="chkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                            <input type="checkbox" id="chkBetaUserFrozen" class="fz fz-Beta" title="BetaUser" />
+                                            <input type="checkbox" id="chkngITLeadFrozen" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminFrozen" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                         </div>
                                         <div style="width: 30%; float: right;">
-                                            <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                            <input type="checkbox" id="chkngITLeadMasterFrozen" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminMasterFrozen" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                         </div>
                                     </div>
 
@@ -577,7 +577,7 @@
 
                                         <!-- Status & Assigned To starts -->
                                         <div class="div-table-col seq-taskstatus">
-                                            <select id="drpStatusSubsequence" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
+                                            <select id="drpStatusSubsequenceFrozenNested" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
                                                 <option ng-selected="{{TechTask.Status == '1'}}" value="1">Open</option>
                                                 <option ng-selected="{{TechTask.Status == '2'}}" style="color: red" value="2">Requested</option>
                                                 <option ng-selected="{{TechTask.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -599,7 +599,7 @@
                                                 <%} %>
                                             </select>
                                             <br />
-                                            <select id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
+                                            <select id="ddcbSeqAssignedFrozenNested" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
                                                 <option
                                                     ng-repeat="item in DesignationAssignUsers"
                                                     value="{{item.Id}}"
@@ -612,17 +612,17 @@
                                         <div class="div-table-col seq-taskduedate">
                                             <div class="seqapprovalBoxes">
                                                 <div style="width: 65%; float: left;">
-                                                    <input type="checkbox" id="chkngUser" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                                    <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                                    <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                                    <input type="checkbox" id="chkngUserFrozenNested" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                                    <input type="checkbox" id="chkQAFrozenNested" class="fz fz-QA" title="QA" />
+                                                    <input type="checkbox" id="chkAlphaUserFrozenNested" class="fz fz-Alpha" title="AlphaUser" />
                                                     <br />
-                                                    <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                                    <input type="checkbox" id="chkngITLead" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                                    <input type="checkbox" id="chkngAdmin" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                                    <input type="checkbox" id="chkBetaUserFrozenNested" class="fz fz-Beta" title="BetaUser" />
+                                                    <input type="checkbox" id="chkngITLeadFrozenNested" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                                    <input type="checkbox" id="chkngAdminFrozenNested" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                                 </div>
                                                 <div style="width: 30%; float: right;">
-                                                    <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                                    <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                                    <input type="checkbox" id="chkngITLeadMasterFrozenNested" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                                    <input type="checkbox" id="chkngAdminMasterFreezeSeqTask" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                                 </div>
                                             </div>
 
@@ -771,7 +771,7 @@
 
                                 <!-- Status & Assigned To starts -->
                                 <div class="div-table-col seq-taskstatus">
-                                    <select id="drpStatusSubsequence3" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
+                                    <select id="drpStatusSubsequenceTechFrozen" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
                                         <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
                                         <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
                                         <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -812,17 +812,17 @@
                                 <div class="div-table-col seq-taskduedate">
                                     <div class="seqapprovalBoxes">
                                         <div style="width: 65%; float: left;">
-                                            <input type="checkbox" id="chkngUser" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                            <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                            <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                            <input type="checkbox" id="chkngUserTechFrozen" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                            <input type="checkbox" id="chkQATechFrozen" class="fz fz-QA" title="QA" />
+                                            <input type="checkbox" id="chkAlphaUserTechFrozen" class="fz fz-Alpha" title="AlphaUser" />
                                             <br />
-                                            <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                            <input type="checkbox" id="chkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                            <input type="checkbox" id="chkBetaUserTechFrozen" class="fz fz-Beta" title="BetaUser" />
+                                            <input type="checkbox" id="chkngITLeadTechFrozen" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminTechFrozen" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                         </div>
                                         <div style="width: 30%; float: right;">
-                                            <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                            <input type="checkbox" id="chkngITLeadMasterTechFrozen" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminMasterTechFrozen" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                         </div>
                                     </div>
 
@@ -982,7 +982,7 @@
 
                                 <!-- Status & Assigned To starts -->
                                 <div class="div-table-col seq-taskstatus">
-                                    <select id="drpStatusSubsequence2" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
+                                    <select id="drpStatusSubsequenceNonFrozen" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
                                         <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
                                         <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
                                         <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -1010,7 +1010,7 @@
                                             data-chosen="1" data-placeholder="Select Users" ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id" ng-model="DesignationAssignUsersModel"
                                             AutoPostBack="false">--%>
 
-                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssignedNonFrozen" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                         <option
                                             ng-repeat="item in DesignationAssignUsers"
                                             value="{{item.Id}}"
@@ -1029,17 +1029,17 @@
                                 <div class="div-table-col seq-taskduedate">
                                     <div class="seqapprovalBoxes">
                                         <div style="width: 65%; float: left;">
-                                            <input type="checkbox" id="chkngUser" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                            <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                            <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                            <input type="checkbox" id="chkngUserNonFrozen" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                            <input type="checkbox" id="chkQANonFrozen" class="fz fz-QA" title="QA" />
+                                            <input type="checkbox" id="chkAlphaUserNonFrozen" class="fz fz-Alpha" title="AlphaUser" />
                                             <br />
-                                            <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                            <input type="checkbox" id="chkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                            <input type="checkbox" id="chkBetaUserNonFrozen" class="fz fz-Beta" title="BetaUser" />
+                                            <input type="checkbox" id="chkngITLeadNonFrozen" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminNonFrozen" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                         </div>
                                         <div style="width: 30%; float: right;">
-                                            <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                            <input type="checkbox" id="chkngITLeadMasterNonFrozen" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminMasterNonFrozen" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                         </div>
                                     </div>
 
@@ -1156,7 +1156,7 @@
 
                                         <!-- Status & Assigned To starts -->
                                         <div class="div-table-col seq-taskstatus">
-                                            <select id="drpStatusSubsequence" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
+                                            <select id="drpStatusSubsequenceNonFrozenNested" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
                                                 <option ng-selected="{{TechTask.Status == '1'}}" value="1">Open</option>
                                                 <option ng-selected="{{TechTask.Status == '2'}}" style="color: red" value="2">Requested</option>
                                                 <option ng-selected="{{TechTask.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -1178,7 +1178,7 @@
                                                 <%} %>
                                             </select>
                                             <br />
-                                            <select id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
+                                            <select id="ddcbSeqAssignedNonFrozenNested" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
                                                 <option
                                                     ng-repeat="item in DesignationAssignUsers"
                                                     value="{{item.Id}}"
@@ -1193,17 +1193,17 @@
                                         <div class="div-table-col seq-taskduedate">
                                             <div class="seqapprovalBoxes">
                                                 <div style="width: 65%; float: left;">
-                                                    <input type="checkbox" id="chkngUser" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                                    <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                                    <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                                    <input type="checkbox" id="chkngUserNonFrozenNested" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                                    <input type="checkbox" id="chkQANonFrozenNested" class="fz fz-QA" title="QA" />
+                                                    <input type="checkbox" id="chkAlphaUserNonFrozenNested" class="fz fz-Alpha" title="AlphaUser" />
                                                     <br />
-                                                    <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                                    <input type="checkbox" id="chkngITLead" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                                    <input type="checkbox" id="chkngAdmin" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                                    <input type="checkbox" id="chkBetaUserNonFrozenNested" class="fz fz-Beta" title="BetaUser" />
+                                                    <input type="checkbox" id="chkngITLeadNonFrozenNested" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                                    <input type="checkbox" id="chkngAdminNonFrozenNested" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                                 </div>
                                                 <div style="width: 30%; float: right;">
-                                                    <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                                    <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                                    <input type="checkbox" id="chkngITLeadMasterNonFrozenNested" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                                    <input type="checkbox" id="chkngAdminMasterNonFrozenNested" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                                 </div>
                                             </div>
 
@@ -1349,7 +1349,7 @@
 
                                 <!-- Status & Assigned To starts -->
                                 <div class="div-table-col seq-taskstatus">
-                                    <select id="drpStatusSubsequence3" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
+                                    <select id="drpStatusSubsequenceTechTaskFrozen" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
                                         <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
                                         <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
                                         <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -1390,17 +1390,17 @@
                                 <div class="div-table-col seq-taskduedate">
                                     <div class="seqapprovalBoxes">
                                         <div style="width: 65%; float: left;">
-                                            <input type="checkbox" id="chkngUser" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                            <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                            <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                            <input type="checkbox" id="chkngUserTechTaskFrozen" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                            <input type="checkbox" id="chkQATechTaskFrozen" class="fz fz-QA" title="QA" />
+                                            <input type="checkbox" id="chkAlphaUserTechTaskFrozen" class="fz fz-Alpha" title="AlphaUser" />
                                             <br />
-                                            <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                            <input type="checkbox" id="chkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                            <input type="checkbox" id="chkBetaUserTechTaskFrozen" class="fz fz-Beta" title="BetaUser" />
+                                            <input type="checkbox" id="chkngITLeadTechTaskFrozen" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminTechTaskFrozen" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                         </div>
                                         <div style="width: 30%; float: right;">
-                                            <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                            <input type="checkbox" id="chkngITLeadMasterTechTaskFrozen" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminMasterTechTaskFrozen" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                         </div>
                                     </div>
 
@@ -1681,7 +1681,7 @@
 
                             <!-- Status & Assigned To starts -->
                             <div class="div-table-col seq-taskstatus">
-                                <select id="drpStatusSubsequence2" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
+                                <select id="drpStatusSubsequence" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
                                     <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
                                     <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
                                     <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -1703,11 +1703,6 @@
                                     <%} %>
                                 </select>
                                 <br />
-                                <%-- <select id="lstbAssign" data-chosen="1" data-placeholder="Select Users" ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id" ng-model="DesignationAssignUsersModel" multiple>
-                                        </select>--%>
-                                <%--<asp:ListBox ID="ddcbSeqAssigned" runat="server" Width="100" ClientIDMode="AutoID" SelectionMode="Multiple"
-                                            data-chosen="1" data-placeholder="Select Users" ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id" ng-model="DesignationAssignUsersModel"
-                                            AutoPostBack="false">--%>
 
                                 <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssignedStaff" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                     <option
@@ -1715,13 +1710,9 @@
                                         value="{{item.Id}}"
                                         label="{{item.FristName}}"
                                         class="{{item.CssClass}}">{{item.FristName}}
-                                        
                                     </option>
                                 </select>
 
-                                <%--.substring(0, item.FristName.indexOf("-"))                                        
-                                    <select id="ddcbSeqAssigned" style="width: 100px;" multiple  ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id"  ng-model="DesignationAssignUsersModel" ng-attr-data-AssignedUsers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
-                                        </select>--%>
                             </div>
                             <!-- Status & Assigned To ends -->
 
@@ -1729,11 +1720,11 @@
                             <div class="div-table-col seq-taskduedate">
                                 <div class="seqapprovalBoxes">
                                     <div style="width: 65%; float: left;">
-                                        <input type="checkbox" id="chkngUser" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                        <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                        <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                        <input type="checkbox" id="chkngUserMaster" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                        <input type="checkbox" id="chkQAMaster" class="fz fz-QA" title="QA" />
+                                        <input type="checkbox" id="chkAlphaUserMaster" class="fz fz-Alpha" title="AlphaUser" />
                                         <br />
-                                        <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
+                                        <input type="checkbox" id="chkBetaUserMaster" class="fz fz-Beta" title="BetaUser" />
                                         <input type="checkbox" id="chkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
                                         <input type="checkbox" id="chkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                     </div>
@@ -1856,7 +1847,7 @@
 
                                     <!-- Status & Assigned To starts -->
                                     <div class="div-table-col seq-taskstatus">
-                                        <select id="drpStatusSubsequence" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
+                                        <select id="drpStatusSubsequenceNested" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
                                             <option ng-selected="{{TechTask.Status == '1'}}" value="1">Open</option>
                                             <option ng-selected="{{TechTask.Status == '2'}}" style="color: red" value="2">Requested</option>
                                             <option ng-selected="{{TechTask.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -1892,17 +1883,17 @@
                                     <div class="div-table-col seq-taskduedate">
                                         <div class="seqapprovalBoxes">
                                             <div style="width: 65%; float: left;">
-                                                <input type="checkbox" id="chkngUser" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                                <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                                <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                                <input type="checkbox" id="chkngUserNested" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                                <input type="checkbox" id="chkQANested" class="fz fz-QA" title="QA" />
+                                                <input type="checkbox" id="chkAlphaUserNested" class="fz fz-Alpha" title="AlphaUser" />
                                                 <br />
-                                                <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                                <input type="checkbox" id="chkngITLead" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                                <input type="checkbox" id="chkngAdmin" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                                <input type="checkbox" id="chkBetaUserNested" class="fz fz-Beta" title="BetaUser" />
+                                                <input type="checkbox" id="chkngITLeadNested" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                                <input type="checkbox" id="chkngAdminNested" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                             </div>
                                             <div style="width: 30%; float: right;">
-                                                <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                                <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                                <input type="checkbox" id="chkngITLeadMasterNested" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                                <input type="checkbox" id="chkngAdminMasterNested" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                             </div>
                                         </div>
 
@@ -2345,7 +2336,7 @@
 
 
     <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
-    <script src="../Scripts/angular.min.js"></script>
+    
     <script src="../js/angular/scripts/jgapp.js"></script>
     <script src="../js/angular/scripts/TaskSequence.js"></script>
     <script src="../js/angular/scripts/FrozenTask.js"></script>
@@ -2418,9 +2409,6 @@
             $(".chosen-select-users").chosen({ no_results_text: "No users found!" });
             $("#ddlSelectUserClosedTask").chosen({ no_results_text: "No users found!" });
             $("#ddlSelectFrozenTask").chosen();
-
-            
-            //ddlSelectFrozenTask,lblLoadingFrozen
 
             //InProAssigned
             $(".chosen-select-users").change(function () {
