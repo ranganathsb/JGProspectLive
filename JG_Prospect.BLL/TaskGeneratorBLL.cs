@@ -111,6 +111,13 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskByMaxId(parentTaskid, taskLVL);
         }
 
+        public DataSet GetMultilevelChildren(string ParentTaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetMultilevelChildren(ParentTaskId);
+        }
+
+        //GetMultilevelChildren
+
         public bool SaveTaskDesignations(UInt64 TaskId, String strDesignations, String TaskIDCode)
         {
             return TaskGeneratorDAL.Instance.SaveTaskDesignations(TaskId, strDesignations, TaskIDCode);
@@ -123,6 +130,11 @@ namespace JG_Prospect.BLL
         public bool SetTaskStatus(int TaskId, string TaskStatus)
         {
             return TaskGeneratorDAL.Instance.SetTaskStatus(TaskId, TaskStatus);
+        }
+
+        public bool SaveTaskMultiLevelChild(int ParentTaskId, string InstallId, string Description, int IndentLevel, string Class)
+        {
+            return TaskGeneratorDAL.Instance.SaveTaskMultiLevelChild(ParentTaskId, InstallId, Description, IndentLevel, Class);
         }
 
         public bool SaveTaskAssignedToMultipleUsers(UInt64 TaskId, String UserId)
@@ -301,6 +313,11 @@ namespace JG_Prospect.BLL
         public int UpdateTaskURLById(string tid, string URL)
         {
             return TaskGeneratorDAL.Instance.UpdateTaskURLById(tid, URL);
+        }
+
+        public int UpdateTaskDescriptionChildById(string tid, string Description)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskDescriptionChildById(tid, Description);
         }
 
         public int UpdateTaskDescriptionById(string tid, string Description)

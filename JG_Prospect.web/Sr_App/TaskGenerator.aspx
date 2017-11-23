@@ -522,25 +522,26 @@
             var ddlUsers = '#<%=ddlUsers.ClientID%>';
 
             //Load All Designations
+            <%if (IsAdminMode) { %>
             fillUsers(ddlDesig, ddlUsers, '#lblLoading');
-
-            //Load SubTasks
-            LoadSubTasks();
 
             $(ddlDesig).change(function (e) {
                 //resetChosen('#ddlDesignationSeq');
-                fillUsers(ddlDesig, ddlUsers, '#lblLoading');
-            });
-
-            $(ddlDesig).change(function () {
                 $('#<%=hdnSelectedDesig.ClientID%>').val($(this).val());
+                fillUsers(ddlDesig, ddlUsers, '#lblLoading');
             });
 
             $(ddlUsers).change(function () {
                 $('#<%=hdnSelectedUsers.ClientID%>').val($(this).val());
             });
+
+            <%}%>
+            //Load SubTasks
+            LoadSubTasks();
+
+           
         });
-       
+       <%if (IsAdminMode) { %>
         function fillUsers(selector, fillDDL, loader) {
             var did = $(selector).val().join();
             var options = $(fillDDL);
@@ -584,6 +585,7 @@
                 }
             });
         }
+        <%}%>
         /*************END***************/
 
         var workspecEditor;

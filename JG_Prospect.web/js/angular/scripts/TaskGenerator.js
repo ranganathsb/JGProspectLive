@@ -19,6 +19,8 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
     $scope.page = 0;
     $scope.pagesCount = 0;
     $scope.TotalRecords = 0;
+    $scope.MultiLevelChildren = [];
+    $scope.CurrentLevel = 1;
     //var isadded = false;
 
     $scope.loader = {
@@ -90,7 +92,8 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         LoadImageGallery('#lightSlider_' + object);
     }
 
-    $scope.onEnd = function () {
+    $scope.onEnd = function (obj) {        
+        var ParentIds = [];
         //Initialize Chosens
         $('.chosen-input').chosen();
 
@@ -157,9 +160,102 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                 });
             });
 
-            
+            $('.MainTask').each(function () {
+                //Load Multilevel Children
+                var id = $(this).attr('data-taskid');
+                ParentIds.push(id);
+                //ParentIds = ParentIds.substring(0, ParentIds.length - 1);
+            });
+
 
         }, 1);           
+
+        $timeout(function () {            
+
+            callWebServiceMethod($http, "GetMultilevelChildren", { ParentTaskId: ParentIds.join() }).then(function (data) {
+                var result = JSON.parse(data.data.d);
+                $scope.MultiLevelChildren = $scope.correctDataforAngular(result.ChildrenData.Children);
+
+                $timeout(function () {
+                    //Add Blink Class
+                    var ChildId = getUrlVars()["mcid"];
+                    
+                    if (ChildId != undefined) {
+                        $('#ChildEdit' + ChildId).addClass('yellowthickborder');
+                    } else {
+                        var hstid = getUrlVars()["hstid"];
+                        $('#datarow' + hstid).addClass('yellowthickborder');
+                    }
+
+                    //Apply Context Menu
+                    $(".context-menu-child").bind("contextmenu", function () {
+                        var url = window.location.href;
+                        url = url.split('&')[0];
+                        var urltoCopy = url + '&hstid=' + $(this).attr('data-highlighter') + '&mcid=' + $(this).attr('data-childid');
+                        //var urltoCopy = updateQueryStringParameterTP(window.location.href, "hstid", $(this).attr('data-highlighter'));
+                        copyToClipboard(urltoCopy);
+                        return false;
+                    });
+
+                    ScrollTo($('.yellowthickborder'));
+
+                    $(".yellowthickborder").bind("click", function () {
+                        $(this).removeClass("yellowthickborder");
+                    });
+
+                    $(".ChildEdit").each(function (index) {
+                        // This section is available to admin only.
+
+                        $(this).bind("click", function () {
+                            if (!isadded) {
+                                var tid = $(this).attr("data-taskid");
+                                var titledetail = $(this).html();
+                                var fName = $("<textarea id=\"txteditChild\" style=\"width:80%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea><input id=\"btnSave\" type=\"button\" value=\"Save\" />");
+                                $(this).html(fName);
+                                $('#ContentPlaceHolder1_objucSubTasks_Admin_hdDropZoneTaskId').val(tid);
+                                SetCKEditorForSubTask('txteditChild');
+                                $('#txteditChild').focus();
+                                control = $(this);
+
+                                isadded = true;
+
+                                $('#btnSave').bind("click", function () {
+                                    var htmldata = GetCKEditorContent('txteditChild');
+                                    ShowAjaxLoader();
+                                    var postData = {
+                                        tid: tid,
+                                        Description: htmldata
+                                    };
+
+                                    $.ajax({
+                                        url: '../../../WebServices/JGWebService.asmx/UpdateTaskDescriptionChildById',
+                                        contentType: 'application/json; charset=utf-8;',
+                                        type: 'POST',
+                                        dataType: 'json',
+                                        data: JSON.stringify(postData),
+                                        asynch: false,
+                                        success: function (data) {
+                                            alert('Child saved successfully.');
+                                            HideAjaxLoader();
+                                            $('#ChildEdit' + tid).html(htmldata);
+                                            isadded = false;
+                                        },
+                                        error: function (a, b, c) {
+                                            HideAjaxLoader();
+                                        }
+                                    });
+                                    $(this).css({ 'display': "none" });                                    
+                                });
+                            }
+                            return false;
+                        });
+                    });
+                }, 1);
+            });
+        }, 2);
+        
+
+        
 
         //For Title
         $(".TitleEdit").each(function (index) {
@@ -246,6 +342,23 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         return $sce.trustAsHtml(plainText);
     }
 
+    $scope.LevelToRoman = function (levelChar, indent) {
+        if (levelChar == '' || levelChar == undefined) {
+            return "I";
+        }
+        else {
+            if (indent == 1)
+                return romanize(roman_to_Int(levelChar.toUpperCase()) + 1).toUpperCase();
+            else if (indent == 2)
+                return romanize(roman_to_Int(levelChar.toUpperCase()) + 1).toLowerCase();
+            else if (indent == 3) {
+                var s = idOf(((levelChar.charCodeAt(0) - 97) + 1));
+                return s;
+            }
+            else
+                return romanize(levelChar);
+        }
+    }
 
     //Create a Scope
     sequenceScope = $scope;
@@ -260,4 +373,57 @@ function getUrlVars() {
         vars[hash[0]] = hash[1];
     }
     return vars;
+}
+
+function romanize(num) {
+    var lookup = { M: 1000, CM: 900, D: 500, CD: 400, C: 100, XC: 90, L: 50, XL: 40, X: 10, IX: 9, V: 5, IV: 4, I: 1 }, roman = '', i;
+    for (i in lookup) {
+        while (num >= lookup[i]) {
+            roman += i;
+            num -= lookup[i];
+        }
+    }
+    return roman;
+}
+
+function roman_to_Int(str1) {
+    if (str1 == null) return -1;
+    var num = char_to_int(str1.charAt(0));
+    var pre, curr;
+
+    for (var i = 1; i < str1.length; i++) {
+        curr = char_to_int(str1.charAt(i));
+        pre = char_to_int(str1.charAt(i - 1));
+        if (curr <= pre) {
+            num += curr;
+        } else {
+            num = num - pre * 2 + curr;
+        }
+    }
+
+    return num;
+}
+function char_to_int(c) {
+    switch (c) {
+        case 'I': return 1;
+        case 'V': return 5;
+        case 'X': return 10;
+        case 'L': return 50;
+        case 'C': return 100;
+        case 'D': return 500;
+        case 'M': return 1000;
+        default: return -1;
+    }
+}
+
+function idOf(i) {
+    return (i >= 26 ? idOf((i / 26 >> 0) - 1) : '') + 'abcdefghijklmnopqrstuvwxyz'[i % 26 >> 0];
+}
+
+function LetterToNumber(str) {
+    var out = 0, len = str.length;
+    for (pos = 0; pos < len; pos++) {
+        out += (str.charCodeAt(pos) - 64) * Math.pow(26, len - pos - 1);
+    }
+    return out;
 }

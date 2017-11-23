@@ -17,6 +17,8 @@ function LoadSubTasks() {
 
     //Get Page Size
     var pageSize = $('#ContentPlaceHolder1_objucSubTasks_Admin_drpPageSize').val();
+    if (pageSize == undefined)
+        pageSize = $('#ContentPlaceHolder1_objucSubTasks_User_drpPageSize').val();
     sequenceScope.pageSize = pageSize;
 
     sequenceScope.getSubTasks();
@@ -98,4 +100,42 @@ function EditAssignedSubTaskUsers(sender) {
             alert('Task assignment cannot be updated. Please try again.');
         }
     }
+}
+
+function OnSaveSubTask(obj) {
+
+    ShowAjaxLoader();
+    var taskid = $(obj).attr('data-taskid'); 
+    var desc = GetCKEditorContent('subtaskDesc' + taskid);
+    var installID = $('#listId' + taskid).attr('data-listid');
+    var TaskLvl = $('#nestLevel' + taskid).val();
+    var Class = $('#listId' + taskid).attr('data-label');
+
+    if (TaskLvl == '') TaskLvl = 1;
+    
+    var postData = {
+        ParentTaskId: taskid,
+        InstallId: installID,
+        Description: desc,
+        IndentLevel: TaskLvl,
+        Class: Class
+    };
+
+    CallJGWebService('SaveTaskMultiLevelChild', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
+
+    function OnAddNewSubTaskSuccess(data) {
+        if (data.d==true) {
+            alert('Task saved successfully.');
+            LoadSubTasks();
+        }
+        else {
+            alert('Task cannot be saved. Please try again.');
+        }
+    }
+
+    function OnAddNewSubTaskError(err) {
+        alert('Task cannot be saved. Please try again.');
+    }
+    return false;
+
 }

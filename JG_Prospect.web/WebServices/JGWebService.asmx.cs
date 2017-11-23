@@ -556,6 +556,13 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public bool UpdateTaskDescriptionChildById(string tid, string Description)
+        {
+            TaskGeneratorBLL.Instance.UpdateTaskDescriptionChildById(tid, Description);
+            return true;
+        }
+
+        [WebMethod(EnableSession = true)]
         public bool UpdateTaskDescriptionById(string tid, string Description)
         {
             TaskGeneratorBLL.Instance.UpdateTaskDescriptionById(tid, Description);
@@ -806,6 +813,29 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public String GetMultilevelChildren(string ParentTaskId)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = null;
+
+            dtResult = TaskGeneratorBLL.Instance.GetMultilevelChildren(ParentTaskId);
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                dtResult.DataSetName = "ChildrenData";
+                dtResult.Tables[0].TableName = "Children";
+                System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                doc.LoadXml(dtResult.GetXml());
+                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
+        [WebMethod(EnableSession = true)]
         public String GetSubTasks(Int32 TaskId, string strSortExpression, string vsearch = "", Int32? intPageIndex = 0, Int32? intPageSize = 0, int intHighlightTaskId = 0)
         {
             DataSet dtResult = null;
@@ -820,9 +850,51 @@ namespace JG_Prospect.WebServices
                                                     intPageSize,
                                                     0
                                                 );
+            dtResult.Tables[0].Columns.Add("className");
+
+            DataTable copyTable = dtResult.Tables[0].Clone();            
+            copyTable.TableName = "Tasks";
+
+            bool isFirstRow = true;
+
+            foreach(DataRow row in dtResult.Tables[0].Select("NestLevel=1","TaskId ASC"))
+            {
+                string tid = row[0].ToString();                
+                string className = isFirstRow ? "FirstRow" : "AlternateRow";
+                row["className"] = className;
+                
+                //Toggle ClassName
+                isFirstRow = !isFirstRow;
+                
+                //Add Parent
+                DataRow dr = copyTable.NewRow();
+                copyTable.ImportRow(row);
+                
+                DataRow[] rows = dtResult.Tables[0].Select("ParentTaskId=" + tid, "TaskId ASC");
+                foreach(DataRow r in rows)
+                {
+                    string tid2 = r[0].ToString();
+
+                    //Add Level 2 Child
+                    DataRow dr1 = copyTable.NewRow();
+                    r["className"] = className;
+                    copyTable.ImportRow(r);
+
+                    DataRow[] r3 = dtResult.Tables[0].Select("ParentTaskId=" + tid2, "TaskId ASC");
+                    foreach(DataRow r2 in r3)
+                    {
+                        //Add Level 3 Child
+                        DataRow dr3 = copyTable.NewRow();
+                        r2["className"] = className;
+                        copyTable.ImportRow(r2);
+                    }
+                }
+            }
+
+            dtResult.Tables.Add(copyTable);
             if (dtResult != null && dtResult.Tables.Count > 0)
             {
-                dtResult.Tables[0].TableName = "Tasks";
+                //dtResult.Tables[4].TableName = "Tasks";
                 dtResult.Tables[1].TableName = "RecordCount";
                 dtResult.Tables[3].TableName = "TaskFiles";
                 dtResult.DataSetName = "TaskData";
@@ -1093,6 +1165,12 @@ namespace JG_Prospect.WebServices
         public bool SetTaskStatus(int intTaskId, string TaskStatus)
         {
             return TaskGeneratorBLL.Instance.SetTaskStatus(intTaskId, TaskStatus);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool SaveTaskMultiLevelChild(int ParentTaskId, string InstallId, string Description, int IndentLevel, string Class)
+        {
+            return TaskGeneratorBLL.Instance.SaveTaskMultiLevelChild(ParentTaskId, InstallId, Description, IndentLevel, Class);
         }
 
         [WebMethod(EnableSession = true)]
