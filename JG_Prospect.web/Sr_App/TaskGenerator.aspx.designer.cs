@@ -76,49 +76,40 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlTable tblAdminTaskView;
         
         /// <summary>
-        /// upnlDesignation control.
+        /// ddlDesignationSeq control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlDesignation;
+        protected global::System.Web.UI.HtmlControls.HtmlSelect ddlDesignationSeq;
         
         /// <summary>
-        /// ddlUserDesignation control.
+        /// hdnSelectedDesig control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Saplin.Controls.DropDownCheckBoxes ddlUserDesignation;
+        protected global::System.Web.UI.WebControls.HiddenField hdnSelectedDesig;
         
         /// <summary>
-        /// cvDesignations control.
+        /// ddlUsers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CustomValidator cvDesignations;
+        protected global::System.Web.UI.HtmlControls.HtmlSelect ddlUsers;
         
         /// <summary>
-        /// upnlAssigned control.
+        /// hdnSelectedUsers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlAssigned;
-        
-        /// <summary>
-        /// ddlAssignedUsers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Saplin.Controls.DropDownCheckBoxes ddlAssignedUsers;
+        protected global::System.Web.UI.WebControls.HiddenField hdnSelectedUsers;
         
         /// <summary>
         /// chkTechTask control.
