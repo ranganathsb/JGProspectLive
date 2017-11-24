@@ -168,6 +168,49 @@
     .sub-task-time{
         color:red;
     }
+    .listId {
+        float:left;
+        width: 30px;
+        margin-top: 7px;
+    }
+    .taskSubPoints {
+        clear: both;
+        vertical-align: middle;
+        margin-top: 5px;
+    }
+    .nestedChildren{
+        clear: both;        
+        padding: 10px;
+        background-color: white;
+    }
+    .level2{
+        margin-left:36px;
+    }
+    .level3{
+        margin-left:54px;
+    }
+    .parentdiv{
+        border-top-color: black;
+        border-width: thin;
+        border-top-style: solid;
+        padding-top: 5px;
+    }
+    .selectchildren{
+        float:right;
+    }
+    .indentButtonRight{
+        float: left;        
+        margin-top: 10px;
+    }
+    .indentButtonLeft{
+        float: left;
+        margin-left: 4px;
+        margin-top: 10px;
+    }
+    .multileveledittext{
+        width: 90%;
+    text-align: left;
+    }
 </style>
 
 <fieldset class="tasklistfieldset">
@@ -350,17 +393,17 @@
                             <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table edit-subtask">
                             <thead>
                                 <tr class="trHeader">
-                                    <th width="10%" class="subtask-actionid">Action-ID#</th>
-                                    <th width="45%" class="subtask-taskdetails">Task Details</th>
+                                    <th width="8%" class="subtask-actionid">Action-ID#</th>
+                                    <th width="47%" class="subtask-taskdetails">Task Details</th>
                                     <th width="15%" class="subtask-assign">Assigned</th>
                                     <th width="30%" class="subtask-attchments">Attachments, IMGs, Docs, Videos & Recordings</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr ng-class-odd="'FirstRow'" ng-class-even="'AlternateRow'" data-ng-repeat="SubTask in SubTasks" data-task-level="1" data-taskid="{{SubTask.TaskId}}" 
-                                    data-parent-taskid="{{SubTask.TaskId}}" class="" style="vertical-align:top" repeat-end="onEnd()">
-                                    <td width="10%" ng-class="{sbtlevel2 : SubTask.NestLevel==='2'}">
-                                        <h5 class="">
+                                <tr class="{{SubTask.className}} MainTask" data-ng-repeat="SubTask in SubTasks" data-task-level="1" data-taskid="{{SubTask.TaskId}}" 
+                                    data-parent-taskid="{{SubTask.TaskId}}" style="vertical-align:top" repeat-end="onEnd(this)" id="datarow{{SubTask.TaskId}}">
+                                    <td width="8%" ng-class="{sbtlevel2 : SubTask.NestLevel==='2'}">
+                                        <h5 ng-class="{hide: SubTask.NestLevel == '3'}">
                                             <input type="checkbox" name="bulkaction">
                                             <a id="lbtnInstallId" class="context-menu installidleft" onclick="javascript:return false;" data-highlighter="{{SubTask.TaskId}}" style="color: Blue; cursor:pointer; display: inline;">
                                                 {{SubTask.InstallId}}
@@ -370,19 +413,22 @@
                                                 data-parent-taskid="{{SubTask.TaskId}}" data-val-commandname="{{SubTask.NestLevel}}#{{SubTask.InstallId}}#{{SubTask.TaskId}}##0" data-val-tasklvl="{{SubTask.NestLevel}}"
                                                 data-val-commandargument="{{SubTask.TaskId}}" 
                                                 data-val-tasklvl="{{SubTask.NestLevel==1}}" data-installid="{{SubTask.InstallId}}" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">
+                                            <div class="selectchildren">
+                                            <a href="#/" onclick="selectChildren(this)" data-taskid="{{SubTask.TaskId}}">Select All</a>
+                                        </div>
                                         </h5>
 
                                         <!-- Freezingn Task Part Starts -->
                                         <div class="approvalBoxes">
                                             <span class="aspNetDisabled fz fz-admin" title="Admin">
-                                                <input id="chkAdmin" type="checkbox" name="chkAdmin" ng-checked="{{SubTask.AdminStatus}}" ng-disabled="{{SubTask.AdminStatus}}"></span>
+                                                <input id="chkAdmin" type="checkbox" name="chkAdmin" ng-checked="{{SubTask.AdminStatus}}" ng-disabled="{{SubTask.AdminStatus}}"/></span>
                                             <span class="aspNetDisabled fz fz-techlead" title="IT Lead">
                                                 <input id="chkITLead" type="checkbox" name="chkITLead" ng-checked="{{SubTask.TechLeadStatus}}" ng-disabled="{{SubTask.TechLeadStatus}}"></span>
                                             <span class="aspNetDisabled fz fz-user" title="User">
                                                 <input id="chkUser" type="checkbox" name="chkUser" ng-checked="{{SubTask.OtherUserStatus}}" ng-disabled="{{SubTask.OtherUserStatus}}"></span>
 
                                         </div>
-
+                                        
                                         <div ng-attr-data-taskid="{{SubTask.TaskId}}" class="approvepopup">
                                             <div id="divTaskAdmin{{SubTask.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
                                                 <div style="width: 10%;" class="display_inline">Admin: </div>
@@ -475,7 +521,8 @@
                                                 </div>
                                                 <div style="width: 50%; clear: none;">
                                                     Attach UI:
-                                                    <div id="divUserUIDropzone" style="width: 200px;" data-taskid="{{SubTask.TaskId}}" class="dropzone dropzonetask dropzonJgStyle">
+                                                    <div id="divUserUIDropzone" style="width: 200px;" data-taskid="{{SubTask.TaskId}}" class="dropzone dropzonetask dropzonJgStyle"
+                                                        >
                                                         <div class="fallback">
                                                             <input name="file" type="file" multiple />
                                                         </div>
@@ -486,15 +533,16 @@
                                         </div>
                                         <!-- Freezingn Task Part Ends -->
                                     </td>
-                                    <td width="45%">
-                                        <div class="hide" style="border-right: 0px solid #FFF; padding-right: 5px; width: 30px;">
+                                    <td width="47%">
+                                        <div ng-class="{hide: SubTask.NestLevel != '3', left: SubTask.NestLevel == '3'}" style="border-right: 0px solid #FFF; padding-right: 5px; width: 30px;">
                                             <input type="checkbox" name="bulkaction">
-                                            <a href="javascript:void(0);" data-highlighter="{{SubTask.TaskId}}" class="context-menu" style="color: blue;">XII</a>
+                                            <a href="javascript:void(0);" data-highlighter="{{SubTask.TaskId}}" class="context-menu" style="color: blue;">{{SubTask.InstallId}}</a>
                                         </div>
-                                        <div class="divtdetails left" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 100%; width: 100%; overflow: auto;">
+                                        <div class="divtdetails left" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 100%; max-height:160px; width: 100%; overflow: auto;">
                                             <div class="taskdesc" style="padding-bottom: 5px; width: 98%; color: black!important;">
+                                                
                                                 <div class="right">
-                                                    <a href="/sr_app/CreateSalesUser.aspx?id=901" style="color: Blue;">{{SubTask.CreatedBy}}# {{SubTask.TaskCreatorFirstName}} {{SubTask.TaskCreatorLastName}}</a><br>
+                                                    <a href="/sr_app/CreateSalesUser.aspx?id={{SubTask.TaskId}}" style="color: Blue;">{{SubTask.CreatedBy}}# {{SubTask.TaskCreatorFirstName}} {{SubTask.TaskCreatorLastName}}</a><br>
                                                     <span>{{ SubTask.CreatedOn | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ SubTask.CreatedOn | date:'shortTime' }}</span>&nbsp;<span>(EST)</span>
                                                 </div>
                                                 <strong>Title: <span data-taskid="{{SubTask.TaskId}}" class="TitleEdit">{{SubTask.Title}}</span></strong><br>
@@ -503,10 +551,44 @@
                                                 <br>
                                                 <span data-taskid="{{SubTask.TaskId}}" class="DescEdit">
                                                     <div ng-bind-html="SubTask.Description | trustAsHtml"></div>
-                                                </span>
-                                            </div>
+                                                </span>                                                
+                                            </div>                                                                                        
                                             <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
+                                            
                                         </div>
+                                        <div class="nestedChildren">
+                                                <div ng-repeat="Child in MultiLevelChildren | filter: {ParentTaskId: SubTask.TaskId} : true" 
+                                                    class="ChildRow{{SubTask.TaskId}}" data-level="{{Child.IndentLevel}}" data-label="{{Child.Label}}"
+                                                    style="clear:both; padding:5px;">
+                                                    <div ng-class="{level2: Child.IndentLevel==2, level3: Child.IndentLevel==3, parentdiv: Child.IndentLevel==1}">
+                                                        <div style="float:left" id="selectboxes{{SubTask.TaskId}}">
+                                                            <input ng-class="{hide: Child.IndentLevel!= 1}" type="checkbox" />
+                                                            <a href="#" style="color:blue" class="context-menu-child" data-childid="{{Child.Id}}" data-highlighter="{{SubTask.TaskId}}">{{Child.Label}}.</a>
+                                                        </div>
+                                                        <div ng-bind-html="Child.Description | trustAsHtml" class="ChildEdit" id="ChildEdit{{Child.Id}}" data-taskid="{{Child.Id}}"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <%--SubTask Part Starts--%>
+                                        <div id="Div1" runat="server" align="center" class="taskSubPoints" style="background-color:white;padding-top: 5px;">
+                                            <div class="listId">
+                                                <a href="#" data-listid="{{SubTask.InstallId}}" data-level="{{SubTask.Indent}}" data-label="{{LevelToRoman(SubTask.LastChild,SubTask.Indent)}}" 
+                                                    id="listId{{SubTask.TaskId}}" style="color:blue">{{LevelToRoman(SubTask.LastChild,SubTask.Indent)}}</a>
+                                                <input id="nestLevel{{SubTask.TaskId}}" value="{{SubTask.Indent}}" data-label="{{LevelToRoman(SubTask.LastChild,SubTask.Indent)}}" type="hidden" />
+                                                <input id="lastData{{SubTask.TaskId}}" value="{{SubTask.Indent}}" data-label="{{LevelToRoman(SubTask.LastChild,SubTask.Indent)}}" type="hidden" />
+                                            </div>
+                                            <div>
+                                                <div class="multileveledittext" >
+                                                    <textarea style="width:80%" rows="1" id="subtaskDesc{{SubTask.TaskId}}" onclick="SetCKEditorForChildren(this.id)"></textarea>
+                                                </div>
+                                                <div class="btn_sec">
+                                                    <button class="indentButtonLeft" type="button" id="btnLeft{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="left" onclick="OnIndent(this)" ><=</button>
+                                                    <button class="indentButtonRight" type="button" id="btnRight{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="right" onclick="OnIndent(this)" >=></button>
+                                                    <input type="button" style="padding-left:12px;padding-right:12px" value="Save" onclick="OnSaveSubTask(this)" data-taskid="{{SubTask.TaskId}}"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <%--SubTask Part Ends--%>
                                         <div class="clr" style="height: 1px;"></div>
                                         <input type="submit" name="btnshowdivsub1" value="+" onclick="return false;" id="btnshowdivsub1" class="showsubtaskDIV" data-parent-taskid="{{SubTask.TaskId}}" 
                                             style="text-decoration: underline; cursor: pointer; background: none;" data-val-commandname="{{SubTask.NestLevel}}#{{SubTask.InstallId}}#{{SubTask.TaskId}}##0" data-val-tasklvl="{{SubTask.NestLevel}}" 
@@ -542,9 +624,13 @@
                                             </table>
                                         </div>
                                         <a href="javascript:void(0);" data-taskid="{{SubTask.TaskId}}" data-parent-commentid="0" onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment +</a>
+
+                                        
+                                    
+                                    
                                     </td>
                                     <td width="15%">
-                                        <ul class="stulli">
+                                        <ul ng-class="{hide: SubTask.NestLevel == '3', stulli: SubTask.NestLevel != '3'}">
                                             <li>
                                                 <input id="chkTechTask" type="checkbox" name="chkTechTask" ng-checked="{{SubTask.IsTechTask}}" onclick=""><label for="chkTechTask"> Tech Task?</label>
                                             </li>
@@ -597,7 +683,7 @@
                                             </li>
 
                                         </ul>
-                                        <div class="">
+                                        <div ng-class="{hide: SubTask.NestLevel == '3'}" >
                                             <span>Assigned
                                             </span>
                                             <div style="clear:both"></div>
@@ -636,7 +722,7 @@
                                         </table>
                                     </td>
                                     <td width="30%">
-                                        <table border="0" class="dropzonetbl" style="width: 100%;">
+                                        <table border="0" ng-class="{hide: SubTask.NestLevel == '3', dropzonetbl: SubTask.NestLevel != '3'}"  style="width: 100%;">
                                             <tr>
                                                 <td>
                                                     <asp:UpdatePanel ID="upAttachmentsData1" runat="server" UpdateMode="Conditional" ClientIDMode="AutoID">
@@ -645,7 +731,7 @@
                                                         </ContentTemplate>
                                                     </asp:UpdatePanel>
                                                     <div id="divSubTaskDropzone1" style="width: 200px;" data-taskid="{{SubTask.TaskId}}" 
-                                                        class="dropzone dropzonetask dropzonJgStyle">
+                                                        class="dropzone dropzonetask dropzonJgStyle" onclick="SetHiddenTaskId(this);">
                                                         <div class="fallback">
                                                             <input name="file" type="file" multiple />
                                                         </div>
@@ -1560,6 +1646,140 @@
 </script>
 
 <script type="text/javascript" data-id="divSubTaskCommentScript">
+
+    function selectChildren(obj) {
+        var taskid = $(obj).attr('data-taskid');
+        $('#selectboxes' + taskid + ' input').each(function () {
+            $(this).prop('checked', !($(this).attr('checked')));
+        });
+    }
+
+    function OnIndent(obj) {
+        var taskid = $(obj).attr('data-taskid');
+        var currentIndent = $('#listId' + taskid).attr('data-level');
+        var action = $(obj).attr('data-action');
+        var lastLevel = $('#lastData' + taskid).val();
+        var lastLabel = $('#lastData' + taskid).attr('data-label');
+
+        switch (currentIndent) {
+            case '1': {
+                if (action == 'right') {
+                    $('#nestLevel' + taskid).val(2);                    
+                    $('#listId' + taskid).attr('data-level', 2);
+                    currentIndent = 2;
+                    if (lastLevel != 1) {
+                        var label = 'i';
+                        var endLabel = '';
+
+                        $('.ChildRow' + taskid).each(function () {
+                            var l = $(this).attr('data-level');
+                            var b = $(this).attr('data-label');
+                            if (l == '2') {
+                                endLabel = b;
+                            }
+                        });
+                        var num = roman_to_Int(endLabel.toUpperCase());
+                        label = romanize(num + 1).toLowerCase();
+                        $('#listId' + taskid).attr('data-label', label);
+                        $('#listId' + taskid).html(label);
+                    }
+                    else {
+                        var label = 'i';
+                        $('#listId' + taskid).attr('data-label', label);
+                        $('#listId' + taskid).html(label);
+                        
+                    }
+                }
+                else {
+                    alert('Not Supported');
+                }
+                break;
+            }
+            case '2': {
+                if (action == 'right') {
+                    $('#nestLevel' + taskid).val(3);
+                    $('#listId' + taskid).attr('data-level', 3);
+                    currentIndent = 3;
+                    if (lastLevel == 3) {
+                        var label = 'a';
+                        var endLabel = '';
+
+                        $('.ChildRow' + taskid).each(function () {
+                            var l = $(this).attr('data-level');
+                            var b = $(this).attr('data-label');
+                            if (l == '3') {
+                                endLabel = b;
+                            }
+                        });
+                        var num = (endLabel.charCodeAt(0) - 97) + 1;
+                        label = idOf(num);
+                        $('#listId' + taskid).attr('data-label', label);
+                        $('#listId' + taskid).html(label);
+
+                    }
+                    else {
+                        $('#listId' + taskid).attr('data-label', 'a');
+                        $('#listId' + taskid).html('a');
+                    }
+                    
+                }
+                else {
+                    $('#nestLevel' + taskid).val(1);
+                    $('#listId' + taskid).attr('data-level', 1);
+                    var label = 'I';
+                    var endLabel = '';
+
+                    $('.ChildRow' + taskid).each(function () {
+                        var l = $(this).attr('data-level');
+                        var b = $(this).attr('data-label');
+                        if (l == '1') {
+                            endLabel = b;
+                        }
+                    });
+                    var num = roman_to_Int(endLabel.toUpperCase());
+                    label = romanize(num + 1).toUpperCase();
+                    $('#listId' + taskid).attr('data-label', label);
+                    $('#listId' + taskid).html(label);
+                    
+                }
+                break;
+            }
+            case '3': {
+                if (action == 'left') {
+                    $('#nestLevel' + taskid).val(2);
+                    $('#listId' + taskid).attr('data-level', 2);
+
+                    if (lastLevel != 1) {
+                        var label = 'i';
+                        var endLabel = '';
+
+                        $('.ChildRow' + taskid).each(function () {
+                            var l = $(this).attr('data-level');
+                            var b = $(this).attr('data-label');
+                            if (l == '2') {
+                                endLabel = b;
+                            }
+                        });
+                        var num = roman_to_Int(endLabel.toUpperCase());
+                        label = romanize(num + 1).toLowerCase();
+                        $('#listId' + taskid).attr('data-label', label);
+                        $('#listId' + taskid).html(label);
+                    }
+                    else {
+                        var label = 'i';
+                        $('#listId' + taskid).attr('data-label', label);
+                        $('#listId' + taskid).html(label);
+
+                    }
+                }
+                else {
+                    alert('Not Supported');
+                }
+                break;
+            }
+        }
+    }
+    
     var SubTaskCommentScript = {};
 
     SubTaskCommentScript.Initialize = function () {
@@ -1808,9 +2028,15 @@
         DestroyCKEditors();
     });
 
-    $(document).ready(function () {
-        
-        
+    $(document).ready(function () {        
+        //SubTask Enter Event
+        $("#subtaskDesc").keyup(function (event) {
+            if (event.keyCode === 13) {
+                alert("enter");
+                return;
+            }
+        });
+
         SetUserAutoSuggestion();
         SetUserAutoSuggestionUI();        
 
@@ -1862,40 +2088,7 @@
                 $('#descimgpopup1').css({ 'opacity': "1" });
                 return false;
             });
-        });
-
-       
-
-        //For Description
-        $(".DescEdit").each(function (index) {
-            // This section is available to admin only.
-            <% if (this.IsAdminMode)
-    {
-               %>
-            $(this).bind("click", function () {
-                if (!isadded) {
-                    var tid = $(this).attr("data-taskid");
-                    var titledetail = $(this).html();
-                    var fName = $("<textarea id=\"txtedittitle\" style=\"width:100%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea>");
-                    $(this).html(fName);
-                    $('#<%= hdDropZoneTaskId.ClientID %>').val(tid);
-                    SetCKEditorForSubTask('txtedittitle');
-                    $('#txtedittitle').focus();
-                    control = $(this);
-
-                    isadded = true;
-
-                    var otherInput = $(this).closest('.divtdetails').find('.btnsubtask');
-                    $(otherInput).css({ 'display': "block" });
-                    $(otherInput).bind("click", function () {
-                        updateDesc(GetCKEditorContent('txtedittitle'));
-                        $(this).css({ 'display': "none" });
-                    });
-                }
-                return false;
-            });
-            <% } %>
-        });
+        });      
 
         //For Add Task Button
         $(".showsubtaskDIV").each(function (index) {
@@ -2015,6 +2208,13 @@
             isadded = false;
         }
     }
+    function updateChild(htmldata) {
+        if (isadded) {
+            control.html(htmldata);
+            EditDesc(control.attr("data-taskid"), htmldata);
+            isadded = false;
+        }
+    }
 
 
     function FreezeTask(sender) {
@@ -2057,7 +2257,8 @@
                 alert(data.d.Message);
                 HidePopup('.approvepopup')
                 $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
-                $('#<%=btnUpdateRepeater.ClientID%>').click();
+
+                LoadSubTasks();
             }
             else {
                 alert(data.d.Message);
@@ -2328,7 +2529,6 @@
                     var Priority = $('#<%= drpSubTaskPriority.ClientID %>').val();
                     var type = $('#<%= drpSubTaskType.ClientID %>').val();
                     var desc = GetCKEditorContent('<%= txtTaskDesc.ClientID %>');
-                    //var designations = $('#<%= hdndesignations.ClientID %>').val();
                     var designations = $("#<%= ddlUserDesignation.ClientID %> option:selected").val();
                     var TaskLvl = $('#<%= hdTaskLvl.ClientID %>').val();
 
@@ -2675,12 +2875,6 @@
                     copyToClipboard(urltoCopy);
                     return false;
                 });
-
-                ScrollTo($('.yellowthickborder'));
-
-                $(".yellowthickborder").bind("click", function () {
-                    $(this).removeClass("yellowthickborder");
-                });
             }
 
             // check if user has selected any designations or not.
@@ -2705,7 +2899,8 @@
             //----------- Start DP ---------
 
             function SetHiddenTaskId(vId) {
-                $('#<%=hdDropZoneTaskId.ClientID%>').val(vId);
+
+                $('#<%=hdDropZoneTaskId.ClientID%>').val($(vId).attr('data-taskid'));
             }
 
 
