@@ -211,6 +211,10 @@
         width: 90%;
     text-align: left;
     }
+    .pagination > li {float: none !important;}
+    .pagingInfo{
+        margin-top: -20px !important;
+    }
 </style>
 
 <fieldset class="tasklistfieldset">
@@ -1719,8 +1723,14 @@
 
                     }
                     else {
-                        $('#listId' + taskid).attr('data-label', 'a');
-                        $('#listId' + taskid).html('a');
+                        if (lastLevel != 1) {
+                            $('#listId' + taskid).attr('data-label', 'a');
+                            $('#listId' + taskid).html('a');
+                        }
+                        else {
+                            $('#nestLevel' + taskid).val(2);
+                            $('#listId' + taskid).attr('data-level', 2);
+                        }
                     }
                     
                 }

@@ -4,25 +4,25 @@
     }
 
     //Set Params
-    sequenceScope.UserSelectedDesigIds = DesigIds;
+    sequenceScopeTG.UserSelectedDesigIds = DesigIds;
 
     //Call Data Function
-    sequenceScope.getUserByDesignation();
+    sequenceScopeTG.getUserByDesignation();
 }
 
 function LoadSubTasks() {
 
     //Set Params
-    sequenceScope.UserSelectedDesigIds = "";
+    sequenceScopeTG.UserSelectedDesigIds = "";
 
     //Get Page Size
     var pageSize = $('#ContentPlaceHolder1_objucSubTasks_Admin_drpPageSize').val();
     if (pageSize == undefined)
         pageSize = $('#ContentPlaceHolder1_objucSubTasks_User_drpPageSize').val();
-    sequenceScope.pageSize = pageSize;
+    sequenceScopeTG.pageSize = pageSize;
 
-    sequenceScope.getSubTasks();
-    sequenceScope.getAssignUser();
+    sequenceScopeTG.getSubTasks();
+    sequenceScopeTG.getAssignUser();
 }
 
 function SetChosenAssignedUsers() {

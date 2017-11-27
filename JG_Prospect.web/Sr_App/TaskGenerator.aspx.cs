@@ -1460,7 +1460,8 @@ namespace JG_Prospect.Sr_App
                 SelectedUser += "," + row[0].ToString();
 
             }
-            hdnSelectedUsers.Value = SelectedUser.Substring(1);
+            if (SelectedUser.Length > 1)
+                hdnSelectedUsers.Value = SelectedUser.Substring(1);
 
 
             return false;
