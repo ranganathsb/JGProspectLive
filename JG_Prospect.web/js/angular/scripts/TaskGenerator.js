@@ -29,7 +29,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
     $scope.getUserByDesignation = function () {
 
-        callWebServiceMethod($http, "GetAssignUsers", { TaskDesignations: sequenceScope.UserSelectedDesigIds != "" ? sequenceScope.UserSelectedDesigIds.join() : sequenceScope.UserSelectedDesigIds }).then(function (data) {
+        callWebServiceMethod($http, "GetAssignUsers", { TaskDesignations: sequenceScopeTG.UserSelectedDesigIds != "" ? sequenceScopeTG.UserSelectedDesigIds.join() : sequenceScopeTG.UserSelectedDesigIds }).then(function (data) {
             var AssignedUsers = JSON.parse(data.data.d);
             $scope.UsersByDesignation = AssignedUsers;
             $scope.SelectedUserId = $scope.UsersByDesignation[0].Id;         
@@ -38,9 +38,10 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
     $scope.getSubTasks = function (page) {
         var TaskId = getUrlVars()["TaskId"];
+        TaskId = TaskId.replace('#/', '');
         $scope.page = page || 0;
 
-        callWebServiceMethod($http, "GetSubTasks", { TaskId: TaskId, strSortExpression: "CreatedOn DESC", vsearch: "", intPageIndex: page != undefined ? page : 0, intPageSize: sequenceScope.pageSize, intHighlightTaskId: 0 }).then(function (data) {
+        callWebServiceMethod($http, "GetSubTasks", { TaskId: TaskId, strSortExpression: "CreatedOn DESC", vsearch: "", intPageIndex: page != undefined ? page : 0, intPageSize: sequenceScopeTG.pageSize, intHighlightTaskId: 0 }).then(function (data) {
             var resultArray = JSON.parse(data.data.d);
             var result = resultArray.TaskData;
 
@@ -361,7 +362,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
     }
 
     //Create a Scope
-    sequenceScope = $scope;
+    sequenceScopeTG = $scope;
 }
 
 function getUrlVars() {
