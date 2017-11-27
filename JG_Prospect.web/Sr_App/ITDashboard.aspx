@@ -1528,9 +1528,9 @@
                         <span id="lblUserStatus">User Status</span><span style="color: red">*</span></td>
                     <td>
                         <span id="lblAddedBy">Users</span></td>
-                    <td>
+                    <td style="width:250px">
                         <span id="lblSourceH">Saved Report</span></td>
-                    <td>
+                    <td style="width:380px">
                         <span id="Label2">Select Period</span>
                     </td>
                     <td>Search</td>
@@ -1570,6 +1570,7 @@
                     </td>
                     <td>
                         <select id="ddlUserStatus">
+                            <%--<option value="0">All</option>--%>
                             <option value="1">Active</option>
                             <option value="6">Offer Made</option>
                             <option value="5">Interview Date</option>
@@ -1581,8 +1582,8 @@
                         </select><span id="lblLoading" style="display: none">Loading...</span>
                     </td>
                     <td></td>
-                    <td style="text-align: left; text-wrap: avoid;">
-                        <div style="float: left; width: 50%;">
+                    <td style="text-align: left; text-wrap: avoid; padding:0px">
+                        <div style="float: left; width: 57%;">
                             <input id="chkAllDates" name="chkAllDates" type="checkbox"><label for="chkAllDates">All</label>
                             <input id="chkOneYear" name="chkOneYear" type="checkbox"><label for="chkOneYear">1 year</label>
                             <input id="chkThreeMonth" name="chkThreeMonth" type="checkbox"><label for="chkThreeMonth"> Quarter (3 months)</label>
@@ -1592,20 +1593,21 @@
                         </div>
 
                         <div>
-                            <span id="Label3">From :*</span>
+                            <span id="Label3">From :*
                             <asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
                                 onkeypress="return false" MaxLength="10"
                                 Style="width: 80px;"></asp:TextBox>
                             <cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
-                            </cc1:CalendarExtender>
+                            </cc1:CalendarExtender><br />
+                            </span>
 
-                            <span id="Label4">To :*</span>
+                            <span id="Label4">To :*
                             <asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
                                 MaxLength="10" runat="server" TabIndex="3"
-                                Style="width: 80px;"></asp:TextBox>
+                                Style="width: 80px;margin-left: 16px;"></asp:TextBox>
                             <cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
                             </cc1:CalendarExtender>
-
+                            </span>
 
                             <span id="requirefrmdate" style="color: Red; visibility: hidden;">Select From date</span><span id="Requiretodate" style="color: Red; visibility: hidden;"> Select To date</span>
                         </div>
@@ -1644,13 +1646,10 @@
                             <div class="div-table-col seq-taskstatus">
                                 Status<div>Assigned To</div>
                             </div>
-                            <div class="div-table-col seq-taskduedate">
-                                Est Hrs<br />
-                                Additional Hrs<br />
-                                Total Hrs<br />
-                                $
+                            <div class="div-table-col seq-taskduedate" style="width:7% !important">
+                                EST Hrs -Add. Hrs<br />Total Hrs:$
                             </div>
-                            <div class="div-table-col seq-notes">Notes</div>
+                            <div class="div-table-col seq-notes" style="width:31% !important">Notes</div>
                         </div>
                         <!-- NG Repeat Div starts -->
                         <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in Tasks" ng-class="{orange : Task.Status==='4', yellow: Task.Status==='2', yellow: Task.Status==='3', lightgray: Task.Status==='8'}" repeat-end="onStaffEnd()">
@@ -1717,9 +1716,9 @@
                             <!-- Status & Assigned To ends -->
 
                             <!-- DueDate starts -->
-                            <div class="div-table-col seq-taskduedate">
+                            <div class="div-table-col seq-taskduedate" style="width:7% !important">
                                 <div class="seqapprovalBoxes">
-                                    <div style="width: 65%; float: left;">
+                                    <div style="width: 55%; float: left;">
                                         <input type="checkbox" id="chkngUserMaster" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
                                         <input type="checkbox" id="chkQAMaster" class="fz fz-QA" title="QA" />
                                         <input type="checkbox" id="chkAlphaUserMaster" class="fz fz-Alpha" title="AlphaUser" />
@@ -1728,7 +1727,7 @@
                                         <input type="checkbox" id="chkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
                                         <input type="checkbox" id="chkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                     </div>
-                                    <div style="width: 30%; float: right;">
+                                    <div style="width: 42%; float: right;">
                                         <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
                                         <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                     </div>
@@ -1880,9 +1879,9 @@
                                         </select>
                                     </div>
                                     <!-- Status & Assigned To ends -->
-                                    <div class="div-table-col seq-taskduedate">
+                                    <div class="div-table-col seq-taskduedate" style="width:7% !important">
                                         <div class="seqapprovalBoxes">
-                                            <div style="width: 65%; float: left;">
+                                            <div style="width: 55%; float: left;">
                                                 <input type="checkbox" id="chkngUserNested" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
                                                 <input type="checkbox" id="chkQANested" class="fz fz-QA" title="QA" />
                                                 <input type="checkbox" id="chkAlphaUserNested" class="fz fz-Alpha" title="AlphaUser" />
@@ -1891,7 +1890,7 @@
                                                 <input type="checkbox" id="chkngITLeadNested" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
                                                 <input type="checkbox" id="chkngAdminNested" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                             </div>
-                                            <div style="width: 30%; float: right;">
+                                            <div style="width: 43%; float: right;">
                                                 <input type="checkbox" id="chkngITLeadMasterNested" class="fz fz-techlead largecheckbox" title="IT Lead" />
                                                 <input type="checkbox" id="chkngAdminMasterNested" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                             </div>
@@ -2208,57 +2207,9 @@
                         <td width="300px" align="left">
                             <h2 class="itdashtitle">Commits, Closed-Billed</h2>
                         </td>
-                        <td><%if (IsSuperUser)
-                                { %>Designation<%} %></td>
-                        <td><%if (IsSuperUser)
-                                { %>Users<%} %></td>
                         <td></td>
                         <td></td>
-                    </tr>
-                    <tr>
                         <td></td>
-                        <td>
-
-                            <select data-placeholder="Select Designation" class="chosen-select-multi" multiple style="width: 200px;" id="ddlDesigClosedTask" runat="server">
-                                <option selected value="">All</option>
-                                <option value="1">Admin</option>
-                                <option value="2">Jr. Sales</option>
-                                <option value="3">Jr Project Manager</option>
-                                <option value="4">Office Manager</option>
-                                <option value="5">Recruiter</option>
-                                <option value="6">Sales Manager</option>
-                                <option value="7">Sr. Sales</option>
-                                <option value="8">IT - Network Admin</option>
-                                <option value="9">IT - Jr .Net Developer</option>
-                                <option value="10">IT - Sr .Net Developer</option>
-                                <option value="11">IT - Android Developer</option>
-                                <option value="12">IT - Sr. PHP Developer</option>
-                                <option value="13">IT – JR SEO/Backlinking/Content</option>
-                                <option value="14">Installer - Helper</option>
-                                <option value="15">Installer - Journeyman</option>
-                                <option value="16">Installer - Mechanic</option>
-                                <option value="17">Installer - Lead mechanic</option>
-                                <option value="18">Installer - Foreman</option>
-                                <option value="19">Commercial Only</option>
-                                <option value="20">SubContractor</option>
-                                <option value="22">Admin-Sales</option>
-                                <option value="23">Admin Recruiter</option>
-                                <option value="24">IT - Senior QA</option>
-                                <option value="25">IT - Junior QA</option>
-                                <option value="26">IT - Jr. PHP Developer</option>
-                                <option value="27">IT – Sr SEO Developer</option>
-                            </select>
-                        </td>
-                        <td>
-                            <% if (IsSuperUser)
-                                { %>
-                            <select id="ddlSelectUserClosedTask" data-placeholder="Select Users" multiple style="width: 250px;">
-                                <option selected value="">All</option>
-                            </select><span id="lblLoadingClosedTask" style="display: none">Loading...</span>
-                            <%} %>
-                        </td>
-                        <td>
-                            <input runat="server" id="txtSearchClosedTasks" maxlength="15" class="textbox ui-autocomplete-input" placeholder="search users" autocomplete="off" type="text"></td>
                         <td style="text-align: right">Number of Records: 
                                 <select id="drpPageSizeClosedTasks">
                                     <option value="10">10</option>
@@ -2268,6 +2219,22 @@
                                     <option value="50">50</option>
 
                                 </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+
+                            
+                        </td>
+                        <td>
+                            
+                        </td>
+                        <td>
+
+                        </td>
+                        <td style="text-align: right">
+                                
                         </td>
                     </tr>
                 </tbody>
@@ -2281,6 +2248,7 @@
                             <th scope="col" style="width: 100px;" align="center">Assigned To</th>
                             <th scope="col" style="width: 100px;" align="center">Sub Task ID#</th>
                             <th scope="col" style="width: 300px;" align="center">Sub Task</th>
+                            <th scope="col" style="width: 100px;" align="center">Total hrs, Total $</th>
                             <th scope="col" style="width: 120px;" align="center">Status</th>
                         </tr>
                     </thead>
@@ -2293,8 +2261,9 @@
                                 <a id="ContentPlaceHolder1_grdTaskClosed_lnkInstallId_0" class="context-menu" oncontextmenu="openCopyBox(this);return false;" data-installid="{{item.InstallId}}" data-highlighter="{{item.TaskId}}" parentdata-highlighter="{{item.MainParentId}}" href="<%=System.Configuration.ConfigurationManager.AppSettings["UrlToReplaceForTemplates"]%>Sr_App/TaskGenerator.aspx?TaskId={{item.MainParentId}}&hstid={{item.TaskId}}" target="_blank" style="color: Blue;">{{item.InstallId}}</a>
                             </td>
                             <td style="width: 300px;" valign="middle" align="justify">
-                                <span id="ContentPlaceHolder1_grdTaskClosed_lblDesc_0">{{item.Title}}</span>
+                                {{item.Title}}
                             </td>
+                            <td style="width: 100px;">&nbsp;</td>
                             <td style="width: 120px;" valign="middle" align="center">
                                 <select id="drpStatusClosed" onchange="changeTaskStatusClosed(this);" data-highlighter="{{item.TaskId}}">
                                     <option ng-selected="{{item.Status == '0'}}" value="0">--All--</option>
@@ -2414,6 +2383,7 @@
             $(".chosen-select-users").change(function () {
                 resetChosen(".chosen-select-users");
                 ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join());
+                ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize);
             });
 
             //Frozen/NonFrozen
@@ -2423,36 +2393,18 @@
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), $("#ddlSelectFrozenTask").val().join());
             });
 
-            //Closed Tasks
-            $("#ddlSelectUserClosedTask").change(function () {
-                desIds = $(".chosen-select-multi").val();
-                if (desIds == undefined) { desIds = ''; }
-                resetChosen("#ddlSelectUserClosedTask");
-                ShowAllClosedTasksDashBoard(desIds.join(), $('#ddlSelectUserClosedTask').val().join(), pageSize);
-            });
-
-            $(".chosen-select-multi").change(function () {
-                debugger;
-                resetChosen('#' + '<%=ddlDesigClosedTask.ClientID%>');
-                fillUsersClosedTasks('<%=ddlDesigClosedTask.ClientID%>', 'ddlSelectUserClosedTask', 'lblLoadingClosedTask');
-                desIds = $(".chosen-select-multi").val();
-                if (desIds == undefined) { desIds = ''; }
-                ShowAllClosedTasksDashBoard(desIds.join(), $('#ddlSelectUserClosedTask').val().join(), pageSize);
-            });
-
             //set page size
             $('#drpPageSizeClosedTasks').change(function () {
                 desIds = $(".chosen-select-multi").val();
                 if (desIds == undefined) { desIds = ''; }
                 pageSize = $('#drpPageSizeClosedTasks').val();
-                ShowAllClosedTasksDashBoard(desIds.join(), $('#ddlSelectUserClosedTask').val().join(), pageSize)
+                ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize)
             });
 
             //fill users
             if ($('#' + '<%=tableFilter.ClientID%>').length > 0) {
 
                 fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
-                fillUsersClosedTasks('<%=ddlDesigClosedTask.ClientID%>', 'ddlSelectUserClosedTask', 'lblLoadingClosedTask');
                 fillUsers(ddlDesigSeqClientIDFrozenTasks, 'ddlSelectFrozenTask', 'lblLoadingFrozen');
             }
 
@@ -2480,6 +2432,7 @@
                 $('.' + ddlDesigSeqClientID).change(function (e) {
                     resetChosen('#ddlDesignationSeq');
                     ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), 0);
+                    ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize)
                     fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
                 });
 
@@ -2615,10 +2568,14 @@
                         var result = [];
                         result = JSON.parse(data.d);
                         $.each(result, function () {
-                            var names = this.FristName.split(' - ');
+                            var names = this.FristName.split(' - ');                            
+                            var Class = 'activeUser';
+                            if (this.Status == '5')
+                                Class = 'IOUser';
+
                             var name = names[0] + '&nbsp;-&nbsp;';
-                            var link = names[1] != null && names[1] != '' ? '<a style="color:blue;" href="javascript:;" onclick=redir("/Sr_App/ViewSalesUser.aspx?id=' + this.Id + '")>' + names[1] + '</a>' : '';
-                            options.append($("<option />").val(this.Id).html(name + link));
+                            var link = names[1] != null && names[1] != '' ? '<a style="color:blue;" href="javascript:;" onclick=redir("/Sr_App/ViewSalesUser.aspx?id=' + this.Id +'")>' + names[1] + '</a>' : '';
+                            options.append($('<option class="' + Class +'" />').val(this.Id).html(name + link));
                         });
                         //$("#" + fillDDL).prop('disabled', false);
                     }
@@ -2640,39 +2597,6 @@
 
         function redir(url) {
             window.open(url, '_blank');
-        }
-
-        function fillUsersClosedTasks(selector, fillDDL, loader) {
-            debugger;
-            var did = $('#' + selector).val().join();
-            var options = $('#' + fillDDL);
-
-            //$("#" + fillDDL).prop('disabled', true);
-            $('#' + loader).show();
-            $.ajax({
-                type: "POST",
-                url: "ajaxcalls.aspx/GetUsersByDesignationId",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({ designationId: did }),
-                success: function (data) {
-                    options.empty();
-                    options.append($("<option selected='selected' />").val('0').text('All'));
-                    // Handle 'no match' indicated by [ "" ] response
-                    if (data.d) {
-                        debugger;
-                        var result = [];
-                        result = JSON.parse(data.d);
-                        $.each(result, function () {
-                            options.append($("<option />").val(this.Id).text(this.FristName));
-                        });
-                        //$("#" + fillDDL).prop('disabled', false);
-                    }
-                    options.trigger("chosen:updated");
-                    $('#' + loader).hide();
-                    // remove loading spinner image.                                
-                }
-            });
         }
 
         function updateTaskStatus(id, value) {
@@ -2753,9 +2677,6 @@
         function Initialize() {
             SetInProTaskAutoSuggestion();
             SetInProTaskAutoSuggestionUI();
-
-            SetClosedTaskAutoSuggestion();
-            SetClosedTaskAutoSuggestionUI();
 
             SetFrozenTaskAutoSuggestionUI();
 
@@ -2919,85 +2840,11 @@
         }
 
 
-        function SetClosedTaskAutoSuggestion() {
-            //debugger;
-            //console.log("SetClosedTaskAutoSuggestion called");
-            $('#<%= txtSearchClosedTasks.ClientID %>').catcomplete({
-                delay: 500,
-                source: function (request, response) {
+        
 
-                    if (request.term == "") {
-                        desIds = $(".chosen-select-multi").val();
-                        if (desIds == undefined) { desIds = ''; }
+        
 
-                        ShowAllClosedTasksDashBoard(desIds.join(), 0, pageSize);
-                        $('#<%= txtSearchClosedTasks.ClientID %>').removeClass("ui-autocomplete-loading");
-                        return false;
-                    }
-
-
-                    $.ajax({
-                        type: "POST",
-                        url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({ searchterm: request.term }),
-                        success: function (data) {
-                            //debugger;
-                            // Handle 'no match' indicated by [ "" ] response
-                            if (data.d) {
-                                ////debugger;
-                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                            }
-                            // remove loading spinner image.                                
-                            $('#<%= txtSearchClosedTasks.ClientID %>').removeClass("ui-autocomplete-loading");
-                         }
-                     });
-                },
-                minLength: 0,
-                select: function (event, ui) {
-                    debugger;
-                    //alert(ui.item.value);
-                    //alert(ui.item.id);
-                    $('#<%= txtSearchClosedTasks.ClientID %>').val(ui.item.value);
-                     //TriggerSearch();
-                     desIds = $(".chosen-select-multi").val();
-                     if (desIds == undefined) { desIds = ''; }
-                     ShowAllClosedTasksDashBoard("", ui.item.id, pageSize);
-                 }
-            });
-         }
-
-         function SetClosedTaskAutoSuggestionUI() {
-             //debugger;
-             //console.log("SetClosedTaskAutoSuggestionUI called");
-             $.widget("custom.catcomplete", $.ui.autocomplete, {
-                 _create: function () {
-                     this._super();
-                     this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                 },
-                 _renderMenu: function (ul, items) {
-                     //debugger;
-                     var that = this,
-                         currentCategory = "";
-                     $.each(items, function (index, item) {
-                         var li;
-                         if (item.Category != currentCategory) {
-                             ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                             currentCategory = item.Category;
-                         }
-                         li = that._renderItemData(ul, item);
-                         if (item.Category) {
-                             li.attr("aria-label", item.Category + " : " + item.label);
-                         }
-                     });
-
-                 }
-             });
-         }
-
-
-         function SetFrozenTaskAutoSuggestion() {
+        function SetFrozenTaskAutoSuggestion() {
 
              $("#txtSearchUserFrozen").catcomplete({
                  delay: 500,
@@ -3052,34 +2899,35 @@
                          return false;
                      }
 
-                     $.ajax({
-                         type: "POST",
-                         url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
-                         dataType: "json",
-                         contentType: "application/json; charset=utf-8",
-                         data: JSON.stringify({ searchterm: request.term }),
-                         success: function (data) {
-                             // Handle 'no match' indicated by [ "" ] response
-                             if (data.d) {
-                                 ////debugger;
-                                 response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                             }
-                             // remove loading spinner image.                                
-                             $("#txtSearchUser").removeClass("ui-autocomplete-loading");
-                         }
-                     });
-                 },
-                 minLength: 0,
-                 select: function (event, ui) {
-                     //debugger;
-                     //alert(ui.item.value);
-                     //alert(ui.item.id);
-                     $("#txtSearchUser").val(ui.item.value);
-                     //TriggerSearch();
-                     ShowTaskSequenceDashBoard(0, ui.item.id);
-                 }
-             });
-         }
+                    $.ajax({
+                        type: "POST",
+                        url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchterm: request.term }),
+                        success: function (data) {
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
+                                ////debugger;
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $("#txtSearchUser").removeClass("ui-autocomplete-loading");
+                        }
+                    });
+                },
+                minLength: 0,
+                select: function (event, ui) {
+                    //debugger;
+                    //alert(ui.item.value);
+                    //alert(ui.item.id);
+                    $("#txtSearchUser").val(ui.item.value);
+                    //TriggerSearch();
+                    ShowTaskSequenceDashBoard(0, ui.item.id);
+                    ShowAllClosedTasksDashBoard(0, ui.item.id, pageSize)
+                }
+            });
+        }
 
          function SetInProTaskAutoSuggestionUI() {
              //debugger;
