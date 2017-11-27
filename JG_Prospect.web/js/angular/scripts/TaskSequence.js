@@ -460,6 +460,15 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             case 26:
                 prefix = "ITJPH";
                 break;
+            case 27:
+                prefix = "ITSSE";
+                break;
+            case 28:
+                prefix = "ITSTE";
+                break;
+            case 29:
+                prefix = "ITFRXD";
+                break;
             default:
                 prefix = "N.A.";
                 break;
