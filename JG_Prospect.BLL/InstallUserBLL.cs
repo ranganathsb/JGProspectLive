@@ -663,9 +663,40 @@ namespace JG_Prospect.BLL
 
         public string AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog, string strGUID)
         {
-            return InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog, strGUID);
+            string op = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog, strGUID);
+            // Send email to User / Recruiter
+            // Get Html Template
+            string messageUrl = string.Empty, toEmail = string.Empty, body = string.Empty;
+            string baseUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" + System.Web.HttpContext.Current.Request.Url.Authority + System.Web.HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
+            HTMLTemplatesMaster html = HTMLTemplateBLL.Instance.GetHTMLTemplateMasterById(HTMLTemplates.TouchPointLog_Auto_Email);
+            if (LoginUserID == UserID) // Send email to Recruiter
+            {
+                string id = getuserdetails(UserID).Tables[0].Rows[0]["AddedByUserId"].ToString();
+                int HrId = Convert.ToInt32(!string.IsNullOrEmpty(id) ? id : "0");
+                toEmail = HrId > 0 ? getuserdetails(HrId).Tables[0].Rows[0]["AddedByUserId"].ToString() : "";
+                messageUrl = baseUrl + "Sr_App/edituser.aspx?TUID=" + UserID;
+            }
+            else // Send email to User
+            {
+                toEmail = getuserdetails(UserID).Tables[0].Rows[0]["Email"].ToString();
+                messageUrl = baseUrl + "Sr_App/ITDashboard.aspx?TUID=" + UserID;
+            }
+            body = html.Body.Replace("{MessageUrl}", messageUrl);
+            if (!string.IsNullOrEmpty(toEmail))
+            {
+                EmailManager.SendEmail("Touch Point Log", toEmail, html.Subject, body, null);
+            }
+            return op;
         }
 
+        public PagingResult<Notes> GetUserTouchPointLogs(int pageNumber, int pageSize, int userId)
+        {
+            return InstallUserDAL.Instance.GetUserTouchPointLogs(pageNumber, pageSize, userId);
+        }
+        public ActionOutput<LoginUser> GetUsers(string keyword)
+        {
+            return InstallUserDAL.Instance.GetUsers(keyword);
+        }
         public DataSet GetTouchPointLogDataByUserID(int UserID)
         {
             return InstallUserDAL.Instance.GetTouchPointLogDataByUserID(UserID);

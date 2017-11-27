@@ -1386,6 +1386,10 @@ namespace JG_Prospect
 
                         ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
                     }
+                    // display text in notes" User successfully passed aptitude test"
+                    string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
+                    int userID = Convert.ToInt32(JGSession.LoginUserID);
+                    InstallUserBLL.Instance.AddTouchPointLogRecord(userID, userID, strUserInstallId, DateTime.UtcNow, "User successfully passed aptitude test", "");
                 }
             }
         }
@@ -5064,6 +5068,11 @@ namespace JG_Prospect
                 CommonFunction.AddUserAsGitcollaborator(GithubUsername, JGConstant.GitRepo.Interview);
 
             }
+            //  User successfully accepted tech task
+            string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
+            int userID = Convert.ToInt32(JGSession.LoginUserID);
+            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, userID, strUserInstallId, DateTime.UtcNow, " User successfully accepted tech task", "");
+
             ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
         }
 
