@@ -1357,13 +1357,13 @@ namespace JG_Prospect.App_Code
                 case "26":
                     prefix = "ITJPH";
                     break;
-                case 27:
+                case "27":
                     prefix = "ITSSE";
                     break;
-                case 28:
+                case "28":
                     prefix = "ITSTE";
                     break;
-                case 29:
+                case "29":
                     prefix = "ITFRXD";
                     break;
                 default:
