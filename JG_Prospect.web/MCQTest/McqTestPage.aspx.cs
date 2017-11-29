@@ -776,9 +776,19 @@ namespace JG_Prospect.MCQTest
                 else // User is pass into our application.
                 {
                     //Response.Redirect("~/ViewApplicantUser.aspx?Id="+UserID+"&IE=1");
-                    UpdateUserStatusAsInterviewDateWithReason(DateTime.Now.AddDays(2), "Exam successfully cleared!s");
+                    
+                    #region "-- old cold commented --"
+                    /// Modified By: Yogesh Keraliya
+                    /// Modified Date: 11/16/2017
+                    /// Description: Flow changed after discussion with JG, http://web.jmgrovebuildingsupply.com/Sr_App/TaskGenerator.aspx?TaskId=686&hstid=722
+                    /// Point X. 2,3
+                    /// If user successfully completed test, but haven't accepted task their status is still in "Applicant"
+                    //UpdateUserStatusAsInterviewDateWithReason(DateTime.Now.AddDays(2), "Exam successfully cleared!s"); 
+                    #endregion
+
                     ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "SuccessRedirect(" + UserID + ");", true);
-                    ////Get latest task to be assigned for user's designation.
+                    
+                    //Get latest task to be assigned for user's designation.
                     //DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetDesignationTaskToAssignWithSequence(this.DesignationID, true);
 
                     //if (dsTaskToBeAssigned != null && dsTaskToBeAssigned.Tables.Count > 0 && dsTaskToBeAssigned.Tables[0].Rows.Count > 0)

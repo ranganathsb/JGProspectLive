@@ -1482,6 +1482,7 @@
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITSN043_I_e_v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\script Feb v0.1.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\GetUsersByKeyword.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_GetInstallerUserDetailsByLoginId.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_IsValidInstallerUser.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Procedures.sql" />
@@ -1504,6 +1505,7 @@
     <Content Include="Database Scripts\executed\yogesh\Script July v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script August v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script October v0.1.sql" />
+    <Content Include="Database Scripts\yogesh\FreeProjectQuote.sql" />
     <Content Include="Database Scripts\yogesh\Script November v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
@@ -2093,10 +2095,15 @@
     <Content Include="js\jquery.ui.position.min.js" />
     <Content Include="js\lightslider.js" />
     <Content Include="js\angular\scripts\TaskSequence.js" />
+    <Content Include="js\mention\bootstrap-typeahead.js" />
+    <Content Include="js\mention\mention.js" />
+    <Content Include="js\mention\recommended-styles.css" />
     <Content Include="js\paging.js" />
     <Content Include="js\TaskSequencing.js" />
     <Content Include="js\TimeCircles.js" />
     <Content Include="js\TimerFunctions.js" />
+    <Content Include="js\tribute\tribute.css" />
+    <Content Include="js\tribute\tribute.min.js" />
     <Content Include="Location_img\Jellyfish.jpg" />
     <Content Include="Location_img\Lighthouse.jpg" />
     <Content Include="Location_img\Tulips.jpg" />

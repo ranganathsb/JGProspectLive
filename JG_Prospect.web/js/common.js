@@ -32,7 +32,7 @@ var EditActionType = {
 //====== End Enums & Constants =====
 
 $(document).ready(function () {
-
+    
 });
 
 
@@ -608,30 +608,43 @@ function getUrlVars() {
     return vars;
 }
 
-$(document).on('keyup', '.add-notes-container .note-text', function () {
+
+//$(document).on('keyup', '.add-notes-container .note-text', function () {
+//    $('.auto-complete-users').remove();
+//    var keywords = $(this).val().split('@');
+//    var keyword = keywords[keywords.length - 1];
+//    if (keyword != '' && keywords.length>1)
+//        ajaxExt({
+//            url: '/Sr_App/edituser.aspx/GetUsers',
+//            type: 'POST',
+//            data: '{ keyword: "' + keyword + '" }',
+//            showThrobber: true,
+//            throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
+//            success: function (data, msg) {
+//                if (data.Results.length > 0) {
+//                    var tbl = '<ul class="auto-complete-users">';
+//                    $(data.Results).each(function (i) {
+//                        tbl += '<li>' +
+//                                    '<div onclick="setUser(this, \'' + data.Results[i].Email + '\',\'' + data.Results[i].FirstName + ' ' + data.Results[i].LastName + '\')">' + data.Results[i].FirstName + ' ' + data.Results[i].LastName + '(' + data.Results[i].Email + ')' + '</div>' +
+//                                '</li>';
+//                    });
+//                    tbl += '</ul>';
+//                    $('.add-notes-container').append(tbl);
+//                } else {
+//                    $('.add-notes-container').append('<ul class="auto-complete-users"><li>Notes not found</li></ul>');
+//                }
+//            }
+//        });
+//});
+
+function setUser(sender, email, name) {
+    var txt = $('.add-notes-container .note-text').val();
+    $('.add-notes-container .note-text').val(txt + name + ' (' + email + ')');
     $('.auto-complete-users').remove();
-    var keywords = $(this).val().split('@');
-    var keyword = keywords[keywords.length - 1];
-    if (keyword != '' && keywords.length>1)
-        ajaxExt({
-            url: '/Sr_App/edituser.aspx/GetUsers',
-            type: 'POST',
-            data: '{ keyword: "' + keyword + '" }',
-            showThrobber: true,
-            throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
-            success: function (data, msg) {
-                if (data.Results.length > 0) {
-                    var tbl = '<ul class="auto-complete-users">';
-                    $(data.Results).each(function (i) {
-                        tbl += '<li>' +
-                                    '<div onclick="setUser(this, \'' + data.Data[i].Email + '\',\'' + data.Data[i].FirstName + '\')">' + data.Data[i].FirstName + ' ' + data.Data[i].LastName + '(' + data.Data[i].Email + ')' + '</div>' +
-                                '</li>';
-                    });
-                    tbl += '</ul>';
-                    $('.add-notes-container').append(tbl);
-                } else {
-                    $('.add-notes-container').append('<ul class="auto-complete-users"><li>Notes not found</li></ul>');
-                }
-            }
-        });
+}
+var tribute = new Tribute({
+    values: [
+      { key: 'Justin Grove', value: 'Justin' },
+      { key: 'Yogesh Kumar', value: 'Yogesh' }
+    ]
 });

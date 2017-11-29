@@ -511,7 +511,7 @@
                     }
                 });
         }
-
+        //tribute.attach(document.querySelectorAll('.note-text'));
         function LoadNotes(sender, installUserId, userid) {
             ajaxExt({
                 url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
@@ -523,13 +523,20 @@
                     if (data.Data.length > 0) {
                         var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">';
                         $(data.Data).each(function (i) {
-                            tbl += '<tr>' +
+                            tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
                                         '<td><a href="javascript:;" onclick="openNotes(this,' + data.Data[i].UserID + ', \'' + installUserId + '\')" uid="' + data.Data[i].UserID + '">' + installUserId + '<br/>'+data.Data[i].ChangeDateTimeFormatted+'</a></td>' +
                                         '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
                                     '</tr>';
                         });
                         tbl += '</table>';
                         $('#user-' + userid).html(tbl);
+                        var tuid = getUrlVars()["TUID"];
+                        var nid = getUrlVars()["NID"];
+                        if (tuid != undefined && nid!= undefined) {
+                            $('.notes-table tr#' + nid).addClass('blink-notes');
+                        }
+                        //tribute.attach(document.querySelectorAll('.note-text'));
+                        tribute.attach(document.getElementById('txt-'+userid));
                     } else {
                         var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">' +
                                     '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
@@ -554,13 +561,14 @@
                         PageNumbering(data.TotalResults);
                         var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
                         $(data.Data).each(function (i) {
-                            tbl += '<tr>' +
+                            tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
                                         '<td><a href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UserID+'">' + data.Data[i].UpdatedUserInstallID + '<br/>'+data.Data[i].ChangeDateTimeFormatted+'</a></td>' +
                                         '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
                                     '</tr>';
                         });
                         tbl += '</table>';
-                        $('.notes-popup .content').html(tbl);
+                        $('.notes-popup .content').html(tbl);                        
+                        tribute.attach(document.getElementById('txt-popup'));
                     } else {
                         $('.notes-popup .content').html('Notes not found');
                     }
@@ -688,12 +696,21 @@
 
     </script>
     <script>
+        $(document).on('keyup','.txtSearch', function(e){
+            if (e.keyCode == 13) {
+                $('.btnSearchGridData').trigger('click');
+            }
+        });
+
+        $(document).on('click','.ClearSearch', function(e){
+            $('.txtSearch').val('');
+            $('.btnSearchGridData').trigger('click');
+        });
+
         function pageLoad() {
 
 
             $(document).ready(function () {
-                var notesEmail = '<%=notesUserEmail %>';
-                $('.txtSearch').val(notesEmail);
 
                 $(".GrdHeader").click(function () {
 
@@ -1147,8 +1164,9 @@
                             <asp:Label ID="lblselectedchk" runat="server" Style="font-weight: bold;" />
                         </div>
                         <div style="float: right;">
+                            <input type="button" class="btnSearc ClearSearch" value="Clear" />
                             <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox txtSearch" placeholder="search users" MaxLength="15" />
-                            <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
+                            <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc btnSearchGridData" OnClick="btnSearchGridData_Click" />
 
                             Number of Records: 
                             <asp:DropDownList ID="ddlPageSize_grdUsers" runat="server" AutoPostBack="true"
@@ -1429,7 +1447,7 @@
                                             Loading Notes...
                                         </div>
                                         <div style="text-align: left; padding: 4px;">
-                                            <textarea class="note-text textbox"></textarea>
+                                            <textarea class="note-text textbox" id="txt-<%# Eval("Id") %>"></textarea>
                                             <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this, '<%# Eval("Id") %>','<%#Eval("UserInstallId")%>')" />
                                         </div>
                                         <%--<div style="text-align: left; padding: 4px;">
@@ -2208,7 +2226,7 @@
             </div>
         </div>
         <div class="add-notes-container">
-            <textarea class="note-text textbox"></textarea>
+            <textarea class="note-text textbox" id="txt-popup"></textarea>
             <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addPopupNotes(this)" />
         </div>
     </div>
@@ -2463,7 +2481,11 @@
         }
 
         $(document).ready(function () {
-
+            var notesEmail = '<%=notesUserEmail %>';
+            if(notesEmail!=''){
+                $('.txtSearch').val(notesEmail);
+                $('.btnSearchGridData').trigger('click');
+            }
             var changeTooltipPosition = function (event) {
                 var tooltipX = event.pageX - 8;
                 var tooltipY = event.pageY + 8;

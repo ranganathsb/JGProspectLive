@@ -55,7 +55,7 @@ namespace JG_Prospect.Sr_App
             UpdateAudiTrailForLogout();
             Session.Clear();
             Session["LogOut"] = 1;
-            Response.Redirect("~/login.aspx");
+            Response.Redirect("~/stafflogin.aspx");
         }
 
         /// <summary>

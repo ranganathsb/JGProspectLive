@@ -2468,3 +2468,24 @@ input[type='checkbox']:checked.largecheckbox {
     -moz-border-radius: 8px;
     border-radius: 8px;
 }
+ul.auto-complete-users {
+    width: 400px;
+    list-style: none;
+    margin-top: -6px;
+    padding: 0px 0 0 0px;
+    background: #fff;
+    display: inline-block;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    position: absolute;
+    left: 6px;
+    top: 72px;
+}
+.auto-complete-users li {
+    margin: 0;
+    padding: 0;
+    display: inline-block;width: 100%;
+}
+.auto-complete-users li div{padding: 5px;
+    width: 100%;}
+.auto-complete-users li:hover{cursor:pointer;background:#007506;color:#fff;}

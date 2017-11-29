@@ -375,7 +375,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public string AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID)
+        public int AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID)
         {
             try
             {
@@ -390,13 +390,13 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@changeLog", DbType.String, changeLog);
                     database.AddInParameter(command, "@CurrGUID", DbType.String, strGUID);
 
-                    string lResult = database.ExecuteScalar(command).ToString();
-                    return lResult;
+                    DataSet dsTemp = database.ExecuteDataSet(command);
+                    return Convert.ToInt32(dsTemp.Tables[0].Rows[0]["UserTouchPointLogID"]);
                 }
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return 0;
             }
         }
 

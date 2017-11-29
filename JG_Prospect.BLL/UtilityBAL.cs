@@ -26,7 +26,7 @@ namespace JG_Prospect.BLL
         public static UtilityBAL Instance
         {
             get { return m_UtilityBAL; }
-            set { ; }
+            set {; }
         }
 
         public static void AddException(string pageUrl, string loginID, string exMsg, string exTrace) //, int productTypeId, int estimateId)
@@ -62,88 +62,102 @@ namespace JG_Prospect.BLL
     public static class EmailManager
     {
         #region Email
-        public static bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
+        public static bool SendEmail(string strEmailTemplate, string[] strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
         {
             bool retValue = false;
-            if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(strToAddress))
+            //if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(strToAddress))
+            //{
+            try
             {
-                try
+                /* Sample HTML Template
+                 * *****************************************************************************
+                 * Hi #lblFName#,
+                 * <br/>
+                 * <br/>
+                 * You are requested to appear for an interview on #lblDate# - #lblTime#.
+                 * <br/>
+                 * <br/>
+                 * Regards,
+                 * <br/>
+                */
+
+                string defaultEmailFrom = ConfigurationManager.AppSettings["defaultEmailFrom"].ToString();
+                string userName = ConfigurationManager.AppSettings["smtpUName"].ToString();
+                string password = ConfigurationManager.AppSettings["smtpPwd"].ToString();
+
+                //if (JGApplicationInfo.GetApplicationEnvironment() == "1" || JGApplicationInfo.GetApplicationEnvironment() == "2")
+                //{
+                //    strBody = String.Concat(strBody, "<br/><br/><h1>Email is intended for Email Address: " + strToAddress + "</h1><br/><br/>");
+                //    strToAddress = "error@kerconsultancy.com";
+
+                //}
+
+                MailMessage Msg = new MailMessage();
+                Msg.From = new MailAddress(defaultEmailFrom, "JGrove Construction");
+                if (JGApplicationInfo.GetApplicationEnvironment() == "1" || JGApplicationInfo.GetApplicationEnvironment() == "2")
                 {
-                    /* Sample HTML Template
-                     * *****************************************************************************
-                     * Hi #lblFName#,
-                     * <br/>
-                     * <br/>
-                     * You are requested to appear for an interview on #lblDate# - #lblTime#.
-                     * <br/>
-                     * <br/>
-                     * Regards,
-                     * <br/>
-                    */
+                    strBody = String.Concat(strBody, "<br/><br/><h1>Email is intended for Email Address: " + string.Join(", ", strToAddress) + "</h1><br/><br/>");
+                    Msg.To.Add("error@kerconsultancy.com");
 
-                    string defaultEmailFrom = ConfigurationManager.AppSettings["defaultEmailFrom"].ToString();
-                    string userName = ConfigurationManager.AppSettings["smtpUName"].ToString();
-                    string password = ConfigurationManager.AppSettings["smtpPwd"].ToString();
-
-                    if (JGApplicationInfo.GetApplicationEnvironment() == "1" || JGApplicationInfo.GetApplicationEnvironment() == "2")
-                    {
-                        strBody = String.Concat(strBody, "<br/><br/><h1>Email is intended for Email Address: " + strToAddress + "</h1><br/><br/>");
-                        strToAddress = "error@kerconsultancy.com";
-
-                    }
-
-                    MailMessage Msg = new MailMessage();
-                    Msg.From = new MailAddress(defaultEmailFrom, "JGrove Construction");
-                    Msg.To.Add(strToAddress);
-                    Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
-                    Msg.Subject = strSubject;// "JG Prospect Notification";
-                    Msg.Body = strBody.Replace("#UNSEMAIL#", System.Web.HttpContext.Current.Server.UrlEncode(strToAddress));
-                    Msg.IsBodyHtml = true;
-
-                    //ds = AdminBLL.Instance.GetEmailTemplate('');
-                    //// your remote SMTP server IP.
-                    if (lstAttachments != null)
-                    {
-                        foreach (Attachment objAttachment in lstAttachments)
-                        {
-                            Msg.Attachments.Add(objAttachment);
-                        }
-                    }
-
-                    if (lstAlternateView != null)
-                    {
-                        foreach (AlternateView objAlternateView in lstAlternateView)
-                        {
-                            Msg.AlternateViews.Add(objAlternateView);
-                        }
-                    }
-
-                    SmtpClient sc = new SmtpClient(
-                                                    ConfigurationManager.AppSettings["smtpHost"].ToString(),
-                                                    Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
-                                                  );
-                    NetworkCredential ntw = new NetworkCredential(userName, password);
-                    sc.UseDefaultCredentials = false;
-                    sc.Credentials = ntw;
-                    sc.DeliveryMethod = SmtpDeliveryMethod.Network;
-                    sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
-                    sc.Send(Msg);
-                    retValue = true;
-
-                    Msg = null;
-                    sc.Dispose();
-                    sc = null;
                 }
-                catch (Exception ex)
+                else
                 {
-                    UpdateEmailStatistics(ex.Message);
-
-                    //if (JGApplicationInfo.IsSendEmailExceptionOn())
-                    //{
-                    //    CommonFunction.SendExceptionEmail(ex);
-                    //}
+                    foreach (var item in strToAddress)
+                    {
+                        if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(item))
+                            Msg.To.Add(item);
+                    }
                 }
+                // Msg.To.Add(strToAddress);
+                Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
+                Msg.Subject = strSubject;// "JG Prospect Notification";
+                Msg.Body = strBody;
+                Msg.IsBodyHtml = true;
+
+                //ds = AdminBLL.Instance.GetEmailTemplate('');
+                //// your remote SMTP server IP.
+                if (lstAttachments != null)
+                {
+                    foreach (Attachment objAttachment in lstAttachments)
+                    {
+                        Msg.Attachments.Add(objAttachment);
+                    }
+                }
+
+                if (lstAlternateView != null)
+                {
+                    foreach (AlternateView objAlternateView in lstAlternateView)
+                    {
+                        Msg.AlternateViews.Add(objAlternateView);
+                    }
+                }
+
+                SmtpClient sc = new SmtpClient(
+                                                ConfigurationManager.AppSettings["smtpHost"].ToString(),
+                                                Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
+                                              );
+                NetworkCredential ntw = new NetworkCredential(userName, password);
+                sc.UseDefaultCredentials = false;
+                sc.Credentials = ntw;
+                sc.DeliveryMethod = SmtpDeliveryMethod.Network;
+                sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
+                sc.Send(Msg);
+                retValue = true;
+
+                Msg = null;
+                sc.Dispose();
+                sc = null;
             }
+            catch (Exception ex)
+            {
+                UpdateEmailStatistics(ex.Message);
+
+                //if (JGApplicationInfo.IsSendEmailExceptionOn())
+                //{
+                //    CommonFunction.SendExceptionEmail(ex);
+                //}
+            }
+            //}
             return retValue;
         }
 

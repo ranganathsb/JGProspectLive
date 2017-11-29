@@ -266,7 +266,7 @@
             background-color: #F6F1F3;
         }
         .notes-section {
-            float: left;
+            float: left;    width: 100%;
         }
          .notes-popup {
             width: 100%;
@@ -351,7 +351,7 @@
         .notes-popup .add-notes-container {
             display: inline-block;
             width: 98%;
-            padding: 5px;
+            padding: 5px;    POSITION: relative;
         }
 
             .notes-popup .add-notes-container textarea {
@@ -392,17 +392,7 @@
     cursor: pointer;
     border-radius: 5px;
 }
-            @keyframes blink {
-                from {background-color: #fff;}
-                to {background-color: #e0b900;}
-            }
-            @-webkit-keyframes blink {
-                from {background-color: #fff;}
-                to {background-color: #e0b900;}
-            }
-            .blink-notes{
-                animation: blink 2s steps(2, start) infinite;
-            }
+            
     </style>
     <link href="../css/chosen.css" rel="stylesheet" />
     <link href="../Styles/dd.css" rel="stylesheet" />
@@ -1073,6 +1063,7 @@
                     <ul>
                         <li><a href="#StaffTaskNonFrozen">Staff Tasks</a></li>
                         <li><a href="#TechTaskNonFrozen">Tech Tasks</a></li>
+                        
                     </ul>
                     <div id="StaffTaskNonFrozen">
                         <div id="tblStaffSeqNonFrozen" class="div-table tableSeqTask">
@@ -1638,6 +1629,7 @@
                             <!-- UI-Grid Ends here -->--%>
                     </div>
 
+                    
                 </div>
 
 
@@ -2141,8 +2133,9 @@
 
                 <div id="examPassed">
                     <span id="InterviewDateHeader">Dear Applicant,
-                <label ID="ltlApplicantName"></label>&nbsp;-&nbsp;<label ID="ltlApplicantId" ></label>, Thank you for applying to JMGrove Construction
-                <label ID="ltlDesignation" ></label>
+                <label id="ltlApplicantName"></label>
+                        &nbsp;-&nbsp;<label id="ltlApplicantId"></label>, Thank you for applying to JMGrove Construction
+                <label id="ltlDesignation"></label>
                         &nbsp; position. You have been selected for technical interview. We will be interviewing for your technical ability and will be requesting a sample of your work for technical analysis. Please have the following points below ready. In order to appear in the technical interview please follow below steps:
 
                     </span>
@@ -2318,10 +2311,10 @@
                     <br />
                     <table>
                         <tr>
-                            <td width="50%" align="left" style="vertical-align:top;"><span><strong><span class="bluetext">*</span>Interview Date & Time: </strong>
+                            <td width="50%" align="left" style="vertical-align: top;"><span><strong><span class="bluetext">*</span>Interview Date & Time: </strong>
                                 <label id="InterviewDateTime"></label>
                             </span></td>
-                            <td align="right" style="vertical-align:top;">
+                            <td align="right" style="vertical-align: top;">
                                 <table>
                                     <tr>
                                         <td align="left" valign="top"><a href="#" style="color: blue;">REC-001</a><br />
@@ -2496,14 +2489,13 @@
                         </div>
                     </div>
                     <div class="add-notes-container">
-                        <textarea class="note-text textbox"></textarea>
+                        <textarea id="note-text" class="note-text textbox"></textarea>
                         <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addPopupNotes(this)" />
                     </div>
                 </div>
             </div>
         <asp:HiddenField id="hdnUserId" runat="server"/>
     </div>
-
 
     <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
     <script src="../Scripts/angular.min.js"></script>
@@ -2513,6 +2505,7 @@
     <script src="../js/TaskSequencing.js"></script>
     <script src="../js/jquery.dd.min.js"></script>
     <script src="../js/angular/scripts/ClosedTasls.js"></script>
+
     <script type="text/javascript">
         function Paging(sender) {
             $('#PageIndex').val(paging.currentPage);
@@ -2527,7 +2520,7 @@
                         PageNumbering(data.TotalResults);
                         var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
                         $(data.Data).each(function (i) {
-                            tbl += '<tr>' +
+                            tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
                                         '<td><a href="/Sr_App/ViewSalesUser.aspx?id=' + data.Data[i].UserID + '">' + data.Data[i].UpdatedUserInstallID + '<br/>' + data.Data[i].ChangeDateTimeFormatted + '</a></td>' +
                                         '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
                                     '</tr>';
@@ -2535,14 +2528,18 @@
                         tbl += '</table>';
                         $('.notes-popup .content').html(tbl);
                         var tuid = getUrlVars()["TUID"];
-                        if (tuid != undefined) {
-                            $('.notes-popup').addClass('blink-notes');
+                        var nid = getUrlVars()["NID"];
+                        if (tuid != undefined && nid != undefined) {
+                            $('.notes-popup tr#' + nid).addClass('blink-notes');
                             $('html, body').animate({
                                 scrollTop: $(".notes-popup").offset().top
                             }, 2000);
                         }
+                        $('.pagingWrapper').show();
+                        tribute.attach(document.querySelectorAll('.note-text'));
                     } else {
                         $('.notes-popup .content').html('Notes not found');
+                        $('.pagingWrapper').hide();
                     }
                 }
             });
@@ -2613,7 +2610,7 @@
         function resetChosen(selector) {
             var val = $(selector).val();
 
-            //// debugger;
+            //
             if (val != undefined && val != '') {
                 $(selector)
                     .find('option:first-child').prop('selected', false)
@@ -2633,6 +2630,8 @@
             $(".chosen-select-users").chosen({ no_results_text: "No users found!" });
             $("#ddlSelectUserClosedTask").chosen({ no_results_text: "No users found!" });
             $("#ddlSelectFrozenTask").chosen();
+
+            
 
             //ddlSelectFrozenTask,lblLoadingFrozen
 
@@ -2658,7 +2657,7 @@
             });
 
             $(".chosen-select-multi").change(function () {
-                // debugger;
+                // 
                 resetChosen('#' + '<%=ddlDesigClosedTask.ClientID%>');
                 fillUsersClosedTasks('<%=ddlDesigClosedTask.ClientID%>', 'ddlSelectUserClosedTask', 'lblLoadingClosedTask');
                 desIds = $(".chosen-select-multi").val();
@@ -2688,10 +2687,9 @@
                
 
         $(window).load(function () {
+            checkNShowTaskPopup();
             sequenceScope.ForDashboard = true;
             var desId = "";
-            // debugger;
-
             if ($('#' + '<%=tableFilter.ClientID%>').length > 0) {
                 $('#chkAllDates').attr("checked", true);
                 //Set Date
@@ -2772,9 +2770,6 @@
 
             // Load initial tasks for user.
             ShowTaskSequenceDashBoard(desId, 0);
-
-
-
             //Load Closed Tasks
             desIds = $(".chosen-select-multi").val();
             if (desIds == undefined) { desIds = ''; }
@@ -2821,7 +2816,7 @@
         }
 
         function fillUsers(selector, fillDDL, loader) {
-            // debugger;
+            // 
             var did = $('.' + selector).val().join();
             var options = $('#' + fillDDL);
             $('#ddlSelectFrozenTask_chosen').css({ "width": "300px" });
@@ -2847,8 +2842,8 @@
                         result = JSON.parse(data.d);
                         $.each(result, function () {
                             var names = this.FristName.split(' - ');
-                            var name = names[0] +'&nbsp;-&nbsp;';
-                            var link = names[1] != null && names[1] != '' ? '<a style="color:blue;" href="javascript:;" onclick=redir("/Sr_App/ViewSalesUser.aspx?id=' + this.Id +'")>' + names[1] + '</a>' : '';
+                            var name = names[0] + '&nbsp;-&nbsp;';
+                            var link = names[1] != null && names[1] != '' ? '<a style="color:blue;" href="javascript:;" onclick=redir("/Sr_App/ViewSalesUser.aspx?id=' + this.Id + '")>' + names[1] + '</a>' : '';
                             options.append($("<option />").val(this.Id).html(name + link));
                         });
                         //$("#" + fillDDL).prop('disabled', false);
@@ -2874,7 +2869,7 @@
         }
 
         function fillUsersClosedTasks(selector, fillDDL, loader) {
-            // debugger;
+            // 
             var did = $('#' + selector).val().join();
             var options = $('#' + fillDDL);
 
@@ -2891,7 +2886,7 @@
                     options.append($("<option selected='selected' />").val('0').text('All'));
                     // Handle 'no match' indicated by [ "" ] response
                     if (data.d) {
-                        // debugger;
+                        // 
                         var result = [];
                         result = JSON.parse(data.d);
                         $.each(result, function () {
@@ -2975,7 +2970,7 @@
         });
 
         //$(document).on('click', '#ddlSelectUserInProTask_chosen', function () {
-        //    // debugger;
+        //    
         //    var href = $(this).find('li.search-choice a').attr('href');
         //    window.open(href, "_blank");
         //});
@@ -3006,37 +3001,42 @@
             });
         }
         function openCopyBox(obj) {
-            // debugger;
+            // 
             var urltoCopy = _updateQStringParam(window.location.href, "hstid", $(obj).attr('data-highlighter'), "TaskId", $(obj).attr('parentdata-highlighter'), "InstallId", $(obj).attr('data-installid'));
             copyToClipboard(urltoCopy);
             return false;
         }
 
         //$(".context-menu").bind("contextmenu", function () {
-        //    // debugger;
+        //    // 
         //    var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'), "TaskId", $(this).attr('parentdata-highlighter'));
         //    copyToClipboard(urltoCopy);
         //    return false;
         //});
         function checkNShowTaskPopup() {
-
             var TaskId = getUrlVars()["TaskId"];
+            var PopupWithoutTask = getUrlVars()["PWT"];
+
             if (TaskId) {
-
-                
-                GetEmployeeInterviewDetails();
-
-                $('#HighLightedTask').removeClass('hide');
-
-                var $dialog = $('#HighLightedTask').dialog({
-                    autoOpen: true,
-                    modal: false,
-                    height: 500,
-                    width: 1100,
-                    title: 'Important Interview Information'
-                });
-
+                showInterviewPopup();
             }
+            else if (PopupWithoutTask) {// If no task available hide task div.
+                showInterviewPopup();
+                $('#tblIntTechSeq').hide();
+            }
+        }
+
+        function showInterviewPopup() {
+            GetEmployeeInterviewDetails();
+            $('#HighLightedTask').removeClass('hide');
+            var $dialog = $('#HighLightedTask').dialog({
+                autoOpen: true,
+                modal: false,
+                height: 500,
+                width: 1100,
+                title: 'Important Interview Information'
+            });
+
         }
 
         // Read a page's GET URL variables and return them as an associative array.
@@ -3052,7 +3052,7 @@
         }
 
         function setSelectedUsersLink() {
-            //// debugger;
+            //// 
             $('.chosen-dropDown').each(function () {
                 var itemIndex = $(this).children('.search-choice-close').attr('data-option-array-index');
                 //console.log(itemIndex);
@@ -3101,7 +3101,7 @@
         }
 
         function SetApprovalUI() {
-            //// debugger;
+            //// 
             $('.approvalBoxes').each(function () {
                 var approvaldialog = $($(this).next('.approvepopup'));
                 approvaldialog.dialog({
@@ -3118,7 +3118,7 @@
         }
 
         function SetFrozenTaskAutoSuggestionUI() {
-            //// debugger;
+            //// 
             //console.log("SetFrozenTaskAutoSuggestionUI called");
             $.widget("custom.catcomplete", $.ui.autocomplete, {
                 _create: function () {
@@ -3146,7 +3146,7 @@
 
 
         function SetClosedTaskAutoSuggestion() {
-            //// debugger;
+            //// 
             //console.log("SetClosedTaskAutoSuggestion called");
             $('#<%= txtSearchClosedTasks.ClientID %>').catcomplete({
                 delay: 500,
@@ -3158,9 +3158,83 @@
 
                         ShowAllClosedTasksDashBoard(desIds.join(), 0, pageSize);
                         $('#<%= txtSearchClosedTasks.ClientID %>').removeClass("ui-autocomplete-loading");
+                        return false;
+                    }
+
+
+                    $.ajax({
+                        type: "POST",
+                        url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchterm: request.term }),
+                        success: function (data) {
+                            //
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
+                                ////
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $('#<%= txtSearchClosedTasks.ClientID %>').removeClass("ui-autocomplete-loading");
+                         }
+                     });
+                },
+                minLength: 0,
+                select: function (event, ui) {
+                    
+                    //alert(ui.item.value);
+                    //alert(ui.item.id);
+                    $('#<%= txtSearchClosedTasks.ClientID %>').val(ui.item.value);
+                     //TriggerSearch();
+                     desIds = $(".chosen-select-multi").val();
+                     if (desIds == undefined) { desIds = ''; }
+                     ShowAllClosedTasksDashBoard("", ui.item.id, pageSize);
+                 }
+            });
+         }
+
+         function SetClosedTaskAutoSuggestionUI() {
+             //
+             //console.log("SetClosedTaskAutoSuggestionUI called");
+             $.widget("custom.catcomplete", $.ui.autocomplete, {
+                 _create: function () {
+                     this._super();
+                     this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                 },
+                 _renderMenu: function (ul, items) {
+                     //
+                     var that = this,
+                         currentCategory = "";
+                     $.each(items, function (index, item) {
+                         var li;
+                         if (item.Category != currentCategory) {
+                             ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                             currentCategory = item.Category;
+                         }
+                         li = that._renderItemData(ul, item);
+                         if (item.Category) {
+                             li.attr("aria-label", item.Category + " : " + item.label);
+                         }
+                     });
+
+                 }
+             });
+         }
+
+
+         function SetFrozenTaskAutoSuggestion() {
+
+             $("#txtSearchUserFrozen").catcomplete({
+                 delay: 500,
+                 source: function (request, response) {
+
+                     if (request.term == "") {
+                         ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                         ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                         $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
                          return false;
                      }
-
 
                      $.ajax({
                          type: "POST",
@@ -3169,181 +3243,107 @@
                          contentType: "application/json; charset=utf-8",
                          data: JSON.stringify({ searchterm: request.term }),
                          success: function (data) {
-                             //// debugger;
                              // Handle 'no match' indicated by [ "" ] response
                              if (data.d) {
-                                 ////// debugger;
+                                 ////
                                  response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
                              }
                              // remove loading spinner image.                                
-                             $('#<%= txtSearchClosedTasks.ClientID %>').removeClass("ui-autocomplete-loading");
-                        }
+                             $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
+                         }
                      });
                  },
                  minLength: 0,
                  select: function (event, ui) {
-                     // debugger;
+                     //
                      //alert(ui.item.value);
                      //alert(ui.item.id);
-                     $('#<%= txtSearchClosedTasks.ClientID %>').val(ui.item.value);
-                    //TriggerSearch();
-                    desIds = $(".chosen-select-multi").val();
-                    if (desIds == undefined) { desIds = ''; }
-                    ShowAllClosedTasksDashBoard("", ui.item.id, pageSize);
-                }
-            });
-        }
+                     $("#txtSearchUserFrozen").val(ui.item.value);
+                     //TriggerSearch();
+                     ShowFrozenTaskSequenceDashBoard(0, ui.item.id);
+                     ShowNonFrozenTaskSequenceDashBoard(0, ui.item.id);
+                 }
+             });
+         }
 
-        function SetClosedTaskAutoSuggestionUI() {
-            //// debugger;
-            //console.log("SetClosedTaskAutoSuggestionUI called");
-            $.widget("custom.catcomplete", $.ui.autocomplete, {
-                _create: function () {
-                    this._super();
-                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                },
-                _renderMenu: function (ul, items) {
-                    //// debugger;
-                    var that = this,
-                        currentCategory = "";
-                    $.each(items, function (index, item) {
-                        var li;
-                        if (item.Category != currentCategory) {
-                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                            currentCategory = item.Category;
-                        }
-                        li = that._renderItemData(ul, item);
-                        if (item.Category) {
-                            li.attr("aria-label", item.Category + " : " + item.label);
-                        }
-                    });
+         function SetInProTaskAutoSuggestion() {
 
-                }
-            });
-        }
+             $("#txtSearchUser").catcomplete({
+                 delay: 500,
+                 source: function (request, response) {
 
+                     if (request.term == "") {
+                         ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), 0);
+                         $("#txtSearchUser").removeClass("ui-autocomplete-loading");
+                         return false;
+                     }
 
-        function SetFrozenTaskAutoSuggestion() {
+                     $.ajax({
+                         type: "POST",
+                         url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
+                         dataType: "json",
+                         contentType: "application/json; charset=utf-8",
+                         data: JSON.stringify({ searchterm: request.term }),
+                         success: function (data) {
+                             // Handle 'no match' indicated by [ "" ] response
+                             if (data.d) {
+                                 ////
+                                 response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                             }
+                             // remove loading spinner image.                                
+                             $("#txtSearchUser").removeClass("ui-autocomplete-loading");
+                         }
+                     });
+                 },
+                 minLength: 0,
+                 select: function (event, ui) {
+                     //
+                     //alert(ui.item.value);
+                     //alert(ui.item.id);
+                     $("#txtSearchUser").val(ui.item.value);
+                     //TriggerSearch();
+                     ShowTaskSequenceDashBoard(0, ui.item.id);
+                 }
+             });
+         }
 
-            $("#txtSearchUserFrozen").catcomplete({
-                delay: 500,
-                source: function (request, response) {
-
-                    if (request.term == "") {
-                        ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-                        ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-                        $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
-                        return false;
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({ searchterm: request.term }),
-                        success: function (data) {
-                            // Handle 'no match' indicated by [ "" ] response
-                            if (data.d) {
-                                ////// debugger;
-                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                            }
-                            // remove loading spinner image.                                
-                            $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
-                        }
-                    });
-                },
-                minLength: 0,
-                select: function (event, ui) {
-                    //// debugger;
-                    //alert(ui.item.value);
-                    //alert(ui.item.id);
-                    $("#txtSearchUserFrozen").val(ui.item.value);
-                    //TriggerSearch();
-                    ShowFrozenTaskSequenceDashBoard(0, ui.item.id);
-                    ShowNonFrozenTaskSequenceDashBoard(0, ui.item.id);
-                }
-            });
-        }
-
-        function SetInProTaskAutoSuggestion() {
-
-            $("#txtSearchUser").catcomplete({
-                delay: 500,
-                source: function (request, response) {
-
-                    if (request.term == "") {
-                        ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), 0);
-                        $("#txtSearchUser").removeClass("ui-autocomplete-loading");
-                        return false;
-                    }
-
-                    $.ajax({
-                        type: "POST",
-                        url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({ searchterm: request.term }),
-                        success: function (data) {
-                            // Handle 'no match' indicated by [ "" ] response
-                            if (data.d) {
-                                ////// debugger;
-                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                            }
-                            // remove loading spinner image.                                
-                            $("#txtSearchUser").removeClass("ui-autocomplete-loading");
-                        }
-                    });
-                },
-                minLength: 0,
-                select: function (event, ui) {
-                    //// debugger;
-                    //alert(ui.item.value);
-                    //alert(ui.item.id);
-                    $("#txtSearchUser").val(ui.item.value);
-                    //TriggerSearch();
-                    ShowTaskSequenceDashBoard(0, ui.item.id);
-                }
-            });
-        }
-
-        function SetInProTaskAutoSuggestionUI() {
-            //// debugger;
-            //console.log("SetInProTaskAutoSuggestionUI called");
-            $.widget("custom.catcomplete", $.ui.autocomplete, {
-                _create: function () {
-                    this._super();
-                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                },
-                _renderMenu: function (ul, items) {
-                    var that = this,
-                        currentCategory = "";
-                    $.each(items, function (index, item) {
-                        //// debugger;
-                        var li;
-                        if (item.Category != currentCategory) {
-                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                            currentCategory = item.Category;
-                        }
-                        li = that._renderItemData(ul, item);
-                        if (item.Category) {
-                            li.attr("aria-label", item.Category + " : " + item.label);
-                        }
-                    });
-                }
-            });
-        }
+         function SetInProTaskAutoSuggestionUI() {
+             //
+             //console.log("SetInProTaskAutoSuggestionUI called");
+             $.widget("custom.catcomplete", $.ui.autocomplete, {
+                 _create: function () {
+                     this._super();
+                     this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                 },
+                 _renderMenu: function (ul, items) {
+                     var that = this,
+                         currentCategory = "";
+                     $.each(items, function (index, item) {
+                         //
+                         var li;
+                         if (item.Category != currentCategory) {
+                             ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                             currentCategory = item.Category;
+                         }
+                         li = that._renderItemData(ul, item);
+                         if (item.Category) {
+                             li.attr("aria-label", item.Category + " : " + item.label);
+                         }
+                     });
+                 }
+             });
+         }
 
 
-        function SetTaskCounterPopup() {
+         function SetTaskCounterPopup() {
 
             $('#' +'<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
-                // debugger;
+                // 
                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
             });
-            $('#' +'<%=lblFrozenTaskCounter.ClientID%>').click(function () {
-                // debugger;
+            $('#' + '<%=lblFrozenTaskCounter.ClientID%>').click(function () {
+                
                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
             });
@@ -3449,10 +3449,10 @@
             }
         }
 
-      
+
 
         function SetInterviewDatePopupEmployeeInstructions(DesigId) {
-           
+
             var postData;
             var MethodToCall = "GetEmployeeInstructionByDesignationId";
             postData = {
@@ -3476,7 +3476,7 @@
         function GetEmployeeInterviewDetails() {
 
             var EmployeeId = $('#<%=hdnUserId.ClientID%>').val();
-            alert(EmployeeId);
+           // alert(EmployeeId);
             var postData;
             var MethodToCall = "GetEmployeeInterviewDetails";
             postData = {
@@ -3489,7 +3489,7 @@
             function OnEmployeeInterviewDetailsSuccess(data) {
                 if (data.d) {
                     var responseObj = JSON.parse(data.d);
-                    
+
                     if (responseObj) {
                         $('#ltlApplicantName').html(responseObj[0].FristName + " " + responseObj[0].LastName);
                         $('#ltlApplicantId').html(responseObj[0].UserInstallId);

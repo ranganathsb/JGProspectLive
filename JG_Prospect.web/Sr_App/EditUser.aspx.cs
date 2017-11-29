@@ -548,9 +548,11 @@ namespace JG_Prospect
                         if (userNotes != null && userNotes.Any())
                         {
                             Repeater rptNotes = (e.Row.FindControl("rptNotes") as Repeater);
-
-                            rptNotes.DataSource = userNotes.CopyToDataTable();
-                            rptNotes.DataBind();
+                            if (rptNotes != null)
+                            {
+                                rptNotes.DataSource = userNotes.CopyToDataTable();
+                                rptNotes.DataBind();
+                            }
                         }
                     }
 

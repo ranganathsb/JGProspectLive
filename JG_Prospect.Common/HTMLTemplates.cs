@@ -102,8 +102,7 @@ namespace JG_Prospect.Common
         Written_Warning_AutoEmailTemplate = 79,
         Task_Accepted_Auto_Email = 80,
         Task_Rejected_Auto_Email = 81,
-
-
-        TouchPointLog_Auto_Email = 104
+        HR_EditSales_TouchpointLog_Email = 104,
+        Customer_FreeProjectQuote_Email = 105
     }
 }
