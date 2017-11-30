@@ -125,7 +125,54 @@ function SetCKEditorForPageContent(Id, AutosavebuttonId) {
 
     arrCKEditor.push(editor);
 }
+function SetCKEditorForChildren(Id) {
 
+    var $target = $('#' + Id);
+
+    // The inline editor should be enabled on an element with "contenteditable" attribute set to "true".
+    // Otherwise CKEditor will start in read-only mode.
+
+    $target.attr('contenteditable', true);
+
+    CKEDITOR.inline(Id,
+        {
+            // Show toolbar on startup (optional).
+            //startupFocus: true,
+            startupFocus: true,
+            enterMode: CKEDITOR.ENTER_BR,
+            on: {
+                blur: function (event) {
+                    event.editor.updateElement();
+                    //updateDesc(GetCKEditorContent(Id));
+                },
+                fileUploadResponse: function (event) {
+                    // Prevent the default response handler.
+                    event.stop();
+
+                    // Ger XHR and response.
+                    var data = event.data,
+                        xhr = data.fileLoader.xhr,
+                        response = xhr.responseText.split('|');
+
+                    var jsonarray = JSON.parse(response[0]);
+
+                    attachImagesByCKEditor(event.data.fileLoader.fileName, jsonarray.fileName);
+
+                    if (jsonarray && jsonarray.uploaded != "1") {
+                        // Error occurred during upload.                
+                        event.cancel();
+                    } else {
+                        data.url = jsonarray.url;
+                    }
+                }
+
+            }
+        });
+
+    var editor = CKEDITOR.instances[Id];
+
+    arrCKEditor.push(editor);
+}
 function SetCKEditorForSubTask(Id) {
 
     var $target = $('#' + Id);
@@ -478,6 +525,7 @@ function updateQueryStringParameterTP(uri, key, value) {
         return uri + separator + key + "=" + value;
     }
 }
+
 function IsNumeric(e, blWholeNumber) {
     var keyCode = e.which ? e.which : e.keyCode;
 

@@ -775,8 +775,11 @@ namespace JG_Prospect.MCQTest
                 }
                 else // User is pass into our application.
                 {
+                    //After successfully completed test , Status will be applicant again.
+                    UpdateUserStatusAsApplicantWithReason(UserID, "Completed apptitude test successfully.");
+
                     //Response.Redirect("~/ViewApplicantUser.aspx?Id="+UserID+"&IE=1");
-                    
+
                     #region "-- old cold commented --"
                     /// Modified By: Yogesh Keraliya
                     /// Modified Date: 11/16/2017
@@ -852,6 +855,11 @@ namespace JG_Prospect.MCQTest
         private void UpdateUserStatusAsRejectedWithReason(int userID, String ReasonMessage)
         {
             InstallUserBLL.Instance.ChangeUserStatusToReject(Convert.ToInt32(JGConstant.InstallUserStatus.Rejected), DateTime.Now.Date, DateTime.Now.ToShortTimeString(), JGApplicationInfo.GetJMGCAutoUserID(), Convert.ToInt32(Session["ID"]), ReasonMessage);
+        }
+
+        private void UpdateUserStatusAsApplicantWithReason(int userID, String ReasonMessage)
+        {
+            InstallUserBLL.Instance.ChangeUserStatusToReject(Convert.ToInt32(JGConstant.InstallUserStatus.Applicant), DateTime.Now.Date, DateTime.Now.ToShortTimeString(), JGApplicationInfo.GetJMGCAutoUserID(), Convert.ToInt32(Session["ID"]), ReasonMessage);
         }
 
         //Update User Exam Summary.

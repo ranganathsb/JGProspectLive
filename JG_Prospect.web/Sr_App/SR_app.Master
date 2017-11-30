@@ -43,6 +43,9 @@
     <script type="text/javascript" src="../js/paging.js"></script>
     
     
+    <script src="../Scripts/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-sanitize.js"></script>
+
     <script type="text/javascript">
 
 
