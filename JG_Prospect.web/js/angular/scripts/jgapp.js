@@ -1,9 +1,9 @@
 ﻿//var app = angular.module('JGApp', ['ui.grid', 'ui.grid.expandable']);
-var app = angular.module('JGApp', [], function ($compileProvider) {
+var app = angular.module('JGApp', ['ngSanitize'], function ($compileProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file):/);
 });
 var url = '/WebServices/JGWebService.asmx/';
-var sequenceScope, sequenceScopeClosedTasks, sequenceScopeFrozenTasks, sequenceUIGridScope;
+var sequenceScope, sequenceScopeClosedTasks, sequenceScopeFrozenTasks, sequenceUIGridScope, sequenceScopeTG;
 
 /*************************************************************************/
 // DIRECTIVES

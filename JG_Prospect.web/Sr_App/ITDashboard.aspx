@@ -265,6 +265,134 @@
         .defaultColor {
             background-color: #F6F1F3;
         }
+        .notes-section {
+            float: left;    width: 100%;
+        }
+         .notes-popup {
+            width: 100%;
+            background: #fff;
+            border-radius: 5px;
+            margin: 10px 0px;
+        }
+
+        .notes-popup-background {
+            display: none;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            background: #000;
+            opacity: 0.5;
+        }
+
+        .notes-popup .heading {
+            width: 100%;
+            display: inline-block;
+            background: #A33E3F;
+            color: #fff;
+            padding: 5px 0;
+            border-radius: 5px 5px 0 0;
+        }
+
+            .notes-popup .heading .title {
+                padding: 0 5px;
+                float: left;
+            }
+
+        .notes-popup .content {
+            padding: 5px;
+        }
+
+        .notes-popup .heading .close {
+            float: right;
+            top: -11px;
+            font-size: 14px;
+            right: -8px;
+            background: #ccc;
+            border-radius: 19px;
+            cursor: pointer;
+        }
+
+        .notes-popup .content table {
+            width: 100%;
+        }
+
+            .notes-popup .content table th {
+                border: 1px solid #ccc;
+                text-align: left;
+                padding: 3px;
+                font-size: 13px;
+                color: #ddd;
+                background: #000;
+            }
+
+            .notes-popup .content table td {
+                padding: 3px;
+                font-size: 12px;
+                border: 1px solid #ccc;
+            }
+
+            .notes-popup .content table tr:nth-child(even) {
+                background: #ba4f50;
+                color: #fff;
+            }
+
+            .notes-popup .content table tr:nth-child(odd) {
+                background: #FFF;
+                color: #000;
+            }
+
+            .notes-popup .content table tr th:nth-child(1), .notes-popup .content table tr td:nth-child(1) {
+                width: 120px;
+            }
+
+        .notes-popup .add-notes-container {
+            display: inline-block;
+            width: 98%;
+            padding: 5px;    POSITION: relative;
+        }
+
+            .notes-popup .add-notes-container textarea {
+                width: 80% !important;
+                height: 50px !important;
+                padding: 5px !important;
+                    float: left;
+    margin-right: 10px;
+            }
+            .notes-popup .notes-container .note-desc {
+                width: 194px;
+                height: 29px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .notes-table tr:nth-child(odd) a{}
+            .notes-table tr:nth-child(even) a, .notes-popup tr:nth-child(even) a{color:#fff;}
+            .notes-table tr th:nth-child(1), .notes-table tr td:nth-child(1) {
+                width: 5%;
+            }
+            
+            .notes-table tr th:nth-child(2), .notes-table tr td:nth-child(2) {
+                width: 27%;
+            }
+
+            .notes-table tr th:nth-child(3), .notes-table tr td:nth-child(3) {
+                width: 90px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+            .GrdBtnAdd {
+    margin-top: 12px;
+    height: 30px;
+    background: url(img/main-header-bg.png) repeat-x;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+}
+            
     </style>
     <link href="../css/chosen.css" rel="stylesheet" />
     <link href="../Styles/dd.css" rel="stylesheet" />
@@ -403,7 +531,7 @@
 
                                 <!-- Status & Assigned To starts -->
                                 <div class="div-table-col seq-taskstatus">
-                                    <select id="drpStatusSubsequence2" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
+                                    <select id="drpStatusSubsequenceFrozen" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
                                         <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
                                         <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
                                         <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -431,7 +559,7 @@
                                             data-chosen="1" data-placeholder="Select Users" ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id" ng-model="DesignationAssignUsersModel"
                                             AutoPostBack="false">--%>
 
-                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssignedFrozen" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                         <option
                                             ng-repeat="item in DesignationAssignUsers"
                                             value="{{item.Id}}"
@@ -450,17 +578,17 @@
                                 <div class="div-table-col seq-taskduedate">
                                     <div class="seqapprovalBoxes">
                                         <div style="width: 65%; float: left;">
-                                            <input type="checkbox" id="chkngUser" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                            <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                            <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                            <input type="checkbox" id="chkngUserFrozen" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                            <input type="checkbox" id="chkQAFrozen" class="fz fz-QA" title="QA" />
+                                            <input type="checkbox" id="chkAlphaUserFrozen" class="fz fz-Alpha" title="AlphaUser" />
                                             <br />
-                                            <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                            <input type="checkbox" id="chkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                            <input type="checkbox" id="chkBetaUserFrozen" class="fz fz-Beta" title="BetaUser" />
+                                            <input type="checkbox" id="chkngITLeadFrozen" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminFrozen" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                         </div>
                                         <div style="width: 30%; float: right;">
-                                            <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                            <input type="checkbox" id="chkngITLeadMasterFrozen" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminMasterFrozen" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                         </div>
                                     </div>
 
@@ -577,7 +705,7 @@
 
                                         <!-- Status & Assigned To starts -->
                                         <div class="div-table-col seq-taskstatus">
-                                            <select id="drpStatusSubsequence" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
+                                            <select id="drpStatusSubsequenceFrozenNested" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
                                                 <option ng-selected="{{TechTask.Status == '1'}}" value="1">Open</option>
                                                 <option ng-selected="{{TechTask.Status == '2'}}" style="color: red" value="2">Requested</option>
                                                 <option ng-selected="{{TechTask.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -599,7 +727,7 @@
                                                 <%} %>
                                             </select>
                                             <br />
-                                            <select id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
+                                            <select id="ddcbSeqAssignedFrozenNested" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
                                                 <option
                                                     ng-repeat="item in DesignationAssignUsers"
                                                     value="{{item.Id}}"
@@ -612,17 +740,17 @@
                                         <div class="div-table-col seq-taskduedate">
                                             <div class="seqapprovalBoxes">
                                                 <div style="width: 65%; float: left;">
-                                                    <input type="checkbox" id="chkngUser" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                                    <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                                    <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                                    <input type="checkbox" id="chkngUserFrozenNested" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                                    <input type="checkbox" id="chkQAFrozenNested" class="fz fz-QA" title="QA" />
+                                                    <input type="checkbox" id="chkAlphaUserFrozenNested" class="fz fz-Alpha" title="AlphaUser" />
                                                     <br />
-                                                    <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                                    <input type="checkbox" id="chkngITLead" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                                    <input type="checkbox" id="chkngAdmin" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                                    <input type="checkbox" id="chkBetaUserFrozenNested" class="fz fz-Beta" title="BetaUser" />
+                                                    <input type="checkbox" id="chkngITLeadFrozenNested" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                                    <input type="checkbox" id="chkngAdminFrozenNested" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                                 </div>
                                                 <div style="width: 30%; float: right;">
-                                                    <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                                    <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                                    <input type="checkbox" id="chkngITLeadMasterFrozenNested" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                                    <input type="checkbox" id="chkngAdminMasterFreezeSeqTask" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                                 </div>
                                             </div>
 
@@ -771,7 +899,7 @@
 
                                 <!-- Status & Assigned To starts -->
                                 <div class="div-table-col seq-taskstatus">
-                                    <select id="drpStatusSubsequence3" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
+                                    <select id="drpStatusSubsequenceTechFrozen" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
                                         <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
                                         <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
                                         <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -812,17 +940,17 @@
                                 <div class="div-table-col seq-taskduedate">
                                     <div class="seqapprovalBoxes">
                                         <div style="width: 65%; float: left;">
-                                            <input type="checkbox" id="chkngUser" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                            <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                            <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                            <input type="checkbox" id="chkngUserTechFrozen" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                            <input type="checkbox" id="chkQATechFrozen" class="fz fz-QA" title="QA" />
+                                            <input type="checkbox" id="chkAlphaUserTechFrozen" class="fz fz-Alpha" title="AlphaUser" />
                                             <br />
-                                            <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                            <input type="checkbox" id="chkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                            <input type="checkbox" id="chkBetaUserTechFrozen" class="fz fz-Beta" title="BetaUser" />
+                                            <input type="checkbox" id="chkngITLeadTechFrozen" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminTechFrozen" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                         </div>
                                         <div style="width: 30%; float: right;">
-                                            <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                            <input type="checkbox" id="chkngITLeadMasterTechFrozen" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminMasterTechFrozen" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                         </div>
                                     </div>
 
@@ -935,6 +1063,7 @@
                     <ul>
                         <li><a href="#StaffTaskNonFrozen">Staff Tasks</a></li>
                         <li><a href="#TechTaskNonFrozen">Tech Tasks</a></li>
+                        
                     </ul>
                     <div id="StaffTaskNonFrozen">
                         <div id="tblStaffSeqNonFrozen" class="div-table tableSeqTask">
@@ -982,7 +1111,7 @@
 
                                 <!-- Status & Assigned To starts -->
                                 <div class="div-table-col seq-taskstatus">
-                                    <select id="drpStatusSubsequence2" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
+                                    <select id="drpStatusSubsequenceNonFrozen" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
                                         <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
                                         <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
                                         <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -1010,7 +1139,7 @@
                                             data-chosen="1" data-placeholder="Select Users" ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id" ng-model="DesignationAssignUsersModel"
                                             AutoPostBack="false">--%>
 
-                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssignedNonFrozen" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                         <option
                                             ng-repeat="item in DesignationAssignUsers"
                                             value="{{item.Id}}"
@@ -1029,17 +1158,17 @@
                                 <div class="div-table-col seq-taskduedate">
                                     <div class="seqapprovalBoxes">
                                         <div style="width: 65%; float: left;">
-                                            <input type="checkbox" id="chkngUser" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                            <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                            <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                            <input type="checkbox" id="chkngUserNonFrozen" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                            <input type="checkbox" id="chkQANonFrozen" class="fz fz-QA" title="QA" />
+                                            <input type="checkbox" id="chkAlphaUserNonFrozen" class="fz fz-Alpha" title="AlphaUser" />
                                             <br />
-                                            <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                            <input type="checkbox" id="chkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                            <input type="checkbox" id="chkBetaUserNonFrozen" class="fz fz-Beta" title="BetaUser" />
+                                            <input type="checkbox" id="chkngITLeadNonFrozen" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminNonFrozen" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                         </div>
                                         <div style="width: 30%; float: right;">
-                                            <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                            <input type="checkbox" id="chkngITLeadMasterNonFrozen" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminMasterNonFrozen" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                         </div>
                                     </div>
 
@@ -1156,7 +1285,7 @@
 
                                         <!-- Status & Assigned To starts -->
                                         <div class="div-table-col seq-taskstatus">
-                                            <select id="drpStatusSubsequence" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
+                                            <select id="drpStatusSubsequenceNonFrozenNested" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
                                                 <option ng-selected="{{TechTask.Status == '1'}}" value="1">Open</option>
                                                 <option ng-selected="{{TechTask.Status == '2'}}" style="color: red" value="2">Requested</option>
                                                 <option ng-selected="{{TechTask.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -1178,7 +1307,7 @@
                                                 <%} %>
                                             </select>
                                             <br />
-                                            <select id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
+                                            <select id="ddcbSeqAssignedNonFrozenNested" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
                                                 <option
                                                     ng-repeat="item in DesignationAssignUsers"
                                                     value="{{item.Id}}"
@@ -1193,17 +1322,17 @@
                                         <div class="div-table-col seq-taskduedate">
                                             <div class="seqapprovalBoxes">
                                                 <div style="width: 65%; float: left;">
-                                                    <input type="checkbox" id="chkngUser" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                                    <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                                    <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                                    <input type="checkbox" id="chkngUserNonFrozenNested" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                                    <input type="checkbox" id="chkQANonFrozenNested" class="fz fz-QA" title="QA" />
+                                                    <input type="checkbox" id="chkAlphaUserNonFrozenNested" class="fz fz-Alpha" title="AlphaUser" />
                                                     <br />
-                                                    <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                                    <input type="checkbox" id="chkngITLead" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                                    <input type="checkbox" id="chkngAdmin" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                                    <input type="checkbox" id="chkBetaUserNonFrozenNested" class="fz fz-Beta" title="BetaUser" />
+                                                    <input type="checkbox" id="chkngITLeadNonFrozenNested" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                                    <input type="checkbox" id="chkngAdminNonFrozenNested" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                                 </div>
                                                 <div style="width: 30%; float: right;">
-                                                    <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                                    <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                                    <input type="checkbox" id="chkngITLeadMasterNonFrozenNested" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                                    <input type="checkbox" id="chkngAdminMasterNonFrozenNested" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                                 </div>
                                             </div>
 
@@ -1349,7 +1478,7 @@
 
                                 <!-- Status & Assigned To starts -->
                                 <div class="div-table-col seq-taskstatus">
-                                    <select id="drpStatusSubsequence3" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
+                                    <select id="drpStatusSubsequenceTechTaskFrozen" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
                                         <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
                                         <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
                                         <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -1390,17 +1519,17 @@
                                 <div class="div-table-col seq-taskduedate">
                                     <div class="seqapprovalBoxes">
                                         <div style="width: 65%; float: left;">
-                                            <input type="checkbox" id="chkngUser" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                            <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                            <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                            <input type="checkbox" id="chkngUserTechTaskFrozen" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                            <input type="checkbox" id="chkQATechTaskFrozen" class="fz fz-QA" title="QA" />
+                                            <input type="checkbox" id="chkAlphaUserTechTaskFrozen" class="fz fz-Alpha" title="AlphaUser" />
                                             <br />
-                                            <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                            <input type="checkbox" id="chkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                            <input type="checkbox" id="chkBetaUserTechTaskFrozen" class="fz fz-Beta" title="BetaUser" />
+                                            <input type="checkbox" id="chkngITLeadTechTaskFrozen" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminTechTaskFrozen" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                         </div>
                                         <div style="width: 30%; float: right;">
-                                            <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                            <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                            <input type="checkbox" id="chkngITLeadMasterTechTaskFrozen" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                            <input type="checkbox" id="chkngAdminMasterTechTaskFrozen" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                         </div>
                                     </div>
 
@@ -1500,6 +1629,7 @@
                             <!-- UI-Grid Ends here -->--%>
                     </div>
 
+                    
                 </div>
 
 
@@ -1528,9 +1658,9 @@
                         <span id="lblUserStatus">User Status</span><span style="color: red">*</span></td>
                     <td>
                         <span id="lblAddedBy">Users</span></td>
-                    <td>
+                    <td style="width:250px">
                         <span id="lblSourceH">Saved Report</span></td>
-                    <td>
+                    <td style="width:380px">
                         <span id="Label2">Select Period</span>
                     </td>
                     <td>Search</td>
@@ -1570,6 +1700,7 @@
                     </td>
                     <td>
                         <select id="ddlUserStatus">
+                            <%--<option value="0">All</option>--%>
                             <option value="1">Active</option>
                             <option value="6">Offer Made</option>
                             <option value="5">Interview Date</option>
@@ -1581,8 +1712,8 @@
                         </select><span id="lblLoading" style="display: none">Loading...</span>
                     </td>
                     <td></td>
-                    <td style="text-align: left; text-wrap: avoid;">
-                        <div style="float: left; width: 50%;">
+                    <td style="text-align: left; text-wrap: avoid; padding:0px">
+                        <div style="float: left; width: 57%;">
                             <input id="chkAllDates" name="chkAllDates" type="checkbox"><label for="chkAllDates">All</label>
                             <input id="chkOneYear" name="chkOneYear" type="checkbox"><label for="chkOneYear">1 year</label>
                             <input id="chkThreeMonth" name="chkThreeMonth" type="checkbox"><label for="chkThreeMonth"> Quarter (3 months)</label>
@@ -1592,20 +1723,21 @@
                         </div>
 
                         <div>
-                            <span id="Label3">From :*</span>
+                            <span id="Label3">From :*
                             <asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
                                 onkeypress="return false" MaxLength="10"
                                 Style="width: 80px;"></asp:TextBox>
                             <cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
-                            </cc1:CalendarExtender>
+                            </cc1:CalendarExtender><br />
+                            </span>
 
-                            <span id="Label4">To :*</span>
+                            <span id="Label4">To :*
                             <asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
                                 MaxLength="10" runat="server" TabIndex="3"
-                                Style="width: 80px;"></asp:TextBox>
+                                Style="width: 80px;margin-left: 16px;"></asp:TextBox>
                             <cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
                             </cc1:CalendarExtender>
-
+                            </span>
 
                             <span id="requirefrmdate" style="color: Red; visibility: hidden;">Select From date</span><span id="Requiretodate" style="color: Red; visibility: hidden;"> Select To date</span>
                         </div>
@@ -1644,13 +1776,10 @@
                             <div class="div-table-col seq-taskstatus">
                                 Status<div>Assigned To</div>
                             </div>
-                            <div class="div-table-col seq-taskduedate">
-                                Est Hrs<br />
-                                Additional Hrs<br />
-                                Total Hrs<br />
-                                $
+                            <div class="div-table-col seq-taskduedate" style="width:7% !important">
+                                EST Hrs -Add. Hrs<br />Total Hrs:$
                             </div>
-                            <div class="div-table-col seq-notes">Notes</div>
+                            <div class="div-table-col seq-notes" style="width:31% !important">Notes</div>
                         </div>
                         <!-- NG Repeat Div starts -->
                         <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in Tasks" ng-class="{orange : Task.Status==='4', yellow: Task.Status==='2', yellow: Task.Status==='3', lightgray: Task.Status==='8'}" repeat-end="onStaffEnd()">
@@ -1681,7 +1810,7 @@
 
                             <!-- Status & Assigned To starts -->
                             <div class="div-table-col seq-taskstatus">
-                                <select id="drpStatusSubsequence2" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
+                                <select id="drpStatusSubsequence" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
                                     <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
                                     <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
                                     <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -1703,11 +1832,6 @@
                                     <%} %>
                                 </select>
                                 <br />
-                                <%-- <select id="lstbAssign" data-chosen="1" data-placeholder="Select Users" ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id" ng-model="DesignationAssignUsersModel" multiple>
-                                        </select>--%>
-                                <%--<asp:ListBox ID="ddcbSeqAssigned" runat="server" Width="100" ClientIDMode="AutoID" SelectionMode="Multiple"
-                                            data-chosen="1" data-placeholder="Select Users" ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id" ng-model="DesignationAssignUsersModel"
-                                            AutoPostBack="false">--%>
 
                                 <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssignedStaff" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                     <option
@@ -1715,29 +1839,25 @@
                                         value="{{item.Id}}"
                                         label="{{item.FristName}}"
                                         class="{{item.CssClass}}">{{item.FristName}}
-                                        
                                     </option>
                                 </select>
 
-                                <%--.substring(0, item.FristName.indexOf("-"))                                        
-                                    <select id="ddcbSeqAssigned" style="width: 100px;" multiple  ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id"  ng-model="DesignationAssignUsersModel" ng-attr-data-AssignedUsers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
-                                        </select>--%>
                             </div>
                             <!-- Status & Assigned To ends -->
 
                             <!-- DueDate starts -->
-                            <div class="div-table-col seq-taskduedate">
+                            <div class="div-table-col seq-taskduedate" style="width:7% !important">
                                 <div class="seqapprovalBoxes">
-                                    <div style="width: 65%; float: left;">
-                                        <input type="checkbox" id="chkngUser" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                        <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                        <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                    <div style="width: 55%; float: left;">
+                                        <input type="checkbox" id="chkngUserMaster" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                        <input type="checkbox" id="chkQAMaster" class="fz fz-QA" title="QA" />
+                                        <input type="checkbox" id="chkAlphaUserMaster" class="fz fz-Alpha" title="AlphaUser" />
                                         <br />
-                                        <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
+                                        <input type="checkbox" id="chkBetaUserMaster" class="fz fz-Beta" title="BetaUser" />
                                         <input type="checkbox" id="chkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
                                         <input type="checkbox" id="chkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                     </div>
-                                    <div style="width: 30%; float: right;">
+                                    <div style="width: 42%; float: right;">
                                         <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
                                         <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                     </div>
@@ -1856,7 +1976,7 @@
 
                                     <!-- Status & Assigned To starts -->
                                     <div class="div-table-col seq-taskstatus">
-                                        <select id="drpStatusSubsequence" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
+                                        <select id="drpStatusSubsequenceNested" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
                                             <option ng-selected="{{TechTask.Status == '1'}}" value="1">Open</option>
                                             <option ng-selected="{{TechTask.Status == '2'}}" style="color: red" value="2">Requested</option>
                                             <option ng-selected="{{TechTask.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
@@ -1889,20 +2009,20 @@
                                         </select>
                                     </div>
                                     <!-- Status & Assigned To ends -->
-                                    <div class="div-table-col seq-taskduedate">
+                                    <div class="div-table-col seq-taskduedate" style="width:7% !important">
                                         <div class="seqapprovalBoxes">
-                                            <div style="width: 65%; float: left;">
-                                                <input type="checkbox" id="chkngUser" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                                <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
-                                                <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                            <div style="width: 55%; float: left;">
+                                                <input type="checkbox" id="chkngUserNested" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                                <input type="checkbox" id="chkQANested" class="fz fz-QA" title="QA" />
+                                                <input type="checkbox" id="chkAlphaUserNested" class="fz fz-Alpha" title="AlphaUser" />
                                                 <br />
-                                                <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
-                                                <input type="checkbox" id="chkngITLead" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                                <input type="checkbox" id="chkngAdmin" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                                <input type="checkbox" id="chkBetaUserNested" class="fz fz-Beta" title="BetaUser" />
+                                                <input type="checkbox" id="chkngITLeadNested" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                                <input type="checkbox" id="chkngAdminNested" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                             </div>
-                                            <div style="width: 30%; float: right;">
-                                                <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
-                                                <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                            <div style="width: 43%; float: right;">
+                                                <input type="checkbox" id="chkngITLeadMasterNested" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                                <input type="checkbox" id="chkngAdminMasterNested" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
                                             </div>
                                         </div>
 
@@ -2217,57 +2337,9 @@
                         <td width="300px" align="left">
                             <h2 class="itdashtitle">Commits, Closed-Billed</h2>
                         </td>
-                        <td><%if (IsSuperUser)
-                                { %>Designation<%} %></td>
-                        <td><%if (IsSuperUser)
-                                { %>Users<%} %></td>
                         <td></td>
                         <td></td>
-                    </tr>
-                    <tr>
                         <td></td>
-                        <td>
-
-                            <select data-placeholder="Select Designation" class="chosen-select-multi" multiple style="width: 200px;" id="ddlDesigClosedTask" runat="server">
-                                <option selected value="">All</option>
-                                <option value="1">Admin</option>
-                                <option value="2">Jr. Sales</option>
-                                <option value="3">Jr Project Manager</option>
-                                <option value="4">Office Manager</option>
-                                <option value="5">Recruiter</option>
-                                <option value="6">Sales Manager</option>
-                                <option value="7">Sr. Sales</option>
-                                <option value="8">IT - Network Admin</option>
-                                <option value="9">IT - Jr .Net Developer</option>
-                                <option value="10">IT - Sr .Net Developer</option>
-                                <option value="11">IT - Android Developer</option>
-                                <option value="12">IT - Sr. PHP Developer</option>
-                                <option value="13">IT – JR SEO/Backlinking/Content</option>
-                                <option value="14">Installer - Helper</option>
-                                <option value="15">Installer - Journeyman</option>
-                                <option value="16">Installer - Mechanic</option>
-                                <option value="17">Installer - Lead mechanic</option>
-                                <option value="18">Installer - Foreman</option>
-                                <option value="19">Commercial Only</option>
-                                <option value="20">SubContractor</option>
-                                <option value="22">Admin-Sales</option>
-                                <option value="23">Admin Recruiter</option>
-                                <option value="24">IT - Senior QA</option>
-                                <option value="25">IT - Junior QA</option>
-                                <option value="26">IT - Jr. PHP Developer</option>
-                                <option value="27">IT – Sr SEO Developer</option>
-                            </select>
-                        </td>
-                        <td>
-                            <% if (IsSuperUser)
-                                { %>
-                            <select id="ddlSelectUserClosedTask" data-placeholder="Select Users" multiple style="width: 250px;">
-                                <option selected value="">All</option>
-                            </select><span id="lblLoadingClosedTask" style="display: none">Loading...</span>
-                            <%} %>
-                        </td>
-                        <td>
-                            <input runat="server" id="txtSearchClosedTasks" maxlength="15" class="textbox ui-autocomplete-input" placeholder="search users" autocomplete="off" type="text"></td>
                         <td style="text-align: right">Number of Records: 
                                 <select id="drpPageSizeClosedTasks">
                                     <option value="10">10</option>
@@ -2279,8 +2351,24 @@
                                 </select>
                         </td>
                     </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+
+                            
+                        </td>
+                        <td>
+                            
+                        </td>
+                        <td>
+
+                        </td>
+                        <td style="text-align: right">
+                                
+                        </td>
+                    </tr>
                 </tbody>
-            </table>
+            </table>            
 
             <span id="ContentPlaceHolder1_Label1"></span>
             <div id="dibClosedTask" ng-controller="ClosedTaskController">
@@ -2290,6 +2378,7 @@
                             <th scope="col" style="width: 100px;" align="center">Assigned To</th>
                             <th scope="col" style="width: 100px;" align="center">Sub Task ID#</th>
                             <th scope="col" style="width: 300px;" align="center">Sub Task</th>
+                            <th scope="col" style="width: 100px;" align="center">Total hrs, Total $</th>
                             <th scope="col" style="width: 120px;" align="center">Status</th>
                         </tr>
                     </thead>
@@ -2302,8 +2391,9 @@
                                 <a id="ContentPlaceHolder1_grdTaskClosed_lnkInstallId_0" class="context-menu" oncontextmenu="openCopyBox(this);return false;" data-installid="{{item.InstallId}}" data-highlighter="{{item.TaskId}}" parentdata-highlighter="{{item.MainParentId}}" href="<%=System.Configuration.ConfigurationManager.AppSettings["UrlToReplaceForTemplates"]%>Sr_App/TaskGenerator.aspx?TaskId={{item.MainParentId}}&hstid={{item.TaskId}}" target="_blank" style="color: Blue;">{{item.InstallId}}</a>
                             </td>
                             <td style="width: 300px;" valign="middle" align="justify">
-                                <span id="ContentPlaceHolder1_grdTaskClosed_lblDesc_0">{{item.Title}}</span>
+                                {{item.Title}}
                             </td>
+                            <td style="width: 100px;">&nbsp;</td>
                             <td style="width: 120px;" valign="middle" align="center">
                                 <select id="drpStatusClosed" onchange="changeTaskStatusClosed(this);" data-highlighter="{{item.TaskId}}">
                                     <option ng-selected="{{item.Status == '0'}}" value="0">--All--</option>
@@ -2340,19 +2430,100 @@
                 </div>
             </div>
         </div>
-        <asp:HiddenField ID="hdnUserId" runat="server" />
+        <div class="notes-section" TUID="<%=loggedInUserId %>">
+                <div class="notes-popup">
+                    <div class="heading">
+                        <div class="title">User Touch Point Logs</div>
+                        
+                        <input type="hidden" id="PageIndex" value="0" />
+                    </div>
+                    <div class="content">
+                        Loading Notes...
+                    </div>
+                    <div class="pagingWrapper">
+                        <div class="total-results">Total <span class="total-results-count"></span>Results</div>
+                        <div class="pager">
+                            <span class="first">« First</span> <span class="previous">Previous</span> <span class="numeric"></span><span class="next">Next</span> <span class="last">Last »</span>
+                        </div>
+                        <div class="pageInfo">
+                        </div>
+                    </div>
+                    <div class="add-notes-container">
+                        <textarea id="note-text" class="note-text textbox"></textarea>
+                        <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addPopupNotes(this)" />
+                    </div>
+                </div>
+            </div>
+        <asp:HiddenField id="hdnUserId" runat="server"/>
     </div>
 
-
     <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
-    <script src="../Scripts/angular.min.js"></script>
+    
     <script src="../js/angular/scripts/jgapp.js"></script>
     <script src="../js/angular/scripts/TaskSequence.js"></script>
     <script src="../js/angular/scripts/FrozenTask.js"></script>
     <script src="../js/TaskSequencing.js"></script>
     <script src="../js/jquery.dd.min.js"></script>
     <script src="../js/angular/scripts/ClosedTasls.js"></script>
+
     <script type="text/javascript">
+        function Paging(sender) {
+            $('#PageIndex').val(paging.currentPage);
+            ajaxExt({
+                url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
+                type: 'POST',
+                data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + <%=loggedInUserId%> + ' }',
+                showThrobber: true,
+                throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                success: function (data, msg) {
+                    if (data.Data.length > 0) {
+                        PageNumbering(data.TotalResults);
+                        var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
+                        $(data.Data).each(function (i) {
+                            tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
+                                        '<td><a href="/Sr_App/ViewSalesUser.aspx?id=' + data.Data[i].UserID + '">' + data.Data[i].UpdatedUserInstallID + '<br/>' + data.Data[i].ChangeDateTimeFormatted + '</a></td>' +
+                                        '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
+                                    '</tr>';
+                        });
+                        tbl += '</table>';
+                        $('.notes-popup .content').html(tbl);
+                        var tuid = getUrlVars()["TUID"];
+                        var nid = getUrlVars()["NID"];
+                        if (tuid != undefined && nid != undefined) {
+                            $('.notes-popup tr#' + nid).addClass('blink-notes');
+                            $('html, body').animate({
+                                scrollTop: $(".notes-popup").offset().top
+                            }, 2000);
+                        }
+                        $('.pagingWrapper').show();
+                        tribute.attach(document.querySelectorAll('.note-text'));
+                    } else {
+                        $('.notes-popup .content').html('Notes not found');
+                        $('.pagingWrapper').hide();
+                    }
+                }
+            });
+            return false;
+        }
+        function addPopupNotes(sender) {
+            var userId = '<%=loggedInUserId%>';
+            addNotes(sender, userId);
+        }
+        function addNotes(sender, uid) {
+            var note = $(sender).parent().find('.note-text').val();
+            if (note != '')
+                ajaxExt({
+                    url: '/Sr_App/edituser.aspx/AddNotes',
+                    type: 'POST',
+                    data: '{ id: ' + uid + ', note: "' + note + '" }',
+                    showThrobber: true,
+                    throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                    success: function (data, msg) {
+                        $(sender).parent().find('.note-text').val('');
+                        Paging(sender);
+                    }
+                });
+        }
         var ddlDesigSeqClientIDFrozenTasks = "";
         var ddlDesigSeqClientID;
         function changeTaskStatusClosed(Task) {
@@ -2399,7 +2570,7 @@
         function resetChosen(selector) {
             var val = $(selector).val();
 
-            //debugger;
+            //
             if (val != undefined && val != '') {
                 $(selector)
                     .find('option:first-child').prop('selected', false)
@@ -2412,6 +2583,7 @@
         }
 
         $(document).ready(function () {
+            Paging($(this));            
             $(".chosen-select-multi").chosen();
             $('.chosen-dropDown').chosen();
             $('.chosen-dropdown-FrozenTasks').chosen();
@@ -2419,13 +2591,11 @@
             $("#ddlSelectUserClosedTask").chosen({ no_results_text: "No users found!" });
             $("#ddlSelectFrozenTask").chosen();
 
-            
-            //ddlSelectFrozenTask,lblLoadingFrozen
-
             //InProAssigned
             $(".chosen-select-users").change(function () {
                 resetChosen(".chosen-select-users");
                 ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join());
+                ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize);
             });
 
             //Frozen/NonFrozen
@@ -2435,50 +2605,30 @@
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), $("#ddlSelectFrozenTask").val().join());
             });
 
-            //Closed Tasks
-            $("#ddlSelectUserClosedTask").change(function () {
-                desIds = $(".chosen-select-multi").val();
-                if (desIds == undefined) { desIds = ''; }
-                resetChosen("#ddlSelectUserClosedTask");
-                ShowAllClosedTasksDashBoard(desIds.join(), $('#ddlSelectUserClosedTask').val().join(), pageSize);
-            });
-
-            $(".chosen-select-multi").change(function () {
-                debugger;
-                resetChosen('#' + '<%=ddlDesigClosedTask.ClientID%>');
-                fillUsersClosedTasks('<%=ddlDesigClosedTask.ClientID%>', 'ddlSelectUserClosedTask', 'lblLoadingClosedTask');
-                desIds = $(".chosen-select-multi").val();
-                if (desIds == undefined) { desIds = ''; }
-                ShowAllClosedTasksDashBoard(desIds.join(), $('#ddlSelectUserClosedTask').val().join(), pageSize);
-            });
-
             //set page size
             $('#drpPageSizeClosedTasks').change(function () {
                 desIds = $(".chosen-select-multi").val();
                 if (desIds == undefined) { desIds = ''; }
                 pageSize = $('#drpPageSizeClosedTasks').val();
-                ShowAllClosedTasksDashBoard(desIds.join(), $('#ddlSelectUserClosedTask').val().join(), pageSize)
+                ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize)
             });
 
             //fill users
             if ($('#' + '<%=tableFilter.ClientID%>').length > 0) {
 
                 fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
-                fillUsersClosedTasks('<%=ddlDesigClosedTask.ClientID%>', 'ddlSelectUserClosedTask', 'lblLoadingClosedTask');
                 fillUsers(ddlDesigSeqClientIDFrozenTasks, 'ddlSelectFrozenTask', 'lblLoadingFrozen');
             }
 
             $("#ddlUserStatus").msDropDown();
         });
 
-
+               
 
         $(window).load(function () {
             checkNShowTaskPopup();
             sequenceScope.ForDashboard = true;
             var desId = "";
-            debugger;
-
             if ($('#' + '<%=tableFilter.ClientID%>').length > 0) {
                 $('#chkAllDates').attr("checked", true);
                 //Set Date
@@ -2492,6 +2642,7 @@
                 $('.' + ddlDesigSeqClientID).change(function (e) {
                     resetChosen('#ddlDesignationSeq');
                     ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), 0);
+                    ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize)
                     fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
                 });
 
@@ -2575,6 +2726,9 @@
                 ShowNonFrozenTaskSequenceDashBoard($('.' + ddlDesigSeqClientIDFrozenTasks).val(), 0);
             });
 
+            checkNShowTaskPopup();
+
+
         });
 
         //Date Filter
@@ -2602,7 +2756,7 @@
         }
 
         function fillUsers(selector, fillDDL, loader) {
-            debugger;
+            // 
             var did = $('.' + selector).val().join();
             var options = $('#' + fillDDL);
             $('#ddlSelectFrozenTask_chosen').css({ "width": "300px" });
@@ -2627,10 +2781,14 @@
                         var result = [];
                         result = JSON.parse(data.d);
                         $.each(result, function () {
-                            var names = this.FristName.split(' - ');
+                            var names = this.FristName.split(' - ');                            
+                            var Class = 'activeUser';
+                            if (this.Status == '5')
+                                Class = 'IOUser';
+
                             var name = names[0] + '&nbsp;-&nbsp;';
-                            var link = names[1] != null && names[1] != '' ? '<a style="color:blue;" href="javascript:;" onclick=redir("/Sr_App/ViewSalesUser.aspx?id=' + this.Id + '")>' + names[1] + '</a>' : '';
-                            options.append($("<option />").val(this.Id).html(name + link));
+                            var link = names[1] != null && names[1] != '' ? '<a style="color:blue;" href="javascript:;" onclick=redir("/Sr_App/ViewSalesUser.aspx?id=' + this.Id +'")>' + names[1] + '</a>' : '';
+                            options.append($('<option class="' + Class +'" />').val(this.Id).html(name + link));
                         });
                         //$("#" + fillDDL).prop('disabled', false);
                     }
@@ -2652,39 +2810,6 @@
 
         function redir(url) {
             window.open(url, '_blank');
-        }
-
-        function fillUsersClosedTasks(selector, fillDDL, loader) {
-            debugger;
-            var did = $('#' + selector).val().join();
-            var options = $('#' + fillDDL);
-
-            //$("#" + fillDDL).prop('disabled', true);
-            $('#' + loader).show();
-            $.ajax({
-                type: "POST",
-                url: "ajaxcalls.aspx/GetUsersByDesignationId",
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({ designationId: did }),
-                success: function (data) {
-                    options.empty();
-                    options.append($("<option selected='selected' />").val('0').text('All'));
-                    // Handle 'no match' indicated by [ "" ] response
-                    if (data.d) {
-                        debugger;
-                        var result = [];
-                        result = JSON.parse(data.d);
-                        $.each(result, function () {
-                            options.append($("<option />").val(this.Id).text(this.FristName));
-                        });
-                        //$("#" + fillDDL).prop('disabled', false);
-                    }
-                    options.trigger("chosen:updated");
-                    $('#' + loader).hide();
-                    // remove loading spinner image.                                
-                }
-            });
         }
 
         function updateTaskStatus(id, value) {
@@ -2756,7 +2881,7 @@
         });
 
         //$(document).on('click', '#ddlSelectUserInProTask_chosen', function () {
-        //    debugger;
+        //    
         //    var href = $(this).find('li.search-choice a').attr('href');
         //    window.open(href, "_blank");
         //});
@@ -2765,9 +2890,6 @@
         function Initialize() {
             SetInProTaskAutoSuggestion();
             SetInProTaskAutoSuggestionUI();
-
-            SetClosedTaskAutoSuggestion();
-            SetClosedTaskAutoSuggestionUI();
 
             SetFrozenTaskAutoSuggestionUI();
 
@@ -2787,14 +2909,14 @@
             });
         }
         function openCopyBox(obj) {
-            debugger;
+            // 
             var urltoCopy = _updateQStringParam(window.location.href, "hstid", $(obj).attr('data-highlighter'), "TaskId", $(obj).attr('parentdata-highlighter'), "InstallId", $(obj).attr('data-installid'));
             copyToClipboard(urltoCopy);
             return false;
         }
 
         //$(".context-menu").bind("contextmenu", function () {
-        //    debugger;
+        //    // 
         //    var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'), "TaskId", $(this).attr('parentdata-highlighter'));
         //    copyToClipboard(urltoCopy);
         //    return false;
@@ -2838,7 +2960,7 @@
         }
 
         function setSelectedUsersLink() {
-            //debugger;
+            //// 
             $('.chosen-dropDown').each(function () {
                 var itemIndex = $(this).children('.search-choice-close').attr('data-option-array-index');
                 //console.log(itemIndex);
@@ -2887,7 +3009,7 @@
         }
 
         function SetApprovalUI() {
-            //debugger;
+            //// 
             $('.approvalBoxes').each(function () {
                 var approvaldialog = $($(this).next('.approvepopup'));
                 approvaldialog.dialog({
@@ -2904,7 +3026,7 @@
         }
 
         function SetFrozenTaskAutoSuggestionUI() {
-            //debugger;
+            //// 
             //console.log("SetFrozenTaskAutoSuggestionUI called");
             $.widget("custom.catcomplete", $.ui.autocomplete, {
                 _create: function () {
@@ -2931,85 +3053,11 @@
         }
 
 
-        function SetClosedTaskAutoSuggestion() {
-            //debugger;
-            //console.log("SetClosedTaskAutoSuggestion called");
-            $('#<%= txtSearchClosedTasks.ClientID %>').catcomplete({
-                delay: 500,
-                source: function (request, response) {
+        
 
-                    if (request.term == "") {
-                        desIds = $(".chosen-select-multi").val();
-                        if (desIds == undefined) { desIds = ''; }
+        
 
-                        ShowAllClosedTasksDashBoard(desIds.join(), 0, pageSize);
-                        $('#<%= txtSearchClosedTasks.ClientID %>').removeClass("ui-autocomplete-loading");
-                        return false;
-                    }
-
-
-                    $.ajax({
-                        type: "POST",
-                        url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({ searchterm: request.term }),
-                        success: function (data) {
-                            //debugger;
-                            // Handle 'no match' indicated by [ "" ] response
-                            if (data.d) {
-                                ////debugger;
-                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                            }
-                            // remove loading spinner image.                                
-                            $('#<%= txtSearchClosedTasks.ClientID %>').removeClass("ui-autocomplete-loading");
-                         }
-                     });
-                },
-                minLength: 0,
-                select: function (event, ui) {
-                    debugger;
-                    //alert(ui.item.value);
-                    //alert(ui.item.id);
-                    $('#<%= txtSearchClosedTasks.ClientID %>').val(ui.item.value);
-                     //TriggerSearch();
-                     desIds = $(".chosen-select-multi").val();
-                     if (desIds == undefined) { desIds = ''; }
-                     ShowAllClosedTasksDashBoard("", ui.item.id, pageSize);
-                 }
-            });
-         }
-
-         function SetClosedTaskAutoSuggestionUI() {
-             //debugger;
-             //console.log("SetClosedTaskAutoSuggestionUI called");
-             $.widget("custom.catcomplete", $.ui.autocomplete, {
-                 _create: function () {
-                     this._super();
-                     this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                 },
-                 _renderMenu: function (ul, items) {
-                     //debugger;
-                     var that = this,
-                         currentCategory = "";
-                     $.each(items, function (index, item) {
-                         var li;
-                         if (item.Category != currentCategory) {
-                             ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                             currentCategory = item.Category;
-                         }
-                         li = that._renderItemData(ul, item);
-                         if (item.Category) {
-                             li.attr("aria-label", item.Category + " : " + item.label);
-                         }
-                     });
-
-                 }
-             });
-         }
-
-
-         function SetFrozenTaskAutoSuggestion() {
+        function SetFrozenTaskAutoSuggestion() {
 
              $("#txtSearchUserFrozen").catcomplete({
                  delay: 500,
@@ -3031,7 +3079,7 @@
                          success: function (data) {
                              // Handle 'no match' indicated by [ "" ] response
                              if (data.d) {
-                                 ////debugger;
+                                 ////
                                  response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
                              }
                              // remove loading spinner image.                                
@@ -3041,7 +3089,7 @@
                  },
                  minLength: 0,
                  select: function (event, ui) {
-                     //debugger;
+                     //
                      //alert(ui.item.value);
                      //alert(ui.item.id);
                      $("#txtSearchUserFrozen").val(ui.item.value);
@@ -3064,37 +3112,38 @@
                          return false;
                      }
 
-                     $.ajax({
-                         type: "POST",
-                         url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
-                         dataType: "json",
-                         contentType: "application/json; charset=utf-8",
-                         data: JSON.stringify({ searchterm: request.term }),
-                         success: function (data) {
-                             // Handle 'no match' indicated by [ "" ] response
-                             if (data.d) {
-                                 ////debugger;
-                                 response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                             }
-                             // remove loading spinner image.                                
-                             $("#txtSearchUser").removeClass("ui-autocomplete-loading");
-                         }
-                     });
-                 },
-                 minLength: 0,
-                 select: function (event, ui) {
-                     //debugger;
-                     //alert(ui.item.value);
-                     //alert(ui.item.id);
-                     $("#txtSearchUser").val(ui.item.value);
-                     //TriggerSearch();
-                     ShowTaskSequenceDashBoard(0, ui.item.id);
-                 }
-             });
-         }
+                    $.ajax({
+                        type: "POST",
+                        url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchterm: request.term }),
+                        success: function (data) {
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
+                                ////debugger;
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $("#txtSearchUser").removeClass("ui-autocomplete-loading");
+                        }
+                    });
+                },
+                minLength: 0,
+                select: function (event, ui) {
+                    //debugger;
+                    //alert(ui.item.value);
+                    //alert(ui.item.id);
+                    $("#txtSearchUser").val(ui.item.value);
+                    //TriggerSearch();
+                    ShowTaskSequenceDashBoard(0, ui.item.id);
+                    ShowAllClosedTasksDashBoard(0, ui.item.id, pageSize)
+                }
+            });
+        }
 
          function SetInProTaskAutoSuggestionUI() {
-             //debugger;
+             //
              //console.log("SetInProTaskAutoSuggestionUI called");
              $.widget("custom.catcomplete", $.ui.autocomplete, {
                  _create: function () {
@@ -3105,7 +3154,7 @@
                      var that = this,
                          currentCategory = "";
                      $.each(items, function (index, item) {
-                         //debugger;
+                         //
                          var li;
                          if (item.Category != currentCategory) {
                              ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
@@ -3123,13 +3172,13 @@
 
          function SetTaskCounterPopup() {
 
-             $('#' + '<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
-                debugger;
+            $('#' +'<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
+                // 
                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
             });
             $('#' + '<%=lblFrozenTaskCounter.ClientID%>').click(function () {
-                debugger;
+                
                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
             });

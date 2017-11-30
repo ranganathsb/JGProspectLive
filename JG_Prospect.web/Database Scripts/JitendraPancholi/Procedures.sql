@@ -236,3 +236,62 @@ FROM tblTask AS T  Join InstallUserTaskHistory H on T.TaskId = H.TaskId
 WHERE H.InstallUserId = @UserId
 
 End
+
+
+Go
+IF EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'GetUserTouchPointLogs')
+  BEGIN
+      DROP PROCEDURE GetUserTouchPointLogs
+  END
+ Go
+
+ /*
+	GetUserTouchPointLogs 3809,0,10,0
+ */
+ Create PROCEDURE [dbo].[GetUserTouchPointLogs]      
+(
+	@UserID  Int,
+	@PageNumber Int = 0,
+	@PageSize Int = 10,
+	@TotalResults Int output
+)      
+AS      
+BEGIN
+	Select @TotalResults = Count(T.UserTouchPointLogID)
+			from tblUserTouchPointLog T With(NoLock) 
+		Join tblInstallUsers LU With(NoLock) On T.UpdatedByUserId = LU.Id
+		Join tblInstallUsers U With(NoLock) On T.UserId = U.Id
+	Where T.UserID = @UserID
+	
+	
+	Select T.UserTouchPointLogID, T.UserID, T.UpdatedByUserID, T.UpdatedUserInstallID, T.ChangeDateTime, 
+			T.LogDescription,
+			LU.FristName As UpdatedByFirstName, LU.LastName As UpdatedByLastName, LU.Email As UpdatedByEmail,
+			U.FristName, U.LastName, U.Email, U.Phone,
+			Format(T.ChangeDateTime, 'MM/dd/yyyy hh:mm tt') as ChangeDateTimeFormatted
+			from tblUserTouchPointLog T With(NoLock) 
+		Join tblInstallUsers LU With(NoLock) On T.UpdatedByUserId = LU.Id
+		Join tblInstallUsers U With(NoLock) On T.UserId = U.Id
+	Where T.UserID = @UserID
+	ORDER BY T.ChangeDateTime Desc
+	OFFSET @PageSize * (@PageNumber) ROWS
+	FETCH NEXT @PageSize ROWS ONLY;
+End
+
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE [name] = N'AfterInsertTblInstallUsers' AND [type] = 'TR')
+BEGIN
+      DROP TRIGGER AfterInsertTblInstallUsers
+END
+Go
+Create  TRIGGER AfterInsertTblInstallUsers 
+   ON  tblInstallUsers
+   AFTER INSERT
+AS 
+BEGIN
+	Insert Into tblUserTouchPointLog(UserID, UpdatedByUserID, UpdatedUserInstallID, ChangeDateTime, LogDescription, CurrentUserGUID)
+		SELECT I.Id, I.Id, I.FristName + ' ' + I.LastName, GETUTCDATE(), 'User successfully filled in HR form', '' FROM INSERTED I
+End
+
+Go

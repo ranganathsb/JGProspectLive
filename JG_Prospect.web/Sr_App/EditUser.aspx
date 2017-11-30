@@ -79,6 +79,8 @@
             height: 30px;
             background: url(img/main-header-bg.png) repeat-x;
             color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
         }
 
         /*Grid add Container END */
@@ -224,18 +226,26 @@
             height: 1275px !important;
         }
 
+        .scroll {
+            font-size: 12px;
+        }
+
         .right_panel {
             margin: 0 0 0 0 !important;
         }
 
         .notes-container {
-            display: inline;
+            display: block;
+            max-height: 52px;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         .notes-table {
             height: auto;
             width: 100%;
             margin: 0 5px;
+            font-size: 12px;
         }
 
             .notes-table tbody {
@@ -245,12 +255,12 @@
             .notes-table th {
                 color: #fff;
                 padding: 5px !important;
-                background: #000;
+                background: #000 !important;
                 border: none;
             }
 
             .notes-table td {
-                padding: 5px !important;
+                padding: 2px !important;
             }
 
             .notes-table tr:nth-child(even) {
@@ -262,17 +272,155 @@
                 background: #FFF;
                 color: #000;
             }
-
+            .notes-table tr:nth-child(odd) a{}
+            .notes-table tr:nth-child(even) a, .notes-popup tr:nth-child(even) a{color:#fff;}
             .notes-table tr th:nth-child(1), .notes-table tr td:nth-child(1) {
-                width: 17%;
+                width: 5%;
             }
-
+            
             .notes-table tr th:nth-child(2), .notes-table tr td:nth-child(2) {
-                width: 43%;
+                width: 27%;
             }
 
             .notes-table tr th:nth-child(3), .notes-table tr td:nth-child(3) {
-                width: 76px;
+                width: 90px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+
+        .rejected {
+            background-color: #AEAEAE;
+        }
+
+        .deleted {
+            background-color: #565656;
+        }
+
+        .interview-date-expired {
+            background-color: #d3d3d3;
+        }
+
+        .applicant {
+            background-color: #FFFF00;
+        }
+
+        .install-prospect {
+            background-color: #FFA500;
+        }
+
+        table.notes-table tr.trHeader {
+            background: none !important;
+        }
+
+        .notes-popup {
+            display: none;
+            position: fixed;
+            top: 100px;
+            left: 300px;
+            width: 600px;
+            background: #fff;
+            z-index: 11;
+            border-radius: 5px;
+        }
+
+        .notes-popup-background {
+            display: none;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            background: #000;
+            opacity: 0.5;
+        }
+
+        .notes-popup .heading {
+            width: 100%;
+            display: inline-block;
+            background: #A33E3F;
+            color: #fff;
+            padding: 5px 0;
+            border-radius: 5px 5px 0 0;
+        }
+
+            .notes-popup .heading .title {
+                padding: 0 5px;
+                float: left;
+            }
+
+        .notes-popup .content {
+            padding: 5px;
+        }
+
+        .notes-popup .heading .close {
+            float: right;
+            top: -11px;
+            font-size: 14px;
+            right: -8px;
+            background: #ccc;
+            border-radius: 19px;
+            cursor: pointer;
+        }
+
+        .notes-popup .content table {
+            width: 100%;
+        }
+
+            .notes-popup .content table th {
+                border: 1px solid #ccc;
+                text-align: left;
+                padding: 3px;
+                font-size: 13px;
+                color: #ddd;
+                background: #000;
+            }
+
+            .notes-popup .content table td {
+                padding: 3px;
+                font-size: 12px;
+                border: 1px solid #ccc;
+            }
+
+            .notes-popup .content table tr:nth-child(even) {
+                background: #ba4f50;
+                color: #fff;
+            }
+
+            .notes-popup .content table tr:nth-child(odd) {
+                background: #FFF;
+                color: #000;
+            }
+
+            .notes-popup .content table tr th:nth-child(1), .notes-popup .content table tr td:nth-child(1) {
+                width: 120px;
+            }
+
+        .notes-popup .add-notes-container {
+            display: inline-block;
+            width: 98%;
+            padding: 5px;
+        }
+
+            .notes-popup .add-notes-container textarea {
+                width: 80% !important;
+                height: 50px !important;
+                padding: 5px !important;
+            }
+            .notes-container .note-desc {
+                width: 194px;
+                height: 29px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .notes-popup .notes-container .note-desc {
+                width: 194px;
+                height: 29px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
     </style>
     <style type="text/css">
@@ -335,8 +483,122 @@
         .noMargin span {
             margin: 0px !important;
         }
+
+        textarea.note-text {
+            height: 36px;
+            vertical-align: middle;
+            padding: 2px !important;
+            width: 70%;
+            float: left;
+            margin-right: 5px;
+        }
     </style>
     <script type="text/javascript">
+
+        function addNotes(sender, uid, txtUid){
+            var note = $(sender).parent().find('.note-text').val();
+            if(note!='')
+                ajaxExt({
+                    url: '/Sr_App/edituser.aspx/AddNotes',
+                    type: 'POST',
+                    data: '{ id: ' + uid + ', note: "' + note + '" }',
+                    showThrobber: true,
+                    throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                    success: function (data, msg) {
+                        $(sender).parent().find('.note-text').val('');
+                        Paging(sender);
+                        LoadNotes(sender, txtUid, uid);
+                    }
+                });
+        }
+        //tribute.attach(document.querySelectorAll('.note-text'));
+        function LoadNotes(sender, installUserId, userid) {
+            ajaxExt({
+                url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
+                type: 'POST',
+                data: '{ pageNumber: 0, pageSize: 5, userId: ' + userid + ' }',
+                showThrobber: true,
+                throbberPosition: { my: "left center", at: "right center", of: $('#user-' + userid), offset: "5 0" },
+                success: function (data, msg) {
+                    if (data.Data.length > 0) {
+                        var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">';
+                        $(data.Data).each(function (i) {
+                            tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
+                                        '<td><a href="javascript:;" onclick="openNotes(this,' + data.Data[i].UserID + ', \'' + installUserId + '\')" uid="' + data.Data[i].UserID + '">' + installUserId + '<br/>'+data.Data[i].ChangeDateTimeFormatted+'</a></td>' +
+                                        '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
+                                    '</tr>';
+                        });
+                        tbl += '</table>';
+                        $('#user-' + userid).html(tbl);
+                        var tuid = getUrlVars()["TUID"];
+                        var nid = getUrlVars()["NID"];
+                        if (tuid != undefined && nid!= undefined) {
+                            $('.notes-table tr#' + nid).addClass('blink-notes');
+                        }
+                        //tribute.attach(document.querySelectorAll('.note-text'));
+                        tribute.attach(document.getElementById('txt-'+userid));
+                    } else {
+                        var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">' +
+                                    '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
+                                    '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
+                                   '</table>';
+                        $('#user-' + userid).html(tbl);
+                    }
+                }
+            });
+        }
+
+        function Paging(sender) {
+            $('#PageIndex').val(paging.currentPage);
+            ajaxExt({
+                url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
+                type: 'POST',
+                data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + $('#popupNoteUserId').val() + ' }',
+                showThrobber: true,
+                throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                success: function (data, msg) {
+                    if (data.Data.length > 0) {
+                        PageNumbering(data.TotalResults);
+                        var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
+                        $(data.Data).each(function (i) {
+                            tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
+                                        '<td><a href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UserID+'">' + data.Data[i].UpdatedUserInstallID + '<br/>'+data.Data[i].ChangeDateTimeFormatted+'</a></td>' +
+                                        '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
+                                    '</tr>';
+                        });
+                        tbl += '</table>';
+                        $('.notes-popup .content').html(tbl);                        
+                        tribute.attach(document.getElementById('txt-popup'));
+                    } else {
+                        $('.notes-popup .content').html('Notes not found');
+                    }
+                }
+            });
+            return false;
+        }
+
+        function openNotes(sender, userId, txtUserId) {
+            $('.notes-popup').css({ left: ($(window).width() / 2) - 300 });
+            $('#popupNoteUserId').val(userId);
+            $('#popupNoteTxtUserId').val(txtUserId);
+            $('.notes-popup').show();
+            $('.notes-popup-background').show();
+            Paging(sender);
+        }
+
+        function addPopupNotes(sender){
+            var userId = $('#popupNoteUserId').val();
+            var txtUserId=$('#popupNoteTxtUserId').val();
+            addNotes(sender, userId, txtUserId);
+        }
+
+        function closeNotesPopup() {
+            paging.currentPage = 0;
+            $('.notes-popup .content').html('Loading Notes...');
+            $('.notes-popup').hide();
+            $('.notes-popup-background').hide();
+
+        }
 
         function validateContact(event, obj) {
             var selValue = $(obj).parent().find('select.typeDrop option:selected').text().toLowerCase();
@@ -434,11 +696,21 @@
 
     </script>
     <script>
+        $(document).on('keyup','.txtSearch', function(e){
+            if (e.keyCode == 13) {
+                $('.btnSearchGridData').trigger('click');
+            }
+        });
+
+        $(document).on('click','.ClearSearch', function(e){
+            $('.txtSearch').val('');
+            $('.btnSearchGridData').trigger('click');
+        });
+
         function pageLoad() {
 
 
             $(document).ready(function () {
-
 
                 $(".GrdHeader").click(function () {
 
@@ -892,8 +1164,9 @@
                             <asp:Label ID="lblselectedchk" runat="server" Style="font-weight: bold;" />
                         </div>
                         <div style="float: right;">
-                            <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
-                            <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
+                            <input type="button" class="btnSearc ClearSearch" value="Clear" />
+                            <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox txtSearch" placeholder="search users" MaxLength="15" />
+                            <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc btnSearchGridData" OnClick="btnSearchGridData_Click" />
 
                             Number of Records: 
                             <asp:DropDownList ID="ddlPageSize_grdUsers" runat="server" AutoPostBack="true"
@@ -939,7 +1212,7 @@
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField ShowHeader="True" HeaderText="ID# <br/>  Designation<br/> F&LName" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="6%" ItemStyle-Width="6%" ControlStyle-ForeColor="Black"
+                                <asp:TemplateField ShowHeader="True" HeaderText="ID# <br/>  Designation<br/> F&LName" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="1%" ItemStyle-Width="1%" ControlStyle-ForeColor="Black"
                                     Visible="true" SortExpression="Designation">
                                     <EditItemTemplate>
                                         <asp:TextBox ID="txtid" runat="server" MaxLength="30" Text='<%#Eval("Id")%>'></asp:TextBox>
@@ -1055,7 +1328,7 @@
                                     </ItemTemplate>
                                 </asp:TemplateField>
 
-                                <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="18%" ItemStyle-Width="18%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
+                                <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="15%" ItemStyle-Width="15%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
                                     <ItemTemplate>
                                         <%-- ControlStyle-CssClass="wordBreak" <asp:Label ID="lblPhone" runat="server" Text='<%# Bind("Phone") %>'></asp:Label>--%>
                                         <%--onclick="<%# "javascript:grdUsers_Email_OnClick(this,'" + Eval("Email") + "');"%>"--%>
@@ -1148,19 +1421,16 @@
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="17%"
-                                    ItemStyle-Width="17%" ItemStyle-CssClass="noMargin">
+                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="22%"
+                                    ItemStyle-Width="22%" ItemStyle-CssClass="noMargin">
                                     <HeaderTemplate>
                                         Notes
-                                        <%--<table class="table gridtbl notes-table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
-                                            <thead>
-                                                <tr class="trHeader " style="color: White;">
-                                                    <th>User ID</th>
-                                                    <th>Date&nbsp;&&nbsp;Time</th>
-                                                    <th>Note/Status</th>
-                                                </tr>
-                                            </thead>
-                                        </table>--%>
+                                        <table class="table gridtbl notes-table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                            <tr class="trHeader " style="color: White;">
+                                                <th>User ID<br />Date&nbsp;&&nbsp;Time</th>
+                                                <th>Note/Status</th>
+                                            </tr>
+                                        </table>
                                     </HeaderTemplate>
                                     <ItemTemplate>
                                         <%--<div class="GrdContainer">
@@ -1172,64 +1442,21 @@
                                             </div>
                                         </div>--%>
                                         <%--<asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>--%>
-                                        <div class="notes-container">
-                                            <%--<asp:Repeater ID="rptNotes" runat="server">
-                                                <HeaderTemplate>
-                                                    <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse; font-size: 11px;">
-                                                        <tbody>
-                                                </HeaderTemplate>
-                                                <ItemTemplate>
-                                                    <tr class='<%# Container.ItemIndex % 2 == 0? "FirstRow" : "AlternateRow" %>'>
-                                                        <td style="width: 20%;"><a class="bluetext" href='CreateSalesUser.aspx?id=<%#Eval("UpdatedByUserID")%>' target="_blank"><%#Eval("UpdatedUserInstallID")%></a></td>
-                                                        <td style="width: 25%;"><%#Eval("CreatedDate")%></td>
-                                                        <td style="width: 55%;"><%#Eval("LogDescription")%></td>
-                                                    </tr>
-                                                </ItemTemplate>
-                                                <FooterTemplate>
-                                                    </tbody>
-                                                </table>
-                                                </FooterTemplate>
-                                            </asp:Repeater>--%>
-                                            <table class="notes-table" cellspacing="0" cellpadding="0">
-                                                <tr>
-                                                    <th>User ID</th>
-                                                    <th>Date&nbsp;&&nbsp;Time</th>
-                                                    <th>Note/Status</th>
-                                                </tr>
-                                                <tr>
-                                                    <td>1234</td>
-                                                    <td><%=String.Format("{0:g}", DateTime.UtcNow) %></td>
-                                                    <td>Test Note1...</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>564</td>
-                                                    <td><%=String.Format("{0:g}", DateTime.UtcNow) %></td>
-                                                    <td>Test Note2...</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>879</td>
-                                                    <td><%=String.Format("{0:g}", DateTime.UtcNow) %></td>
-                                                    <td>Test Note3...</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>5421</td>
-                                                    <td><%=String.Format("{0:g}", DateTime.UtcNow) %></td>
-                                                    <td>Test Note4...</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>5421</td>
-                                                    <td><%=String.Format("{0:g}", DateTime.UtcNow) %></td>
-                                                    <td>Test Note5...</td>
-                                                </tr>
-                                            </table>
+
+                                        <div class="notes-container" uid="<%#Eval("UserInstallId")%>" id="user-<%#Eval("Id")%>">
+                                            Loading Notes...
                                         </div>
-                                        <div style="text-align: left;">
+                                        <div style="text-align: left; padding: 4px;">
+                                            <textarea class="note-text textbox" id="txt-<%# Eval("Id") %>"></textarea>
+                                            <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this, '<%# Eval("Id") %>','<%#Eval("UserInstallId")%>')" />
+                                        </div>
+                                        <%--<div style="text-align: left; padding: 4px;">
                                             <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"
-                                                Style="vertical-align: middle; padding: 0px!important; width: 68%; float: left; margin-right: 5px;" CssClass="textbox"></asp:TextBox><br />
+                                                Style="height: 36px; vertical-align: middle; padding: 2px!important; width: 70%; float: left; margin-right: 5px;" CssClass="textbox"></asp:TextBox>
                                             <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
                                                 CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle; overflow: hidden;" />
 
-                                        </div>
+                                        </div>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
@@ -1975,6 +2202,34 @@
 
     </div>
     <%--Popup Ends--%>
+    <input type="hidden" id="popupNoteUserId" />
+    <input type="hidden" id="popupNoteTxtUserId" />
+    <!-- Notes Popup -->
+    <div class="notes-popup-background"></div>
+    <div class="notes-popup">
+        <div class="heading">
+            <div class="title">User Touch Point Logs</div>
+            <div class="close" onclick="closeNotesPopup()">
+                <img src="../img/close.png" />
+            </div>
+            <input type="hidden" id="PageIndex" value="0" />
+        </div>
+        <div class="content">
+            Loading Notes...
+        </div>
+        <div class="pagingWrapper">
+            <div class="total-results">Total <span class="total-results-count"></span>Results</div>
+            <div class="pager">
+                <span class="first">« First</span> <span class="previous">Previous</span> <span class="numeric"></span><span class="next">Next</span> <span class="last">Last »</span>
+            </div>
+            <div class="pageInfo">
+            </div>
+        </div>
+        <div class="add-notes-container">
+            <textarea class="note-text textbox" id="txt-popup"></textarea>
+            <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addPopupNotes(this)" />
+        </div>
+    </div>
     <script src="../Scripts/angular.min.js"></script>
     <script src="../js/angular/scripts/jgapp.js"></script>
     <script src="../js/angular/scripts/edituser-angular.js"></script>
@@ -2011,26 +2266,26 @@
 
             try {
                 $("#<%=drpUser.ClientID%>").msDropDown();
-                                                    $("#<%=ddlStatus_Popup.ClientID%>").msDropDown();
-                                                    $("#<%=ddlUserStatus.ClientID%>").msDropDown();
-                                                    $(".grd-status").msDropDown();
-                                                } catch (e) {
-                                                    alert(e.message);
-                                                }
-                                            }
+                $("#<%=ddlStatus_Popup.ClientID%>").msDropDown();
+                $("#<%=ddlUserStatus.ClientID%>").msDropDown();
+                $(".grd-status").msDropDown();
+            } catch (e) {
+                alert(e.message);
+            }
+        }
 
-                                            var objBulkUploadFileDropzone;
+        var objBulkUploadFileDropzone;
 
-                                            function ApplyDropZone() {
-                                                //debugger;
-                                                ////User's drag and drop file attachment related code
+        function ApplyDropZone() {
+            //debugger;
+            ////User's drag and drop file attachment related code
 
-                                                //remove already attached dropzone.
-                                                if (objBulkUploadFileDropzone) {
-                                                    objBulkUploadFileDropzone.destroy();
-                                                    objBulkUploadFileDropzone = null;
-                                                }
-                                                objBulkUploadFileDropzone = GetWorkFileDropzone("div#divBulkUploadFile", 'div#divBulkUploadFilePreview', '#<%= hdnBulkUploadFile.ClientID %>');
+            //remove already attached dropzone.
+            if (objBulkUploadFileDropzone) {
+                objBulkUploadFileDropzone.destroy();
+                objBulkUploadFileDropzone = null;
+            }
+            objBulkUploadFileDropzone = GetWorkFileDropzone("div#divBulkUploadFile", 'div#divBulkUploadFilePreview', '#<%= hdnBulkUploadFile.ClientID %>');
         }
 
         function SetSalesUserAutoSuggestion() {
@@ -2226,7 +2481,11 @@
         }
 
         $(document).ready(function () {
-
+            var notesEmail = '<%=notesUserEmail %>';
+            if(notesEmail!=''){
+                $('.txtSearch').val(notesEmail);
+                $('.btnSearchGridData').trigger('click');
+            }
             var changeTooltipPosition = function (event) {
                 var tooltipX = event.pageX - 8;
                 var tooltipY = event.pageY + 8;
@@ -2288,13 +2547,17 @@
                 mouseleave: hideTooltip
 
             });
-
-
-
+            ReLoadNotes();
         });
 
+        function ReLoadNotes() {
+            $('.notes-container').each(function (i) {
+                var id = $(this).attr('id').split('-')[1];
+                var installUserId = $(this).attr('uid');
+                LoadNotes($('#user' + id), installUserId, id);
+            });
+        }
         //============== End DP ==============
 
     </script>
 </asp:Content>
-
