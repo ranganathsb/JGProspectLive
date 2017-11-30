@@ -243,7 +243,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             var AssignedUsers = JSON.parse(data.data.d);
 
             ///console.log(AssignedUsers);
-            //debugger;
+            //
             $scope.DesignationAssignUsers = AssignedUsers;
 
         });

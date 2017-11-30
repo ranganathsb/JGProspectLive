@@ -28,7 +28,7 @@ namespace JG_Prospect.Sr_App.Controls
         #region '--Members--'
 
         private List<string> lstSubTaskFiles = new List<string>();
-
+        public int loggedInUserId = 0;
         private DataTable dtSubTasks = new DataTable();
 
         #endregion '--Members--'
@@ -153,6 +153,7 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            loggedInUserId = JGSession.UserId;
             if (!IsPostBack)
             {
                 FillInitialData();

@@ -14,6 +14,8 @@
 
     <link href="../css/screen.css" rel="stylesheet" media="screen" type="text/css" />
     <link href="../css/jquery.ui.theme.css" rel="stylesheet" media="screen" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="//twitter.github.com/bootstrap/assets/css/bootstrap.css">
+    <link href="../js/mention/recommended-styles.css" rel="stylesheet" />
     <%--<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/redmond/jquery-ui.css" />--%>
 
     <%--<link href="../datetime/js/jquery.ptDayOnlySelect.css" rel="stylesheet" type="text/css" />
@@ -22,15 +24,25 @@
 
     <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />--%>
     <link href="../css/jquery-ui.css" rel="stylesheet" />
+    <link href="../Content/paging.css" rel="stylesheet" />
 
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-
+    <script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    
     <script type="text/javascript" src="../js/jquery.watermarkinput.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js" type="text/javascript"></script>
+    <script src="//code.jquery.com/ui/1.10.1/jquery-ui.js" type="text/javascript"></script>
 
     <script type="text/javascript" src="../js/ddaccordion.js"></script>
 
     <script type="text/javascript" src="../js/jg-common.js"></script>
+    
+    <link href="../js/tribute/tribute.css" rel="stylesheet" />
+    <script src="../js/tribute/tribute.min.js"></script>
+
+    <script type="text/javascript" src="../js/jquery.form.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/paging.js"></script>
+    
+    
     <script src="../Scripts/angular.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-sanitize.js"></script>
 
@@ -78,6 +90,7 @@
         //        }
     </script>
     <style type="text/css">
+
         .ui-widget-header {
             border: 0;
             background: none /*{bgHeaderRepeat}*/;
@@ -190,6 +203,17 @@
         #ScriptEditor_ctl02_ctl00 {
             height: 100px !important;
         }
+        @keyframes blink {
+                from {background-color: #fff;}
+                to {background-color: #e0b900;}
+            }
+            @-webkit-keyframes blink {
+                from {background-color: #fff;}
+                to {background-color: #e0b900;}
+            }
+            .blink-notes{
+                animation: blink 2s steps(2, start) infinite;
+            }
     </style>
     <asp:ContentPlaceHolder ID="head" runat="server">
     </asp:ContentPlaceHolder>
@@ -488,7 +512,7 @@
     </form>
     <%--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>--%>
     <script src="../js/jquery-ui.js"></script>
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyD0X4v7eqMFcWCR-VZAJwEMfb47id9IZao"></script>
+    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyD0X4v7eqMFcWCR-VZAJwEMfb47id9IZao"></script>
     <script type="text/JavaScript" src="../Communication/webphone/js/linkify/linkify.js"></script>
     <script type="text/javascript">
         $(function () {
@@ -579,5 +603,8 @@
         }
 
     </script>
+    <div id="MainThrobberImage" style="position: absolute; z-index: 99999999999999; display: none;">
+        <img alt="throbber" src="../img/ajax-loader.gif" />
+    </div>
 </body>
 </html>
