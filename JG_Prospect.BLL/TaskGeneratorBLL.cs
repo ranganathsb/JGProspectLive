@@ -248,6 +248,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, isAdmin, Start, PageLimit, strSortExpression);
         }
 
+        public ActionOutput<LoginUser> GetInstallUsersByPrefix(string Prefix)
+        {
+            return TaskGeneratorDAL.Instance.GetInstallUsersByPrefix(Prefix);
+        }
+
         public DataSet GetAllUsersNDesignationsForFilter()
         {
             return TaskGeneratorDAL.Instance.GetAllUsersNDesignationsForFilter();

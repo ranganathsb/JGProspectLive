@@ -1488,6 +1488,8 @@
     <Content Include="Database Scripts\JitendraPancholi\Procedures.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Tables.sql" />
     <Content Include="Database Scripts\Kapil\Latest.sql" />
+    <Content Include="Database Scripts\Kapil\Executed_2.sql" />
+    <Content Include="Database Scripts\Kapil\Executed.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\Database Script.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\03-04-2017.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\06-04-2017\GetFrozenTasks.sql" />
@@ -1860,6 +1862,9 @@
     <Content Include="img\File.png" />
     <Content Include="img\folder.png" />
     <Content Include="img\gplus.png" />
+    <Content Include="img\icon_email.PNG" />
+    <Content Include="img\icon_jg.PNG" />
+    <Content Include="img\icon_share.JPG" />
     <Content Include="img\image-icon.png" />
     <Content Include="img\jg-construction.jpg" />
     <Content Include="img\JG-Logo-white.gif" />
@@ -1957,7 +1962,7 @@
     <Content Include="js\angular\scripts\TaskSequence-UiGrid.js" />
     <Content Include="js\angular\templates\sequence-header-template.html" />
     <Content Include="js\angular\templates\pager-template.html" />
-    <Content Include="js\common.js" />
+    <Content Include="js\Common.js" />
     <Content Include="js\edituser.js" />
     <Content Include="js\flipclock.min.js" />
     <Content Include="js\angular\scripts\jgapp.js" />

@@ -12,7 +12,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.Script.Serialization;
 using System.Web.Script.Services;
-
+using JG_Prospect.Common.modal;
 
 namespace JG_Prospect.Sr_App
 {
@@ -125,6 +125,13 @@ namespace JG_Prospect.Sr_App
             }
 
             return SearchSuggestions;
+        }
+
+        [WebMethod]
+        public static string GetInstallUsersByPrefix(string keyword)
+        {
+            ActionOutput<LoginUser> users = TaskGeneratorBLL.Instance.GetInstallUsersByPrefix(keyword);
+            return new JavaScriptSerializer().Serialize(users);
         }
 
         [WebMethod]
