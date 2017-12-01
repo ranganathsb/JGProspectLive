@@ -3096,7 +3096,7 @@
                 }
                 else {
                     var note = 'Shared: ' + $('#txtTaskLink').val();
-                    addNotes(this, uid, note);
+                    addNote(this, uid, note);
                 }
                 return false;
             });
@@ -3133,7 +3133,7 @@
                                     if (name != null && name != undefined) {
                                         var data = (SearchTargetEmail == true ? this.Email : this.FirstName);
                                         tbl += '<li>' +
-                                            '<div onclick="setUser(this, \'' + data + '\',' + this.ID + ')">' + data + '</div>' +
+                                            '<div onclick="setUserData(this, \'' + data + '\',' + this.ID + ')">' + data + '</div>' +
                                             '</li>';
                                     }
                                 });

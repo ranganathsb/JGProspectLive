@@ -2654,15 +2654,16 @@ ul.auto-complete-users {
 ul.auto-complete-users {
     width: 400px;
     list-style: none;
-    margin-top: -6px;
+    margin-top: 0px;
     padding: 0px 0 0 0px;
     background: #fff;
     display: inline-block;
-    border: 1px solid #aaa;
-    border-radius: 5px;
+    border: 0px solid #aaa;
+    border-radius: 0px;
     position: absolute;
-    left: 6px;
-    top: 72px;
+    left: 17px;
+    top: 180px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
 .auto-complete-users li {
     margin: 0;

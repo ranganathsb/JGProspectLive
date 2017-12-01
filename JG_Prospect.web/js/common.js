@@ -608,34 +608,44 @@ function getUrlVars() {
     return vars;
 }
 
+function sendEmail(sender, contents, uid) {
+    if (uid != '') {
+        $('.search-label').html('Please Wait...');
+        ajaxExt({
+            url: '/Sr_App/TaskGenerator.aspx/SendEmailToSharedTaskUser',
+            type: 'POST',
+            data: '{ contents: "' + contents + '", InstallUserIDs: ' + uid + ' }',
+            showThrobber: true,
+            throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+            success: function (data, msg) {
+                $('#txtSearchUser').val('');
+                $('.search-label').html('Email Sent.');
+            }
+        });
+    }
+}
 
-//$(document).on('keyup', '.add-notes-container .note-text', function () {
-//    $('.auto-complete-users').remove();
-//    var keywords = $(this).val().split('@');
-//    var keyword = keywords[keywords.length - 1];
-//    if (keyword != '' && keywords.length>1)
-//        ajaxExt({
-//            url: '/Sr_App/edituser.aspx/GetUsers',
-//            type: 'POST',
-//            data: '{ keyword: "' + keyword + '" }',
-//            showThrobber: true,
-//            throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
-//            success: function (data, msg) {
-//                if (data.Results.length > 0) {
-//                    var tbl = '<ul class="auto-complete-users">';
-//                    $(data.Results).each(function (i) {
-//                        tbl += '<li>' +
-//                                    '<div onclick="setUser(this, \'' + data.Results[i].Email + '\',\'' + data.Results[i].FirstName + ' ' + data.Results[i].LastName + '\')">' + data.Results[i].FirstName + ' ' + data.Results[i].LastName + '(' + data.Results[i].Email + ')' + '</div>' +
-//                                '</li>';
-//                    });
-//                    tbl += '</ul>';
-//                    $('.add-notes-container').append(tbl);
-//                } else {
-//                    $('.add-notes-container').append('<ul class="auto-complete-users"><li>Notes not found</li></ul>');
-//                }
-//            }
-//        });
-//});
+function addNote(sender, uid, note) {
+    if (note != '') {
+        $('.search-label').html('Please Wait...');
+        ajaxExt({
+            url: '/Sr_App/edituser.aspx/AddNotes',
+            type: 'POST',
+            data: '{ id: ' + uid + ', note: "' + note + '" }',
+            showThrobber: true,
+            throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+            success: function (data, msg) {
+                $('#txtSearchUser').val('');
+                $('.search-label').html('Note Sent.');
+            }
+        });
+    }
+}
+function setUserData(sender, data, id) {
+    uid = id;
+    $('#txtSearchUser').val(data);
+    $('.auto-complete-users').remove();
+}
 
 function setUser(sender, email, name) {
     var txt = $('.add-notes-container .note-text').val();

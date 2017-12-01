@@ -4881,21 +4881,5 @@ namespace JG_Prospect
             ActionOutput<LoginUser> users = InstallUserBLL.Instance.GetUsers(keyword);
             return new JavaScriptSerializer().Serialize(users);
         }
-
-        [WebMethod]
-        public static string AddNotes(int id, string note)
-        {
-            string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
-            int userID = Convert.ToInt32(JGSession.LoginUserID);
-            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, "Note : " + note, "");
-            return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
-        }
-
-        [WebMethod]
-        public static string GetUsers(string keyword)
-        {
-            ActionOutput<LoginUser> users = InstallUserBLL.Instance.GetUsers(keyword);
-            return new JavaScriptSerializer().Serialize(users);
-        }
     }
 }

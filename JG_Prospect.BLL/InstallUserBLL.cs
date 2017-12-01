@@ -716,10 +716,7 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetUserTouchPointLogs(pageNumber, pageSize, userId);
         }
-        public ActionOutput<LoginUser> GetUsers(string keyword)
-        {
-            return InstallUserDAL.Instance.GetUsers(keyword);
-        }
+
         public DataSet GetTouchPointLogDataByUserID(int UserID)
         {
             return InstallUserDAL.Instance.GetTouchPointLogDataByUserID(UserID);
