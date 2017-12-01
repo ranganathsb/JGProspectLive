@@ -469,12 +469,5 @@ namespace JG_Prospect.BLL
         //------- End DP ----------
 
         #endregion
-
-        #region TaskInformation
-        public DataSet GetTasksInformation(Int32 TaskId)
-        {
-            return TaskGeneratorDAL.Instance.GetTasksInformation(TaskId);
-        }
-        #endregion
     }
 }

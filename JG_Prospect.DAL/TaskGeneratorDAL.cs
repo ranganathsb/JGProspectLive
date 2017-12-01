@@ -2594,32 +2594,6 @@ namespace JG_Prospect.DAL
         //------------- End DP--------------
 
         #endregion
-
-        #region
-        //Get details for task 
-        public DataSet GetTasksInformation(Int32 TaskId)
-        {
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("GetTasksInformation");
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
-
-                    returndata = database.ExecuteDataSet(command);
-
-                    return returndata;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        #endregion
+        
     }
 }
