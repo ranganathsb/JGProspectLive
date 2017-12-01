@@ -921,6 +921,40 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public bool SaveTaskMultiLevelChild(int ParentTaskId, string InstallId, string Description, int IndentLevel, string Class)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("sp_AddMultiLevelChlild");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@ParentTaskId", SqlDbType.Int, ParentTaskId);
+                    database.AddInParameter(command, "@InstallId", SqlDbType.VarChar, InstallId);
+                    database.AddInParameter(command, "@Description", SqlDbType.VarChar, Description);
+                    database.AddInParameter(command, "@IndentLevel", SqlDbType.Int, IndentLevel);
+                    database.AddInParameter(command, "@Class", SqlDbType.VarChar, Class);
+
+                    int result = database.ExecuteNonQuery(command);
+
+                    //if (result > 0)
+                    //{
+                    return true;
+                    //}
+                    //else
+                    //{
+                    //    return false;
+                    //}
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool SetTaskStatus(int TaskId, string taskStatus)
         {
             try
@@ -1485,6 +1519,27 @@ namespace JG_Prospect.DAL
 
         }
 
+        public DataSet GetMultilevelChildren(string ParentTaskId)
+        {
+            DataSet result = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("sp_GetMultiLevelList");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@ParentTaskId", DbType.String, ParentTaskId);
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
         public DataSet GetTaskUserDetails(Int16 TaskID)
         {
             try
@@ -1989,6 +2044,27 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@TaskId", DbType.Int64, tid);
                     database.AddInParameter(command, "@URL", DbType.String, URL);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+        public int UpdateTaskDescriptionChildById(string tid, string Description)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskDescriptionChildById");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, tid);
+                    database.AddInParameter(command, "@Description", DbType.String, Description);
 
                     return database.ExecuteNonQuery(command);
                 }

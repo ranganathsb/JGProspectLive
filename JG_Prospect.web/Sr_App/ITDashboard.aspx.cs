@@ -57,7 +57,7 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
-                    txtSearchClosedTasks.Visible = ddlDesigClosedTask.Visible = false;
+                    //txtSearchClosedTasks.Visible = ddlDesigClosedTask.Visible = false;
                     lblalertpopup.Visible = false;
 
                     //For ng-repeat
