@@ -416,7 +416,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public string AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID)
+        public int AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID)
         {
             try
             {
@@ -431,13 +431,13 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@changeLog", DbType.String, changeLog);
                     database.AddInParameter(command, "@CurrGUID", DbType.String, strGUID);
 
-                    string lResult = database.ExecuteScalar(command).ToString();
-                    return lResult;
+                    DataSet dsTemp = database.ExecuteDataSet(command);
+                    return Convert.ToInt32(dsTemp.Tables[0].Rows[0]["UserTouchPointLogID"]);
                 }
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return 0;
             }
         }
 
@@ -499,6 +499,103 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
                     return returndata;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public PagingResult<Notes> GetUserTouchPointLogs(int pageNumber, int pageSize, int userId)
+        {
+            try
+            {
+                List<Notes> notes = new List<Notes>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetUserTouchPointLogs");
+                    database.AddInParameter(command, "@UserID", DbType.Int32, userId);
+                    database.AddInParameter(command, "@PageNumber", DbType.Int32, pageNumber);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, pageSize);
+                    database.AddOutParameter(command, "@TotalResults", DbType.Int32, 0);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    int TotalResults = Convert.ToInt32(database.GetParameterValue(command, "@TotalResults"));
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            notes.Add(new Notes
+                            {
+                                UserTouchPointLogID = Convert.ToInt32(item["UserTouchPointLogID"]),
+                                UserID = Convert.ToInt32(item["UserID"]),
+                                UpdatedByUserID = Convert.ToInt32(item["UpdatedByUserID"]),
+                                UpdatedUserInstallID = item["UpdatedUserInstallID"].ToString(),
+                                ChangeDateTime = Convert.ToDateTime(item["ChangeDateTime"]),
+                                LogDescription = item["LogDescription"].ToString(),
+                                UpdatedByFirstName = item["UpdatedByFirstName"].ToString(),
+                                UpdatedByLastName = item["UpdatedByLastName"].ToString(),
+                                UpdatedByEmail = item["UpdatedByEmail"].ToString(),
+                                FristName = item["FristName"].ToString(),
+                                LastName = item["LastName"].ToString(),
+                                Email = item["Email"].ToString(),
+                                Phone = item["Phone"].ToString(),
+                                ChangeDateTimeFormatted = item["ChangeDateTimeFormatted"].ToString()
+                            });
+                        }
+                    }
+                    return new PagingResult<Notes>
+                    {
+                        Data = notes,
+                        Status = ActionStatus.Successfull,
+                        TotalResults = TotalResults
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public ActionOutput<LoginUser> GetUsers(string keyword)
+        {
+            try
+            {
+                List<LoginUser> users = new List<LoginUser>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetUsersByKeyword");
+                    database.AddInParameter(command, "@Keyword", DbType.String, keyword);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            users.Add(new LoginUser
+                            {
+                                ID= Convert.ToInt32(item["Id"].ToString()),
+                                FirstName = item["FristName"].ToString(),
+                                LastName = item["LastName"].ToString(),
+                                Email = item["Email"].ToString(),
+                                Phone = item["Phone"].ToString()
+                            });
+                        }
+                    }
+                    return new ActionOutput<LoginUser>
+                    {
+                        Results = users,
+                        Status = ActionStatus.Successfull
+                    };
                 }
             }
             catch (Exception ex)
@@ -2740,7 +2837,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetEmployeeInterviewDetails(int  UserID)
+        public DataSet GetEmployeeInterviewDetails(int UserID)
         {
             try
             {
@@ -3117,10 +3214,10 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("usp_SearchUsersForPopup");
 
-                    command.CommandType = CommandType.StoredProcedure;                    
+                    command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@UserIds", DbType.String, UserIds);
-                    database.AddInParameter(command, "@Status", DbType.String, Status);                    
+                    database.AddInParameter(command, "@Status", DbType.String, Status);
                     database.AddInParameter(command, "@DesignationId", DbType.Int32, DesignationId);
                     database.AddInParameter(command, "@PageIndex", DbType.Int32, PageIndex);
                     database.AddInParameter(command, "@PageSize", DbType.Int32, PageSize);

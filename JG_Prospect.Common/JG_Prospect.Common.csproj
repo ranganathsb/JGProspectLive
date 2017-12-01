@@ -116,6 +116,7 @@
     <Compile Include="modal\MCQ_Option.cs" />
     <Compile Include="modal\MCQ_Question.cs" />
     <Compile Include="modal\NewVendorCategory.cs" />
+    <Compile Include="modal\Notes.cs" />
     <Compile Include="modal\period.cs" />
     <Compile Include="modal\ProductSoldDetails.cs" />
     <Compile Include="modal\prospect.cs" />

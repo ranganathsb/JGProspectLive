@@ -265,6 +265,134 @@
         .defaultColor {
             background-color: #F6F1F3;
         }
+        .notes-section {
+            float: left;    width: 100%;
+        }
+         .notes-popup {
+            width: 100%;
+            background: #fff;
+            border-radius: 5px;
+            margin: 10px 0px;
+        }
+
+        .notes-popup-background {
+            display: none;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            background: #000;
+            opacity: 0.5;
+        }
+
+        .notes-popup .heading {
+            width: 100%;
+            display: inline-block;
+            background: #A33E3F;
+            color: #fff;
+            padding: 5px 0;
+            border-radius: 5px 5px 0 0;
+        }
+
+            .notes-popup .heading .title {
+                padding: 0 5px;
+                float: left;
+            }
+
+        .notes-popup .content {
+            padding: 5px;
+        }
+
+        .notes-popup .heading .close {
+            float: right;
+            top: -11px;
+            font-size: 14px;
+            right: -8px;
+            background: #ccc;
+            border-radius: 19px;
+            cursor: pointer;
+        }
+
+        .notes-popup .content table {
+            width: 100%;
+        }
+
+            .notes-popup .content table th {
+                border: 1px solid #ccc;
+                text-align: left;
+                padding: 3px;
+                font-size: 13px;
+                color: #ddd;
+                background: #000;
+            }
+
+            .notes-popup .content table td {
+                padding: 3px;
+                font-size: 12px;
+                border: 1px solid #ccc;
+            }
+
+            .notes-popup .content table tr:nth-child(even) {
+                background: #ba4f50;
+                color: #fff;
+            }
+
+            .notes-popup .content table tr:nth-child(odd) {
+                background: #FFF;
+                color: #000;
+            }
+
+            .notes-popup .content table tr th:nth-child(1), .notes-popup .content table tr td:nth-child(1) {
+                width: 120px;
+            }
+
+        .notes-popup .add-notes-container {
+            display: inline-block;
+            width: 98%;
+            padding: 5px;    POSITION: relative;
+        }
+
+            .notes-popup .add-notes-container textarea {
+                width: 80% !important;
+                height: 50px !important;
+                padding: 5px !important;
+                    float: left;
+    margin-right: 10px;
+            }
+            .notes-popup .notes-container .note-desc {
+                width: 194px;
+                height: 29px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .notes-table tr:nth-child(odd) a{}
+            .notes-table tr:nth-child(even) a, .notes-popup tr:nth-child(even) a{color:#fff;}
+            .notes-table tr th:nth-child(1), .notes-table tr td:nth-child(1) {
+                width: 5%;
+            }
+            
+            .notes-table tr th:nth-child(2), .notes-table tr td:nth-child(2) {
+                width: 27%;
+            }
+
+            .notes-table tr th:nth-child(3), .notes-table tr td:nth-child(3) {
+                width: 90px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+            .GrdBtnAdd {
+    margin-top: 12px;
+    height: 30px;
+    background: url(img/main-header-bg.png) repeat-x;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+}
+            
     </style>
     <link href="../css/chosen.css" rel="stylesheet" />
     <link href="../Styles/dd.css" rel="stylesheet" />
@@ -935,6 +1063,7 @@
                     <ul>
                         <li><a href="#StaffTaskNonFrozen">Staff Tasks</a></li>
                         <li><a href="#TechTaskNonFrozen">Tech Tasks</a></li>
+                        
                     </ul>
                     <div id="StaffTaskNonFrozen">
                         <div id="tblStaffSeqNonFrozen" class="div-table tableSeqTask">
@@ -1500,6 +1629,7 @@
                             <!-- UI-Grid Ends here -->--%>
                     </div>
 
+                    
                 </div>
 
 
@@ -2238,7 +2368,7 @@
                         </td>
                     </tr>
                 </tbody>
-            </table>
+            </table>            
 
             <span id="ContentPlaceHolder1_Label1"></span>
             <div id="dibClosedTask" ng-controller="ClosedTaskController">
@@ -2300,9 +2430,32 @@
                 </div>
             </div>
         </div>
-        <asp:HiddenField ID="hdnUserId" runat="server" />
+        <div class="notes-section" TUID="<%=loggedInUserId %>">
+                <div class="notes-popup">
+                    <div class="heading">
+                        <div class="title">User Touch Point Logs</div>
+                        
+                        <input type="hidden" id="PageIndex" value="0" />
+                    </div>
+                    <div class="content">
+                        Loading Notes...
+                    </div>
+                    <div class="pagingWrapper">
+                        <div class="total-results">Total <span class="total-results-count"></span>Results</div>
+                        <div class="pager">
+                            <span class="first">« First</span> <span class="previous">Previous</span> <span class="numeric"></span><span class="next">Next</span> <span class="last">Last »</span>
+                        </div>
+                        <div class="pageInfo">
+                        </div>
+                    </div>
+                    <div class="add-notes-container">
+                        <textarea id="note-text" class="note-text textbox"></textarea>
+                        <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addPopupNotes(this)" />
+                    </div>
+                </div>
+            </div>
+        <asp:HiddenField id="hdnUserId" runat="server"/>
     </div>
-
 
     <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
     
@@ -2312,7 +2465,65 @@
     <script src="../js/TaskSequencing.js"></script>
     <script src="../js/jquery.dd.min.js"></script>
     <script src="../js/angular/scripts/ClosedTasls.js"></script>
+
     <script type="text/javascript">
+        function Paging(sender) {
+            $('#PageIndex').val(paging.currentPage);
+            ajaxExt({
+                url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
+                type: 'POST',
+                data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + <%=loggedInUserId%> + ' }',
+                showThrobber: true,
+                throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                success: function (data, msg) {
+                    if (data.Data.length > 0) {
+                        PageNumbering(data.TotalResults);
+                        var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
+                        $(data.Data).each(function (i) {
+                            tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
+                                        '<td><a href="/Sr_App/ViewSalesUser.aspx?id=' + data.Data[i].UserID + '">' + data.Data[i].UpdatedUserInstallID + '<br/>' + data.Data[i].ChangeDateTimeFormatted + '</a></td>' +
+                                        '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
+                                    '</tr>';
+                        });
+                        tbl += '</table>';
+                        $('.notes-popup .content').html(tbl);
+                        var tuid = getUrlVars()["TUID"];
+                        var nid = getUrlVars()["NID"];
+                        if (tuid != undefined && nid != undefined) {
+                            $('.notes-popup tr#' + nid).addClass('blink-notes');
+                            $('html, body').animate({
+                                scrollTop: $(".notes-popup").offset().top
+                            }, 2000);
+                        }
+                        $('.pagingWrapper').show();
+                        tribute.attach(document.querySelectorAll('.note-text'));
+                    } else {
+                        $('.notes-popup .content').html('Notes not found');
+                        $('.pagingWrapper').hide();
+                    }
+                }
+            });
+            return false;
+        }
+        function addPopupNotes(sender) {
+            var userId = '<%=loggedInUserId%>';
+            addNotes(sender, userId);
+        }
+        function addNotes(sender, uid) {
+            var note = $(sender).parent().find('.note-text').val();
+            if (note != '')
+                ajaxExt({
+                    url: '/Sr_App/edituser.aspx/AddNotes',
+                    type: 'POST',
+                    data: '{ id: ' + uid + ', note: "' + note + '" }',
+                    showThrobber: true,
+                    throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                    success: function (data, msg) {
+                        $(sender).parent().find('.note-text').val('');
+                        Paging(sender);
+                    }
+                });
+        }
         var ddlDesigSeqClientIDFrozenTasks = "";
         var ddlDesigSeqClientID;
         function changeTaskStatusClosed(Task) {
@@ -2359,7 +2570,7 @@
         function resetChosen(selector) {
             var val = $(selector).val();
 
-            //debugger;
+            //
             if (val != undefined && val != '') {
                 $(selector)
                     .find('option:first-child').prop('selected', false)
@@ -2372,6 +2583,7 @@
         }
 
         $(document).ready(function () {
+            Paging($(this));            
             $(".chosen-select-multi").chosen();
             $('.chosen-dropDown').chosen();
             $('.chosen-dropdown-FrozenTasks').chosen();
@@ -2411,14 +2623,12 @@
             $("#ddlUserStatus").msDropDown();
         });
 
-
+               
 
         $(window).load(function () {
             checkNShowTaskPopup();
             sequenceScope.ForDashboard = true;
             var desId = "";
-            debugger;
-
             if ($('#' + '<%=tableFilter.ClientID%>').length > 0) {
                 $('#chkAllDates').attr("checked", true);
                 //Set Date
@@ -2516,6 +2726,9 @@
                 ShowNonFrozenTaskSequenceDashBoard($('.' + ddlDesigSeqClientIDFrozenTasks).val(), 0);
             });
 
+            checkNShowTaskPopup();
+
+
         });
 
         //Date Filter
@@ -2543,7 +2756,7 @@
         }
 
         function fillUsers(selector, fillDDL, loader) {
-            debugger;
+            // 
             var did = $('.' + selector).val().join();
             var options = $('#' + fillDDL);
             $('#ddlSelectFrozenTask_chosen').css({ "width": "300px" });
@@ -2668,7 +2881,7 @@
         });
 
         //$(document).on('click', '#ddlSelectUserInProTask_chosen', function () {
-        //    debugger;
+        //    
         //    var href = $(this).find('li.search-choice a').attr('href');
         //    window.open(href, "_blank");
         //});
@@ -2696,14 +2909,14 @@
             });
         }
         function openCopyBox(obj) {
-            debugger;
+            // 
             var urltoCopy = _updateQStringParam(window.location.href, "hstid", $(obj).attr('data-highlighter'), "TaskId", $(obj).attr('parentdata-highlighter'), "InstallId", $(obj).attr('data-installid'));
             copyToClipboard(urltoCopy);
             return false;
         }
 
         //$(".context-menu").bind("contextmenu", function () {
-        //    debugger;
+        //    // 
         //    var urltoCopy = updateQueryStringParameter(window.location.href, "hstid", $(this).attr('data-highlighter'), "TaskId", $(this).attr('parentdata-highlighter'));
         //    copyToClipboard(urltoCopy);
         //    return false;
@@ -2747,7 +2960,7 @@
         }
 
         function setSelectedUsersLink() {
-            //debugger;
+            //// 
             $('.chosen-dropDown').each(function () {
                 var itemIndex = $(this).children('.search-choice-close').attr('data-option-array-index');
                 //console.log(itemIndex);
@@ -2796,7 +3009,7 @@
         }
 
         function SetApprovalUI() {
-            //debugger;
+            //// 
             $('.approvalBoxes').each(function () {
                 var approvaldialog = $($(this).next('.approvepopup'));
                 approvaldialog.dialog({
@@ -2813,7 +3026,7 @@
         }
 
         function SetFrozenTaskAutoSuggestionUI() {
-            //debugger;
+            //// 
             //console.log("SetFrozenTaskAutoSuggestionUI called");
             $.widget("custom.catcomplete", $.ui.autocomplete, {
                 _create: function () {
@@ -2866,7 +3079,7 @@
                          success: function (data) {
                              // Handle 'no match' indicated by [ "" ] response
                              if (data.d) {
-                                 ////debugger;
+                                 ////
                                  response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
                              }
                              // remove loading spinner image.                                
@@ -2876,7 +3089,7 @@
                  },
                  minLength: 0,
                  select: function (event, ui) {
-                     //debugger;
+                     //
                      //alert(ui.item.value);
                      //alert(ui.item.id);
                      $("#txtSearchUserFrozen").val(ui.item.value);
@@ -2930,7 +3143,7 @@
         }
 
          function SetInProTaskAutoSuggestionUI() {
-             //debugger;
+             //
              //console.log("SetInProTaskAutoSuggestionUI called");
              $.widget("custom.catcomplete", $.ui.autocomplete, {
                  _create: function () {
@@ -2941,7 +3154,7 @@
                      var that = this,
                          currentCategory = "";
                      $.each(items, function (index, item) {
-                         //debugger;
+                         //
                          var li;
                          if (item.Category != currentCategory) {
                              ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
@@ -2959,13 +3172,13 @@
 
          function SetTaskCounterPopup() {
 
-             $('#' + '<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
-                debugger;
+            $('#' +'<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
+                // 
                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
             });
             $('#' + '<%=lblFrozenTaskCounter.ClientID%>').click(function () {
-                debugger;
+                
                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
             });

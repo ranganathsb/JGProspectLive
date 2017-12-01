@@ -1391,12 +1391,14 @@ namespace JG_Prospect
             }
             else //If task is not available and not assigned to user than show success popup without assigned task information.
             {
-                SetExamPassedMessage(String.Empty, String.Empty, 0, 0, String.Empty, true);
+                SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString(), false);
 
                 ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
             }
-
-           
+                    // display text in notes" User successfully passed aptitude test"
+            string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
+            int userID = Convert.ToInt32(JGSession.LoginUserID);
+            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, userID, strUserInstallId, DateTime.UtcNow, "User successfully passed aptitude test", "");
         }
 
         private string GetViewSalesUserAlertPopup()
@@ -1452,7 +1454,8 @@ namespace JG_Prospect
 
             hypExam.HRef = String.Concat(hypExam.HRef, this.UserID);
 
-         
+            hypTaskLink.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
+            hypTaskLink1.HRef = String.Concat(JGApplicationInfo.GetSiteURL(), "/Sr_App/ITDashboard.aspx?TaskId=", ParentTaskId.ToString(), "&hstid=", TaskId.ToString());
             //Only for programming designations
             if (ShowGithubField)
             {
@@ -5079,7 +5082,8 @@ namespace JG_Prospect
 
         protected void btnAcceptTask_Click(object sender, EventArgs e)
         {
-            // Change user set password.
+            TaskGeneratorBLL.Instance.AcceptUserAssignedWithSequence(this.AssignedSequenceID);
+
             ChangePassword();
 
             //Set user's status to InterviewDate.
@@ -5096,8 +5100,14 @@ namespace JG_Prospect
                 CommonFunction.AddUserAsGitcollaborator(GithubUsername, JGConstant.GitRepo.Interview);
 
             }
+    //  User successfully accepted tech task
+    string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
+    int userID = Convert.ToInt32(JGSession.LoginUserID);
+    InstallUserBLL.Instance.AddTouchPointLogRecord(userID, userID, strUserInstallId, DateTime.UtcNow, " User successfully accepted tech task", "");
 
-            if (divTaskAssigned.Visible)
+    ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
+
+    if (divTaskAssigned.Visible)
             {
                 TaskGeneratorBLL.Instance.AcceptUserAssignedWithSequence(this.AssignedSequenceID);
                 ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
@@ -5106,6 +5116,7 @@ namespace JG_Prospect
             {
                 Response.Redirect("~/Sr_App/ITDashboard.aspx?PWT=1");
             }
+            
             
         }
 
@@ -7456,7 +7467,6 @@ namespace JG_Prospect
 
 
         #endregion
-
 
     }
 }

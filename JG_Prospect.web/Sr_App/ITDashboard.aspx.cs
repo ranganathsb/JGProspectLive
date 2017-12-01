@@ -18,6 +18,7 @@ namespace JG_Prospect.Sr_App
     {
         #region Page Variables
         public static bool IsSuperUser = false;
+        public int loggedInUserId = 0;
         #endregion
 
         protected void Page_Load(object sender, EventArgs e)
@@ -29,6 +30,7 @@ namespace JG_Prospect.Sr_App
             if (!Page.IsPostBack)
             {
                 hdnUserId.Value = JGSession.UserId.ToString();
+                loggedInUserId = JGSession.UserId;
                 //Session["AppType"] = "SrApp";
                 //if ((string)Session["usertype"] == "SM" || (string)Session["usertype"] == "SSE" || (string)Session["usertype"] == "MM")
                 //{

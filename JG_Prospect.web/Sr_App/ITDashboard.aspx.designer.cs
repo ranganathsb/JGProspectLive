@@ -174,17 +174,6 @@ namespace JG_Prospect.Sr_App {
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ltlManagerName;
         
-
-        
-        /// <summary>
-        /// txtSearchClosedTasks control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText txtSearchClosedTasks;
-        
         /// <summary>
         /// hdnUserId control.
         /// </summary>

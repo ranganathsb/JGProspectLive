@@ -42,7 +42,7 @@ namespace JG_Prospect
     public partial class EditUser : System.Web.UI.Page
     {
         #region '--Members--'
-
+        public string notesUserEmail = "";
         #endregion
 
         #region '--Properties--'
@@ -211,6 +211,9 @@ namespace JG_Prospect
                     // HighlightUsersForTypes((DataTable)Session["HighlightUsersForTypes"], drpUser);
                 }
             }
+            string userid = Request.QueryString["TUID"];
+            if (!string.IsNullOrEmpty(userid))
+                notesUserEmail = InstallUserBLL.Instance.getuserdetails(Convert.ToInt32(userid)).Tables[0].Rows[0]["Email"].ToString();
         }
 
         #endregion
@@ -545,9 +548,11 @@ namespace JG_Prospect
                         if (userNotes != null && userNotes.Any())
                         {
                             Repeater rptNotes = (e.Row.FindControl("rptNotes") as Repeater);
-
-                            rptNotes.DataSource = userNotes.CopyToDataTable();
-                            rptNotes.DataBind();
+                            if (rptNotes != null)
+                            {
+                                rptNotes.DataSource = userNotes.CopyToDataTable();
+                                rptNotes.DataBind();
+                            }
                         }
                     }
 
@@ -621,12 +626,14 @@ namespace JG_Prospect
                         {
                             case JGConstant.InstallUserStatus.Applicant:
                                 {
-                                    e.Row.Attributes["style"] = "background-color: #FFFF00";
+                                    //e.Row.Attributes["style"] = "background-color: #FFFF00";
+                                    e.Row.Attributes["class"] = "applicant";
                                     break;
                                 }
                             case JGConstant.InstallUserStatus.InstallProspect:
                                 {
-                                    e.Row.Attributes["style"] = "background-color: #FFA500";
+                                    //e.Row.Attributes["style"] = "background-color: #FFA500";
+                                    e.Row.Attributes["class"] = "install-prospect";
                                     break;
                                 }
                             case JGConstant.InstallUserStatus.InterviewDate:
@@ -665,18 +672,21 @@ namespace JG_Prospect
                                 }
                             case JGConstant.InstallUserStatus.Rejected:
                                 {
-                                    e.Row.Attributes["style"] = "background-color: #AEAEAE";
+                                    // e.Row.Attributes["style"] = "background-color: #AEAEAE";
+                                    e.Row.Attributes["class"] = "rejected";
                                     break;
                                 }
                             case JGConstant.InstallUserStatus.Deactive:
                             case JGConstant.InstallUserStatus.Deleted:
                                 {
-                                    e.Row.Attributes["style"] = "background-color: #565656";
+                                    //e.Row.Attributes["style"] = "background-color: #565656";
+                                    e.Row.Attributes["class"] = "deleted";
                                     break;
                                 }
                             case JGConstant.InstallUserStatus.InterviewDateExpired:
                                 {
-                                    e.Row.Attributes["style"] = "background-color: #AAAAAA";
+                                    //e.Row.Attributes["style"] = "background-color: #AAAAAA";
+                                    e.Row.Attributes["class"] = "interview-date-expired";
                                     break;
                                 }
                             default:
@@ -891,6 +901,10 @@ namespace JG_Prospect
                 int StatusId = Convert.ToInt32(e.CommandArgument);
                 string Status = ddlStatus.SelectedValue;
                 bool result = InstallUserBLL.Instance.UpdateInstallUserStatus(Status, StatusId);
+
+                string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
+                int userID = Convert.ToInt32(JGSession.LoginUserID);
+                InstallUserBLL.Instance.AddTouchPointLogRecord(userID, StatusId, strUserInstallId, DateTime.UtcNow, "User status updated to " + Status, "");
             }
             else if (e.CommandName == "EditAddedByUserInstall")
             {
@@ -1321,7 +1335,7 @@ namespace JG_Prospect
                             PayRates = Convert.ToString(ds.Tables[0].Rows[0][3]);
                         }
                     }
-                }                
+                }
 
                 SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]), "Deactivation", txtReason.Text, Convert.ToString(Session["DesignitionSC"]), Convert.ToInt32(Session["DesignitionIdSC"]), HireDate, EmpType, PayRates, 0);
             }
@@ -1451,7 +1465,7 @@ namespace JG_Prospect
         {
             int EditId = 0;
             int.TryParse(Convert.ToString(Session["EditId"]), out EditId);
-            InstallUserBLL.Instance.UpdateOfferMade(EditId, txtEmail.Text, txtPassword1.Text);           
+            InstallUserBLL.Instance.UpdateOfferMade(EditId, txtEmail.Text, txtPassword1.Text);
 
             DataSet ds = new DataSet();
             string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;
@@ -4233,6 +4247,7 @@ namespace JG_Prospect
                         lblTo.Text = dsSalesUserData.Tables[6].Rows[0]["tcount"].ToString();
                     }
                     upUsers.Update();
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Javascript", "javascript:ReLoadNotes(); ", true);
                 }
             }
             else
@@ -4841,7 +4856,30 @@ namespace JG_Prospect
         {
             string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
             int userID = Convert.ToInt32(JGSession.LoginUserID);
-            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.Now, strValueToAdd, "");
+            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, strValueToAdd, "");
+        }
+
+        [WebMethod]
+        public static string GetUserTouchPointLogs(int pageNumber, int pageSize, int userId)
+        {
+            PagingResult<Notes> notes = InstallUserBLL.Instance.GetUserTouchPointLogs(pageNumber, pageSize, userId);
+            return new JavaScriptSerializer().Serialize(notes);
+        }
+
+        [WebMethod]
+        public static string AddNotes(int id, string note)
+        {
+            string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
+            int userID = Convert.ToInt32(JGSession.LoginUserID);
+            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, "Note : " + note, "");
+            return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+        }
+
+        [WebMethod]
+        public static string GetUsers(string keyword)
+        {
+            ActionOutput<LoginUser> users = InstallUserBLL.Instance.GetUsers(keyword);
+            return new JavaScriptSerializer().Serialize(users);
         }
 
         [WebMethod]

@@ -159,7 +159,7 @@ namespace JG_Prospect.Sr_App
                 objDesignationHTMLTemplate.Header = txtHeader.Content;
                 objDesignationHTMLTemplate.Body = txtBody.Content;
                 objDesignationHTMLTemplate.Footer = txtFooter.Content;
-
+                 
                 if (HTMLTemplateBLL.Instance.SaveMasterHTMLTemplate(objDesignationHTMLTemplate))
                 {
                     CommonFunction.ShowAlertFromUpdatePanel(this, "Master template updated successfully.");

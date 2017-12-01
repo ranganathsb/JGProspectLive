@@ -243,7 +243,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             var AssignedUsers = JSON.parse(data.data.d);
 
             ///console.log(AssignedUsers);
-            //debugger;
+            //
             $scope.DesignationAssignUsers = AssignedUsers;
 
         });
@@ -459,6 +459,15 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
                 break;
             case 26:
                 prefix = "ITJPH";
+                break;
+            case 27:
+                prefix = "ITSSE";
+                break;
+            case 28:
+                prefix = "ITSTE";
+                break;
+            case 29:
+                prefix = "ITFRXD";
                 break;
             default:
                 prefix = "N.A.";
