@@ -522,6 +522,47 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public ActionOutput<LoginUser> GetUsers(string keyword)
+        {
+            try
+            {
+                List<LoginUser> users = new List<LoginUser>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetUsersByKeyword");
+                    database.AddInParameter(command, "@Keyword", DbType.String, keyword);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            users.Add(new LoginUser
+                            {
+                                ID = Convert.ToInt32(item["Id"].ToString()),
+                                FirstName = item["FristName"].ToString(),
+                                LastName = item["LastName"].ToString(),
+                                Email = item["Email"].ToString(),
+                                Phone = item["Phone"].ToString()
+                            });
+                        }
+                    }
+                    return new ActionOutput<LoginUser>
+                    {
+                        Results = users,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public DataSet GetTouchPointLogDataByGUID(string strGUID)
         {
             try
