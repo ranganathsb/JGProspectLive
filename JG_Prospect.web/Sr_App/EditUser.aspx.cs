@@ -1441,7 +1441,7 @@ namespace JG_Prospect
         {
             int EditId = 0;
             int.TryParse(Convert.ToString(Session["EditId"]), out EditId);
-            InstallUserBLL.Instance.UpdateOfferMade(EditId, txtEmail.Text, txtPassword1.Text);           
+            InstallUserBLL.Instance.UpdateOfferMade(EditId, txtEmail.Text, txtPassword1.Text);            
 
             DataSet ds = new DataSet();
             string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;

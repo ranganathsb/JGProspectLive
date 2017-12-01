@@ -1574,6 +1574,7 @@ namespace JG_Prospect.WebServices
             int EditId = UserID;
 
             InstallUserBLL.Instance.UpdateOfferMade(EditId, UserEmail, "jmgrove");
+
             //Add User to GitHub Live Repository
             String DesignationCode = InstallUserBLL.Instance.GetUserDesignationCode(EditId);
             if (DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Sr_Net_Developer))
@@ -1587,6 +1588,7 @@ namespace JG_Prospect.WebServices
                 String gitUserName = InstallUserBLL.Instance.GetUserGithubUserName(EditId);
                 CommonFunction.AddUserAsGitcollaborator(gitUserName, JGConstant.GitRepo.Live);
             }
+
             DataSet ds = new DataSet();
             string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;
             email = HireDate = EmpType = PayRates = Desig = LastName = Address = FirstName = String.Empty;
