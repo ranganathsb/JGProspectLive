@@ -1185,6 +1185,48 @@ namespace JG_Prospect.WebServices
             return TaskGeneratorBLL.Instance.TaskSwapSubSequence(FirstSequenceId, SecondSequenceId, FirstTaskId, SecondTaskId);
         }
 
+        [WebMethod(EnableSession = true)]
+        public bool HardDeleteTask(Int64 TaskId)
+        {
+            String filesToDelete = TaskGeneratorBLL.Instance.HardDeleteTask(TaskId);
+            
+            if (!String.IsNullOrEmpty(filesToDelete))
+            {
+                DeleteTaskFiles(filesToDelete);
+            }
+
+            return true;
+
+        }
+
+        //Remove all file related attachments from file system of server.
+        private void DeleteTaskFiles(string filesToDelete)
+        {
+            // Seperate each file name to delete.
+            String[] files = filesToDelete.Split(new char[] { ','},StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (String fileName in files) // Remove each files.
+            {
+                String filePath = Server.MapPath(String.Concat("~/TaskAttachments/",fileName));// Map physical path on server.
+
+                if (File.Exists(filePath))
+                {
+                    try
+                    {
+                        File.Delete(filePath);// Remove file from server.
+                    }
+                    catch (Exception ex )
+                    {
+
+                    }
+
+                }
+
+            } 
+        }
+
+
+
         #endregion
 
         #region '--Private Methods--'
@@ -1425,6 +1467,10 @@ namespace JG_Prospect.WebServices
                     
                     strBody = strBody.Replace("#TaskTitle#", string.Format("{0}/sr_app/TaskGenerator.aspx?TaskId={1}", JGApplicationInfo.GetSiteURL(), intTaskId));
 
+                    // Added by Zubair Ahmed Khan for displaying proper text for task link
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(intTaskId);
+                    strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
+
                     strBody = strHeader + strBody + strFooter;
 
                     List<Attachment> lstAttachments = new List<Attachment>();
@@ -1574,7 +1620,6 @@ namespace JG_Prospect.WebServices
             int EditId = UserID;
 
             InstallUserBLL.Instance.UpdateOfferMade(EditId, UserEmail, "jmgrove");
-
             //Add User to GitHub Live Repository
             String DesignationCode = InstallUserBLL.Instance.GetUserDesignationCode(EditId);
             if (DesignationCode.Equals(CommonFunction.GetDesignationCode(JGConstant.DesignationType.IT_Sr_Net_Developer))
@@ -1588,7 +1633,6 @@ namespace JG_Prospect.WebServices
                 String gitUserName = InstallUserBLL.Instance.GetUserGithubUserName(EditId);
                 CommonFunction.AddUserAsGitcollaborator(gitUserName, JGConstant.GitRepo.Live);
             }
-
             DataSet ds = new DataSet();
             string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;
             email = HireDate = EmpType = PayRates = Desig = LastName = Address = FirstName = String.Empty;
@@ -1933,7 +1977,109 @@ namespace JG_Prospect.WebServices
         }
 
         #endregion
-        
+
+        #endregion
+
+        #region "-- Employee Legal Desclaimer --"
+
+        [WebMethod(EnableSession = true)]
+        public String GetEmployeeLegalDesclaimer(Int32 DesignationId , JGConstant.EmployeeLegalDesclaimerUsedFor UsedFor)
+        {
+
+            String strLegalDesclaimer = string.Empty;
+
+            DataSet LegalDesclaimer = EmployeeLegalDesclaimerBLL.Instance.GetEmployeeLegalDesclaimerByDesignationId(DesignationId, UsedFor);
+
+            if (LegalDesclaimer != null && LegalDesclaimer.Tables.Count > 0)
+            {
+                DataTable dtResult = LegalDesclaimer.Tables[0];
+
+
+                if (dtResult != null)
+                {
+                    strLegalDesclaimer = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+                }
+                else
+                {
+                    strLegalDesclaimer = String.Empty;
+                } 
+            }
+
+            return strLegalDesclaimer;
+
+        }
+
+        #endregion
+
+        #region "-- Employee Instructions --"
+        [WebMethod(EnableSession = true)]
+        public String GetEmployeeInstructionByDesignationId(Int32 DesignationId, JGConstant.EmployeeInstructionUsedFor UsedFor)
+        {
+
+            String strInstruction = string.Empty;
+
+           DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.InterviewDateAutoEmail, DesignationId.ToString());
+
+            //DataSet EmployeeInstruction = EmployeeInstructionBLL.Instance.GetEmployeeInstructionByDesignationId(DesignationId, UsedFor);
+            
+
+            //if (EmployeeInstruction != null && EmployeeInstruction.Tables.Count > 0)
+
+            if(objHTMLTemplate != null)
+            {
+                //DataTable dtResult = EmployeeInstruction.Tables[0];
+
+
+                //if (dtResult != null)
+                //{
+                //    strInstruction = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+                //}
+
+                strInstruction = objHTMLTemplate.Body;  
+                
+            }
+            else
+            {
+                strInstruction = String.Empty;
+            }
+
+            return strInstruction;
+
+        }
+
+
+        #endregion
+
+        #region "-- User Interview Details --"
+
+        [WebMethod(EnableSession = true)]
+        public String GetEmployeeInterviewDetails(Int32 UserId)
+        {
+
+            String strInterviewDetails = string.Empty;
+
+            DataSet InterviewDetails = InstallUserBLL.Instance.GetEmployeeInterviewDetails(UserId);
+
+            if (InterviewDetails != null && InterviewDetails.Tables.Count > 0)
+            {
+                DataTable dtResult = InterviewDetails.Tables[0];
+
+
+                if (dtResult != null)
+                {
+                    strInterviewDetails = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+                }
+                else
+                {
+                    strInterviewDetails = String.Empty;
+                }
+            }
+
+            return strInterviewDetails;
+
+        }
+
+
         #endregion
     }
 }

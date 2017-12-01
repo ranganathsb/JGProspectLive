@@ -77,7 +77,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
 
     $scope.onTechEnd = function () {
         $timeout(function () {
-            if ($scope.IsTechTask) {
+              if ($scope.IsTechTask) {
                 setFirstRowAutoData();
                 SetSeqApprovalUI();
                 SetChosenAssignedUser();
@@ -149,7 +149,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             sequenceScope.EndDate = "";
 
         if ($scope.IsTechTask) {
-            console.log("Tech Task called....");
+            //console.log("Tech Task called....");
             $scope.loader.loading = true;
             $scope.Techpage = page || 0
 
@@ -171,6 +171,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
                 $scope.TechTotalRecords = results.RecordCount.TotalRecords;
                 $scope.TechpagesCount = results.RecordCount.TotalPages;
                 $scope.TechTasks = $scope.correctDataforAngular(results.Tasks);
+                //console.log($scope.TechTasks);
                 //$scope.TaskSelected = $scope.TechTasks[0];
 
             });
@@ -443,6 +444,12 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
                 break;
             case 20:
                 prefix = "SBC";
+                break;
+            case 22:
+                prefix = "ADS";
+                break;
+            case 23:
+                prefix = "ADR";
                 break;
             case 24:
                 prefix = "ITSQA";

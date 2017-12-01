@@ -2124,17 +2124,16 @@ namespace JG_Prospect.DAL
                 return false;
             }
         }
-
-        public DataSet getuserdetails(int id)
+        public DataSet getuserdetailsbyId(int id)
         {
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("UDP_GETInstallUserDetails");
+                    DbCommand command = database.GetStoredProcCommand("GetInstallUserById");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@id", DbType.Int32, id);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, id);
                     returndata = database.ExecuteDataSet(command);
 
                     return returndata;
@@ -2147,17 +2146,16 @@ namespace JG_Prospect.DAL
 
             }
         }
-
-        public DataSet getuserdetailsbyId(int id)
+        public DataSet getuserdetails(int id)
         {
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("GetInstallUserById");
+                    DbCommand command = database.GetStoredProcCommand("UDP_GETInstallUserDetails");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@UserId", DbType.Int32, id);
+                    database.AddInParameter(command, "@id", DbType.Int32, id);
                     returndata = database.ExecuteDataSet(command);
 
                     return returndata;
@@ -2731,6 +2729,28 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("GetTaskUsers");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@SearchTerm", DbType.String, searchTerm);
+                    result = database.ExecuteDataSet(command);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetEmployeeInterviewDetails(int  UserID)
+        {
+            try
+            {
+                DataSet result = null;
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetEmployeeInterviewDetails");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserId", DbType.Int32, UserID);
                     result = database.ExecuteDataSet(command);
                 }
 

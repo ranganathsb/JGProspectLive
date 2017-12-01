@@ -23,6 +23,7 @@ function ShowTaskSequence(editlink, designationDropdownId) {
     var TaskID = edithyperlink.attr('data-taskid');
     var TechTask = edithyperlink.attr('data-task-TechTask');
     var DesignationIds = edithyperlink.attr('data-task-designationids');
+    //debugger;
     //console.log("Task designation is: " + DesignationIds);
     if (DesignationIds) {
 
@@ -1035,5 +1036,36 @@ function SaveTaskSubSequence(hyperlink) {
 
     }
 
+
+}
+
+
+function harddeleteTask(TaskId)
+{
+    var proceed = confirm('are you sure you want to delete this task and all its children with details?');
+
+    if (proceed == true) {
+        ShowAjaxLoader();
+
+        var postData = {
+            TaskId: TaskId
+        };
+
+        CallJGWebService('HardDeleteTask', postData, OnUpdateHardDeleteTaskSuccess, OnUpdateHardDeleteTaskError);
+
+        function OnUpdateHardDeleteTaskSuccess(response) {
+            HideAjaxLoader();
+
+            if (response) {                
+                HideAjaxLoader();
+                $(updateRepeaterButton).click();
+                alert('All tasks and related informations are deleted successfully!');
+            }
+        }
+
+        function OnUpdateHardDeleteTaskError(err) {
+            HideAjaxLoader();
+        }
+    }
 
 }

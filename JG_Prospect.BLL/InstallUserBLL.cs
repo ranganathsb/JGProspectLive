@@ -302,7 +302,6 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.getuserdetailsbyId(id);
         }
-
         public DataSet getalluserdetails()
         {
             return InstallUserDAL.Instance.getalluserdetails();
@@ -727,6 +726,12 @@ namespace JG_Prospect.BLL
         public DataSet GetPopupEditUsers(String UserIds, String Status, int DesignationId, int PageIndex, int PageSize, String SortExpression)
         {
             return InstallUserDAL.Instance.GetPopupEditUsers(UserIds, Status, DesignationId, PageIndex, PageSize, SortExpression);
+
+        }
+
+        public DataSet GetEmployeeInterviewDetails(int UserID)
+        {
+            return InstallUserDAL.Instance.GetEmployeeInterviewDetails(UserID);
 
         }
 

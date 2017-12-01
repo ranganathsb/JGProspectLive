@@ -1986,6 +1986,214 @@
 
             </div>
 
+            <!-- Interview Date popup starts -->
+
+            <div id="HighLightedTask" class="modal hide">
+                <%--<iframe id="ifrmTask" style="height: 100%; width: 100%; overflow: auto;"></iframe>--%>
+
+                <div id="examPassed">
+                    <span id="InterviewDateHeader">Dear Applicant,
+                <label id="ltlApplicantName"></label>
+                        &nbsp;-&nbsp;<label id="ltlApplicantId"></label>, Thank you for applying to JMGrove Construction
+                <label id="ltlDesignation"></label>
+                        &nbsp; position. You have been selected for technical interview. We will be interviewing for your technical ability and will be requesting a sample of your work for technical analysis. Please have the following points below ready. In order to appear in the technical interview please follow below steps:
+
+                    </span>
+
+                    <br />
+                    <br />
+                    <div id="tblIntTechSeq" class="div-table tableSeqTask">
+                        <div class="div-table-row-header">
+                            <div class="div-table-col seq-number">Sequence#</div>
+                            <div class="div-table-col seq-taskid">
+                                ID#<div>Designation</div>
+                            </div>
+                            <div class="div-table-col seq-tasktitle">
+                                Parent Task
+                                            <div>SubTask Title</div>
+                            </div>
+                            <div class="div-table-col seq-taskstatus">
+                                Status<div>Assigned To</div>
+                            </div>
+                            <div class="div-table-col seq-taskduedate">Due Date</div>
+                            <div class="div-table-col seq-notes">Notes</div>
+                        </div>
+                        <div ng-attr-id="divIntPopupTask" class="div-table-row" data-ng-repeat="Task in Tasks" ng-class="{orange : Task.Status==='4', yellow: Task.Status==='2', yellow: Task.Status==='3', lightgray: Task.Status==='8'}" repeat-end="onStaffEnd()">
+                            <!-- Sequence# starts -->
+                            <div class="div-table-col seq-number">
+                                <span class="badge badge-success badge-xstext">
+                                    <label ng-attr-id="IntSeqLabel{{Task.TaskId}}">{{getSequenceDisplayText(!Task.Sequence?"N.A.":Task.Sequence,Task.SequenceDesignationId,Task.IsTechTask === "false" ? "SS" : "TT")}}</label></span>
+                            </div>
+                            <!-- Sequence# ends -->
+
+                            <!-- ID# and Designation starts -->
+                            <div class="div-table-col seq-taskid">
+                                <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{Task.MainParentId}}&hstid={{Task.TaskId}}" oncontextmenu="openCopyBox(this);return false;" data-installid="{{Task.InstallId}}" parentdata-highlighter="{{Task.MainParentId}}" data-highlighter="{{Task.TaskId}}" class="bluetext context-menu" target="_blank">{{ Task.InstallId }}</a><br />
+                                {{getDesignationString(Task.TaskDesignation)}}                                        
+                            </div>
+                            <!-- ID# and Designation ends -->
+
+                            <!-- Parent Task & SubTask Title starts -->
+                            <div class="div-table-col seq-tasktitle">
+                                {{ Task.ParentTaskTitle }}
+                                        <br />
+                                {{ Task.Title }}
+                            </div>
+                            <!-- Parent Task & SubTask Title ends -->
+
+                            <!-- Status & Assigned To starts -->
+                            <div class="div-table-col seq-taskstatus">
+                                <select id="drpIntStatusSubsequence2" data-highlighter="{{Task.TaskId}}">
+                                    <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
+                                    <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
+                                    <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
+                                    <option ng-selected="{{Task.Status == '4'}}" value="4">InProgress</option>
+                                    <option ng-selected="{{Task.Status == '10'}}" value="10">Finished</option>
+                                    <option ng-selected="{{Task.Status == '11'}}" value="11">Test</option>
+                                </select>
+                                <br />
+
+                                <select <%=!IsSuperUser?"disabled":""%> id="ddcbIntSeqAssignedStaff" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                    <option
+                                        ng-repeat="item in DesignationAssignUsers"
+                                        value="{{item.Id}}"
+                                        label="{{item.FristName}}"
+                                        class="{{item.CssClass}}">{{item.FristName}}
+                                        
+                                    </option>
+                                </select>
+
+                            </div>
+                            <!-- Status & Assigned To ends -->
+
+                            <!-- DueDate starts -->
+                            <div class="div-table-col seq-taskduedate">
+                                <div class="seqapprovalBoxes">
+                                    <div style="width: 65%; float: left;">
+                                        <input type="checkbox" id="IntchkngUser" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                        <input type="checkbox" id="IntchkQA" class="fz fz-QA" title="QA" />
+                                        <input type="checkbox" id="IntchkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                        <br />
+                                        <input type="checkbox" id="IntchkBetaUser" class="fz fz-Beta" title="BetaUser" />
+                                        <input type="checkbox" id="IntchkngITLead" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                        <input type="checkbox" id="IntchkngAdmin" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
+                                    </div>
+                                    <div style="width: 30%; float: right;">
+                                        <input type="checkbox" id="IntchkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                        <input type="checkbox" id="IntchkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                                    </div>
+                                </div>
+
+                                <div ng-attr-data-taskid="{{Task.TaskId}}" class="seqapprovepopup" style="display: none">
+
+                                    <div id="IntdivTaskAdmin{{Task.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
+                                        <div style="width: 10%;" class="display_inline">Admin: </div>
+                                        <div style="width: 30%;" class="display_inline"></div>
+                                        <div ng-class="{hide : StringIsNullOrEmpty(Task.AdminStatusUpdated), display_inline : !StringIsNullOrEmpty(Task.AdminStatusUpdated) }">
+                                            <a class="bluetext" href="CreateSalesUser.aspx?id={{Task.AdminUserId}}" target="_blank">{{StringIsNullOrEmpty(Task.AdminUserInstallId)? Task.AdminUserId : Task.AdminUserInstallId}} - {{Task.AdminUserFirstName}} {{Task.AdminUserLastName}}
+                                            </a>
+                                            <br />
+                                            <span>{{ Task.AdminStatusUpdated | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ Task.AdminStatusUpdated | date:'shortTime' }}</span>&nbsp;<span> {{StringIsNullOrEmpty(Task.AdminStatusUpdated) ? '' : '(EST)' }} </span>
+                                        </div>
+                                        <div ng-class="{hide : !StringIsNullOrEmpty(Task.AdminStatusUpdated), display_inline : StringIsNullOrEmpty(Task.AdminStatusUpdated) }">
+                                            <input type="password" style="width: 100px;" placeholder="Admin password" onchange="javascript:FreezeSeqTask(this);"
+                                                data-id="txtngstaffAdminPassword" data-hours-id="txtngstaffAdminEstimatedHours" ng-attr-data-taskid="{{Task.TaskId}}" />
+                                        </div>
+                                    </div>
+                                    <div id="IntdivTaskITLead{{Task.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
+                                        <div style="width: 10%;" class="display_inline">ITLead: </div>
+                                        <!-- ITLead Hours section -->
+                                        <div style="width: 30%;" ng-class="{hide : StringIsNullOrEmpty(Task.ITLeadHours), display_inline : !StringIsNullOrEmpty(Task.ITLeadHours) }">
+                                            <span>
+                                                <label>{{Task.ITLeadHours}}</label>Hour(s)
+                                            </span>
+                                        </div>
+                                        <div style="width: 30%;" ng-class="{hide : !StringIsNullOrEmpty(Task.ITLeadHours), display_inline : StringIsNullOrEmpty(Task.ITLeadHours) }">
+                                            <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtngstaffITLeadEstimatedHours" />
+                                        </div>
+                                        <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : !StringIsNullOrEmpty(Task.ITLeadHours), display_inline : StringIsNullOrEmpty(Task.ITLeadHours) }">
+                                            <input type="password" style="width: 100px;" placeholder="ITLead Password" onchange="javascript:FreezeSeqTask(this);"
+                                                data-id="txtngstaffITLeadPassword" data-hours-id="txtngstaffITLeadEstimatedHours" ng-attr-data-taskid="{{Task.TaskId}}" />
+                                        </div>
+                                        <!-- ITLead password section -->
+                                        <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : StringIsNullOrEmpty(Task.ITLeadHours), display_inline : !StringIsNullOrEmpty(Task.ITLeadHours) }">
+                                            <a class="bluetext" href="CreateSalesUser.aspx?id={{Task.TechLeadUserId}}" target="_blank">{{StringIsNullOrEmpty(Task.TechLeadUserInstallId)? Task.TechLeadUserId : Task.TechLeadUserInstallId}} - {{Task.TechLeadUserFirstName}} {{Task.TechLeadUserLastName}}
+                                            </a>
+                                            <br />
+                                            <span>{{ Task.TechLeadStatusUpdated | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ Task.TechLeadStatusUpdated | date:'shortTime' }}</span>&nbsp;<span> {{StringIsNullOrEmpty(Task.TechLeadStatusUpdated)? '' : '(EST)' }} </span>
+                                        </div>
+
+                                    </div>
+                                    <div id="IntdivUser{{Task.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
+                                        <div style="width: 10%;" class="display_inline">User: </div>
+                                        <!-- UserHours section -->
+                                        <div style="width: 30%;" ng-class="{hide : StringIsNullOrEmpty(Task.UserHours), display_inline : !StringIsNullOrEmpty(Task.UserHours) }">
+                                            <span>
+                                                <label>{{Task.UserHours}}</label>Hour(s)
+                                                        Hour(s)</span>
+                                        </div>
+                                        <div style="width: 30%;" ng-class="{hide : !StringIsNullOrEmpty(Task.UserHours), display_inline : StringIsNullOrEmpty(Task.UserHours) }">
+                                            <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtngstaffUserEstimatedHours" />
+                                        </div>
+                                        <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : !StringIsNullOrEmpty(Task.UserHours), display_inline : StringIsNullOrEmpty(Task.UserHours) }">
+                                            <input type="password" style="width: 100px;" placeholder="User Password" onchange="javascript:FreezeSeqTask(this);"
+                                                data-id="txtngstaffUserPassword" data-hours-id="txtngstaffUserEstimatedHours" ng-attr-data-taskid="{{Task.TaskId}}" />
+                                        </div>
+                                        <!-- User password section -->
+                                        <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : StringIsNullOrEmpty(Task.UserHours), display_inline : !StringIsNullOrEmpty(Task.UserHours) }">
+                                            <a class="bluetext" href="CreateSalesUser.aspx?id={{Task.TechLeadUserId}}" target="_blank">{{StringIsNullOrEmpty(Task.OtherUserInstallId)? Task.OtherUserId : Task.OtherUserInstallId}} - {{Task.OtherUserFirstName}} {{Task.OtherUserLastName}}
+                                            </a>
+                                            <br />
+                                            <span>{{ Task.OtherUserStatusUpdated | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ Task.OtherUserStatusUpdated | date:'shortTime' }}</span>&nbsp;<span> {{StringIsNullOrEmpty(Task.OtherUserStatusUpdated)? '' : '(EST)' }} </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- DueDate ends -->
+
+                            <!-- Notes starts -->
+                            <div class="div-table-col seq-notes">
+                                Notes
+                            </div>
+                            <!-- Notes ends -->
+                        </div>
+                    </div>
+                    <br />
+                    <div>
+                        <strong style="margin: 5px;">Important Interview Instruction</strong>
+                        <div id="InterviewInstructions" class="employeeinstruction">
+                        </div>
+
+                    </div>
+                    <br />
+                    Your default Interview Date & Time Deadline has been scheduled for & with below:
+            <br />
+                    <br />
+                    <table>
+                        <tr>
+                            <td width="50%" align="left" style="vertical-align: top;"><span><strong><span class="bluetext">*</span>Interview Date & Time: </strong>
+                                <label id="InterviewDateTime"></label>
+                            </span></td>
+                            <td align="right" style="vertical-align: top;">
+                                <table>
+                                    <tr>
+                                        <td align="left" valign="top"><a href="#" style="color: blue;">REC-001</a><br />
+                                            <asp:Literal ID="ltlManagerName" runat="server" Text="Default Recruiter"></asp:Literal></td>
+                                        <td align="right" valign="top">
+                                            <img width="100px" height="100px" src="../img/JG-Logo.gif" /></td>
+                                    </tr>
+                                </table>
+
+
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+
+            </div>
+
+            <!-- Interview Date popup ends -->
 
         </div>
 
@@ -2092,11 +2300,9 @@
                 </div>
             </div>
         </div>
+        <asp:HiddenField ID="hdnUserId" runat="server" />
+    </div>
 
-    </div>
-    <div id="HighLightedTask" class="modal">
-        <iframe id="ifrmTask" style="height: 100%; width: 100%; overflow: auto;"></iframe>
-    </div>
 
     <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
     
@@ -2205,7 +2411,10 @@
             $("#ddlUserStatus").msDropDown();
         });
 
+
+
         $(window).load(function () {
+            checkNShowTaskPopup();
             sequenceScope.ForDashboard = true;
             var desId = "";
             debugger;
@@ -2289,10 +2498,8 @@
             }
             sequenceScope.IsTechTask = false;
 
+            // Load initial tasks for user.
             ShowTaskSequenceDashBoard(desId, 0);
-
-
-
             //Load Closed Tasks
             desIds = $(".chosen-select-multi").val();
             if (desIds == undefined) { desIds = ''; }
@@ -2456,7 +2663,7 @@
         }
 
         $(document).ready(function () {
-            checkNShowTaskPopup();
+
             Initialize();
         });
 
@@ -2502,21 +2709,29 @@
         //    return false;
         //});
         function checkNShowTaskPopup() {
-
             var TaskId = getUrlVars()["TaskId"];
+            var PopupWithoutTask = getUrlVars()["PWT"];
+
             if (TaskId) {
-                var iframeURL = '<%=JG_Prospect.Common.JGApplicationInfo.GetSiteURL()%>' + '/Sr_App/TaskGenerator.aspx?' + window.location.href.slice(window.location.href.indexOf('?') + 1);
-                console.log(iframeURL);
-                $('#ifrmTask').attr("Src", iframeURL);
-
-                var $dialog = $('#HighLightedTask').dialog({
-                    autoOpen: true,
-                    modal: false,
-                    height: 500,
-                    width: 800
-                });
-
+                showInterviewPopup();
             }
+            else if (PopupWithoutTask) {// If no task available hide task div.
+                showInterviewPopup();
+                $('#tblIntTechSeq').hide();
+            }
+        }
+
+        function showInterviewPopup() {
+            GetEmployeeInterviewDetails();
+            $('#HighLightedTask').removeClass('hide');
+            var $dialog = $('#HighLightedTask').dialog({
+                autoOpen: true,
+                modal: false,
+                height: 500,
+                width: 1100,
+                title: 'Important Interview Information'
+            });
+
         }
 
         // Read a page's GET URL variables and return them as an associative array.
@@ -2631,58 +2846,58 @@
 
         function SetFrozenTaskAutoSuggestion() {
 
-            $("#txtSearchUserFrozen").catcomplete({
-                delay: 500,
-                source: function (request, response) {
+             $("#txtSearchUserFrozen").catcomplete({
+                 delay: 500,
+                 source: function (request, response) {
 
-                    if (request.term == "") {
-                        ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-                        ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-                        $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
-                        return false;
-                    }
+                     if (request.term == "") {
+                         ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                         ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                         $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
+                         return false;
+                     }
 
-                    $.ajax({
-                        type: "POST",
-                        url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({ searchterm: request.term }),
-                        success: function (data) {
-                            // Handle 'no match' indicated by [ "" ] response
-                            if (data.d) {
-                                ////debugger;
-                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                            }
-                            // remove loading spinner image.                                
-                            $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
-                        }
-                    });
-                },
-                minLength: 0,
-                select: function (event, ui) {
-                    //debugger;
-                    //alert(ui.item.value);
-                    //alert(ui.item.id);
-                    $("#txtSearchUserFrozen").val(ui.item.value);
-                    //TriggerSearch();
-                    ShowFrozenTaskSequenceDashBoard(0, ui.item.id);
-                    ShowNonFrozenTaskSequenceDashBoard(0, ui.item.id);
-                }
-            });
-        }
+                     $.ajax({
+                         type: "POST",
+                         url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
+                         dataType: "json",
+                         contentType: "application/json; charset=utf-8",
+                         data: JSON.stringify({ searchterm: request.term }),
+                         success: function (data) {
+                             // Handle 'no match' indicated by [ "" ] response
+                             if (data.d) {
+                                 ////debugger;
+                                 response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                             }
+                             // remove loading spinner image.                                
+                             $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
+                         }
+                     });
+                 },
+                 minLength: 0,
+                 select: function (event, ui) {
+                     //debugger;
+                     //alert(ui.item.value);
+                     //alert(ui.item.id);
+                     $("#txtSearchUserFrozen").val(ui.item.value);
+                     //TriggerSearch();
+                     ShowFrozenTaskSequenceDashBoard(0, ui.item.id);
+                     ShowNonFrozenTaskSequenceDashBoard(0, ui.item.id);
+                 }
+             });
+         }
 
-        function SetInProTaskAutoSuggestion() {
+         function SetInProTaskAutoSuggestion() {
 
-            $("#txtSearchUser").catcomplete({
-                delay: 500,
-                source: function (request, response) {
+             $("#txtSearchUser").catcomplete({
+                 delay: 500,
+                 source: function (request, response) {
 
-                    if (request.term == "") {
-                        ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), 0);
-                        $("#txtSearchUser").removeClass("ui-autocomplete-loading");
-                        return false;
-                    }
+                     if (request.term == "") {
+                         ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), 0);
+                         $("#txtSearchUser").removeClass("ui-autocomplete-loading");
+                         return false;
+                     }
 
                     $.ajax({
                         type: "POST",
@@ -2714,42 +2929,42 @@
             });
         }
 
-        function SetInProTaskAutoSuggestionUI() {
-            //debugger;
-            //console.log("SetInProTaskAutoSuggestionUI called");
-            $.widget("custom.catcomplete", $.ui.autocomplete, {
-                _create: function () {
-                    this._super();
-                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                },
-                _renderMenu: function (ul, items) {
-                    var that = this,
-                        currentCategory = "";
-                    $.each(items, function (index, item) {
-                        //debugger;
-                        var li;
-                        if (item.Category != currentCategory) {
-                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                            currentCategory = item.Category;
-                        }
-                        li = that._renderItemData(ul, item);
-                        if (item.Category) {
-                            li.attr("aria-label", item.Category + " : " + item.label);
-                        }
-                    });
-                }
-            });
-        }
+         function SetInProTaskAutoSuggestionUI() {
+             //debugger;
+             //console.log("SetInProTaskAutoSuggestionUI called");
+             $.widget("custom.catcomplete", $.ui.autocomplete, {
+                 _create: function () {
+                     this._super();
+                     this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                 },
+                 _renderMenu: function (ul, items) {
+                     var that = this,
+                         currentCategory = "";
+                     $.each(items, function (index, item) {
+                         //debugger;
+                         var li;
+                         if (item.Category != currentCategory) {
+                             ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                             currentCategory = item.Category;
+                         }
+                         li = that._renderItemData(ul, item);
+                         if (item.Category) {
+                             li.attr("aria-label", item.Category + " : " + item.label);
+                         }
+                     });
+                 }
+             });
+         }
 
 
-        function SetTaskCounterPopup() {
+         function SetTaskCounterPopup() {
 
-            $('#' +'<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
+             $('#' + '<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
                 debugger;
                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
             });
-            $('#' +'<%=lblFrozenTaskCounter.ClientID%>').click(function () {
+            $('#' + '<%=lblFrozenTaskCounter.ClientID%>').click(function () {
                 debugger;
                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
@@ -2855,5 +3070,60 @@
                 }
             }
         }
+
+
+
+        function SetInterviewDatePopupEmployeeInstructions(DesigId) {
+
+            var postData;
+            var MethodToCall = "GetEmployeeInstructionByDesignationId";
+            postData = {
+                DesignationId: DesigId,
+                UsedFor: 1 //constant used for InterviewDate popup from EmployeeInstructionUsedFor in JGConstant.cs file.                   
+            };
+
+
+            CallJGWebService(MethodToCall, postData, OnInterviewDatePopupEmployeeInstructionsSuccess);
+
+            function OnInterviewDatePopupEmployeeInstructionsSuccess(data) {
+                if (data.d) {
+                    //console.log(data.d);
+                    //var responseObj = JSON.parse(data.d);
+                   // if (responseObj) {
+                        $('#InterviewInstructions').html(data.d);
+                    //}
+                }
+            }
+        }
+
+        function GetEmployeeInterviewDetails() {
+
+            var EmployeeId = $('#<%=hdnUserId.ClientID%>').val();
+           // alert(EmployeeId);
+            var postData;
+            var MethodToCall = "GetEmployeeInterviewDetails";
+            postData = {
+                UserId: EmployeeId
+            };
+
+
+            CallJGWebService(MethodToCall, postData, OnEmployeeInterviewDetailsSuccess);
+
+            function OnEmployeeInterviewDetailsSuccess(data) {
+                if (data.d) {
+                    var responseObj = JSON.parse(data.d);
+
+                    if (responseObj) {
+                        $('#ltlApplicantName').html(responseObj[0].FristName + " " + responseObj[0].LastName);
+                        $('#ltlApplicantId').html(responseObj[0].UserInstallId);
+                        $('#ltlDesignation').html(responseObj[0].Designation);
+                        $('#InterviewDateTime').html(responseObj[0].RejectionDate + " " + responseObj[0].RejectionTime);
+
+                        SetInterviewDatePopupEmployeeInstructions(responseObj[0].DesignationId);
+                    }
+                }
+            }
+        }
+
     </script>
 </asp:Content>

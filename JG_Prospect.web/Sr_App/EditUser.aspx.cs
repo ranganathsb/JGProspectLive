@@ -460,7 +460,12 @@ namespace JG_Prospect
                     //Debug.WriteLine(strDesignation);
                     if (strDesignationID != "")
                     {
-                        ddlDesiGrd.Items.FindByValue(strDesignationID).Selected = true;
+                        ListItem desListItem = ddlDesiGrd.Items.FindByValue(strDesignationID);
+
+                        if (desListItem != null)
+                        {
+                            ddlDesiGrd.SelectedIndex = ddlDesiGrd.Items.IndexOf(desListItem);
+                        }
                     }
 
                     DropDownList elePhone = (e.Row.FindControl("ddlPhone") as DropDownList);
@@ -667,6 +672,11 @@ namespace JG_Prospect
                             case JGConstant.InstallUserStatus.Deleted:
                                 {
                                     e.Row.Attributes["style"] = "background-color: #565656";
+                                    break;
+                                }
+                            case JGConstant.InstallUserStatus.InterviewDateExpired:
+                                {
+                                    e.Row.Attributes["style"] = "background-color: #AAAAAA";
                                     break;
                                 }
                             default:
@@ -1441,7 +1451,7 @@ namespace JG_Prospect
         {
             int EditId = 0;
             int.TryParse(Convert.ToString(Session["EditId"]), out EditId);
-            InstallUserBLL.Instance.UpdateOfferMade(EditId, txtEmail.Text, txtPassword1.Text);            
+            InstallUserBLL.Instance.UpdateOfferMade(EditId, txtEmail.Text, txtPassword1.Text);           
 
             DataSet ds = new DataSet();
             string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;

@@ -38,7 +38,7 @@ namespace JG_Prospect.App_Code
             try
             {
                 PerformGitAction(repo, JGConstant.GitActions.AddUser, gitUserName);
-                
+
             }
             catch (Exception ex)
             {
@@ -100,7 +100,7 @@ namespace JG_Prospect.App_Code
                         client.Credentials = basicAuth;
                         break;
                     }
-            }            
+            }
 
 
             //Perform Actions       
@@ -316,16 +316,8 @@ namespace JG_Prospect.App_Code
                     sc.Credentials = ntw;
                     sc.DeliveryMethod = SmtpDeliveryMethod.Network;
                     sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
-                    try
-                    {
-                        sc.Send(Msg);
-                        retValue = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        // throw will call application error event, which will log error details.
-                        throw ex;
-                    }
+                    sc.Send(Msg);
+                    retValue = true;
 
                     Msg = null;
                     sc.Dispose();
@@ -335,10 +327,10 @@ namespace JG_Prospect.App_Code
                 {
                     CommonFunction.UpdateEmailStatistics(ex.Message);
 
-                    if (JGApplicationInfo.IsSendEmailExceptionOn())
-                    {
-                        CommonFunction.SendExceptionEmail(ex);
-                    }
+                    //if (JGApplicationInfo.IsSendEmailExceptionOn())
+                    //{
+                    //    CommonFunction.SendExceptionEmail(ex);
+                    //}
                 }
             }
             return retValue;
@@ -1053,29 +1045,29 @@ namespace JG_Prospect.App_Code
 
             DataColumn dcColorClass = new DataColumn("CssClass", System.Type.GetType("System.String"));
 
-             dataSource.Columns.Add(dcColorClass);
+            dataSource.Columns.Add(dcColorClass);
             dataSource.AcceptChanges();
 
             // For all active user set font in red and for all InterviewDate and OfferMade set blue.
             foreach (DataRow row in dataSource.Rows)
             {
-                
-                    JGConstant.InstallUserStatus Userstatus;
-                  Enum.TryParse(Convert.ToString(row["Status"]), out Userstatus);
 
-                    switch (Userstatus)
-                    {
-                        case JGConstant.InstallUserStatus.Active:
-                        case JGConstant.InstallUserStatus.OfferMade:
+                JGConstant.InstallUserStatus Userstatus;
+                Enum.TryParse(Convert.ToString(row["Status"]), out Userstatus);
+
+                switch (Userstatus)
+                {
+                    case JGConstant.InstallUserStatus.Active:
+                    case JGConstant.InstallUserStatus.OfferMade:
                         row["CssClass"] = "activeUser";
-                            break;
-                        case JGConstant.InstallUserStatus.InterviewDate:
-                        row["CssClass"] = "IOUser";                        
-                            break;
-                        default:
-                            break;
-                    }
-                                
+                        break;
+                    case JGConstant.InstallUserStatus.InterviewDate:
+                        row["CssClass"] = "IOUser";
+                        break;
+                    default:
+                        break;
+                }
+
             }
 
             return dataSource;
@@ -1183,6 +1175,38 @@ namespace JG_Prospect.App_Code
                 using (var tw = new StreamWriter(path, true))
                 {
                     tw.WriteLine(emailId + "  - " + DateTime.Now);
+                    tw.Close();
+                }
+            }
+        }
+
+        public static void UpdateLog(string LogText)
+        {
+            string logDirectoryPath = HttpContext.Current.Server.MapPath(@"~\Log");
+
+            if (!Directory.Exists(logDirectoryPath))
+            {
+                Directory.CreateDirectory(logDirectoryPath);
+            }
+
+            string path = String.Concat(logDirectoryPath, "\\Log.txt");
+
+            if (!File.Exists(path))
+            {
+
+                using (TextWriter tw = File.CreateText(path))
+                {
+                    tw.WriteLine(LogText + "  - " + DateTime.Now);
+                    tw.Close();
+                }
+
+
+            }
+            else if (File.Exists(path))
+            {
+                using (var tw = new StreamWriter(path, true))
+                {
+                    tw.WriteLine(LogText + "  - " + DateTime.Now);
                     tw.Close();
                 }
             }
@@ -1402,6 +1426,8 @@ namespace JG_Prospect.App_Code
             }
 
         }
+
+
         public static string GetTaskLinkTitleForAutoEmail(int taskId)
         {
 
@@ -1433,6 +1459,7 @@ namespace JG_Prospect.App_Code
 
             return newTaskLinkTitle;
         }
+
     }
 }
 

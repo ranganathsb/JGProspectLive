@@ -5209,7 +5209,9 @@
             </asp:UpdatePanel>
         </div>
     </div>
-    <div id="examPassed" class="modal hide">
+    <!-- Old working success popup starts -->
+    <%-- 
+        <div id="examPassed" class="modal hide">
         <span id="examSuccess">Congratulations! You have passed the aptitude test for the
             <asp:Literal ID="ltlUDesg" runat="server"></asp:Literal>
             position you applied for. You will receive 2 auto-emails in regards to an Interview with hiring Manager &  1st interview assignment. The email also contains additional instructions and training requirements in preparation for your Interview.
@@ -5373,6 +5375,323 @@
             </asp:UpdatePanel>
         </div>
     </div>
+    --%>
+    <!-- Old working success popup ends -->
+
+    <div id="examPassed" class="modal hide">
+        <span id="examSuccess">Congratulations on Passing Aptitude Test! To Edit your profile, or contact info select your IMAGE or <a href="javascript:void(0);">ID#</a> at any time.        
+        </span>
+        <br />
+        <br />
+        <table id="tblProfile" style="border: solid 1px gray; margin: 10px; padding: 5px;">
+            <tr>
+                <td style="width: 10%;">
+                    <asp:Image Style="width: 100%;" ID="imgprofile" runat="server"></asp:Image></td>
+                <td style="width: 20%;">
+                    <a id="hypExam" runat="server" class="bluetext" href="ViewApplicantUser.aspx?Id=">
+                        <asp:Literal ID="ltlAssignToInstallID" runat="server"></asp:Literal></a><br />
+                    <asp:Label ID="lblFirstName" runat="server"></asp:Label>
+                    <asp:Label ID="lblLastName" runat="server"></asp:Label>
+                    <br />
+                    <asp:DropDownList ID="drpDesig" Width="140px" Style="text-align: left; width: 95%;" AutoPostBack="true" runat="server">
+                    </asp:DropDownList>
+                </td>
+                <td style="width: 30%;">
+                    <div id="divCountryCode" runat="server" style="background-image: url(img/flags24.png); background-repeat: no-repeat; float: left; height: 22px; width: 24px; margin-top: -5px;">
+                    </div>
+                    <%--<span><%# Eval("Zip") %></span>--%>
+                    <asp:Label ID="lblCity" runat="server"></asp:Label>
+                    <asp:Label ID="lblZip" runat="server"></asp:Label>
+
+                    <asp:DropDownList ID="ddlEmployeeType" Style="width: 95%;" runat="server">
+                        <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                        <asp:ListItem Text="Temp" Value="1"></asp:ListItem>
+                        <asp:ListItem Text="Internship" Value="2"></asp:ListItem>
+                        <asp:ListItem Text="Part Time - Remote" Value="3"></asp:ListItem>
+                        <asp:ListItem Text="Part Time - Onsite" Value="4"></asp:ListItem>
+                        <asp:ListItem Text="Full Time - Remote" Value="5"></asp:ListItem>
+                        <asp:ListItem Text="Full Time - Onsite" Value="6"></asp:ListItem>
+                        <asp:ListItem Text="Full Time Hourly" Value="7"></asp:ListItem>
+                        <asp:ListItem Text="Full Time Salary" Value="8"></asp:ListItem>
+                        <asp:ListItem Text="Part Time" Value="9"></asp:ListItem>
+                        <asp:ListItem Text="Sub" Value="10"></asp:ListItem>
+                    </asp:DropDownList></td>
+                <td style="width: 40%;">
+                    <div class="GrdPrimaryEmail">
+                        <asp:LinkButton ID="lbtnEmail" runat="server" />
+                    </div>
+                    <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server"></asp:Label>
+                    <br />
+                    <ul class="contactGrid hide">
+                        <li>
+                            <asp:CheckBox ID="chkEmailPrimary" CssClass="liCheck" runat="server"></asp:CheckBox>&nbsp;
+                                                <asp:DropDownList runat="server" CssClass="mail" ID="ddlEmail"></asp:DropDownList>
+                        </li>
+                        <li>
+                            <asp:CheckBox ID="chkPhonePrimary" runat="server"></asp:CheckBox>
+                            <asp:DropDownList runat="server" CssClass="phone" ID="ddlPhone"></asp:DropDownList>
+                            <!-- over here -->
+                            <asp:DropDownList runat="server" Enabled="false" CssClass="typeDrop"
+                                ID="ddlPhoneTypeDisplay">
+                            </asp:DropDownList>
+                        </li>
+                        <li>
+                            <asp:DropDownList runat="server" CssClass="typeDrop"
+                                ID="ddlPhoneType" Width="114px">
+                            </asp:DropDownList>
+                            <asp:CheckBox ID="chkPrimary" runat="server"></asp:CheckBox>
+                            <asp:TextBox ID="txtContact" placeholder="Phone" CssClass="phone" runat="server" onkeydown="return validateContact(event, this);"></asp:TextBox>
+                            <!-- over here -->
+                            <asp:Button ID="btnAddContact" CssClass="GrdBtnAdd" runat="server" Text="Add"></asp:Button>
+                        </li>
+                    </ul>
+                    <asp:Label ID="lblExt" CssClass="ext" runat="server" Visible="false"></asp:Label>
+                    <asp:TextBox ID="txtExt" Visible="false" placeholder="Ext" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>
+                </td>
+            </tr>
+        </table>
+        <div id="divTaskAssigned"  visible ="false" runat="server">
+            <div id="divTechAssignment">
+                Your first Tech assignment is <strong><a id="hypTaskLink" target="_blank" style="color: blue;" runat="server">
+                    <asp:Literal ID="ltlTaskInstallID" runat="server"></asp:Literal>
+                </a></strong>&nbsp; , details in grid below. Please review your assignment and Either ACCEPT or REJECT. If accepted your interview date with recruiter, This assignment is due for this Interview Date. IF NOT ACCEPTED in 48 HOURS, your assigned task will be REASSIGNED TO SOME ONE ELSE. if REJECTED, you will be reassigned a new task, with a reason.
+            </div>
+
+            <br />
+            <br />
+            <div id="tblTechSeq" class="div-table tableSeqTask">
+                <div class="div-table-row-header">
+                    <div class="div-table-col seq-number">Sequence#</div>
+                    <div class="div-table-col seq-taskid">
+                        ID#<div>Designation</div>
+                    </div>
+                    <div class="div-table-col seq-tasktitle">
+                        Parent Task
+                                            <div>SubTask Title</div>
+                    </div>
+                    <div class="div-table-col seq-taskstatus">
+                        Status<div>Assigned To</div>
+                    </div>
+                    <div class="div-table-col seq-taskduedate">Due Date</div>
+                    <div class="div-table-col seq-notes">Notes</div>
+                </div>
+                <div id="divMasterTask" class="div-table-row">
+
+                    <!-- Sequence# starts -->
+                    <div class="div-table-col seq-number">
+                        <a href="javascript:void(0);" class="badge-hyperlink autoclickSeqEdit"><span class="badge badge-success badge-xstext">
+                            <label></label>
+                        </span></a>
+                    </div>
+                    <!-- Sequence# ends -->
+
+                    <!-- ID# and Designation starts -->
+                    <div class="div-table-col seq-taskid">
+                        <a id="hypTaskLink1" runat="server" class="bluetext" target="_blank"></a>
+                        <br />
+                        <asp:Literal ID="ltlUDesg" runat="server"></asp:Literal>
+
+                    </div>
+                    <!-- ID# and Designation ends -->
+
+                    <!-- Parent Task & SubTask Title starts -->
+                    <div class="div-table-col seq-tasktitle">
+                        <asp:Literal ID="ltlParentTask" runat="server"></asp:Literal>
+                        <br />
+                        <asp:Literal ID="ltlTaskTitle" runat="server"></asp:Literal>
+                    </div>
+                    <!-- Parent Task & SubTask Title ends -->
+
+                    <!-- Status & Assigned To starts -->
+                    <div class="div-table-col seq-taskstatus">
+                        Assigned
+                    <br />
+                        <asp:Literal ID="ltlAssignTo" runat="server"></asp:Literal>
+                    </div>
+                    <!-- Status & Assigned To ends -->
+
+                    <!-- DueDate starts -->
+                    <div class="div-table-col seq-taskduedate">
+                        <div class="seqapprovalBoxes">
+                            <div style="width: 65%; float: left;">
+                                <input type="checkbox" id="chkngUser" class="fz fz-user" title="User" />
+                                <input type="checkbox" id="chkQA" class="fz fz-QA" title="QA" />
+                                <input type="checkbox" id="chkAlphaUser" class="fz fz-Alpha" title="AlphaUser" />
+                                <br />
+                                <input type="checkbox" id="chkBetaUser" class="fz fz-Beta" title="BetaUser" />
+                                <input type="checkbox" id="chkngITLead" class="fz fz-techlead" title="IT Lead" />
+                                <input type="checkbox" id="chkngAdmin" class="fz fz-admin" title="Admin" />
+                            </div>
+                            <div style="width: 30%; float: right;">
+                                <input type="checkbox" id="chkngITLeadMaster" class="fz fz-techlead largecheckbox" title="IT Lead" />
+                                <input type="checkbox" id="chkngAdminMaster" class="fz fz-admin largecheckbox" style="margin-top: -15px;" title="Admin" />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- DueDate ends -->
+
+                    <!-- Notes starts -->
+                    <div class="div-table-col seq-notes">
+                        Notes
+                    </div>
+                    <!-- Notes ends -->
+
+                </div>
+            </div>
+        </div>
+        <br />
+        Your default Interview Date & Time Deadline has been scheduled for & with below, If you need an alternate due date and time, you may toggle the below date & time:
+        <br />
+        <br />
+        <table>
+            <tr>
+                <td width="50%" align="left"><span><strong><span class="bluetext">*</span>Interview Date & Time: </strong>
+                    <asp:DropDownList ID="ddlInterviewDTOptions" runat="server" CssClass="textbox"></asp:DropDownList>
+                </span></td>
+                <td align="right">
+                    <table>
+                        <tr>
+                            <td align="left" valign="top"><a href="#" style="color: blue;">REC-001</a><br />
+                                <asp:Literal ID="ltlManagerName" runat="server" Text="Default Recruiter"></asp:Literal></td>
+                            <td align="right" valign="top">
+                                <img width="100px" height="100px" src="img/JG-Logo.gif" /></td>
+                        </tr>
+                    </table>
+
+
+                </td>
+            </tr>
+        </table>
+
+
+        Change Password<span class="redtext">*</span>:               
+                        <asp:TextBox ID="txtChangePassword1" CssClass="textbox" runat="server" ValidationGroup="vgCPWD"></asp:TextBox>
+        <asp:RequiredFieldValidator ID="rfvCPW1" ControlToValidate="txtChangePassword1" Display="Dynamic" CssClass="redtext" ErrorMessage="Password required" ValidationGroup="vgCPWD" runat="server"></asp:RequiredFieldValidator>
+
+        <div id="GitHubPlaceholder" runat="server" style="float: right">
+            Githum Username<span class="redtext">*</span>:
+            <asp:TextBox ID="txtGithubUsername" CssClass="textbox" runat="server" />
+            <asp:RequiredFieldValidator ID="RequiredFieldValidatorGithubUsername" ControlToValidate="txtGithubUsername" Display="Dynamic" CssClass="redtext" ErrorMessage="Github Username required" ValidationGroup="vgCPWD" runat="server"></asp:RequiredFieldValidator>
+            <asp:RequiredFieldValidator ID="RequiredFieldValidatorGithubUsername2" ControlToValidate="txtGithubUsername" Display="Dynamic" CssClass="redtext" ErrorMessage="Github Username required" ValidationGroup="vgConfirm" runat="server"></asp:RequiredFieldValidator>
+        </div>
+        <br />
+        <br />
+
+        <div style="text-align: center;">
+            <span class="redtext">*</span>
+            <asp:Button ID="btnAcceptTask" Text="Accept" ValidationGroup="vgCPWD" CssClass="ui-button" runat="server" OnClick="btnAcceptTask_Click" />
+            &nbsp;&nbsp;
+            <asp:Button ID="btnRejectTask" Text="Reject" CausesValidation="false" CssClass="ui-button" runat="server" OnClick="btnRejectTask_Click" />
+        </div>
+        <br />
+        To accept the task and confirm the interview due date, select "Accept" button above. You  have 24 hours to accept technical and Interview Date.
+
+        <div>
+            <strong style="margin: 5px;">Legal Desclaimer:</strong>
+            <div id="LegalDesclaimer" class="legaldesclaimer">
+            </div>
+
+
+        </div>
+
+        <div id="confirmBox">
+            <asp:UpdatePanel ID="upnlConfirmDetails" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <table style="width: 100%; text-align: center;">
+                        <tr>
+                            <td class="tdleft">Address<br />
+                                <asp:TextBox ID="txtApplicantAddress" runat="server" Style="width: 100%" CssClass="textbox" TextMode="MultiLine"></asp:TextBox><br />
+                                <asp:RequiredFieldValidator ID="rfvCAddess" runat="server" ControlToValidate="txtApplicantAddress"
+                                    ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please enter address"></asp:RequiredFieldValidator>
+                            </td>
+                            <td class="tdleft">Date of Birth: 
+                                    <asp:TextBox ID="txtCDateOfBirth" CssClass="textbox" ValidationGroup="vgConfirm" runat="server"></asp:TextBox>
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvCDob" runat="server" ControlToValidate="txtCDateOfBirth"
+                                    ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please enter date of birth"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft">Penalty of Perjury:
+                        <asp:DropDownList ID="ddlPenaltyOfPerjury" runat="server" Width="150px" TabIndex="528" ValidationGroup="vgConfirm" OnSelectedIndexChanged="ddlcitizen_SelectedIndexChanged">
+                            <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                            <asp:ListItem Text="Alien authorized to work" Value="authorizedwork"></asp:ListItem>
+                            <asp:ListItem Text="Lawful permanent resident" Value="permanentresident"></asp:ListItem>
+                            <asp:ListItem Text="Non US Citizenship" Value="NonUSCitizenship"></asp:ListItem>
+                            <asp:ListItem Text="US Citizenship" Value="USCitizenship"></asp:ListItem>
+                        </asp:DropDownList>
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvcPenaltyofPerjury" runat="server" ControlToValidate="ddlPenaltyOfPerjury"
+                                    InitialValue="0" ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please select Penalty Of Perjury"></asp:RequiredFieldValidator>
+                            </td>
+                            <td class="tdleft">Marital Status:
+                            <asp:DropDownList ID="ddlcmaritalstatus" CssClass="textbox" ValidationGroup="vgConfirm" runat="server">
+                                <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                                <asp:ListItem Text="Married" Value="Married"></asp:ListItem>
+                                <asp:ListItem Text="Single" Value="Single"></asp:ListItem>
+                            </asp:DropDownList>
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvcMaritalStatus" runat="server" ControlToValidate="ddlcmaritalstatus"
+                                    InitialValue="0" ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please select Marital Status"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft">Children:
+                            <asp:DropDownList ID="ddlChildren" CssClass="textbox" runat="server">
+                                <asp:ListItem Text="-- Select --" Value="0"></asp:ListItem>
+                                <asp:ListItem Text="1" Value="1"></asp:ListItem>
+                                <asp:ListItem Text="2" Value="2"></asp:ListItem>
+                                <asp:ListItem Text="3" Value="3"></asp:ListItem>
+                                <asp:ListItem Text="4" Value="4"></asp:ListItem>
+                                <asp:ListItem Text="5" Value="5"></asp:ListItem>
+                                <asp:ListItem Text="6" Value="6"></asp:ListItem>
+                                <asp:ListItem Text="7" Value="7"></asp:ListItem>
+                                <asp:ListItem Text="8" Value="8"></asp:ListItem>
+                                <asp:ListItem Text="9" Value="9"></asp:ListItem>
+                                <asp:ListItem Text="10" Value="10"></asp:ListItem>
+                            </asp:DropDownList></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="tdleft">Contract acceptance attach:
+                                <br />
+                                <asp:FileUpload ID="fupContractAttachment" runat="server" /></td>
+                            <td class="tdleft">*ID
+                            <asp:DropDownList ID="ddlIdentity" CssClass="textbox" runat="server">
+                                <asp:ListItem Text="-- Select --" Value="0"></asp:ListItem>
+                                <asp:ListItem Text="Passport"></asp:ListItem>
+                                <asp:ListItem Text="Driver's Liscense"></asp:ListItem>
+                            </asp:DropDownList>
+                                <br />
+                                Attach:
+                            <asp:FileUpload ID="fupIdentity" ValidationGroup="vgConfirm" runat="server" />
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvCIndentity" runat="server" ControlToValidate="ddlIdentity"
+                                    InitialValue="0" ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please select Identity"></asp:RequiredFieldValidator>
+                                <br />
+                                <asp:RequiredFieldValidator ID="rfvCIDAttachment" runat="server" ControlToValidate="fupIdentity"
+                                    InitialValue="0" ForeColor="Red" ValidationGroup="vgConfirm" ErrorMessage="Please attach Identity proof"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+
+                        <tr id="trConfirmInterview" runat="server" visible="false" style="text-align: center;">
+                            <td colspan="2">
+                                <span class="bluetext">*</span>
+                                <asp:Button ID="btnConfirm" runat="server" CssClass="ui-button" ValidationGroup="vgConfirm" OnClick="btnConfirm_Click" Text="Confirm" />
+
+                                <asp:Button ID="btnConfirmCancel" runat="server" CssClass="ui-button" CausesValidation="false" OnClick="btnConfirmCancel_Click" Text="Cancel" />
+
+                            </td>
+                        </tr>
+                    </table>
+                </ContentTemplate>
+                <Triggers>
+                    <asp:PostBackTrigger ControlID="btnConfirm" />
+
+                </Triggers>
+            </asp:UpdatePanel>
+        </div>
+    </div>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/jquery.dd.min.js")%>'></script>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/intTel/intlTelInput.js")%>'></script>
     <script type="text/javascript" src='<%=Page.ResolveUrl("~/js/dropzone.js")%>'></script>
@@ -5421,17 +5740,46 @@
                 autoOpen: true,
                 modal: false,
                 height: 700,
-                width: 900,
+                width: 1000,
                 title: "Congratulations!!"
             });
 
 
             $($(dialog.parent())).appendTo($('#form1'));
 
+            LoadLegalDeclaimer();
+
             //console.log($(dialog.parent()).parent().find('form'));
 
         }
 
+
+        function LoadLegalDeclaimer() {
+
+            var DesignationId = $("#<%=ddldesignation.ClientID %> option:selected").val();
+
+            // alert(DesignationId);
+
+            var postData = {
+                DesignationId: DesignationId,
+                UsedFor: 2 //constant used for success popup from EmployeeLegalDesclaimerUsedFor in JGConstant.cs file.                   
+            };
+            CallJGWebService('GetEmployeeLegalDesclaimer', postData, OnGetEmployeeLegalDesclaimerSuccess, OnGetEmployeeLegalDesclaimerError);
+
+            function OnGetEmployeeLegalDesclaimerSuccess(response) {
+
+                if (response) {
+                    var responseObj = JSON.parse(response.d);
+                    $('#LegalDesclaimer').html(responseObj[0].LegalText);
+                }
+
+            }
+
+            function OnGetEmployeeLegalDesclaimerError(err) {
+
+            }
+
+        }
 
         var objWorkFileDropzone;
 

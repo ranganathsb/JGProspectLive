@@ -1415,6 +1415,7 @@
     <Content Include="css\msdropdown\title-bg.gif" />
     <Content Include="css\pgwslideshow.min.css" />
     <Content Include="css\TimeCircles.css" />
+    <Content Include="Customer_Panel.aspx" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_Insert_Country.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_V2.sql" />
@@ -1434,6 +1435,7 @@
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN019_V1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Table_SP_Creation_With_Data_Nov_2016_ITSN0145_v1.0.sql" />
     <Content Include="Database Scripts\executed\yogesh\script April v0.1.sql" />
+    <Content Include="Database Scripts\executed\yogesh\Script August v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script July v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\scripts oct v0.1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Script_All_Only_Edit_User_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
@@ -1479,6 +1481,10 @@
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITSN043_I_e_v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\script Feb v0.1.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_GetInstallerUserDetailsByLoginId.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_IsValidInstallerUser.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Procedures.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Tables.sql" />
     <Content Include="Database Scripts\Kapil\Latest.sql" />
     <Content Include="Database Scripts\Kapil\Executed_2.sql" />
     <Content Include="Database Scripts\Kapil\Executed.sql" />
@@ -1497,7 +1503,10 @@
     <Content Include="Database Scripts\executed\yogesh\script May v0.1.sql" />
     <Content Include="Database Scripts\Leo\Scripts_May-2017_GitUserNameColumn Added.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script July v0.1.sql" />
-    <Content Include="Database Scripts\yogesh\Script August v0.1.sql" />
+    <Content Include="Database Scripts\executed\yogesh\Script August v0.1.sql" />
+    <Content Include="Database Scripts\executed\yogesh\Script October v0.1.sql" />
+    <Content Include="Database Scripts\yogesh\FreeProjectQuote.sql" />
+    <Content Include="Database Scripts\yogesh\Script November v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
     <Content Include="datetime\jq\jquery.ui.timepicker.js" />
@@ -1854,8 +1863,10 @@
     <Content Include="img\icon_jg.PNG" />
     <Content Include="img\icon_share.JPG" />
     <Content Include="img\image-icon.png" />
+    <Content Include="img\jg-construction.jpg" />
     <Content Include="img\JG-Logo-white.gif" />
     <Content Include="img\JG-Logo.gif" />
+    <Content Include="img\JgLogo.jpg" />
     <Content Include="img\Loading-ring-alt.gif" />
     <Content Include="img\LoginwithFB.jpg" />
     <Content Include="img\LogoJG_PDF.png" />
@@ -1939,6 +1950,8 @@
     <Content Include="JGCalender\SalesCalender.aspx" />
     <Content Include="JGCalender\scripts\calendarscript.js" />
     <Content Include="JrAnnualCalendar.aspx" />
+    <Content Include="js\angular\scripts\ClosedTasls.js" />
+    <Content Include="js\angular\scripts\FrozenTask.js" />
     <Content Include="js\angular\scripts\jgappfactories.js" />
     <Content Include="js\angular\scripts\edituser-angular.js" />
     <Content Include="js\angular\scripts\TaskGenerator.js" />
@@ -2096,7 +2109,7 @@
     <Content Include="MCQTest\ObjectiveExamSummary.aspx" />
     <Content Include="MCQTest\StartExam.aspx" />
     <Content Include="MCQTest\ViewResults.aspx" />
-    <Content Include="posttest.html" />
+    <Content Include="postdata.html" />
     <Content Include="Properties\PublishProfiles\DeveloperProfile.pubxml.user" />
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular.js" />
@@ -2414,6 +2427,20 @@
     </Compile>
     <Compile Include="ckeditor\plugins\uploadimage\fileuploader.aspx.designer.cs">
       <DependentUpon>fileuploader.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Customer_Panel.aspx.cs">
+      <DependentUpon>Customer_Panel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Customer_Panel.aspx.designer.cs">
+      <DependentUpon>Customer_Panel.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="JGCustomer.Master.cs">
+      <DependentUpon>JGCustomer.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="JGCustomer.Master.designer.cs">
+      <DependentUpon>JGCustomer.Master</DependentUpon>
     </Compile>
     <Compile Include="JGApplicant.Master.cs">
       <DependentUpon>JGApplicant.Master</DependentUpon>
@@ -3546,6 +3573,7 @@
     <Content Include="JGCalender\JsonResponse.ashx" />
     <Content Include="js\JCarousel.js.rej" />
     <Content Include="JGApplicant.Master" />
+    <Content Include="JGCustomer.Master" />
     <None Include="PDFS\Escrow_a.pdfEscrow_a.pdf" />
     <None Include="PDFS\Escrow_shyam.pdfEscrow_shyam.pdf" />
     <None Include="PDFS\FacePage_ennavation.pdfFacePage_ennavation.pdf" />
@@ -3571,6 +3599,7 @@
     <Content Include="UserFile\SalesSample.xlsx" />
     <None Include="Properties\PublishProfiles\DeveloperProfile.pubxml" />
     <None Include="Properties\PublishProfiles\LivePublish.pubxml" />
+    <None Include="Properties\PublishProfiles\LocalLive.pubxml" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>

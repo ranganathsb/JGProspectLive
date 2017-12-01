@@ -329,6 +329,30 @@ namespace JG_Prospect.DAL
 
         }
 
+        public DataSet GetUserAssignedTaskHistory(Int32 UserID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetUserAssignedTaskHistory");
+                    database.AddInParameter(command, "@UserID", SqlDbType.Int, UserID);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
         public DataSet RejectUserAssignedWithSequence(Int64 SequenceID, Int32 UserID, Int32 RejectedUserID)
         {
             try
@@ -710,6 +734,45 @@ namespace JG_Prospect.DAL
 
         }
 
+        public String HardDeleteTask(Int64 maintaskid)
+        {
+            String filesToDelete = String.Empty;
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_HardDeleteTask");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, maintaskid);
+                    database.AddOutParameter(command, "@TaskAttachments", DbType.String,-1);
+                    database.AddOutParameter(command, "@AllDeleted", DbType.Boolean, -1);
+                                        
+                    int result = database.ExecuteNonQuery(command);
+
+                    if (result > 0)
+                    {
+                        Boolean allDeleted = Convert.ToBoolean(database.GetParameterValue(command, "@AllDeleted"));
+
+                        if (allDeleted)
+                        {
+                             filesToDelete = Convert.ToString(database.GetParameterValue(command, "@TaskAttachments"));
+                        }
+                    }
+                                        
+                }
+            }
+
+            catch (Exception ex)
+            {
+                
+            }
+
+            return filesToDelete;
+
+        }
+
         public int UpdateTaskStatus(Task objTask)
         {
             try
@@ -1003,6 +1066,33 @@ namespace JG_Prospect.DAL
                 return false;
             }
         }
+
+        //Get details for task with user and attachments
+        public DataSet GetTasksInformation(Int32 TaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetTasksInformation");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
 
         public bool SaveOrDeleteTaskNotes(ref TaskUser objTaskUser)
         {

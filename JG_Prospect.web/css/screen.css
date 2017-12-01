@@ -1581,8 +1581,9 @@ input.fz-Beta, .fz-Beta > input {
 .greentext {
     color: darkgreen !important;
 }
+
 .blacktext {
-color: black !important;
+    color: black !important;
 }
 
 .haligncenter {
@@ -2428,16 +2429,17 @@ input[type='checkbox']:checked.largecheckbox {
 }
 
 .rejectedUser {
-background-color: #AEAEAE;
+    background-color: #AEAEAE;
 }
 
 .gridtbl tbody {
-max-height:40px !important;
+    max-height: 40px !important;
 }
 
 .gridtbl thead tr:after {
-    content:none !important;
+    content: none !important;
 }
+
 .gridtbl thead th {
     background-color: #000;
 }

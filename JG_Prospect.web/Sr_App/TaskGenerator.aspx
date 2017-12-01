@@ -129,6 +129,7 @@
                                 </asp:RequiredFieldValidator>
                                 <asp:HiddenField ID="controlMode" runat="server" />
                                 <asp:HiddenField ID="hdnTaskId" runat="server" Value="0" />
+                                <%--<a id="hypSaveParentTaskTitle" href="javascript:void(0);" onclick="javascript:saveTaskTitle();">Save Title</a>--%>
                             </td>
                             <td style="vertical-align: middle;">
 
@@ -228,7 +229,7 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr style="display:none;">
+                        <tr style="display: none;">
                             <td colspan="2"><b>Task Description:</b>
                                 <asp:TextBox ID="txtTUDesc" TextMode="MultiLine" ReadOnly="true" Style="width: 100%;" Rows="10" runat="server"></asp:TextBox>
                             </td>
@@ -631,8 +632,14 @@
 
         function Initialize() {
             ApplyDropZone();
+            EnableAutoTitleSave();
         }
 
+        function EnableAutoTitleSave() {
+            $('#<%=txtTaskTitle.ClientID%>').bind('blur', function () {
+                saveTaskTitle();
+            });           
+        }
         function ShowPopup(varControlID) {
 
             var windowWidth = (parseInt($(window).width()) / 2) - 10;
@@ -726,5 +733,10 @@
             objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews', '#<%= hdnWorkFiles.ClientID %>', '#<%=btnAddAttachment.ClientID%>');
         }
 
+        function saveTaskTitle() {
+            var Title = $('#<%=txtTaskTitle.ClientID%>').val();
+            var Id = $('#<%=hdnTaskId.ClientID%>').val();
+            EditTask(Id, Title);
+        }
     </script>
 </asp:Content>
