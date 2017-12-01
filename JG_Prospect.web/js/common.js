@@ -608,12 +608,6 @@ function getUrlVars() {
     return vars;
 }
 
-function setUser(sender, data, id) {
-    uid = id;
-    $('#txtSearchUser').val(data);
-    $('.auto-complete-users').remove();
-}
-
 function sendEmail(sender, contents, uid) {
     if (uid != '') {
         $('.search-label').html('Please Wait...');
@@ -629,6 +623,28 @@ function sendEmail(sender, contents, uid) {
             }
         });
     }
+}
+
+function addNote(sender, uid, note) {
+    if (note != '') {
+        $('.search-label').html('Please Wait...');
+        ajaxExt({
+            url: '/Sr_App/edituser.aspx/AddNotes',
+            type: 'POST',
+            data: '{ id: ' + uid + ', note: "' + note + '" }',
+            showThrobber: true,
+            throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+            success: function (data, msg) {
+                $('#txtSearchUser').val('');
+                $('.search-label').html('Note Sent.');
+            }
+        });
+    }
+}
+function setUserData(sender, data, id) {
+    uid = id;
+    $('#txtSearchUser').val(data);
+    $('.auto-complete-users').remove();
 }
 
 function addNote(sender, uid, note) {

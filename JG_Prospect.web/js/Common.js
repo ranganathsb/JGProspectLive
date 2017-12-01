@@ -32,7 +32,7 @@ var EditActionType = {
 //====== End Enums & Constants =====
 
 $(document).ready(function () {
-
+    
 });
 
 
@@ -221,10 +221,10 @@ ajaxExt = function (parameters) {
             }
             if (data.Results != undefined && data.Results[0] == 'LoginExipred')
                 window.location.href = data.Results[1];
-            // else if (data.Results != undefined && data.Results[0] == "HttpRequestValidationException")
-            //alert(data.Message);
-            //else
-            //alert(data.Message)
+                // else if (data.Results != undefined && data.Results[0] == "HttpRequestValidationException")
+                //alert(data.Message);
+                //else
+                //alert(data.Message)
             else if (parameters.error != undefined)
                 parameters.error(data, data.Message)
         }
@@ -317,10 +317,10 @@ OpenPopup = function (parameters, data) {
     $("#lightBox div.popUpContent h4[name=Title]").html(parameters.title)
     $("#lightBox").show().position({ my: "center center", at: "center center", of: $(window), offset: offsetX + " " + offsetY });
     $("#lightBox div.popUpContent div[name=ActualContent]").html(data[0])
-        .css({ 'overflow-y': 'auto', 'overflow-x': 'hidden', 'width': parameters.width });
+                                                           .css({ 'overflow-y': 'auto', 'overflow-x': 'hidden', 'width': parameters.width });
     $("#lightBox").show()
-        //.css({ 'min-height': '400px' })
-        .position({ my: "center center", at: "center center", of: $(window), offset: offsetX + " " + offsetY });
+                  //.css({ 'min-height': '400px' })
+                  .position({ my: "center center", at: "center center", of: $(window), offset: offsetX + " " + offsetY });
     $('.popUp .popUpContent .selectbox-section ul').css({ 'width': (parameters.width - 4) + 'px' });
     var form = $("#lightBox form:first");
     ResetUnobtrusiveValidation(form);
@@ -608,12 +608,6 @@ function getUrlVars() {
     return vars;
 }
 
-function setUser(sender, data, id) {
-    uid = id;
-    $('#txtSearchUser').val(data);
-    $('.auto-complete-users').remove();
-}
-
 function sendEmail(sender, contents, uid) {
     if (uid != '') {
         $('.search-label').html('Please Wait...');
@@ -647,7 +641,17 @@ function addNote(sender, uid, note) {
         });
     }
 }
+function setUserData(sender, data, id) {
+    uid = id;
+    $('#txtSearchUser').val(data);
+    $('.auto-complete-users').remove();
+}
 
+function setUser(sender, email, name) {
+    var txt = $('.add-notes-container .note-text').val();
+    $('.add-notes-container .note-text').val(txt + name + ' (' + email + ')');
+    $('.auto-complete-users').remove();
+}
 var tribute = new Tribute({
     values: [
       { key: 'Justin Grove', value: 'Justin' },
