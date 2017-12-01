@@ -24,6 +24,11 @@ namespace JG_Prospect.BLL
             private set {; }
         }
 
+        public ActionOutput<LoginUser> GetUsers(string keyword)
+        {
+            return InstallUserDAL.Instance.GetUsers(keyword);
+        }
+
         public void AddUserNotes(string Notes, int UserID, int AddedByID)
         {
             InstallUserDAL.Instance.AddUserNotes(Notes, UserID, AddedByID);

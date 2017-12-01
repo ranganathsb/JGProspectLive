@@ -23,6 +23,8 @@ using JG_Prospect.App_Code;
 using OfficeOpenXml;
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Web.Services;
+using System.Web.Script.Serialization;
 //using System.Diagnostics;
 
 namespace JG_Prospect
@@ -4593,6 +4595,7 @@ namespace JG_Prospect
                     string strBody = objHTMLTemplate.Body;
                     string strFooter = objHTMLTemplate.Footer;
                     string strsubject = objHTMLTemplate.Subject;
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(strTaskId));
 
                     strsubject = strsubject.Replace("#ID#", strTaskId);
                     strsubject = strsubject.Replace("#TaskTitleID#", strTaskTitle);
@@ -4605,7 +4608,7 @@ namespace JG_Prospect
                     strBody = strBody.Replace("#email#", emailId);
                     strBody = strBody.Replace("#Designation(s)#", ddlDesignationForTask.SelectedItem != null ? ddlDesignationForTask.SelectedItem.Text : "");
                     strBody = strBody.Replace("#TaskLink#", string.Format(
-                                                                            "{0}?TaskId={1}&hstid={2}",
+                                                                            "{0}?TaskId={1}&hstid={2}&{3}",
                                                                             string.Concat(
                                                                                             Request.Url.Scheme,
                                                                                             Uri.SchemeDelimiter,
@@ -4613,9 +4616,13 @@ namespace JG_Prospect
                                                                                             "/Sr_App/TaskGenerator.aspx"
                                                                                          ),
                                                                             strTaskId,
-                                                                            strSubTaskId
+                                                                            strSubTaskId,
+                                                                            strTaskLinkTitle
                                                                         )
                                             );
+
+                    
+                    strBody = strBody.Replace("#TaskTitle#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], strTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 
@@ -4825,6 +4832,22 @@ namespace JG_Prospect
             string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
             int userID = Convert.ToInt32(JGSession.LoginUserID);
             InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.Now, strValueToAdd, "");
+        }
+
+        [WebMethod]
+        public static string AddNotes(int id, string note)
+        {
+            string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
+            int userID = Convert.ToInt32(JGSession.LoginUserID);
+            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, "Note : " + note, "");
+            return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+        }
+
+        [WebMethod]
+        public static string GetUsers(string keyword)
+        {
+            ActionOutput<LoginUser> users = InstallUserBLL.Instance.GetUsers(keyword);
+            return new JavaScriptSerializer().Serialize(users);
         }
     }
 }

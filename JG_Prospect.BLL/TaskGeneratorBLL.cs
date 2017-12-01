@@ -243,6 +243,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, isAdmin, Start, PageLimit, strSortExpression);
         }
 
+        public ActionOutput<LoginUser> GetInstallUsersByPrefix(string Prefix)
+        {
+            return TaskGeneratorDAL.Instance.GetInstallUsersByPrefix(Prefix);
+        }
+
         public DataSet GetAllUsersNDesignationsForFilter()
         {
             return TaskGeneratorDAL.Instance.GetAllUsersNDesignationsForFilter();
@@ -452,6 +457,13 @@ namespace JG_Prospect.BLL
         }
         //------- End DP ----------
 
+        #endregion
+
+        #region TaskInformation
+        public DataSet GetTasksInformation(Int32 TaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetTasksInformation(TaskId);
+        }
         #endregion
     }
 }

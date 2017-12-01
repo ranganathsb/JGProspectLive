@@ -16,9 +16,9 @@ function LoadSubTasks() {
     sequenceScopeTG.UserSelectedDesigIds = "";
 
     //Get Page Size
-    var pageSize = $('#ContentPlaceHolder1_objucSubTasks_Admin_drpPageSize').val();
+    var pageSize = $('#drpPageSize').val();
     if (pageSize == undefined)
-        pageSize = $('#ContentPlaceHolder1_objucSubTasks_User_drpPageSize').val();
+        pageSize = 5;
     sequenceScopeTG.pageSize = pageSize;
 
     sequenceScopeTG.getSubTasks();

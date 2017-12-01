@@ -47,7 +47,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
             //$scope.page = 0;
             $scope.TotalRecords = result.RecordCount.TotalRecords;
-            $scope.pagesCount = 3;
+            $scope.pagesCount = Math.round(result.RecordCount.TotalRecords / sequenceScopeTG.pageSize);
             $scope.TaskFiles = $scope.correctDataforAngular(result.TaskFiles);
             $scope.SubTasks = $scope.correctDataforAngular(result.Tasks);
         });

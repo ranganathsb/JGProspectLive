@@ -17,7 +17,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <link rel="stylesheet" href="../css/jquery-ui.css" />
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
-    <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />    
+    <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />      
     
     <script src="../ckeditor/ckeditor.js"></script>    
     <script src="../js/clipboard.min.js"></script>
@@ -28,7 +28,32 @@
     <script src="../js/angular/scripts/jgapp.js"></script>
     <script src="../js/angular/scripts/TaskGenerator.js"></script>
     <script src="../js/angular/scripts/TaskGeneratorHelper.js"></script>
-   
+<!-- The Modal -->
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Share</h2>
+                <div class="modal-icons">
+                    <img src="../img/icon_email.PNG" class="search-target" data-target="emails" /><img src="../img/icon_jg.PNG" class="search-target" data-target="users" />
+                </div>
+            </div>
+            <div class="modal-body">
+                <hr />
+                <input type="text" id="txtTaskLink" class="smart-text" /><br />
+                <input type="text" id="txtSearchUser" class="smart-text" />
+            </div>
+            <div class="modal-footer">
+                <span class="search-label" style="color: red;">Search: Email</span>
+                <button id="btnShare" onclick="return false;" class="mui-btn mui-btn--small mui-btn--primary mui-btn--flat">Share</button>
+                <button id="btnCopy" class="mui-btn mui-btn--small mui-btn--primary mui-btn--flat">Copy</button>
+            </div>
+            <div class="users-container"></div>
+        </div>
+
+    </div>
 
     <div class="right_panel">
         <hr />
@@ -505,6 +530,7 @@
          * Added By Kapil Pancholi
          * For Angular
          */
+        
         $(document).ready(function () {
             //Load Chosen
             $('.chosen-input').chosen();

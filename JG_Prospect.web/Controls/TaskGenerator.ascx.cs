@@ -1941,7 +1941,8 @@ namespace JG_Prospect.Sr_App.Controls
 
                     strBody = strBody.Replace("#Fname#", fullname);
                     strBody = strBody.Replace("#TaskLink#", string.Format("{0}/sr_app/TaskGenerator.aspx?TaskId={1}",JGApplicationInfo.GetSiteURL(), intTaskId));
-
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(intTaskId);
+                    strBody = strBody.Replace("#TaskTitle#", strTaskLinkTitle);
                     strBody = strHeader + strBody + strFooter;
 
                     List<Attachment> lstAttachments = new List<Attachment>();

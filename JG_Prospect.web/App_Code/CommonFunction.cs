@@ -1402,6 +1402,37 @@ namespace JG_Prospect.App_Code
             }
 
         }
+        public static string GetTaskLinkTitleForAutoEmail(int taskId)
+        {
+
+            DataSet dsTaskDetails = TaskGeneratorBLL.Instance.GetTasksInformation(taskId);
+
+            DataTable dtOriginalTaskDetails = dsTaskDetails.Tables[0];
+
+            string newTaskLinkTitle = "";
+            string installId = dtOriginalTaskDetails.Rows[0]["InstallId"].ToString();
+            string taskTitle = dtOriginalTaskDetails.Rows[0]["Title"].ToString();
+            string parentTaskId = dtOriginalTaskDetails.Rows[0]["ParentTaskId"].ToString();
+            while (!string.IsNullOrEmpty(parentTaskId))
+            {
+                int intParentTaskId = int.Parse(parentTaskId);
+                DataSet parentTask = TaskGeneratorBLL.Instance.GetTasksInformation(intParentTaskId);
+                if (parentTask != null && parentTask.Tables.Count > 0)
+                {
+                    installId = parentTask.Tables[0].Rows[0]["InstallId"].ToString() + "-" + installId;
+                    taskTitle += "; " + parentTask.Tables[0].Rows[0]["Title"].ToString();
+                    parentTaskId = parentTask.Tables[0].Rows[0]["ParentTaskId"].ToString();
+                }
+                else
+                {
+                    parentTaskId = "";
+                }
+            }
+
+            newTaskLinkTitle = string.Format("TaskID#:{0}:Title:{1}", installId, taskTitle);
+
+            return newTaskLinkTitle;
+        }
     }
 }
 

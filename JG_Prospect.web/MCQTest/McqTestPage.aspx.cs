@@ -413,6 +413,9 @@ namespace JG_Prospect.MCQTest
                                                                         )
                                             );
 
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(strTaskId));
+                    strBody = strBody.Replace("#TaskTitle#", strTaskLinkTitle);
+
                     strBody = strHeader + strBody + strFooter;
 
                     string strHTMLTemplateName = "Task Generator Auto Email";
