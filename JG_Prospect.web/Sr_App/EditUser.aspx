@@ -236,7 +236,7 @@
 
         .notes-container {
             display: block;
-            max-height: 52px;
+            height: 66px;
             overflow-x: hidden;
             overflow-y: auto;
         }
@@ -272,7 +272,7 @@
                 background: #FFF;
                 color: #000;
             }
-            .notes-table tr:nth-child(odd) a{}
+            .notes-table tr a{font-size:10px;}
             .notes-table tr:nth-child(even) a, .notes-popup tr:nth-child(even) a{color:#fff;}
             .notes-table tr th:nth-child(1), .notes-table tr td:nth-child(1) {
                 width: 5%;
@@ -318,7 +318,7 @@
             position: fixed;
             top: 100px;
             left: 300px;
-            width: 600px;
+            width: 800px;
             background: #fff;
             z-index: 11;
             border-radius: 5px;
@@ -394,7 +394,7 @@
             }
 
             .notes-popup .content table tr th:nth-child(1), .notes-popup .content table tr td:nth-child(1) {
-                width: 120px;
+                width: 185px;
             }
 
         .notes-popup .add-notes-container {
@@ -485,12 +485,11 @@
         }
 
         textarea.note-text {
-            height: 36px;
+            height: 22px;
             vertical-align: middle;
             padding: 2px !important;
-            width: 70%;
-            float: left;
-            margin-right: 5px;
+            width: 255px;            
+            margin: 0px;
         }
     </style>
     <script type="text/javascript">
@@ -523,8 +522,8 @@
                     if (data.Data.length > 0) {
                         var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">';
                         $(data.Data).each(function (i) {
-                            tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
-                                        '<td><a href="javascript:;" onclick="openNotes(this,' + data.Data[i].UserID + ', \'' + installUserId + '\')" uid="' + data.Data[i].UserID + '">' + installUserId + '<br/>'+data.Data[i].ChangeDateTimeFormatted+'</a></td>' +
+                            tbl += '<tr iuid="'+ installUserId+'" uid="'+data.Data[i].UserID+'" id="' + data.Data[i].UserTouchPointLogID + '">' +
+                                        '<td><a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UserID+'" uid="' + data.Data[i].UserID + '">' + data.Data[i].SourceUser + '<br/>'+data.Data[i].ChangeDateTimeFormatted+'</a></td>' +
                                         '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
                                     '</tr>';
                         });
@@ -543,6 +542,7 @@
                                     '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
                                    '</table>';
                         $('#user-' + userid).html(tbl);
+                        tribute.attach(document.getElementById('txt-'+userid));
                     }
                 }
             });
@@ -562,7 +562,7 @@
                         var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
                         $(data.Data).each(function (i) {
                             tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
-                                        '<td><a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UserID+'">' + data.Data[i].UpdatedUserInstallID + '<br/>'+data.Data[i].ChangeDateTimeFormatted+'</a></td>' +
+                                        '<td><a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UserID+'">' + data.Data[i].SourceUser + '<br/>'+data.Data[i].ChangeDateTimeFormatted+'</a></td>' +
                                         '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
                                     '</tr>';
                         });
@@ -577,14 +577,16 @@
             return false;
         }
 
-        function openNotes(sender, userId, txtUserId) {
-            $('.notes-popup').css({ left: ($(window).width() / 2) - 300 });
-            $('#popupNoteUserId').val(userId);
-            $('#popupNoteTxtUserId').val(txtUserId);
-            $('.notes-popup').show();
-            $('.notes-popup-background').show();
-            Paging(sender);
-        }
+        $(document).on('click','.notes-table tr', function(e){
+            if(!$(e.target).is('a') ) {
+                $('.notes-popup').css({ left: ($(window).width() / 2) - 400 });
+                $('#popupNoteUserId').val($(this).attr('uid'));
+                $('#popupNoteTxtUserId').val($(this).attr('iuid'));
+                $('.notes-popup').show();
+                $('.notes-popup-background').show();
+                Paging($(this));
+            }
+        });
 
         function addPopupNotes(sender){
             var userId = $('#popupNoteUserId').val();
@@ -1446,10 +1448,10 @@
                                         <div class="notes-container" uid="<%#Eval("UserInstallId")%>" id="user-<%#Eval("Id")%>">
                                             Loading Notes...
                                         </div>
-                                        <div style="text-align: left; padding: 4px;">
-                                            <textarea class="note-text textbox" id="txt-<%# Eval("Id") %>"></textarea>
+                                        <div style="text-align: left; padding: 2px;">                                            
                                             <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this, '<%# Eval("Id") %>','<%#Eval("UserInstallId")%>')" />
-                                        </div>
+                                            <textarea class="note-text textbox" id="txt-<%# Eval("Id") %>"></textarea>
+                                         </div>
                                         <%--<div style="text-align: left; padding: 4px;">
                                             <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"
                                                 Style="height: 36px; vertical-align: middle; padding: 2px!important; width: 70%; float: left; margin-right: 5px;" CssClass="textbox"></asp:TextBox>
