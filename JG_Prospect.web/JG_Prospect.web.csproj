@@ -1488,6 +1488,7 @@
     <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_IsValidInstallerUser.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Procedures.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Tables.sql" />
+    <Content Include="Database Scripts\Kapil\Executed_3.sql" />
     <Content Include="Database Scripts\Kapil\Latest.sql" />
     <Content Include="Database Scripts\Kapil\Executed_2.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\Database Script.sql" />

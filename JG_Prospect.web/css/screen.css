@@ -1548,10 +1548,10 @@ input.fz-Beta, .fz-Beta > input {
 }
 
 .yellowthickborder {
-    animation: blink 1s step-end infinite alternate;
+    animation: blinkrow 1s step-end infinite alternate;
 }
 
-@keyframes blink {
+@keyframes blinkrow {
     50% {
         background-color: yellow;
     }
