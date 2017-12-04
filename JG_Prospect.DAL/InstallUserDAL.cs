@@ -27,7 +27,7 @@ namespace JG_Prospect.DAL
             private set {; }
         }
 
-        public DataSet returndata;
+        public DataSet returndata;        
 
         public void AddUserNotes(string Notes, int UserID, int AddedByID)
         {
@@ -542,7 +542,7 @@ namespace JG_Prospect.DAL
                         {
                             users.Add(new LoginUser
                             {
-                                ID= Convert.ToInt32(item["Id"].ToString()),
+                                ID = Convert.ToInt32(item["Id"].ToString()),
                                 FirstName = item["FristName"].ToString(),
                                 LastName = item["LastName"].ToString(),
                                 Email = item["Email"].ToString(),

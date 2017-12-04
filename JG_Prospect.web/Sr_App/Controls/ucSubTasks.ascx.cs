@@ -2235,13 +2235,13 @@ namespace JG_Prospect.Sr_App.Controls
                     string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
                     string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(intTaskId);
 
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}&{3}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId, strTaskLinkTitle));
 
-                    // Added by Zubair Ahmed Khan for displaying proper text for task link
-                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(intTaskId);
-                    strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
+                    
+                    strBody = strBody.Replace("#TaskTitle#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0],intTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 
