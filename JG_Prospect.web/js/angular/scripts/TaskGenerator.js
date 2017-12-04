@@ -37,9 +37,15 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
     }
 
     $scope.getSubTasks = function (page) {
+
+        ShowAjaxLoader();
         var TaskId = getUrlVars()["TaskId"];
         TaskId = TaskId.replace('#/', '');
-        $scope.page = page || 0;
+
+        if (page == undefined)
+            page = $scope.page;
+        else
+            $scope.page = page;
 
         callWebServiceMethod($http, "GetSubTasks", { TaskId: TaskId, strSortExpression: "CreatedOn DESC", vsearch: "", intPageIndex: page != undefined ? page : 0, intPageSize: sequenceScopeTG.pageSize, intHighlightTaskId: 0 }).then(function (data) {
             var resultArray = JSON.parse(data.data.d);
@@ -50,6 +56,8 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
             $scope.pagesCount = Math.round(result.RecordCount.TotalRecords / sequenceScopeTG.pageSize);
             $scope.TaskFiles = $scope.correctDataforAngular(result.TaskFiles);
             $scope.SubTasks = $scope.correctDataforAngular(result.Tasks);
+
+            HideAjaxLoader();
         });
     }
 

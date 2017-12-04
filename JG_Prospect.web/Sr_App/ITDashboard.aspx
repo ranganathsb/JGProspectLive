@@ -2536,11 +2536,24 @@
                 data: data,
                 success: function (result) {
                     alert("Task Status Changed.");
-                    ShowAllClosedTasksDashBoard("", 0, pageSize);
-                    var dids = "";
+                    
+                    var dids = ""; var uids = '';
                     if ($('.' + ddlDesigSeqClientID).val() != undefined)
                         dids = $('.' + ddlDesigSeqClientID).val().join();
-                    ShowTaskSequenceDashBoard(dids, 0);
+                    if ($('.chosen-select-users').val() != undefined)
+                        uids = $('.chosen-select-users').val().join();
+
+                    var attrs = $('#pnlNewFrozenTask').attr('class').split(' ');
+                    var cls = attrs[attrs.length-1];
+
+                    if (cls != 'hide') {
+                        ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).val(), $("#ddlSelectFrozenTask").val().join());
+                        ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), $("#ddlSelectFrozenTask").val().join());
+                    }
+                    else {
+                        ShowTaskSequenceDashBoard(dids, uids);
+                        ShowAllClosedTasksDashBoard(dids, uids, pageSize);
+                    }
                 },
                 error: function (errorThrown) {
                     alert("Failed!!!");
@@ -3168,8 +3181,7 @@
                  }
              });
          }
-
-
+        
          function SetTaskCounterPopup() {
 
             $('#' +'<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
