@@ -1391,7 +1391,7 @@ namespace JG_Prospect
             }
             else //If task is not available and not assigned to user than show success popup without assigned task information.
             {
-                SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString(), false);
+                SetExamPassedMessage(String.Empty, String.Empty, 0, 0, String.Empty, true);
 
                 ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
             }
