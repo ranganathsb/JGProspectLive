@@ -504,7 +504,8 @@ namespace JG_Prospect.DAL
                                 LastName = item["LastName"].ToString(),
                                 Email = item["Email"].ToString(),
                                 Phone = item["Phone"].ToString(),
-                                ChangeDateTimeFormatted = item["ChangeDateTimeFormatted"].ToString()
+                                ChangeDateTimeFormatted = item["ChangeDateTimeFormatted"].ToString(),
+                                SourceUser = item["SourceUser"].ToString()
                             });
                         }
                     }
