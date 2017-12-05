@@ -1179,6 +1179,12 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public bool SetTaskType(int intTaskId, string TaskType)
+        {
+            return TaskGeneratorBLL.Instance.UpdateTaskTechTask(intTaskId, bool.Parse(TaskType));
+        }
+
+        [WebMethod(EnableSession = true)]
         public bool SaveTaskMultiLevelChild(int ParentTaskId, string InstallId, string Description, int IndentLevel, string Class)
         {
             return TaskGeneratorBLL.Instance.SaveTaskMultiLevelChild(ParentTaskId, InstallId, Description, IndentLevel, Class);
