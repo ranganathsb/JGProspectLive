@@ -2881,7 +2881,7 @@ namespace JG_Prospect.Sr_App.Controls
             hdnTaskApprovalId.Value = "0";
             hdnSubTaskId.Value = "0";
             hdnSubTaskIndex.Value = "-1";
-            txtTaskListID.Text = string.Empty;
+            //txtTaskListID.Text = string.Empty;
             txtSubTaskTitle.Text =
             txtUrl.Text =
             txtSubTaskDescription.Text =

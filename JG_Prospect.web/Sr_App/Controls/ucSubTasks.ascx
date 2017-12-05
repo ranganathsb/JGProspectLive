@@ -342,6 +342,11 @@
     .pagingInfo{
         margin-top: -20px !important;
     }
+    .clear{
+        clear:both;
+        margin-bottom:5px;
+        padding-bottom:5px;
+    }
 </style>
 
 <fieldset class="tasklistfieldset">
@@ -355,7 +360,7 @@
         <%--<asp:LinkButton ID="lbtnAddNewSubTask" runat="server" Text="Add New Task" ValidationGroup="Submit" OnClick="lbtnAddNewSubTask_Click" />--%>
         <asp:HiddenField ID="hdndesignations" runat="server" Value="" />
         <asp:HiddenField ID="hdnLastSubTaskSequence" runat="server" Value="" />
-        <asp:HiddenField ID="hdnTaskListId" runat="server" Value="" />
+        <asp:HiddenField ID="hdnTaskListId" runat="server" Value="{{NextInstallId}}" />
         <button type="button" id="lbtnAddNewSubTask1" onclick="javascript:shownewsubtask();" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">Add New Task</button>
         <br />
         <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
@@ -365,7 +370,7 @@
             <asp:HiddenField ID="hdnSubTaskIndex" runat="server" Value="-1" />
             <table class="tablealign fullwidth">
                 <tr>
-                    <td>ListID:<asp:TextBox ID="txtTaskListID" runat="server" Enabled="false" />
+                    <td>ListID:<asp:TextBox ID="txtTaskListID" runat="server" Enabled="false" Text="{{NextInstallId}}" />
                         &nbsp;<small>
                             <a href="javascript:void(0);" style="color: #06c;" id="lnkidopt" onclick="copytoListID(this);">
                                 <asp:Literal ID="listIDOpt" runat="server" />
@@ -554,6 +559,7 @@
                                             <div class="selectchildren">
                                             <a href="#/" onclick="selectChildren(this)" data-taskid="{{SubTask.TaskId}}">Select All</a>
                                         </div>
+                                            <div class="clear"></div>
                                         </h5>
 
                                         <!-- Freezingn Task Part Starts -->
@@ -676,7 +682,7 @@
                                             <input type="checkbox" name="bulkaction">
                                             <a href="javascript:void(0);" data-highlighter="{{SubTask.TaskId}}" class="context-menu" style="color: blue;">{{SubTask.InstallId}}</a>
                                         </div>
-                                        <div class="divtdetails left" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 100%; max-height:160px; width: 100%; overflow: auto;">
+                                        <div class="divtdetails left" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 99%; max-height:160px; width: 99%; overflow: auto;">
                                             <div class="taskdesc" style="padding-bottom: 5px; width: 98%; color: black!important;">
                                                 
                                                 <div class="right">
@@ -2197,8 +2203,9 @@
         DestroyDropzones();
         DestroyCKEditors();
     });
-
+    var IsAdminMode = 'False';
     $(document).ready(function () {        
+        IsAdminMode = '<%=IsAdminMode%>';
         //SubTask Enter Event
         $("#subtaskDesc").keyup(function (event) {
             if (event.keyCode === 13) {
@@ -2231,7 +2238,7 @@
         maintask = true;
         // SetLatestSequenceForAddNewSubTask();
         $('#<%=hdTaskLvl.ClientID%>').val("1");
-        $('#<%=txtTaskListID.ClientID%>').val($('#<%=hdnTaskListId.ClientID%>').val());
+        //$('#<%=txtTaskListID.ClientID%>').val($('#<%=hdnTaskListId.ClientID%>').val());
         $('#<%=chkTechTask.ClientID%>').prop('checked', false)
         $("#<%=divNEWSubTask.ClientID%>").css({ 'display': "block" });
 
@@ -2948,7 +2955,13 @@
                         if (data.d.Success) {
                             alert('Task saved successfully.');
                             $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
-                            //$('#<%=btnUpdateRepeater.ClientID%>').click();
+
+                            $("#<%=divNEWSubTask.ClientID%>").hide();
+                            $("#<%=pnlCalendar.ClientID%>").hide();
+
+                            $("#<%=txtSubTaskTitle.ClientID%>").val('');
+                            $("#<%=txtUrl.ClientID%>").val('');
+                            $("#<%=txtSubTaskDescription.ClientID%>").val('');
                             LoadSubTasks();
                         }
                         else {
