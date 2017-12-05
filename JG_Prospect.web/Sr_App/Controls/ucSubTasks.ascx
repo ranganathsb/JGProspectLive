@@ -342,6 +342,11 @@
     .pagingInfo{
         margin-top: -20px !important;
     }
+    .clear{
+        clear:both;
+        margin-bottom:5px;
+        padding-bottom:5px;
+    }
 </style>
 
 <fieldset class="tasklistfieldset">
@@ -355,7 +360,7 @@
         <%--<asp:LinkButton ID="lbtnAddNewSubTask" runat="server" Text="Add New Task" ValidationGroup="Submit" OnClick="lbtnAddNewSubTask_Click" />--%>
         <asp:HiddenField ID="hdndesignations" runat="server" Value="" />
         <asp:HiddenField ID="hdnLastSubTaskSequence" runat="server" Value="" />
-        <asp:HiddenField ID="hdnTaskListId" runat="server" Value="" />
+        <asp:HiddenField ID="hdnTaskListId" runat="server" Value="{{NextInstallId}}" />
         <button type="button" id="lbtnAddNewSubTask1" onclick="javascript:shownewsubtask();" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">Add New Task</button>
         <br />
         <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
@@ -365,7 +370,7 @@
             <asp:HiddenField ID="hdnSubTaskIndex" runat="server" Value="-1" />
             <table class="tablealign fullwidth">
                 <tr>
-                    <td>ListID:<asp:TextBox ID="txtTaskListID" runat="server" Enabled="false" />
+                    <td>ListID:<asp:TextBox ID="txtTaskListID" runat="server" Enabled="false" Text="{{NextInstallId}}" />
                         &nbsp;<small>
                             <a href="javascript:void(0);" style="color: #06c;" id="lnkidopt" onclick="copytoListID(this);">
                                 <asp:Literal ID="listIDOpt" runat="server" />
@@ -541,17 +546,20 @@
                                                 onclick="javascript:return false;" data-highlighter="{{SubTask.TaskId}}" style="color: Blue; cursor:pointer; display: inline;">
                                                 {{SubTask.InstallId}}
                                             </a>
-                                            
+                                            <%if (IsAdminMode)
+                                                { %>
                                             <input type="submit" name="btnshowdivsub" value="+" id="btnshowdivsub" ng-class="{showsubtaskDIV: SubTask.NestLevel==1, hide: SubTask.NestLevel==2}" 
-                                                data-parent-taskid="{{SubTask.TaskId}}" data-val-commandname="{{SubTask.NestLevel}}#{{SubTask.InstallId}}#{{SubTask.TaskId}}##0" data-val-tasklvl="{{SubTask.NestLevel}}"
+                                                data-parent-taskid="{{SubTask.TaskId}}" data-val-commandname="{{SubTask.NestLevel}}#{{SubTask.InstallId}}#{{SubTask.TaskId}}#1" data-val-tasklvl="{{SubTask.NestLevel}}"
                                                 data-val-commandargument="{{SubTask.TaskId}}" 
                                                 data-val-tasklvl="{{SubTask.NestLevel==1}}" data-installid="{{SubTask.InstallId}}" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">
+                                            <%} %>
                                             <img src="../../img/icon_share.JPG" data-taskfid="{{SubTask.InstallId1}}" data-tasktitle="{{SubTask.Title}}" 
                                                 data-AssignedUserId="{{SubTask.AssignedUserId}}" data-uname="{{SubTask.FLName}}" class="share-icon installidleft" 
                                                 onclick="sharePopup(this)" data-highlighter="{{SubTask.TaskId}}" style="color: Blue; cursor:pointer; display: inline;" />
                                             <div class="selectchildren">
                                             <a href="#/" onclick="selectChildren(this)" data-taskid="{{SubTask.TaskId}}">Select All</a>
                                         </div>
+                                            <div class="clear"></div>
                                         </h5>
 
                                         <!-- Freezingn Task Part Starts -->
@@ -670,11 +678,11 @@
                                         <!-- Freezingn Task Part Ends -->
                                     </td>
                                     <td width="47%">
-                                        <div ng-class="{hide: SubTask.NestLevel != '3', left: SubTask.NestLevel == '3'}" style="border-right: 0px solid #FFF; padding-right: 5px; width: 30px;">
+                                        <div ng-class="{hide: SubTask.NestLevel != '3', left: SubTask.NestLevel == '3'}" style="border-right: 0px solid #FFF; padding-right: 5px; width: 40px;">
                                             <input type="checkbox" name="bulkaction">
                                             <a href="javascript:void(0);" data-highlighter="{{SubTask.TaskId}}" class="context-menu" style="color: blue;">{{SubTask.InstallId}}</a>
                                         </div>
-                                        <div class="divtdetails left" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 100%; max-height:160px; width: 100%; overflow: auto;">
+                                        <div class="divtdetails left" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 99%; max-height:160px; width: 99%; overflow: auto;">
                                             <div class="taskdesc" style="padding-bottom: 5px; width: 98%; color: black!important;">
                                                 
                                                 <div class="right">
@@ -2195,8 +2203,9 @@
         DestroyDropzones();
         DestroyCKEditors();
     });
-
+    var IsAdminMode = 'False';
     $(document).ready(function () {        
+        IsAdminMode = '<%=IsAdminMode%>';
         //SubTask Enter Event
         $("#subtaskDesc").keyup(function (event) {
             if (event.keyCode === 13) {
@@ -2229,7 +2238,7 @@
         maintask = true;
         // SetLatestSequenceForAddNewSubTask();
         $('#<%=hdTaskLvl.ClientID%>').val("1");
-        $('#<%=txtTaskListID.ClientID%>').val($('#<%=hdnTaskListId.ClientID%>').val());
+        //$('#<%=txtTaskListID.ClientID%>').val($('#<%=hdnTaskListId.ClientID%>').val());
         $('#<%=chkTechTask.ClientID%>').prop('checked', false)
         $("#<%=divNEWSubTask.ClientID%>").css({ 'display': "block" });
 
@@ -2665,16 +2674,14 @@
 
                         if (TaskLevel == "2") {
                             var taskid = GetParameterValues('TaskId');
-                            //$('#<%=txtInstallId.ClientID%>').val(data.d.txtInstallId);
-                            $('#<%=txtInstallId.ClientID%>').val(strInstallId);
+                            $('#<%=txtInstallId.ClientID%>').val(data.d.txtInstallId);
                             $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
                             $('#<%=hdMainParentId.ClientID%>').val(taskid);
                             $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
                             $('#<%=hdTaskId.ClientID%>').val(cmdArg);
                         }
                         else {
-                            //$('#<%=txtTaskListID.ClientID%>').val(data.d.txtInstallId);
-                            $('#<%=txtTaskListID.ClientID%>').val(strInstallId);
+                            $('#<%=txtTaskListID.ClientID%>').val(data.d.txtInstallId);                            
                             $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
                             $('#<%=hdTaskLvl.ClientID%>').val(data.d.hdTaskLvl);
                             $('#<%=hdTaskId.ClientID%>').val(cmdArg);
@@ -2714,7 +2721,8 @@
                         TaskType: type,
                         TaskDesignations: designations,
                         TaskLvl: TaskLvl,
-                        blTechTask: false
+                        blTechTask: false,
+                        Sequence: ''
                     };
 
                     console.log(postData);
@@ -2725,7 +2733,7 @@
                         if (data.d.Success) {
                             alert('Task saved successfully.');
                             $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
-                            $('#<%=btnUpdateRepeater.ClientID%>').click();
+                            LoadSubTasks();
                         }
                         else {
                             alert('Task cannot be saved. Please try again.');
@@ -2947,7 +2955,13 @@
                         if (data.d.Success) {
                             alert('Task saved successfully.');
                             $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
-                            //$('#<%=btnUpdateRepeater.ClientID%>').click();
+
+                            $("#<%=divNEWSubTask.ClientID%>").hide();
+                            $("#<%=pnlCalendar.ClientID%>").hide();
+
+                            $("#<%=txtSubTaskTitle.ClientID%>").val('');
+                            $("#<%=txtUrl.ClientID%>").val('');
+                            $("#<%=txtSubTaskDescription.ClientID%>").val('');
                             LoadSubTasks();
                         }
                         else {
