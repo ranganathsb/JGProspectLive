@@ -776,7 +776,7 @@
                                     <td width="15%">
                                         <ul ng-class="{hide: SubTask.NestLevel == '3', stulli: SubTask.NestLevel != '3'}">
                                             <li>
-                                                <input id="chkTechTask" type="checkbox" name="chkTechTask" ng-checked="{{SubTask.IsTechTask}}" onclick=""><label for="chkTechTask"> Tech Task?</label>
+                                                <input <%=IsAdminMode?"":"disabled" %> id="chkTechSubTask" type="checkbox" name="chkTechTask" ng-checked="{{SubTask.IsTechTask}}" onclick="setTaskType(this)" data-taskid="{{SubTask.TaskId}}"><label for="chkTechTask"> Tech Task?</label>
                                             </li>
                                             <li></li>
                                             <li>Priority/Sequence
@@ -2243,6 +2243,25 @@
         $("#<%=divNEWSubTask.ClientID%>").css({ 'display': "block" });
 
         return false;
+    }
+
+    function setTaskType(Task) {
+        if (IsAdminMode=='True') {
+            var Checked = $(Task).is(':checked');
+            var TaskId = Task.getAttribute('data-taskid');
+            var data = { intTaskId: TaskId, TaskType: Checked };
+            $.ajax({
+                type: "POST",
+                url: url + "SetTaskType",
+                data: data,
+                success: function (result) {
+                    alert("Task Type Changed.");
+                },
+                error: function (errorThrown) {
+                    alert("Failed!!!");
+                }
+            });
+        }
     }
 
     var control;
