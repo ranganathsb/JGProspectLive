@@ -848,7 +848,7 @@ namespace JG_Prospect.WebServices
                                                     "",
                                                     intPageIndex,
                                                     intPageSize,
-                                                    0
+                                                    intHighlightTaskId
                                                 );
             dtResult.Tables[0].Columns.Add("className");
 
@@ -896,6 +896,7 @@ namespace JG_Prospect.WebServices
             {
                 //dtResult.Tables[4].TableName = "Tasks";
                 dtResult.Tables[1].TableName = "RecordCount";
+                dtResult.Tables[2].TableName = "Pages";
                 dtResult.Tables[3].TableName = "TaskFiles";
                 dtResult.DataSetName = "TaskData";
 

@@ -40,18 +40,27 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
         ShowAjaxLoader();
         var TaskId = getUrlVars()["TaskId"];
-        TaskId = TaskId.replace('#/', '');
+        if (TaskId == undefined || TaskId == '')
+            TaskId = 0;
+        else
+            TaskId = TaskId.replace('#/', '');
+
+        var HighLightedTaskId = getUrlVars()["hstid"];
+        if (HighLightedTaskId == undefined || HighLightedTaskId == '')
+            HighLightedTaskId = 0;
+        else
+            HighLightedTaskId = HighLightedTaskId.replace('#/', '');
 
         if (page == undefined)
             page = $scope.page;
         else
             $scope.page = page;
 
-        callWebServiceMethod($http, "GetSubTasks", { TaskId: TaskId, strSortExpression: "CreatedOn DESC", vsearch: "", intPageIndex: page != undefined ? page : 0, intPageSize: sequenceScopeTG.pageSize, intHighlightTaskId: 0 }).then(function (data) {
+        callWebServiceMethod($http, "GetSubTasks", { TaskId: TaskId, strSortExpression: "CreatedOn DESC", vsearch: "", intPageIndex: page != undefined ? page : 0, intPageSize: sequenceScopeTG.pageSize, intHighlightTaskId: HighLightedTaskId }).then(function (data) {
             var resultArray = JSON.parse(data.data.d);
             var result = resultArray.TaskData;
 
-            //$scope.page = 0;
+            $scope.page = result.Pages.PageIndex;
             $scope.TotalRecords = result.RecordCount.TotalRecords;
             $scope.pagesCount = Math.round(result.RecordCount.TotalRecords / sequenceScopeTG.pageSize);
             $scope.TaskFiles = $scope.correctDataforAngular(result.TaskFiles);
