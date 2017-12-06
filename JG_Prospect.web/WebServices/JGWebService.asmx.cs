@@ -845,7 +845,7 @@ namespace JG_Prospect.WebServices
                                                     TaskId,
                                                     CommonFunction.CheckAdminAndItLeadMode(),
                                                     strSortExpression,
-                                                    "",
+                                                    vsearch,
                                                     intPageIndex,
                                                     intPageSize,
                                                     intHighlightTaskId

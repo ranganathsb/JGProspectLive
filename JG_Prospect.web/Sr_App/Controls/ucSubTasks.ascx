@@ -368,6 +368,7 @@
             <asp:HiddenField ID="hdnTaskApprovalId" runat="server" Value="0" />
             <asp:HiddenField ID="hdnSubTaskId" runat="server" Value="0" />
             <asp:HiddenField ID="hdnSubTaskIndex" runat="server" Value="-1" />
+            <input type="hidden" id="hdnSearchKey" />
             <table class="tablealign fullwidth">
                 <tr>
                     <td>ListID:<asp:TextBox ID="txtTaskListID" runat="server" Enabled="false" Text="{{NextInstallId}}" />
@@ -735,7 +736,7 @@
                                         <%--SubTask Part Ends--%>
                                         <div class="clr" style="height: 1px;"></div>
                                         <input type="submit" name="btnshowdivsub1" value="+" onclick="return false;" id="btnshowdivsub1" class="showsubtaskDIV" data-parent-taskid="{{SubTask.TaskId}}" 
-                                            style="text-decoration: underline; cursor: pointer; background: none;" data-val-commandname="{{SubTask.NestLevel}}#{{SubTask.InstallId}}#{{SubTask.TaskId}}##0" data-val-tasklvl="{{SubTask.NestLevel}}" 
+                                            style="text-decoration: underline; cursor: pointer; background: none;" data-val-commandname="{{SubTask.NestLevel}}#{{SubTask.InstallId}}#{{SubTask.TaskId}}#1" data-val-tasklvl="{{SubTask.NestLevel}}" 
                                             data-installid="{{SubTask.InstallId}}" data-val-commandargument="{{SubTask.TaskId}}">
                                         &nbsp;
                                                                     
@@ -2790,9 +2791,10 @@
                     },
                     minLength: 2,
                     select: function (event, ui) {
-                        $("#<%=btnSearch.ClientID%>").val(ui.item.value);
+                        var searchkey = ui.item.value;
+                        $('#hdnSearchKey').val(searchkey);
+                        LoadSubTasks();
                         //TriggerSearch();
-                        $('#<%=btnSearch.ClientID%>').click();
                     }
                 });
             }
