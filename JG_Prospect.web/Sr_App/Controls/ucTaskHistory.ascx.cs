@@ -540,9 +540,8 @@ namespace JG_Prospect.Sr_App.Controls
                 // Save task notes and user information, returns TaskUpdateId for reference to add in user attachments.\
                 Int32 TaskUpdateId = SaveTaskNote(TaskId, null, null, string.Empty, string.Empty);
 
-                //LoadTaskData(TaskId);
-
-                txtNote.Text = string.Empty;
+                LoadTaskData(TaskId);
+                Page.Response.Redirect(Page.Request.Url.ToString(), true);
             }
         }
 

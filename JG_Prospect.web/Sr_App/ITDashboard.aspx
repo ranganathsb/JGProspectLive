@@ -838,7 +838,7 @@
                         <div class="text-center">
                             <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getTasks(page)"></jgpager>
                         </div>
-                        <div ng-show="loader.loading" style="position: absolute; left: 50%; bottom: 10%">
+                        <div ng-show="loader.loading" style="position: absolute; left: 50%; bottom: -20%">
                             Loading...
                 <img src="../img/ajax-loader.gif" />
                         </div>
