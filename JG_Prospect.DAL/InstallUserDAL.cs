@@ -3076,7 +3076,7 @@ namespace JG_Prospect.DAL
         }
 
 
-        public void SetUserDisplayID(int UserId, string strDesignationsCode, string UpdateCurrentSequence)
+        public void SetUserDisplayID(int UserId, string strUserDesignationId, string UpdateCurrentSequence)
         {
             try
             {
@@ -3085,7 +3085,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("USP_SetUserDisplayID");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@InstallUserID", DbType.String, UserId);
-                    database.AddInParameter(command, "@DesignationsCode", DbType.String, strDesignationsCode);
+                    database.AddInParameter(command, "@DesignationId", DbType.String, strUserDesignationId);
                     database.AddInParameter(command, "@UpdateCurrentSequence", DbType.String, UpdateCurrentSequence);
                     database.ExecuteNonQuery(command);
                 }

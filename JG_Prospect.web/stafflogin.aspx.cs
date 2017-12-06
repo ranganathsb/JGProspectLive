@@ -1263,7 +1263,8 @@ namespace JG_Prospect
 
                     string strDesignationCode = JG_Prospect.App_Code.CommonFunction.GetDesignationCode((JGConstant.DesignationType)Convert.ToByte(strUserDesignationId));
 
-                    InstallUserBLL.Instance.SetUserDisplayID(UserID, strDesignationCode, "YES");
+                    //InstallUserBLL.Instance.SetUserDisplayID(UserID, strDesignationCode, "YES");
+                    InstallUserBLL.Instance.SetUserDisplayID(UserID, strUserDesignationId, "YES");
 
                     SendWelcomeEmail(strUserEmail, UserID, strName, strUserDesignation, strUserDesignationId, strUserPhone);
 
