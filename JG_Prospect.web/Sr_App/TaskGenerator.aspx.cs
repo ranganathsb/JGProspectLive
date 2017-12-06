@@ -1845,17 +1845,17 @@ namespace JG_Prospect.Sr_App
             try
             {
                 string strHTMLTemplateName = "Task_Shared_Notification";
-                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 120);
+                DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.HR_User_Task_Shared, JGSession.DesignationId.ToString());
 
                 DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(InstallUserIDs);
 
                 string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
                 string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
 
-                string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
-                string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
-                string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
-                string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                string strHeader = objHTMLTemplate.Header;
+                string strBody = objHTMLTemplate.Body;
+                string strFooter = objHTMLTemplate.Footer;
+                string strsubject = objHTMLTemplate.Subject;
 
                 strBody = strBody.Replace("#Fname#", FName);
                 strBody = strBody.Replace("#TaskLink#", contents);
