@@ -124,7 +124,8 @@ function OnSaveSubTask(obj) {
     CallJGWebService('SaveTaskMultiLevelChild', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
 
     function OnAddNewSubTaskSuccess(data) {
-        if (data.d==true) {
+        if (data.d == true) {
+            PreventScroll = 1;
             alert('Task saved successfully.');
             LoadSubTasks();
         }

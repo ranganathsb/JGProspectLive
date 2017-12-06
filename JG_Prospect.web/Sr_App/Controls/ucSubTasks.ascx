@@ -933,7 +933,7 @@
                         </table>
                         </div>
                      <div class="text-center">
-                        <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getSubTasks(page)"></jgpager>
+                        <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getSubTasksPager(page)"></jgpager>
                     </div>
                     <div ng-show="loader.loading" style="position: absolute; left: 50%;">
                         Loading...
@@ -2924,7 +2924,7 @@
                     }
                 }
             }
-
+            var PreventScroll = 0;
             function OnSaveSubTaskClick() {
                 if (Page_ClientValidate('vgSubTask')) {
                     ShowAjaxLoader();
@@ -2974,6 +2974,7 @@
 
                     function OnAddNewSubTaskSuccess(data) {
                         if (data.d.Success) {
+                            PreventScroll = 1;
                             alert('Task saved successfully.');
                             $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
 
