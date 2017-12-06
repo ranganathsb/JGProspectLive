@@ -36,6 +36,35 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
             $scope.SelectedUserId = $scope.UsersByDesignation[0].Id;         
         });        
     }
+    $scope.getSubTasksPager = function (page) {
+
+        ShowAjaxLoader();
+        var TaskId = getUrlVars()["TaskId"];
+        if (TaskId == undefined || TaskId == '')
+            TaskId = 0;
+        else
+            TaskId = TaskId.replace('#/', '');
+
+        if (page == undefined)
+            page = $scope.page;
+        else
+            $scope.page = page;
+        var skey = $('#hdnSearchKey').val();
+
+        callWebServiceMethod($http, "GetSubTasks", { TaskId: TaskId, strSortExpression: "CreatedOn DESC", vsearch: skey, intPageIndex: page != undefined ? page : 0, intPageSize: sequenceScopeTG.pageSize, intHighlightTaskId: 0 }).then(function (data) {
+            var resultArray = JSON.parse(data.data.d);
+            var result = resultArray.TaskData;
+
+            $scope.page = result.Pages.PageIndex;
+            $scope.TotalRecords = result.RecordCount.TotalRecords;
+            $scope.pagesCount = Math.ceil(result.RecordCount.TotalRecords / sequenceScopeTG.pageSize);
+            $scope.TaskFiles = $scope.correctDataforAngular(result.TaskFiles);
+            $scope.SubTasks = $scope.correctDataforAngular(result.Tasks);
+            var NextInstallId = result.Table4.LastSubTaskInstallId;
+            $('#ContentPlaceHolder1_objucSubTasks_Admin_txtTaskListID').val(NextInstallId);
+            HideAjaxLoader();
+        });
+    }
 
     $scope.getSubTasks = function (page) {
 
@@ -49,8 +78,10 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         var HighLightedTaskId = getUrlVars()["hstid"];
         if (HighLightedTaskId == undefined || HighLightedTaskId == '')
             HighLightedTaskId = 0;
-        else
+        else if (PreventScroll != 1)
             HighLightedTaskId = HighLightedTaskId.replace('#/', '');
+        else
+            HighLightedTaskId = 0;
 
         if (page == undefined)
             page = $scope.page;
@@ -70,6 +101,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
             var NextInstallId = result.Table4.LastSubTaskInstallId;
             $('#ContentPlaceHolder1_objucSubTasks_Admin_txtTaskListID').val(NextInstallId);
             HideAjaxLoader();
+            //PreventScroll = 0;
         });
     }
 
@@ -218,7 +250,10 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         return false;
                     });
 
-                    ScrollTo($('.yellowthickborder'));
+                    if (PreventScroll == 0)
+                        ScrollTo($('.yellowthickborder'));
+                    else
+                        PreventScroll = 0;
 
                     $(".yellowthickborder").bind("click", function () {
                         $(this).removeClass("yellowthickborder");
