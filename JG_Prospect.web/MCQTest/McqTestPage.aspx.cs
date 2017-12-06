@@ -413,9 +413,8 @@ namespace JG_Prospect.MCQTest
                                                                         )
                                             );
 
-                    // Added by Zubair Ahmed Khan for displaying proper text for task link
                     string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(strTaskId));
-                    strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
+                    strBody = strBody.Replace("#TaskTitle#", strTaskLinkTitle);
 
                     strBody = strHeader + strBody + strFooter;
 

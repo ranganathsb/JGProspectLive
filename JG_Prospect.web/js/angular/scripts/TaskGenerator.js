@@ -19,6 +19,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
     $scope.page = 0;
     $scope.pagesCount = 0;
     $scope.TotalRecords = 0;
+    $scope.NextInstallId = "";
     $scope.MultiLevelChildren = [];
     $scope.CurrentLevel = 1;
     //var isadded = false;
@@ -35,21 +36,72 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
             $scope.SelectedUserId = $scope.UsersByDesignation[0].Id;         
         });        
     }
+    $scope.getSubTasksPager = function (page) {
 
-    $scope.getSubTasks = function (page) {
+        ShowAjaxLoader();
         var TaskId = getUrlVars()["TaskId"];
-        TaskId = TaskId.replace('#/', '');
-        $scope.page = page || 0;
+        if (TaskId == undefined || TaskId == '')
+            TaskId = 0;
+        else
+            TaskId = TaskId.replace('#/', '');
 
-        callWebServiceMethod($http, "GetSubTasks", { TaskId: TaskId, strSortExpression: "CreatedOn DESC", vsearch: "", intPageIndex: page != undefined ? page : 0, intPageSize: sequenceScopeTG.pageSize, intHighlightTaskId: 0 }).then(function (data) {
+        if (page == undefined)
+            page = $scope.page;
+        else
+            $scope.page = page;
+        var skey = $('#hdnSearchKey').val();
+
+        callWebServiceMethod($http, "GetSubTasks", { TaskId: TaskId, strSortExpression: "CreatedOn DESC", vsearch: skey, intPageIndex: page != undefined ? page : 0, intPageSize: sequenceScopeTG.pageSize, intHighlightTaskId: 0 }).then(function (data) {
             var resultArray = JSON.parse(data.data.d);
             var result = resultArray.TaskData;
 
-            //$scope.page = 0;
+            $scope.page = result.Pages.PageIndex;
             $scope.TotalRecords = result.RecordCount.TotalRecords;
-            $scope.pagesCount = 3;
+            $scope.pagesCount = Math.ceil(result.RecordCount.TotalRecords / sequenceScopeTG.pageSize);
             $scope.TaskFiles = $scope.correctDataforAngular(result.TaskFiles);
             $scope.SubTasks = $scope.correctDataforAngular(result.Tasks);
+            var NextInstallId = result.Table4.LastSubTaskInstallId;
+            $('#ContentPlaceHolder1_objucSubTasks_Admin_txtTaskListID').val(NextInstallId);
+            HideAjaxLoader();
+        });
+    }
+
+    $scope.getSubTasks = function (page) {
+
+        ShowAjaxLoader();
+        var TaskId = getUrlVars()["TaskId"];
+        if (TaskId == undefined || TaskId == '')
+            TaskId = 0;
+        else
+            TaskId = TaskId.replace('#/', '');
+
+        var HighLightedTaskId = getUrlVars()["hstid"];
+        if (HighLightedTaskId == undefined || HighLightedTaskId == '')
+            HighLightedTaskId = 0;
+        else if (PreventScroll != 1)
+            HighLightedTaskId = HighLightedTaskId.replace('#/', '');
+        else
+            HighLightedTaskId = 0;
+
+        if (page == undefined)
+            page = $scope.page;
+        else
+            $scope.page = page;
+        var skey = $('#hdnSearchKey').val();
+
+        callWebServiceMethod($http, "GetSubTasks", { TaskId: TaskId, strSortExpression: "CreatedOn DESC", vsearch: skey, intPageIndex: page != undefined ? page : 0, intPageSize: sequenceScopeTG.pageSize, intHighlightTaskId: HighLightedTaskId }).then(function (data) {
+            var resultArray = JSON.parse(data.data.d);
+            var result = resultArray.TaskData;
+
+            $scope.page = result.Pages.PageIndex;
+            $scope.TotalRecords = result.RecordCount.TotalRecords;
+            $scope.pagesCount = Math.ceil(result.RecordCount.TotalRecords / sequenceScopeTG.pageSize);
+            $scope.TaskFiles = $scope.correctDataforAngular(result.TaskFiles);
+            $scope.SubTasks = $scope.correctDataforAngular(result.Tasks);
+            var NextInstallId = result.Table4.LastSubTaskInstallId;
+            $('#ContentPlaceHolder1_objucSubTasks_Admin_txtTaskListID').val(NextInstallId);
+            HideAjaxLoader();
+            //PreventScroll = 0;
         });
     }
 
@@ -198,142 +250,145 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         return false;
                     });
 
-                    ScrollTo($('.yellowthickborder'));
+                    if (PreventScroll == 0)
+                        ScrollTo($('.yellowthickborder'));
+                    else
+                        PreventScroll = 0;
 
                     $(".yellowthickborder").bind("click", function () {
                         $(this).removeClass("yellowthickborder");
                     });
+                    if (IsAdminMode == 'True') {
+                        $(".ChildEdit").each(function (index) {
+                            // This section is available to admin only.
 
-                    $(".ChildEdit").each(function (index) {
-                        // This section is available to admin only.
+                            $(this).bind("click", function () {
+                                if (!isadded) {
+                                    var tid = $(this).attr("data-taskid");
+                                    var titledetail = $(this).html();
+                                    var fName = $("<textarea id=\"txteditChild\" style=\"width:80%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea><input id=\"btnSave\" type=\"button\" value=\"Save\" />");
+                                    $(this).html(fName);
+                                    $('#ContentPlaceHolder1_objucSubTasks_Admin_hdDropZoneTaskId').val(tid);
+                                    SetCKEditorForSubTask('txteditChild');
+                                    $('#txteditChild').focus();
+                                    control = $(this);
 
-                        $(this).bind("click", function () {
-                            if (!isadded) {
-                                var tid = $(this).attr("data-taskid");
-                                var titledetail = $(this).html();
-                                var fName = $("<textarea id=\"txteditChild\" style=\"width:80%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea><input id=\"btnSave\" type=\"button\" value=\"Save\" />");
-                                $(this).html(fName);
-                                $('#ContentPlaceHolder1_objucSubTasks_Admin_hdDropZoneTaskId').val(tid);
-                                SetCKEditorForSubTask('txteditChild');
-                                $('#txteditChild').focus();
-                                control = $(this);
+                                    isadded = true;
 
-                                isadded = true;
+                                    $('#btnSave').bind("click", function () {
+                                        var htmldata = GetCKEditorContent('txteditChild');
+                                        ShowAjaxLoader();
+                                        var postData = {
+                                            tid: tid,
+                                            Description: htmldata
+                                        };
 
-                                $('#btnSave').bind("click", function () {
-                                    var htmldata = GetCKEditorContent('txteditChild');
-                                    ShowAjaxLoader();
-                                    var postData = {
-                                        tid: tid,
-                                        Description: htmldata
-                                    };
-
-                                    $.ajax({
-                                        url: '../../../WebServices/JGWebService.asmx/UpdateTaskDescriptionChildById',
-                                        contentType: 'application/json; charset=utf-8;',
-                                        type: 'POST',
-                                        dataType: 'json',
-                                        data: JSON.stringify(postData),
-                                        asynch: false,
-                                        success: function (data) {
-                                            alert('Child saved successfully.');
-                                            HideAjaxLoader();
-                                            $('#ChildEdit' + tid).html(htmldata);
-                                            isadded = false;
-                                        },
-                                        error: function (a, b, c) {
-                                            HideAjaxLoader();
-                                        }
+                                        $.ajax({
+                                            url: '../../../WebServices/JGWebService.asmx/UpdateTaskDescriptionChildById',
+                                            contentType: 'application/json; charset=utf-8;',
+                                            type: 'POST',
+                                            dataType: 'json',
+                                            data: JSON.stringify(postData),
+                                            asynch: false,
+                                            success: function (data) {
+                                                alert('Child saved successfully.');
+                                                HideAjaxLoader();
+                                                $('#ChildEdit' + tid).html(htmldata);
+                                                isadded = false;
+                                            },
+                                            error: function (a, b, c) {
+                                                HideAjaxLoader();
+                                            }
+                                        });
+                                        $(this).css({ 'display': "none" });
                                     });
-                                    $(this).css({ 'display': "none" });                                    
-                                });
-                            }
-                            return false;
+                                }
+                                return false;
+                            });
                         });
-                    });
+                    }
                 }, 1);
             });
-        }, 2);
-        
-
-        
-
-        //For Title
-        $(".TitleEdit").each(function (index) {
-            // This section is available to admin only.
-
-            $(this).bind("click", function () {
-                if (!isadded) {
-                    var tid = $(this).attr("data-taskid");
-                    var titledetail = $(this).html();
-                    var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
-                    $(this).html(fName);
-                    $('#txtedittitle').focus();
-
-                    isadded = true;
-                }
-            }).bind('focusout', function () {
-                var tid = $(this).attr("data-taskid");
-                var tdetail = $('#txtedittitle').val();
-                $(this).html(tdetail);
-                EditTask(tid, tdetail)
-                isadded = false;
-            });
-        });
-
-        //For Url
-        $(".UrlEdit").each(function (index) {
-            // This section is available to admin only.
-
-            $(this).bind("click", function () {
-                if (!isadded) {
-                    var tid = $(this).attr("data-taskid");
-                    var titledetail = $(this).html();
-                    var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
-                    $(this).html(fName);
-                    $('#txtedittitle').focus();
-
-                    isadded = true;
-                }
-                return false;
-            }).bind('focusout', function () {
-                var tid = $(this).attr("data-taskid");
-                var tdetail = $('#txtedittitle').val();
-
-                $(this).html(tdetail);
-                EditUrl(tid, tdetail);
-                isadded = false;
-                return false;
-            });
-        });
+        }, 2);                      
+       
 
         //For Description
-        $(".DescEdit").each(function (index) {
-            // This section is available to admin only.
+        if (IsAdminMode == 'True') {
+            //For Title
+            $(".TitleEdit").each(function (index) {
+                // This section is available to admin only.
 
-            $(this).bind("click", function () {
-                if (!isadded) {
+                $(this).bind("click", function () {
+                    if (!isadded) {
+                        var tid = $(this).attr("data-taskid");
+                        var titledetail = $(this).html();
+                        var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
+                        $(this).html(fName);
+                        $('#txtedittitle').focus();
+
+                        isadded = true;
+                    }
+                }).bind('focusout', function () {
                     var tid = $(this).attr("data-taskid");
-                    var titledetail = $(this).html();
-                    var fName = $("<textarea id=\"txtedittitle\" style=\"width:100%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea>");
-                    $(this).html(fName);
-                    $('#ContentPlaceHolder1_objucSubTasks_Admin_hdDropZoneTaskId').val(tid);
-                    SetCKEditorForSubTask('txtedittitle');
-                    $('#txtedittitle').focus();
-                    control = $(this);
-
-                    isadded = true;
-
-                    var otherInput = $(this).closest('.divtdetails').find('.btnsubtask');
-                    $(otherInput).css({ 'display': "block" });
-                    $(otherInput).bind("click", function () {
-                        updateDesc(GetCKEditorContent('txtedittitle'));
-                        $(this).css({ 'display': "none" });
-                    });
-                }
-                return false;
+                    var tdetail = $('#txtedittitle').val();
+                    $(this).html(tdetail);
+                    EditTask(tid, tdetail)
+                    isadded = false;
+                });
             });
-        });
+
+            //For Url
+            $(".UrlEdit").each(function (index) {
+                // This section is available to admin only.
+
+                $(this).bind("click", function () {
+                    if (!isadded) {
+                        var tid = $(this).attr("data-taskid");
+                        var titledetail = $(this).html();
+                        var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
+                        $(this).html(fName);
+                        $('#txtedittitle').focus();
+
+                        isadded = true;
+                    }
+                    return false;
+                }).bind('focusout', function () {
+                    var tid = $(this).attr("data-taskid");
+                    var tdetail = $('#txtedittitle').val();
+
+                    $(this).html(tdetail);
+                    EditUrl(tid, tdetail);
+                    isadded = false;
+                    return false;
+                });
+            });
+
+            $(".DescEdit").each(function (index) {
+                // This section is available to admin only.            
+                $(this).bind("click", function () {
+                    if (!isadded) {
+                        var tid = $(this).attr("data-taskid");
+                        var titledetail = $(this).html();
+                        var fName = $("<textarea id=\"txtedittitle\" style=\"width:100%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea>");
+                        $(this).html(fName);
+                        $('#ContentPlaceHolder1_objucSubTasks_Admin_hdDropZoneTaskId').val(tid);
+                        SetCKEditorForSubTask('txtedittitle');
+                        $('#txtedittitle').focus();
+                        control = $(this);
+
+                        isadded = true;
+
+                        var otherInput = $(this).closest('.divtdetails').find('.btnsubtask');
+                        $(otherInput).css({ 'display': "block" });
+                        $(otherInput).bind("click", function () {
+                            updateDesc(GetCKEditorContent('txtedittitle'));
+                            $(this).css({ 'display': "none" });
+                        });
+                    }
+                    return false;
+                });
+            });
+        }
 
         GridDropZone();
     };

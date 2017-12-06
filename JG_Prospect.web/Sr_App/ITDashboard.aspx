@@ -345,7 +345,7 @@
             }
 
             .notes-popup .content table tr th:nth-child(1), .notes-popup .content table tr td:nth-child(1) {
-                width: 120px;
+                width: 210px;
             }
 
         .notes-popup .add-notes-container {
@@ -838,7 +838,7 @@
                         <div class="text-center">
                             <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getTasks(page)"></jgpager>
                         </div>
-                        <div ng-show="loader.loading" style="position: absolute; left: 50%; bottom: 10%">
+                        <div ng-show="loader.loading" style="position: absolute; left: 50%; bottom: -20%">
                             Loading...
                 <img src="../img/ajax-loader.gif" />
                         </div>
@@ -2481,7 +2481,7 @@
                         var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
                         $(data.Data).each(function (i) {
                             tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
-                                        '<td><a href="/Sr_App/ViewSalesUser.aspx?id=' + data.Data[i].UserID + '">' + data.Data[i].UpdatedUserInstallID + '<br/>' + data.Data[i].ChangeDateTimeFormatted + '</a></td>' +
+                                        '<td><a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Data[i].UserID + '">' + data.Data[i].SourceUser + '<br/>' + data.Data[i].ChangeDateTimeFormatted + '</a></td>' +
                                         '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
                                     '</tr>';
                         });
@@ -2536,11 +2536,24 @@
                 data: data,
                 success: function (result) {
                     alert("Task Status Changed.");
-                    ShowAllClosedTasksDashBoard("", 0, pageSize);
-                    var dids = "";
+                    
+                    var dids = ""; var uids = '';
                     if ($('.' + ddlDesigSeqClientID).val() != undefined)
                         dids = $('.' + ddlDesigSeqClientID).val().join();
-                    ShowTaskSequenceDashBoard(dids, 0);
+                    if ($('.chosen-select-users').val() != undefined)
+                        uids = $('.chosen-select-users').val().join();
+
+                    var attrs = $('#pnlNewFrozenTask').attr('class').split(' ');
+                    var cls = attrs[attrs.length-1];
+
+                    if (cls != 'hide') {
+                        ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).val(), $("#ddlSelectFrozenTask").val().join());
+                        ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), $("#ddlSelectFrozenTask").val().join());
+                    }
+                    else {
+                        ShowTaskSequenceDashBoard(dids, uids);
+                        ShowAllClosedTasksDashBoard(dids, uids, pageSize);
+                    }
                 },
                 error: function (errorThrown) {
                     alert("Failed!!!");
@@ -3168,8 +3181,7 @@
                  }
              });
          }
-
-
+        
          function SetTaskCounterPopup() {
 
             $('#' +'<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {

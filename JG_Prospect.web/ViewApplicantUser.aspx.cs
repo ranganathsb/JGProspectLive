@@ -44,7 +44,7 @@ namespace JG_Prospect
             get
             {
                 bool GithubField = false;
-                if(ViewState["ShowGithubField"] != null)
+                if (ViewState["ShowGithubField"] != null)
                 {
                     Boolean.TryParse(ViewState["ShowGithubField"].ToString(), out GithubField);
                 }
@@ -1292,16 +1292,17 @@ namespace JG_Prospect
                 {
                     //Condition 1: User has cleared all exam  and came from Apptitude test page with flag IE then show him success popup.
                     //Condition 2: User is applicant and redirected from login page, check if he has already given test, if given then directly show success popup.
-                    if ((Request.QueryString.Count > 0 && !String.IsNullOrEmpty(Request.QueryString["IE"]) && UserGivenAllTests(this.UserID))||(UserGivenAllTests(this.UserID)))
+                    if ((Request.QueryString.Count > 0 && !String.IsNullOrEmpty(Request.QueryString["IE"]) && UserGivenAllTests(this.UserID)) || (UserGivenAllTests(this.UserID)))
                     {
                         SetAutoTaskSequence();
 
                         //Page.ClientScript.RegisterStartupScript(Page.GetType(), Guid.NewGuid().ToString(), "ShowPopupWithTitle('#" + divStartTest.ClientID + "','Apptitude Test');", true);
                     }
-                    else if(Request.QueryString.Count > 0 && !String.IsNullOrEmpty(Request.QueryString["Exp"]))
+                    else if (Request.QueryString.Count > 0 && !String.IsNullOrEmpty(Request.QueryString["Exp"]))
                     {
                         DataSet dsTaskToBeAssigned = TaskGeneratorBLL.Instance.GetUserAssignedTaskHistory(this.UserID);
-                        SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString(),false);
+                        if (dsTaskToBeAssigned != null && dsTaskToBeAssigned.Tables.Count > 0 && dsTaskToBeAssigned.Tables[0].Rows.Count > 0)
+                            SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString(), false);
 
                         ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
                     }
@@ -1357,7 +1358,7 @@ namespace JG_Prospect
 
             if (isAllExamGiven && overAllPercentageScored > JGApplicationInfo.GetAcceptiblePrecentage()) // if user has finished attempting all available designation exams then check pass or fail result.
             {
-                isAllExamGiven = true;   
+                isAllExamGiven = true;
             }
             else
             {
@@ -1384,7 +1385,7 @@ namespace JG_Prospect
                 //Update automatic task sequence  assignment
                 //TODO:Uncomment after full spec implementation.
                 // InsertAssignedTaskSequenceInfo(Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), this.DesignationID, Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["AvailableSequence"]), true);
-                
+
                 SetExamPassedMessage(dsTaskToBeAssigned.Tables[0].Rows[0]["InstallId"].ToString(), dsTaskToBeAssigned.Tables[0].Rows[0]["Title"].ToString(), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["TaskId"]), Convert.ToInt64(dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTaskId"]), dsTaskToBeAssigned.Tables[0].Rows[0]["ParentTitle"].ToString(), false);
 
                 ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
@@ -1395,7 +1396,7 @@ namespace JG_Prospect
 
                 ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "ExamPassed", "showExamPassPopup();", true);
             }
-                    // display text in notes" User successfully passed aptitude test"
+            // display text in notes" User successfully passed aptitude test"
             string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
             int userID = Convert.ToInt32(JGSession.LoginUserID);
             InstallUserBLL.Instance.AddTouchPointLogRecord(userID, userID, strUserInstallId, DateTime.UtcNow, "User successfully passed aptitude test", "");
@@ -1440,7 +1441,7 @@ namespace JG_Prospect
             drpDesig.SelectedIndex = ddldesignation.SelectedIndex;
             ddlEmployeeType.SelectedIndex = ddlEmployeeType.SelectedIndex;
 
-            divCountryCode.Attributes.Add("class",ddlCountry.SelectedValue);
+            divCountryCode.Attributes.Add("class", ddlCountry.SelectedValue);
 
             lblCity.Text = txtCity.Text;
             lblZip.Text = txtZip.Text;
@@ -1463,7 +1464,7 @@ namespace JG_Prospect
             }
 
             trConfirmInterview.Visible = true;
-                       
+
 
         }
 
@@ -5100,14 +5101,14 @@ namespace JG_Prospect
                 CommonFunction.AddUserAsGitcollaborator(GithubUsername, JGConstant.GitRepo.Interview);
 
             }
-    //  User successfully accepted tech task
-    string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
-    int userID = Convert.ToInt32(JGSession.LoginUserID);
-    InstallUserBLL.Instance.AddTouchPointLogRecord(userID, userID, strUserInstallId, DateTime.UtcNow, " User successfully accepted tech task", "");
+            //  User successfully accepted tech task
+            string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
+            int userID = Convert.ToInt32(JGSession.LoginUserID);
+            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, userID, strUserInstallId, DateTime.UtcNow, " User successfully accepted tech task", "");
 
-    ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
+            ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
 
-    if (divTaskAssigned.Visible)
+            if (divTaskAssigned.Visible)
             {
                 TaskGeneratorBLL.Instance.AcceptUserAssignedWithSequence(this.AssignedSequenceID);
                 ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
@@ -5116,8 +5117,8 @@ namespace JG_Prospect
             {
                 Response.Redirect("~/Sr_App/ITDashboard.aspx?PWT=1");
             }
-            
-            
+
+
         }
 
         private void ChangePassword()
@@ -5207,14 +5208,13 @@ namespace JG_Prospect
                     string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
                     string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(strTaskId));
 
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", String.Concat(Request.Url.Scheme, Uri.SchemeDelimiter, Request.Url.Host.Split('?')[0], "/Sr_App/TaskGenerator.aspx"), strTaskId));
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}&{2}", String.Concat(Request.Url.Scheme, Uri.SchemeDelimiter, Request.Url.Host.Split('?')[0], "/Sr_App/TaskGenerator.aspx"), strTaskId, strTaskLinkTitle));
 
-                    // Added by Zubair Ahmed Khan for displaying proper text for task link
-                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(strTaskId));
-                    strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
-
+                    
+                    strBody = strBody.Replace("#TaskTitle#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], strTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 

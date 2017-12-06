@@ -1434,6 +1434,7 @@
     <Content Include="Database Scripts\executed\bhavik\scripts oct _ITSN034_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN014_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN019_V1.sql" />
+    <Content Include="Database Scripts\executed\Kapil\Executed.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Table_SP_Creation_With_Data_Nov_2016_ITSN0145_v1.0.sql" />
     <Content Include="Database Scripts\executed\yogesh\script April v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script August v0.1.sql" />
@@ -1487,7 +1488,9 @@
     <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_IsValidInstallerUser.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Procedures.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Tables.sql" />
+    <Content Include="Database Scripts\Kapil\Executed_3.sql" />
     <Content Include="Database Scripts\Kapil\Latest.sql" />
+    <Content Include="Database Scripts\Kapil\Executed_2.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\Database Script.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\03-04-2017.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\06-04-2017\GetFrozenTasks.sql" />
@@ -1860,6 +1863,9 @@
     <Content Include="img\File.png" />
     <Content Include="img\folder.png" />
     <Content Include="img\gplus.png" />
+    <Content Include="img\icon_email.PNG" />
+    <Content Include="img\icon_jg.PNG" />
+    <Content Include="img\icon_share.JPG" />
     <Content Include="img\image-icon.png" />
     <Content Include="img\jg-construction.jpg" />
     <Content Include="img\JG-Logo-white.gif" />
@@ -1957,7 +1963,7 @@
     <Content Include="js\angular\scripts\TaskSequence-UiGrid.js" />
     <Content Include="js\angular\templates\sequence-header-template.html" />
     <Content Include="js\angular\templates\pager-template.html" />
-    <Content Include="js\common.js" />
+    <Content Include="js\common-js.js" />
     <Content Include="js\edituser.js" />
     <Content Include="js\flipclock.min.js" />
     <Content Include="js\angular\scripts\jgapp.js" />

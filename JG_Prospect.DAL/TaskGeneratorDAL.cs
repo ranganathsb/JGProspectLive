@@ -1499,6 +1499,45 @@ namespace JG_Prospect.DAL
 
         }
 
+        public ActionOutput<LoginUser> GetInstallUsersByPrefix(string Prefix)
+        {
+            List<LoginUser> users = new List<LoginUser>();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetInstallUsersByPrefix");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Prefix", DbType.String, Prefix);
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            users.Add(new LoginUser
+                            {
+                                ID = Convert.ToInt32(item["Id"].ToString()),
+                                FirstName = item["Name"].ToString(),
+                                Email = item["Email"].ToString(),
+                            });
+                        }
+                    }
+                    return new ActionOutput<LoginUser>
+                    {
+                        Results = users,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
         public DataSet GetAllActiveTechTask()
         {
             DataSet result = new DataSet();
@@ -2555,5 +2594,6 @@ namespace JG_Prospect.DAL
         //------------- End DP--------------
 
         #endregion
+        
     }
 }
