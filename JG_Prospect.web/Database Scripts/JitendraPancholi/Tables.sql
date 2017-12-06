@@ -19,3 +19,4 @@ BEGIN
 		CreatedOn DateTime Not Null Default(GetDate())
 	)
 END 
+
