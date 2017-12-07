@@ -128,6 +128,20 @@ namespace JG_Prospect.Sr_App
         }
 
         [WebMethod]
+        public static string GetUsersByDesignationId(string designationId, int userStatus)
+        {
+            DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designationId, userStatus);
+            string SearchSuggestions = string.Empty;
+
+            if (dsUsers != null && dsUsers.Tables.Count > 0 && dsUsers.Tables[0].Rows.Count > 0)
+            {
+                SearchSuggestions = JsonConvert.SerializeObject(dsUsers.Tables[0]);
+            }
+
+            return SearchSuggestions;
+        }
+
+        [WebMethod]
         public static string GetInstallUsersByPrefix(string keyword)
         {
             ActionOutput<LoginUser> users = TaskGeneratorBLL.Instance.GetInstallUsersByPrefix(keyword);
