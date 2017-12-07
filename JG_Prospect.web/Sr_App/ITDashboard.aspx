@@ -2771,6 +2771,7 @@
         function fillUsers(selector, fillDDL, loader) {
             // 
             var did = $('.' + selector).val().join();
+            var ustatus = $('#ddlUserStatus').val();
             var options = $('#' + fillDDL);
             $('#ddlSelectFrozenTask_chosen').css({ "width": "300px" });
             $('#ddlFrozenTasksDesignations_chosen').css({ "width": "300px" });
@@ -2784,7 +2785,7 @@
                 url: "ajaxcalls.aspx/GetUsersByDesignationId",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({ designationId: did }),
+                data: JSON.stringify({ designationId: did, userStatus:ustatus }),
                 success: function (data) {
                     options.empty();
                     options.append($("<option selected='selected' />").val('0').text('All'));

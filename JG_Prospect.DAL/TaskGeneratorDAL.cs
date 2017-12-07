@@ -1432,6 +1432,37 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetInstallUsers(int Key, string Designastion, int userstatus)
+        {
+            DataSet result = new DataSet();
+            try
+            {
+
+                string[] arrDesignation = Designastion.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                for (int i = 0; i < arrDesignation.Length; i++)
+                {
+                    arrDesignation[i] = arrDesignation[i].Trim();
+                }
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("SP_GetInstallUsersWithStatus");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Key", DbType.Int16, Key); ;
+                    database.AddInParameter(command, "@Designations", DbType.String, string.Join(",", arrDesignation));
+                    database.AddInParameter(command, "@UserStatus", DbType.Int32, userstatus);
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
         public DataSet GetInstallUsers(int Key, string Designastion)
         {
             DataSet result = new DataSet();
