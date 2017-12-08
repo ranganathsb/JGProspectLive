@@ -1432,6 +1432,37 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetInstallUsers(int Key, string Designastion, int userstatus)
+        {
+            DataSet result = new DataSet();
+            try
+            {
+
+                string[] arrDesignation = Designastion.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                for (int i = 0; i < arrDesignation.Length; i++)
+                {
+                    arrDesignation[i] = arrDesignation[i].Trim();
+                }
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("SP_GetInstallUsersWithStatus");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Key", DbType.Int16, Key); ;
+                    database.AddInParameter(command, "@Designations", DbType.String, string.Join(",", arrDesignation));
+                    database.AddInParameter(command, "@UserStatus", DbType.Int32, userstatus);
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
         public DataSet GetInstallUsers(int Key, string Designastion)
         {
             DataSet result = new DataSet();
@@ -1491,6 +1522,45 @@ namespace JG_Prospect.DAL
                     result = database.ExecuteDataSet(command);
                 }
                 return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        public ActionOutput<LoginUser> GetInstallUsersByPrefix(string Prefix)
+        {
+            List<LoginUser> users = new List<LoginUser>();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetInstallUsersByPrefix");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Prefix", DbType.String, Prefix);
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            users.Add(new LoginUser
+                            {
+                                ID = Convert.ToInt32(item["Id"].ToString()),
+                                FirstName = item["Name"].ToString(),
+                                Email = item["Email"].ToString(),
+                            });
+                        }
+                    }
+                    return new ActionOutput<LoginUser>
+                    {
+                        Results = users,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+
             }
             catch (Exception ex)
             {
@@ -2555,5 +2625,6 @@ namespace JG_Prospect.DAL
         //------------- End DP--------------
 
         #endregion
+        
     }
 }

@@ -4620,6 +4620,7 @@ namespace JG_Prospect
                     string strBody = objHTMLTemplate.Body;
                     string strFooter = objHTMLTemplate.Footer;
                     string strsubject = objHTMLTemplate.Subject;
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(strTaskId));
 
                     strsubject = strsubject.Replace("#ID#", strTaskId);
                     strsubject = strsubject.Replace("#TaskTitleID#", strTaskTitle);
@@ -4632,7 +4633,7 @@ namespace JG_Prospect
                     strBody = strBody.Replace("#email#", emailId);
                     strBody = strBody.Replace("#Designation(s)#", ddlDesignationForTask.SelectedItem != null ? ddlDesignationForTask.SelectedItem.Text : "");
                     strBody = strBody.Replace("#TaskLink#", string.Format(
-                                                                            "{0}?TaskId={1}&hstid={2}",
+                                                                            "{0}?TaskId={1}&hstid={2}&{3}",
                                                                             string.Concat(
                                                                                             Request.Url.Scheme,
                                                                                             Uri.SchemeDelimiter,
@@ -4640,13 +4641,13 @@ namespace JG_Prospect
                                                                                             "/Sr_App/TaskGenerator.aspx"
                                                                                          ),
                                                                             strTaskId,
-                                                                            strSubTaskId
+                                                                            strSubTaskId,
+                                                                            strTaskLinkTitle
                                                                         )
                                             );
 
-                    // Added by Zubair Ahmed Khan for displaying proper text for task link
-                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(strTaskId));
-                    strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
+                    
+                    strBody = strBody.Replace("#TaskTitle#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], strTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 

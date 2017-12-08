@@ -213,6 +213,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation);
         }
 
+        public DataSet GetInstallUsers(int key, string Designation, int userstatus)
+        {
+            return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation, userstatus);
+        }
+
         public DataSet GetInstallUserswithIds(int key, string Designation, string TaskId)
         {
             return TaskGeneratorDAL.Instance.GetInstallUserswithIds(key, Designation, TaskId);
@@ -246,6 +251,11 @@ namespace JG_Prospect.BLL
         public DataSet GetTasksList(int? UserID, string Title, string Designation, Int16? Status, DateTime? CreatedFrom, DateTime? CreatedTo, string Statuses, string Designations, bool isAdmin, int Start, int PageLimit, string strSortExpression)
         {
             return TaskGeneratorDAL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, isAdmin, Start, PageLimit, strSortExpression);
+        }
+
+        public ActionOutput<LoginUser> GetInstallUsersByPrefix(string Prefix)
+        {
+            return TaskGeneratorDAL.Instance.GetInstallUsersByPrefix(Prefix);
         }
 
         public DataSet GetAllUsersNDesignationsForFilter()

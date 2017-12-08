@@ -27,7 +27,7 @@ namespace JG_Prospect.DAL
             private set {; }
         }
 
-        public DataSet returndata;
+        public DataSet returndata;        
 
         public void AddUserNotes(string Notes, int UserID, int AddedByID)
         {

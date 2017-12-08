@@ -24,6 +24,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Web.UI.HtmlControls;
 using CKEditor.NET;
+using System.Web.Script.Serialization;
 
 #endregion
 
@@ -1275,13 +1276,13 @@ namespace JG_Prospect.Sr_App
                     string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
                     string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(hdnTaskId.Value));
 
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], hdnTaskId.Value));
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}&{2}", Request.Url.ToString().Split('?')[0], hdnTaskId.Value, strTaskLinkTitle));
 
-                    // Added by Zubair Ahmed Khan for displaying proper text for task link
-                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(hdnTaskId.Value));
-                    strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
+                    
+                    strBody = strBody.Replace("#TaskTitle#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], hdnTaskId.Value));
 
                     strBody = strHeader + strBody + strFooter;
 
@@ -1835,6 +1836,42 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        #endregion
+
+        #region Web Methods
+        [WebMethod]
+        public static string SendEmailToSharedTaskUser(string contents, int InstallUserIDs)
+        {
+            try
+            {
+                string strHTMLTemplateName = "Task_Shared_Notification";
+                DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.HR_User_Task_Shared, JGSession.DesignationId.ToString());
+
+                DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(InstallUserIDs);
+
+                string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+
+                string strHeader = objHTMLTemplate.Header;
+                string strBody = objHTMLTemplate.Body;
+                string strFooter = objHTMLTemplate.Footer;
+                string strsubject = objHTMLTemplate.Subject;
+
+                strBody = strBody.Replace("#Fname#", FName);
+                strBody = strBody.Replace("#TaskLink#", contents);
+                strBody = strBody.Replace("#TaskTitle#", contents);
+
+                strBody = strHeader + strBody + strFooter;
+
+                CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, null);
+                return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+
+            }
+            catch (Exception ex)
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Error });
+            }
+        }
         #endregion
     }
 }

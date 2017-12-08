@@ -622,7 +622,7 @@ namespace JG_Prospect.WebServices
 
                 string[] roman4 = { "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii" };
                 DataSet result = new DataSet();
-                result = TaskGeneratorBLL.Instance.GetTaskByMaxId(TaskLvlandInstallId[2], 3);
+                result = TaskGeneratorBLL.Instance.GetTaskByMaxId(TaskLvlandInstallId[2], short.Parse(hdTaskLvl));
                 string vNextInstallId = "";
                 if (result.Tables[0].Rows.Count > 0)
                 {
@@ -845,10 +845,10 @@ namespace JG_Prospect.WebServices
                                                     TaskId,
                                                     CommonFunction.CheckAdminAndItLeadMode(),
                                                     strSortExpression,
-                                                    "",
+                                                    vsearch,
                                                     intPageIndex,
                                                     intPageSize,
-                                                    0
+                                                    intHighlightTaskId
                                                 );
             dtResult.Tables[0].Columns.Add("className");
 
@@ -891,11 +891,22 @@ namespace JG_Prospect.WebServices
                 }
             }
 
+            
+
             dtResult.Tables.Add(copyTable);
             if (dtResult != null && dtResult.Tables.Count > 0)
             {
+                #region Get Next Install ID
+                string[] subtaskListIDSuggestion = CommonFunction.getSubtaskSequencing(dtResult.Tables[4].Rows[0][0].ToString());
+                if (subtaskListIDSuggestion.Length > 0)
+                {
+                    dtResult.Tables[4].Rows[0][0] = subtaskListIDSuggestion[0];
+                }
+                #endregion
+
                 //dtResult.Tables[4].TableName = "Tasks";
                 dtResult.Tables[1].TableName = "RecordCount";
+                dtResult.Tables[2].TableName = "Pages";
                 dtResult.Tables[3].TableName = "TaskFiles";
                 dtResult.DataSetName = "TaskData";
 
@@ -1165,6 +1176,12 @@ namespace JG_Prospect.WebServices
         public bool SetTaskStatus(int intTaskId, string TaskStatus)
         {
             return TaskGeneratorBLL.Instance.SetTaskStatus(intTaskId, TaskStatus);
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool SetTaskType(int intTaskId, string TaskType)
+        {
+            return TaskGeneratorBLL.Instance.UpdateTaskTechTask(intTaskId, bool.Parse(TaskType));
         }
 
         [WebMethod(EnableSession = true)]
@@ -1438,6 +1455,8 @@ namespace JG_Prospect.WebServices
             }
         }
 
+        
+
         private void SendEmailToAssignedUsers(int intTaskId, string strInstallUserIDs)
         {
             try
@@ -1457,14 +1476,13 @@ namespace JG_Prospect.WebServices
                     string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
                     string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(intTaskId);
 
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}/sr_app/TaskGenerator.aspx?TaskId={1}", JGApplicationInfo.GetSiteURL(), intTaskId));
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}/sr_app/TaskGenerator.aspx?TaskId={1}&{2}", JGApplicationInfo.GetSiteURL(), intTaskId, strTaskLinkTitle));
 
-                    // Added by Zubair Ahmed Khan for displaying proper text for task link
-                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(intTaskId);
-                    strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
-
+                    
+                    strBody = strBody.Replace("#TaskTitle#", string.Format("{0}/sr_app/TaskGenerator.aspx?TaskId={1}", JGApplicationInfo.GetSiteURL(), intTaskId));
                     strBody = strHeader + strBody + strFooter;
 
                     List<Attachment> lstAttachments = new List<Attachment>();

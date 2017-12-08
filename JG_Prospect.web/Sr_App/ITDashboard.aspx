@@ -838,7 +838,7 @@
                         <div class="text-center">
                             <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getTasks(page)"></jgpager>
                         </div>
-                        <div ng-show="loader.loading" style="position: absolute; left: 50%; bottom: 10%">
+                        <div ng-show="loader.loading" style="position: absolute; left: 50%; bottom: -20%">
                             Loading...
                 <img src="../img/ajax-loader.gif" />
                         </div>
@@ -2536,11 +2536,24 @@
                 data: data,
                 success: function (result) {
                     alert("Task Status Changed.");
-                    ShowAllClosedTasksDashBoard("", 0, pageSize);
-                    var dids = "";
+                    
+                    var dids = ""; var uids = '';
                     if ($('.' + ddlDesigSeqClientID).val() != undefined)
                         dids = $('.' + ddlDesigSeqClientID).val().join();
-                    ShowTaskSequenceDashBoard(dids, 0);
+                    if ($('.chosen-select-users').val() != undefined)
+                        uids = $('.chosen-select-users').val().join();
+
+                    var attrs = $('#pnlNewFrozenTask').attr('class').split(' ');
+                    var cls = attrs[attrs.length-1];
+
+                    if (cls != 'hide') {
+                        ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).val(), $("#ddlSelectFrozenTask").val().join());
+                        ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), $("#ddlSelectFrozenTask").val().join());
+                    }
+                    else {
+                        ShowTaskSequenceDashBoard(dids, uids);
+                        ShowAllClosedTasksDashBoard(dids, uids, pageSize);
+                    }
                 },
                 error: function (errorThrown) {
                     alert("Failed!!!");
@@ -2758,6 +2771,7 @@
         function fillUsers(selector, fillDDL, loader) {
             // 
             var did = $('.' + selector).val().join();
+            var ustatus = $('#ddlUserStatus').val();
             var options = $('#' + fillDDL);
             $('#ddlSelectFrozenTask_chosen').css({ "width": "300px" });
             $('#ddlFrozenTasksDesignations_chosen').css({ "width": "300px" });
@@ -2771,7 +2785,7 @@
                 url: "ajaxcalls.aspx/GetUsersByDesignationId",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({ designationId: did }),
+                data: JSON.stringify({ designationId: did, userStatus:ustatus }),
                 success: function (data) {
                     options.empty();
                     options.append($("<option selected='selected' />").val('0').text('All'));
@@ -3168,8 +3182,7 @@
                  }
              });
          }
-
-
+        
          function SetTaskCounterPopup() {
 
             $('#' +'<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
