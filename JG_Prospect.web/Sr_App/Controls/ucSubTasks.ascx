@@ -2246,6 +2246,25 @@
         return false;
     }
 
+    function changeTaskStatusClosed(Task) {
+        var StatusId = Task.value;
+        var TaskId = Task.getAttribute('data-highlighter');
+        var data = { intTaskId: TaskId, TaskStatus: StatusId };
+        $.ajax({
+            type: "POST",
+            url: url + "SetTaskStatus",
+            data: data,
+            success: function (result) {
+                alert("Task Status Changed.");
+
+                LoadSubTasks();
+            },
+            error: function (errorThrown) {
+                alert("Failed!!!");
+            }
+        });
+    }
+
     function setTaskType(Task) {
         if (IsAdminMode=='True') {
             var Checked = $(Task).is(':checked');
