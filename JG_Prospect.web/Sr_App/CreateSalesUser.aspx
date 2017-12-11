@@ -514,7 +514,7 @@
                 var txtPhoneISDCode = $('#<%=hidPhoneISDCode.ClientID%>').val();
 
                 ShowPhoneExtOnType(optionSelected, txtPhoneID, phoneExtID, txtPhoneISDCode);--%>
-
+                var txtPhoneID = $('#<%=txtPhone.ClientID%>');
 
                 txtPhoneID.on("countrychange", function (e, countryData) {
                     $('#<%=hidPhoneISDCode.ClientID%>').val(countryData.iso2)
@@ -1319,7 +1319,8 @@
         }
 
         .userNotes .table {
-        margin: auto!important;}
+            margin: auto !important;
+        }
 
         .userNotes tr {
             display: table-row !important;
@@ -1348,14 +1349,15 @@
         .tabNotes {
             background-color: #FFE9C8;
             width: 100% !important;
-            margin: auto!important;
+            margin: auto !important;
         }
 
             .tabNotes td {
                 padding: 0px !important;
                 margin: 0px !important;
             }
-            .GrdContainer {
+
+        .GrdContainer {
             width: 100%;
             border: 1px solid #d3d3d3;
         }
@@ -1365,7 +1367,7 @@
             }
 
             .GrdContainer .GrdHeader {
-                background-color: #a09585!important;
+                background-color: #a09585 !important;
                 padding: 2px;
                 cursor: pointer;
                 font-weight: bold;
@@ -1376,15 +1378,16 @@
 
             .GrdContainer .GrdContent {
                 display: none;
-               /* padding: 5px;
+                /* padding: 5px;
                 height: 160px;*/
             }
 
-            .GrdContainer .GrdContent span{
-                margin:0px!important;
-                display: block;
-                width: inherit;
-            } 
+                .GrdContainer .GrdContent span {
+                    margin: 0px !important;
+                    display: block;
+                    width: inherit;
+                }
+
         .clsGrid {
             overflow: inherit !important;
         }
@@ -2052,38 +2055,38 @@
                                             </div>
                                             <div class="GrdContent">
                                                 <div class="clsOverFlow userNotes">
-                                            <asp:GridView ID="gvTouchPointLog" runat="server" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center"
-                                                HeaderStyle-BackColor="#C0AE96" HeaderStyle-ForeColor="Black" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
-                                                EmptyDataText="No Touch Point log available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
-                                                AutoGenerateColumns="False" GridLines="None" DataKeyNames="UserTouchPointLogID">
-                                                <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
-                                                <HeaderStyle CssClass="trHeader" />
-                                                <RowStyle CssClass="FirstRow" />
-                                                <AlternatingRowStyle CssClass="AlternateRow " />
-                                                <Columns>
-                                                    <asp:TemplateField HeaderText="User Id" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
-                                                        <ItemTemplate>
-                                                            <asp:HyperLink runat="server" ForeColor="Blue"
-                                                                NavigateUrl='<%# Eval("UpdatedByUserID", "CreateSalesUser.aspx?id={0}") %>'
-                                                                Text='<%# Eval("UpdatedUserInstallID")%>' />
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
+                                                    <asp:GridView ID="gvTouchPointLog" runat="server" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center"
+                                                        HeaderStyle-BackColor="#C0AE96" HeaderStyle-ForeColor="Black" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                                                        EmptyDataText="No Touch Point log available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0"
+                                                        AutoGenerateColumns="False" GridLines="None" DataKeyNames="UserTouchPointLogID">
+                                                        <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                                                        <HeaderStyle CssClass="trHeader" />
+                                                        <RowStyle CssClass="FirstRow" />
+                                                        <AlternatingRowStyle CssClass="AlternateRow " />
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="User Id" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                                <ItemTemplate>
+                                                                    <asp:HyperLink runat="server" ForeColor="Blue"
+                                                                        NavigateUrl='<%# Eval("UpdatedByUserID", "CreateSalesUser.aspx?id={0}") %>'
+                                                                        Text='<%# Eval("UpdatedUserInstallID")%>' />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
 
-                                                    <asp:TemplateField HeaderText="Date & Time" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
-                                                        <ItemTemplate>
-                                                            <%#Eval("ChangeDateTime")%>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                    <asp:TemplateField HeaderText="Note / Status" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
-                                                        <ItemTemplate>
-                                                            <%#Eval("LogDescription")%>
-                                                        </ItemTemplate>
-                                                    </asp:TemplateField>
-                                                </Columns>
-                                            </asp:GridView>
-                                        </div>
+                                                            <asp:TemplateField HeaderText="Date & Time" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                                                <ItemTemplate>
+                                                                    <%#Eval("ChangeDateTime")%>
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Note / Status" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
+                                                                <ItemTemplate>
+                                                                    <%#Eval("LogDescription")%>
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
                                             </div>
-                                        </div>                                       
+                                        </div>
                                         <table cellpadding="0" cellspacing="0" class="tabNotes">
                                             <tr>
                                                 <td style="text-align: center;">
