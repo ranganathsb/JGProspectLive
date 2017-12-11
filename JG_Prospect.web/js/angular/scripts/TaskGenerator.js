@@ -50,6 +50,8 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         else
             $scope.page = page;
         var skey = $('#hdnSearchKey').val();
+        if (skey == undefined)
+            skey = '';
 
         callWebServiceMethod($http, "GetSubTasks", { TaskId: TaskId, strSortExpression: "CreatedOn DESC", vsearch: skey, intPageIndex: page != undefined ? page : 0, intPageSize: sequenceScopeTG.pageSize, intHighlightTaskId: 0 }).then(function (data) {
             var resultArray = JSON.parse(data.data.d);
@@ -88,6 +90,8 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         else
             $scope.page = page;
         var skey = $('#hdnSearchKey').val();
+        if (skey == undefined)
+            skey = '';
 
         callWebServiceMethod($http, "GetSubTasks", { TaskId: TaskId, strSortExpression: "CreatedOn DESC", vsearch: skey, intPageIndex: page != undefined ? page : 0, intPageSize: sequenceScopeTG.pageSize, intHighlightTaskId: HighLightedTaskId }).then(function (data) {
             var resultArray = JSON.parse(data.data.d);

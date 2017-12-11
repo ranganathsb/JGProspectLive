@@ -213,6 +213,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation);
         }
 
+        public DataSet GetInstallUsers(int key, string Designation, int userstatus)
+        {
+            return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation, userstatus);
+        }
+
         public DataSet GetInstallUserswithIds(int key, string Designation, string TaskId)
         {
             return TaskGeneratorDAL.Instance.GetInstallUserswithIds(key, Designation, TaskId);
