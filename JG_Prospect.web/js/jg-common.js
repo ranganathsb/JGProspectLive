@@ -133,6 +133,7 @@ function SetCKEditorForChildren(Id) {
     // Otherwise CKEditor will start in read-only mode.
 
     $target.attr('contenteditable', true);
+    var editor = CKEDITOR.instances[Id];
 
     CKEDITOR.inline(Id,
         {
@@ -144,7 +145,7 @@ function SetCKEditorForChildren(Id) {
                 blur: function (event) {
                     event.editor.updateElement();
                     //updateDesc(GetCKEditorContent(Id));
-                },
+                },                
                 fileUploadResponse: function (event) {
                     // Prevent the default response handler.
                     event.stop();
@@ -166,13 +167,43 @@ function SetCKEditorForChildren(Id) {
                     }
                 }
 
+            },
+            on: {
+                'key': ckeditorKeyPress                
             }
         });
-
-    var editor = CKEDITOR.instances[Id];
+    CKEDITOR.instances[Id].on('blur', function () {
+        CKEDITOR.instances[Id].updateElement();
+        var desc = GetCKEditorContent('subtaskDesc' + taskid);
+        if (desc != undefined && desc.trim() != '') {
+            console.log('timer removed for: ' + taskid);
+            clearTimeout(timeoutId);
+            console.log('timer started for: ' + taskid);
+            timeoutId = setTimeout(function () {
+                // Runs 1 second (1000 ms) after the last change    
+                CKEDITOR.instances[Id].setData('');
+                OnSaveSubTask(taskid, desc);
+            }, 30000);
+        }
+    });
 
     arrCKEditor.push(editor);
+    var taskid = $('#' + Id).attr('data-taskid');    
+
+    function ckeditorKeyPress(event) {
+        switch (event.data.keyCode) {
+            case 13: //enter key
+                event.cancel();
+                event.stop();               
+                var desc = GetCKEditorContent('subtaskDesc' + taskid);
+                OnSaveSubTask(taskid, desc);
+                break;
+        }
+        //trigger an imitation key event here and it lets you catch the enter key
+        //outside the ckeditor
+    }
 }
+var timeoutId;
 function SetCKEditorForSubTask(Id) {
 
     var $target = $('#' + Id);
@@ -557,6 +588,23 @@ function ScrollTo(target) {
         if (typeof (offset) != 'undefined' && offset != null) {
             $('html, body').animate({
                 scrollTop: offset.top
+            }, 1000);
+        }
+    }
+}
+
+function ScrollToChild(target, childId, parentId) {
+    //console.log(target);
+    //  console.log('Scroll to called for ' + target.Id);
+    if (target.length > 0) {
+        var myElement = document.getElementById('ChildEdit' + childId);
+        var topPos = myElement.offsetTop;
+        document.getElementById('TaskContainer' + parentId).scrollTop = topPos-35;
+
+        var offset = target.offset();
+        if (typeof (offset) != 'undefined' && offset != null) {
+            $('html, body').animate({
+                scrollTop: offset.top-20
             }, 1000);
         }
     }

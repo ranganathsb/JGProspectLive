@@ -319,7 +319,7 @@
     .parentdiv{
         border-top-color: black;
         border-width: thin;
-        border-top-style: solid;
+        border-top-style: dotted;
         padding-top: 5px;
     }
     .selectchildren{
@@ -328,11 +328,19 @@
     .indentButtonRight{
         float: left;        
         margin-top: 10px;
+        background-image: url(http://localhost:2724/img/indent_right.jpg);
+        height: 21px;
+        width: 26px;
+        background-repeat: no-repeat;
     }
     .indentButtonLeft{
         float: left;
         margin-left: 4px;
         margin-top: 10px;
+        background-image: url(http://localhost:2724/img/indent_left.jpg);
+        height: 21px;
+        width: 26px;
+        background-repeat: no-repeat;
     }
     .multileveledittext{
         width: 90%;
@@ -346,6 +354,11 @@
         clear:both;
         margin-bottom:5px;
         padding-bottom:5px;
+    }
+    #indentDiv{
+        background-color: #fff;
+    width: 99%;
+    height: 34px;
     }
 </style>
 
@@ -558,8 +571,8 @@
                                                 data-AssignedUserId="{{SubTask.AssignedUserId}}" data-uname="{{SubTask.FLName}}" class="share-icon installidleft" 
                                                 onclick="sharePopup(this)" data-highlighter="{{SubTask.TaskId}}" style="color: Blue; cursor:pointer; display: inline;" />
                                             <div class="selectchildren">
-                                            <a href="#/" onclick="selectChildren(this)" data-taskid="{{SubTask.TaskId}}">Select All</a>
-                                        </div>
+                                                <a href="#/" onclick="selectChildren(this)" data-taskid="{{SubTask.TaskId}}">Select All</a>
+                                            </div>
                                             <div class="clear"></div>
                                         </h5>
 
@@ -683,37 +696,39 @@
                                             <input type="checkbox" name="bulkaction">
                                             <a href="javascript:void(0);" data-highlighter="{{SubTask.TaskId}}" class="context-menu" style="color: blue;">{{SubTask.InstallId}}</a>
                                         </div>
-                                        <div class="divtdetails left" style="background-color: white; border-bottom: 1px solid silver; padding: 3px; max-width: 99%; max-height:160px; width: 99%; overflow: auto;">
-                                            <div class="taskdesc" style="padding-bottom: 5px; width: 98%; color: black!important;">
+                                        <div id="TaskContainer{{SubTask.TaskId}}" style="background-color: white; border-bottom: 2px solid black; padding: 3px; max-width: 99%; max-height:260px; width: 99%; overflow: auto;">
+                                            <div class="divtdetails left" style="background-color: white; border-bottom: 2px solid black; padding: 3px; max-width: 99%; width: 99%;">
+                                                <div class="taskdesc" style="padding-bottom: 5px; width: 98%; color: black!important;">
                                                 
-                                                <div class="right">
-                                                    <a href="/sr_app/CreateSalesUser.aspx?id={{SubTask.TaskId}}" style="color: Blue;">{{SubTask.CreatedBy}}# {{SubTask.TaskCreatorFirstName}} {{SubTask.TaskCreatorLastName}}</a><br>
-                                                    <span>{{ SubTask.CreatedOn | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ SubTask.CreatedOn | date:'shortTime' }}</span>&nbsp;<span>(EST)</span>
-                                                </div>
-                                                <strong>Title: <span data-taskid="{{SubTask.TaskId}}" class="TitleEdit">{{SubTask.Title}}</span></strong><br>
-                                                <strong>URL: <span data-taskid="{{SubTask.TaskId}}" style="color: blue; cursor: pointer;" class="UrlEdit">{{SubTask.Url}}</span></strong><br>
-                                                <strong>Description: </strong>
-                                                <br>
-                                                <span data-taskid="{{SubTask.TaskId}}" class="DescEdit">
-                                                    <div ng-bind-html="SubTask.Description | trustAsHtml"></div>
-                                                </span>                                                
-                                            </div>                                                                                        
-                                            <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
+                                                    <div class="right">
+                                                        <a href="/sr_app/CreateSalesUser.aspx?id={{SubTask.TaskId}}" style="color: Blue;">{{SubTask.CreatedBy}}# {{SubTask.TaskCreatorFirstName}} {{SubTask.TaskCreatorLastName}}</a><br>
+                                                        <span>{{ SubTask.CreatedOn | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ SubTask.CreatedOn | date:'shortTime' }}</span>&nbsp;<span>(EST)</span>
+                                                    </div>
+                                                    <strong>Title: <span data-taskid="{{SubTask.TaskId}}" class="TitleEdit">{{SubTask.Title}}</span></strong><br>
+                                                    <strong>URL: <span data-taskid="{{SubTask.TaskId}}" style="color: blue; cursor: pointer;" class="UrlEdit">{{SubTask.Url}}</span></strong><br>
+                                                    <strong>Description: </strong>
+                                                    <br>
+                                                    <span data-taskid="{{SubTask.TaskId}}" class="DescEdit">
+                                                        <div ng-bind-html="SubTask.Description | trustAsHtml"></div>
+                                                    </span>                                                
+                                                </div>                                                                                        
+                                                <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
                                             
-                                        </div>
-                                        <div class="nestedChildren">
-                                                <div ng-repeat="Child in MultiLevelChildren | filter: {ParentTaskId: SubTask.TaskId} : true" 
-                                                    class="ChildRow{{SubTask.TaskId}}" data-level="{{Child.IndentLevel}}" data-label="{{Child.Label}}"
-                                                    style="clear:both; padding:5px;">
-                                                    <div ng-class="{level2: Child.IndentLevel==2, level3: Child.IndentLevel==3, parentdiv: Child.IndentLevel==1}">
-                                                        <div style="float:left" id="selectboxes{{SubTask.TaskId}}">
-                                                            <input ng-class="{hide: Child.IndentLevel!= 1}" type="checkbox" />
-                                                            <a href="#" style="color:blue" class="context-menu-child" data-childid="{{Child.Id}}" data-highlighter="{{SubTask.TaskId}}">{{Child.Label}}.</a>
+                                            </div>
+                                            <div class="nestedChildren">
+                                                    <div ng-repeat="Child in MultiLevelChildren | filter: {ParentTaskId: SubTask.TaskId} : true" 
+                                                        class="ChildRow{{SubTask.TaskId}}" data-level="{{Child.IndentLevel}}" data-label="{{Child.Label}}"
+                                                        style="clear:both; padding:5px;">
+                                                        <div ng-class="{level2: Child.IndentLevel==2, level3: Child.IndentLevel==3, parentdiv: Child.IndentLevel==1}">
+                                                            <div style="float:left" id="selectboxes{{SubTask.TaskId}}">
+                                                                <input ng-class="{hide: Child.IndentLevel!= 1}" type="checkbox" />
+                                                                <a href="#" style="color:blue" class="context-menu-child" data-childid="{{Child.Id}}" data-highlighter="{{SubTask.TaskId}}">{{Child.Label}}.</a>
+                                                            </div>
+                                                            <div ng-bind-html="Child.Description | trustAsHtml" class="ChildEdit" id="ChildEdit{{Child.Id}}" data-taskid="{{Child.Id}}"></div>
                                                         </div>
-                                                        <div ng-bind-html="Child.Description | trustAsHtml" class="ChildEdit" id="ChildEdit{{Child.Id}}" data-taskid="{{Child.Id}}"></div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                        </div>
                                         <%--SubTask Part Starts--%>
                                         <div id="Div1" runat="server" align="center" class="taskSubPoints" style="background-color:white;padding-top: 5px;">
                                             <div class="listId">
@@ -724,12 +739,11 @@
                                             </div>
                                             <div>
                                                 <div class="multileveledittext" >
-                                                    <textarea style="width:80%" rows="1" id="subtaskDesc{{SubTask.TaskId}}" onclick="SetCKEditorForChildren(this.id)"></textarea>
+                                                    <textarea style="width:80%" rows="1" id="subtaskDesc{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" onkeypress="OnMultiLevelChildSave()" onclick="SetCKEditorForChildren(this.id)"></textarea>
                                                 </div>
-                                                <div class="btn_sec">
-                                                    <button class="indentButtonLeft" type="button" id="btnLeft{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="left" onclick="OnIndent(this)" ><=</button>
-                                                    <button class="indentButtonRight" type="button" id="btnRight{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="right" onclick="OnIndent(this)" >=></button>
-                                                    <input type="button" style="padding-left:12px;padding-right:12px" value="Save" onclick="OnSaveSubTask(this)" data-taskid="{{SubTask.TaskId}}"/>
+                                                <div class="btn_sec" id="indentDiv">
+                                                    <button class="indentButtonLeft" type="button" id="btnLeft{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="left" onclick="OnIndent(this)" ></button>
+                                                    <button class="indentButtonRight" type="button" id="btnRight{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="right" onclick="OnIndent(this)" ></button>
                                                 </div>
                                             </div>
                                         </div>
@@ -1817,6 +1831,19 @@
 </script>
 
 <script type="text/javascript" data-id="divSubTaskCommentScript">
+
+    function OnMultiLevelChildSave() {
+        var key = window.event.keyCode;
+
+        // If the user has pressed enter
+        if (key === 13) {
+            alert('save');
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 
     function selectChildren(obj) {
         var taskid = $(obj).attr('data-taskid');

@@ -2782,7 +2782,7 @@
             $('#' + loader).show();
             $.ajax({
                 type: "POST",
-                url: "ajaxcalls.aspx/GetUsersByDesignationId",
+                url: "ajaxcalls.aspx/GetUsersByDesignationIdWithUserStatus",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
                 data: JSON.stringify({ designationId: did, userStatus:ustatus }),
