@@ -183,7 +183,7 @@ function SetCKEditorForChildren(Id) {
                 // Runs 1 second (1000 ms) after the last change    
                 CKEDITOR.instances[Id].setData('');
                 OnSaveSubTask(taskid, desc);
-            }, 5000);
+            }, 30000);
         }
     });
 
