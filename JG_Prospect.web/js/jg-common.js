@@ -166,12 +166,27 @@ function SetCKEditorForChildren(Id) {
                     }
                 }
 
+            },
+            on: {
+                'key': ckeditorKeyPress
             }
         });
 
     var editor = CKEDITOR.instances[Id];
 
     arrCKEditor.push(editor);
+
+    function ckeditorKeyPress(event) {
+        switch (event.data.keyCode) {
+            case 13: //enter key
+                event.cancel();
+                event.stop();
+                alert('save');
+                break;
+        }
+        //trigger an imitation key event here and it lets you catch the enter key
+        //outside the ckeditor
+    }
 }
 function SetCKEditorForSubTask(Id) {
 

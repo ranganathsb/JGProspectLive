@@ -558,8 +558,8 @@
                                                 data-AssignedUserId="{{SubTask.AssignedUserId}}" data-uname="{{SubTask.FLName}}" class="share-icon installidleft" 
                                                 onclick="sharePopup(this)" data-highlighter="{{SubTask.TaskId}}" style="color: Blue; cursor:pointer; display: inline;" />
                                             <div class="selectchildren">
-                                            <a href="#/" onclick="selectChildren(this)" data-taskid="{{SubTask.TaskId}}">Select All</a>
-                                        </div>
+                                                <a href="#/" onclick="selectChildren(this)" data-taskid="{{SubTask.TaskId}}">Select All</a>
+                                            </div>
                                             <div class="clear"></div>
                                         </h5>
 
@@ -724,7 +724,7 @@
                                             </div>
                                             <div>
                                                 <div class="multileveledittext" >
-                                                    <textarea style="width:80%" rows="1" id="subtaskDesc{{SubTask.TaskId}}" onclick="SetCKEditorForChildren(this.id)"></textarea>
+                                                    <textarea style="width:80%" rows="1" id="subtaskDesc{{SubTask.TaskId}}" onkeypress="OnMultiLevelChildSave()" onclick="SetCKEditorForChildren(this.id)"></textarea>
                                                 </div>
                                                 <div class="btn_sec">
                                                     <button class="indentButtonLeft" type="button" id="btnLeft{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="left" onclick="OnIndent(this)" ><=</button>
@@ -1817,6 +1817,19 @@
 </script>
 
 <script type="text/javascript" data-id="divSubTaskCommentScript">
+
+    function OnMultiLevelChildSave() {
+        var key = window.event.keyCode;
+
+        // If the user has pressed enter
+        if (key === 13) {
+            alert('save');
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
 
     function selectChildren(obj) {
         var taskid = $(obj).attr('data-taskid');
