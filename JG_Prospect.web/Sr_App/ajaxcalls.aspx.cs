@@ -128,7 +128,7 @@ namespace JG_Prospect.Sr_App
         }
 
         [WebMethod]
-        public static string GetUsersByDesignationId(string designationId, int userStatus)
+        public static string GetUsersByDesignationIdWithUserStatus(string designationId, int userStatus)
         {
             DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designationId, userStatus);
             string SearchSuggestions = string.Empty;

@@ -236,11 +236,11 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                 $timeout(function () {
                     //Add Blink Class
                     var ChildId = getUrlVars()["mcid"];
-                    
+                    var hstid = getUrlVars()["hstid"];
+
                     if (ChildId != undefined) {
                         $('#ChildEdit' + ChildId).addClass('yellowthickborder');
-                    } else {
-                        var hstid = getUrlVars()["hstid"];
+                    } else {                        
                         $('#datarow' + hstid).addClass('yellowthickborder');
                     }
 
@@ -254,8 +254,12 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         return false;
                     });
 
-                    if (PreventScroll == 0)
-                        ScrollTo($('.yellowthickborder'));
+                    if (PreventScroll == 0) {
+                        if (ChildId == undefined)
+                            ScrollTo($('.yellowthickborder'));
+                        else
+                            ScrollToChild($('.yellowthickborder'), ChildId, hstid);
+                    }
                     else
                         PreventScroll = 0;
 
