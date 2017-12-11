@@ -671,7 +671,15 @@ namespace JG_Prospect.BLL
             string messageUrl = string.Empty, toEmail = string.Empty, body = string.Empty;
             string baseUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" + System.Web.HttpContext.Current.Request.Url.Authority + System.Web.HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
             HTMLTemplatesMaster html = HTMLTemplateBLL.Instance.GetHTMLTemplateMasterById(HTMLTemplates.HR_EditSales_TouchpointLog_Email);
-            html.Body += "Click <a href=\"{MessageUrl}\">here</a> to see the message & reply.";
+            // sender details
+            var sender = getuserdetails(LoginUserID).Tables[0].Rows[0];
+            string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? baseUrl + "UploadeProfile/default.jpg" : baseUrl + "Employee/ProfilePictures/" + sender["Picture"].ToString();
+            html.Body = html.Body.Replace("{ImageUrl}", pic);
+            html.Body = html.Body.Replace("{Name}", sender["FristName"].ToString() + " " + sender["LastName"].ToString());
+            html.Body = html.Body.Replace("{Designation}", sender["Designation"].ToString());
+            html.Body = html.Body.Replace("{UserInstallID}", sender["UserInstallID"].ToString());
+            html.Body = html.Body.Replace("{ProfileUrl}", baseUrl + "Sr_App/ViewSalesUser.aspx?id=4840" + sender["Id"].ToString());
+            // sender details
             if (LoginUserID == UserID) // Send email to Recruiter
             {
                 id = getuserdetails(UserID).Tables[0].Rows[0]["AddedByUserId"].ToString();
