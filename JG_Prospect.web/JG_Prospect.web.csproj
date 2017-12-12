@@ -2225,6 +2225,7 @@
     <Content Include="Sr_App\TaskGenerator.aspx" />
     <Content Include="Sr_App\TaskList.aspx" />
     <Content Include="Sr_App\Time_Material.aspx" />
+    <Content Include="Sr_App\TouchPointLog.aspx" />
     <Content Include="Sr_App\UploadFile.aspx" />
     <Content Include="Sr_App\UploadFileCustomerDocs.aspx" />
     <Content Include="Sr_App\userbulkupload.aspx" />
@@ -2607,6 +2608,13 @@
     </Compile>
     <Compile Include="Sr_App\resumeupload.aspx.designer.cs">
       <DependentUpon>resumeupload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\TouchPointLog.aspx.cs">
+      <DependentUpon>TouchPointLog.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\TouchPointLog.aspx.designer.cs">
+      <DependentUpon>TouchPointLog.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\UploadFile.aspx.cs">
       <DependentUpon>UploadFile.aspx</DependentUpon>
