@@ -176,7 +176,7 @@ function SetCKEditorForChildren(Id) {
 
     //Save when leaves editing
     CKEDITOR.instances[Id].on('blur', function () {
-        CKEDITOR.instances[Id].updateElement();        
+        CKEDITOR.instances[Id].updateElement();
 
         OnSaveSubTask(taskid, GetCKEditorContent('subtaskDesc' + taskid));
         CKEDITOR.instances[Id].setData('');
@@ -201,18 +201,18 @@ function SetCKEditorForChildren(Id) {
                     console.log('removing timer: ' + timeoutId);
                     clearTimeout(timeoutId);
                 }
-                
+
                 timeoutId = setTimeout(function () {
                     // Runs 1 second (1000 ms) after the last change    
                     var desc = GetCKEditorContent('subtaskDesc' + taskid);
-                    if (desc != undefined && desc.trim() != '') {                                    
+                    if (desc != undefined && desc.trim() != '') {
                         console.log('saving desc...');
                         CKEDITOR.instances[Id].setData('');
                         OnSaveSubTask(taskid, desc);
                     }
                     else
                         console.log('not saving empty desc');
-                }, 5000);
+                }, 30000);
                 console.log('adding timer: ' + timeoutId);
                 break;
         }
@@ -264,6 +264,9 @@ function SetCKEditorForSubTask(Id) {
                     }
                 }
 
+            },
+            on: {
+                'key': ckeditorKeyPress
             }
         });
     CKEDITOR.instances[Id].on('blur', function () {
@@ -281,6 +284,29 @@ function SetCKEditorForSubTask(Id) {
     var editor = CKEDITOR.instances[Id];
 
     arrCKEditor.push(editor);
+
+
+    function ckeditorKeyPress(event) {
+        if (Id == 'txteditChild') {
+            if (timeoutId != undefined) {
+                console.log('removing timer: ' + timeoutId);
+                clearTimeout(timeoutId);
+            }
+
+            timeoutId = setTimeout(function () {
+                // Runs 1 second (1000 ms) after the last change    
+                var desc = GetCKEditorContent('txteditChild');
+                if (desc != undefined && desc.trim() != '') {
+                    console.log('saving child...');
+                    updateMultiLevelChild(CurrentEditingTaskId, desc);
+                    CKEDITOR.instances[Id].setData('');
+                }
+                else
+                    console.log('not saving empty child');
+            }, 30000);
+            console.log('adding timer: ' + timeoutId);
+        }
+    }
 }
 
 function GetCKEditorContent(Id) {
@@ -465,7 +491,7 @@ function ChosenDropDown(options) {
 function CallJGWebService(strWebMethod, objPostDataJSON, OnSuccessCallBack, OnErrorCallBack) {
     ShowAjaxLoader();
     $.ajax
-    (
+        (
         {
             url: '../WebServices/JGWebService.asmx/' + strWebMethod,
             contentType: 'application/json; charset=utf-8;',
@@ -490,7 +516,7 @@ function CallJGWebService(strWebMethod, objPostDataJSON, OnSuccessCallBack, OnEr
                 }
             }
         }
-    );
+        );
 }
 
 /********************************************* General Functions ******************************************************/
@@ -629,12 +655,12 @@ function ScrollToChild(target, childId, parentId) {
     if (target.length > 0) {
         var myElement = document.getElementById('ChildEdit' + childId);
         var topPos = myElement.offsetTop;
-        document.getElementById('TaskContainer' + parentId).scrollTop = topPos-35;
+        document.getElementById('TaskContainer' + parentId).scrollTop = topPos - 35;
 
         var offset = target.offset();
         if (typeof (offset) != 'undefined' && offset != null) {
             $('html, body').animate({
-                scrollTop: offset.top-20
+                scrollTop: offset.top - 20
             }, 1000);
         }
     }

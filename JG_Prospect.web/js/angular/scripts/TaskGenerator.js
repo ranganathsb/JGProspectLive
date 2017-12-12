@@ -33,8 +33,8 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         callWebServiceMethod($http, "GetAssignUsers", { TaskDesignations: sequenceScopeTG.UserSelectedDesigIds != "" ? sequenceScopeTG.UserSelectedDesigIds.join() : sequenceScopeTG.UserSelectedDesigIds }).then(function (data) {
             var AssignedUsers = JSON.parse(data.data.d);
             $scope.UsersByDesignation = AssignedUsers;
-            $scope.SelectedUserId = $scope.UsersByDesignation[0].Id;         
-        });        
+            $scope.SelectedUserId = $scope.UsersByDesignation[0].Id;
+        });
     }
     $scope.getSubTasksPager = function (page) {
 
@@ -142,14 +142,14 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         $('.chosen-input').trigger('chosen:updated');
 
         //Set Assigned Users
-        SetChosenAssignedUsers();        
+        SetChosenAssignedUsers();
     }
 
     $scope.onAttachmentEnd = function (object) {
         LoadImageGallery('#lightSlider_' + object);
     }
 
-    $scope.onEnd = function (obj) {        
+    $scope.onEnd = function (obj) {
         var ParentIds = [];
         //Initialize Chosens
         $('.chosen-input').chosen();
@@ -167,7 +167,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
             $(this).click(function () {
                 approvaldialog.dialog('open');
             });
-        });        
+        });
 
         ApplySubtaskLinkContextMenu();
 
@@ -225,9 +225,9 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
             });
 
 
-        }, 1);           
+        }, 1);
 
-        $timeout(function () {            
+        $timeout(function () {
 
             callWebServiceMethod($http, "GetMultilevelChildren", { ParentTaskId: ParentIds.join() }).then(function (data) {
                 var result = JSON.parse(data.data.d);
@@ -240,7 +240,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
                     if (ChildId != undefined) {
                         $('#ChildEdit' + ChildId).addClass('yellowthickborder');
-                    } else {                        
+                    } else {
                         $('#datarow' + hstid).addClass('yellowthickborder');
                     }
 
@@ -274,14 +274,14 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                                 if (!isadded) {
                                     var tid = $(this).attr("data-taskid");
                                     var titledetail = $(this).html();
-                                    var fName = $("<textarea id=\"txteditChild\" style=\"width:80%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea><input id=\"btnSave\" type=\"button\" value=\"Save\" />");
+                                    var fName = $("<textarea id=\"txteditChild\" style=\"width:80%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea>");
                                     $(this).html(fName);
                                     $('#ContentPlaceHolder1_objucSubTasks_Admin_hdDropZoneTaskId').val(tid);
                                     SetCKEditorForSubTask('txteditChild');
                                     $('#txteditChild').focus();
                                     control = $(this);
 
-                                    isadded = true;                                   
+                                    isadded = true;
                                     CurrentEditingTaskId = tid;
                                 }
                                 return false;
@@ -290,8 +290,8 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                     }
                 }, 1);
             });
-        }, 2);                      
-       
+        }, 2);
+
 
         //For Description
         if (IsAdminMode == 'True') {
@@ -357,7 +357,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         $('#txtedittitle').focus();
                         control = $(this);
 
-                        isadded = true;                        
+                        isadded = true;
 
                         //
 
