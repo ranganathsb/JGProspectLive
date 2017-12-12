@@ -125,6 +125,7 @@ function SetCKEditorForPageContent(Id, AutosavebuttonId) {
 
     arrCKEditor.push(editor);
 }
+
 function SetCKEditorForChildren(Id) {
 
     var $target = $('#' + Id);
@@ -140,84 +141,6 @@ function SetCKEditorForChildren(Id) {
             // Show toolbar on startup (optional).
             //startupFocus: true,
             startupFocus: true,
-            enterMode: CKEDITOR.ENTER_BR,
-            on: {
-                blur: function (event) {
-                    event.editor.updateElement();
-                    //updateDesc(GetCKEditorContent(Id));
-                },                
-                fileUploadResponse: function (event) {
-                    // Prevent the default response handler.
-                    event.stop();
-
-                    // Ger XHR and response.
-                    var data = event.data,
-                        xhr = data.fileLoader.xhr,
-                        response = xhr.responseText.split('|');
-
-                    var jsonarray = JSON.parse(response[0]);
-
-                    attachImagesByCKEditor(event.data.fileLoader.fileName, jsonarray.fileName);
-
-                    if (jsonarray && jsonarray.uploaded != "1") {
-                        // Error occurred during upload.                
-                        event.cancel();
-                    } else {
-                        data.url = jsonarray.url;
-                    }
-                }
-
-            },
-            on: {
-                'key': ckeditorKeyPress                
-            }
-        });
-    CKEDITOR.instances[Id].on('blur', function () {
-        CKEDITOR.instances[Id].updateElement();
-        var desc = GetCKEditorContent('subtaskDesc' + taskid);
-        if (desc != undefined && desc.trim() != '') {
-            console.log('timer removed for: ' + taskid);
-            clearTimeout(timeoutId);
-            console.log('timer started for: ' + taskid);
-            timeoutId = setTimeout(function () {
-                // Runs 1 second (1000 ms) after the last change    
-                CKEDITOR.instances[Id].setData('');
-                OnSaveSubTask(taskid, desc);
-            }, 30000);
-        }
-    });
-
-    arrCKEditor.push(editor);
-    var taskid = $('#' + Id).attr('data-taskid');    
-
-    function ckeditorKeyPress(event) {
-        switch (event.data.keyCode) {
-            case 13: //enter key
-                event.cancel();
-                event.stop();               
-                var desc = GetCKEditorContent('subtaskDesc' + taskid);
-                OnSaveSubTask(taskid, desc);
-                break;
-        }
-        //trigger an imitation key event here and it lets you catch the enter key
-        //outside the ckeditor
-    }
-}
-var timeoutId;
-function SetCKEditorForSubTask(Id) {
-
-    var $target = $('#' + Id);
-
-    // The inline editor should be enabled on an element with "contenteditable" attribute set to "true".
-    // Otherwise CKEditor will start in read-only mode.
-
-    $target.attr('contenteditable', true);
-
-    CKEDITOR.inline(Id,
-        {
-            // Show toolbar on startup (optional).
-            //startupFocus: true,
-            startupFocus: false,
             enterMode: CKEDITOR.ENTER_BR,
             on: {
                 blur: function (event) {
@@ -245,12 +168,145 @@ function SetCKEditorForSubTask(Id) {
                     }
                 }
 
+            },
+            on: {
+                'key': ckeditorKeyPress
             }
         });
+
+    //Save when leaves editing
+    CKEDITOR.instances[Id].on('blur', function () {
+        CKEDITOR.instances[Id].updateElement();        
+
+        OnSaveSubTask(taskid, GetCKEditorContent('subtaskDesc' + taskid));
+        CKEDITOR.instances[Id].setData('');
+    });
+
+    //Auto Save after 30 seconds
+    CKEDITOR.instances[Id].updateElement();
+
+    arrCKEditor.push(editor);
+    var taskid = $('#' + Id).attr('data-taskid');
+
+    function ckeditorKeyPress(event) {
+        switch (event.data.keyCode) {
+            case 13: //enter key
+                event.cancel();
+                event.stop();
+                var desc = GetCKEditorContent('subtaskDesc' + taskid);
+                OnSaveSubTask(taskid, desc);
+                break;
+            default:
+                if (timeoutId != undefined) {
+                    console.log('removing timer: ' + timeoutId);
+                    clearTimeout(timeoutId);
+                }
+                
+                timeoutId = setTimeout(function () {
+                    // Runs 1 second (1000 ms) after the last change    
+                    var desc = GetCKEditorContent('subtaskDesc' + taskid);
+                    if (desc != undefined && desc.trim() != '') {                                    
+                        console.log('saving desc...');
+                        CKEDITOR.instances[Id].setData('');
+                        OnSaveSubTask(taskid, desc);
+                    }
+                    else
+                        console.log('not saving empty desc');
+                }, 30000);
+                console.log('adding timer: ' + timeoutId);
+                break;
+        }
+        //trigger an imitation key event here and it lets you catch the enter key
+        //outside the ckeditor
+    }
+}
+
+var timeoutId;
+
+function SetCKEditorForSubTask(Id) {
+
+    var $target = $('#' + Id);
+
+    // The inline editor should be enabled on an element with "contenteditable" attribute set to "true".
+    // Otherwise CKEditor will start in read-only mode.
+
+    $target.attr('contenteditable', true);
+
+    CKEDITOR.inline(Id,
+        {
+            // Show toolbar on startup (optional).
+            //startupFocus: true,
+            startupFocus: true,
+            enterMode: CKEDITOR.ENTER_BR,
+            on: {
+                blur: function (event) {
+                    event.editor.updateElement();
+                    //updateDesc(GetCKEditorContent(Id));
+                },
+                fileUploadResponse: function (event) {
+                    // Prevent the default response handler.
+                    event.stop();
+
+                    // Ger XHR and response.
+                    var data = event.data,
+                        xhr = data.fileLoader.xhr,
+                        response = xhr.responseText.split('|');
+
+                    var jsonarray = JSON.parse(response[0]);
+
+                    attachImagesByCKEditor(event.data.fileLoader.fileName, jsonarray.fileName);
+
+                    if (jsonarray && jsonarray.uploaded != "1") {
+                        // Error occurred during upload.                
+                        event.cancel();
+                    } else {
+                        data.url = jsonarray.url;
+                    }
+                }
+
+            },
+            on: {
+                'key': ckeditorKeyPress
+            }
+        });
+    CKEDITOR.instances[Id].on('blur', function () {
+        if (Id != 'txteditChild') {
+            CKEDITOR.instances[Id].updateElement();
+            updateDesc(GetCKEditorContent(Id));
+        }
+        else {
+            //update child
+            var htmldata = GetCKEditorContent('txteditChild');
+            updateMultiLevelChild(CurrentEditingTaskId, htmldata);
+        }
+    });
 
     var editor = CKEDITOR.instances[Id];
 
     arrCKEditor.push(editor);
+
+
+    function ckeditorKeyPress(event) {
+        if(Id == 'txteditChild') {
+            if (timeoutId != undefined) {
+                console.log('removing timer: ' + timeoutId);
+                clearTimeout(timeoutId);
+            }
+
+            timeoutId = setTimeout(function () {
+                // Runs 1 second (1000 ms) after the last change    
+                var desc = GetCKEditorContent('txteditChild');
+                if (desc != undefined && desc.trim() != '') {
+                    console.log('saving child...');
+                    updateMultiLevelChild(CurrentEditingTaskId, desc);
+                    CKEDITOR.instances[Id].setData('');
+                }
+                else
+                    console.log('not saving empty child');
+            }, 30000);
+            console.log('adding timer: ' + timeoutId);
+        }
+    }
 }
 
 function GetCKEditorContent(Id) {

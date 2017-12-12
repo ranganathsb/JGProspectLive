@@ -274,42 +274,15 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                                 if (!isadded) {
                                     var tid = $(this).attr("data-taskid");
                                     var titledetail = $(this).html();
-                                    var fName = $("<textarea id=\"txteditChild\" style=\"width:80%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea><input id=\"btnSave\" type=\"button\" value=\"Save\" />");
+                                    var fName = $("<textarea id=\"txteditChild\" style=\"width:80%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea>");
                                     $(this).html(fName);
                                     $('#ContentPlaceHolder1_objucSubTasks_Admin_hdDropZoneTaskId').val(tid);
                                     SetCKEditorForSubTask('txteditChild');
                                     $('#txteditChild').focus();
                                     control = $(this);
 
-                                    isadded = true;
-
-                                    $('#btnSave').bind("click", function () {
-                                        var htmldata = GetCKEditorContent('txteditChild');
-                                        ShowAjaxLoader();
-                                        var postData = {
-                                            tid: tid,
-                                            Description: htmldata
-                                        };
-
-                                        $.ajax({
-                                            url: '../../../WebServices/JGWebService.asmx/UpdateTaskDescriptionChildById',
-                                            contentType: 'application/json; charset=utf-8;',
-                                            type: 'POST',
-                                            dataType: 'json',
-                                            data: JSON.stringify(postData),
-                                            asynch: false,
-                                            success: function (data) {
-                                                alert('Child saved successfully.');
-                                                HideAjaxLoader();
-                                                $('#ChildEdit' + tid).html(htmldata);
-                                                isadded = false;
-                                            },
-                                            error: function (a, b, c) {
-                                                HideAjaxLoader();
-                                            }
-                                        });
-                                        $(this).css({ 'display': "none" });
-                                    });
+                                    isadded = true;                                   
+                                    CurrentEditingTaskId = tid;
                                 }
                                 return false;
                             });
@@ -384,14 +357,14 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         $('#txtedittitle').focus();
                         control = $(this);
 
-                        isadded = true;
+                        isadded = true;                        
 
-                        var otherInput = $(this).closest('.divtdetails').find('.btnsubtask');
-                        $(otherInput).css({ 'display': "block" });
-                        $(otherInput).bind("click", function () {
+                        //
+
+                        //Start timer for auto save
+                        setTimeout(function () {
                             updateDesc(GetCKEditorContent('txtedittitle'));
-                            $(this).css({ 'display': "none" });
-                        });
+                        }, 30000);
                     }
                     return false;
                 });
@@ -491,3 +464,5 @@ function LetterToNumber(str) {
     }
     return out;
 }
+
+var CurrentEditingTaskId = 0;

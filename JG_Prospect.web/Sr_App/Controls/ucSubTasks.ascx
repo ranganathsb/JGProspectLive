@@ -328,7 +328,7 @@
     .indentButtonRight{
         float: left;        
         margin-top: 10px;
-        background-image: url(http://localhost:2724/img/indent_right.jpg);
+        background-image: url(/img/indent_right.jpg);
         height: 21px;
         width: 26px;
         background-repeat: no-repeat;
@@ -337,7 +337,7 @@
         float: left;
         margin-left: 4px;
         margin-top: 10px;
-        background-image: url(http://localhost:2724/img/indent_left.jpg);
+        background-image: url(/img/indent_left.jpg);
         height: 21px;
         width: 26px;
         background-repeat: no-repeat;
@@ -712,7 +712,7 @@
                                                         <div ng-bind-html="SubTask.Description | trustAsHtml"></div>
                                                     </span>                                                
                                                 </div>                                                                                        
-                                                <button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>
+                                                <%--<button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>--%>
                                             
                                             </div>
                                             <div class="nestedChildren">
