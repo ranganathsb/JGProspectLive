@@ -277,7 +277,7 @@ BEGIN
 			  LEFT OUTER JOIN tblInstallUsers t2 ON t2.Id = tt.SourceUser  
 			  LEFT OUTER JOIN tblInstallUsers ru on tt.RejectedUserId= ru.Id  
 			  LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= Uu.Id
-			  Where tt.id=T.UserID
+			  Where tt.id=T.UpdatedByUserID
 			  ) As SourceUser
 			from tblUserTouchPointLog T With(NoLock) 
 		Join tblInstallUsers LU With(NoLock) On T.UpdatedByUserId = LU.Id
@@ -305,3 +305,4 @@ BEGIN
 End
 
 Go
+
