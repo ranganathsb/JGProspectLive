@@ -683,7 +683,7 @@ namespace JG_Prospect.BLL
             html.Body = html.Body.Replace("{Name}", sender["FristName"].ToString() + " " + sender["LastName"].ToString());
             html.Body = html.Body.Replace("{Designation}", sender["Designation"].ToString());
             html.Body = html.Body.Replace("{UserInstallID}", sender["UserInstallID"].ToString());
-            html.Body = html.Body.Replace("{ProfileUrl}", baseUrl + "Sr_App/ViewSalesUser.aspx?id=4840" + sender["Id"].ToString());
+            html.Body = html.Body.Replace("{ProfileUrl}", baseUrl + "Sr_App/ViewSalesUser.aspx?id=" + sender["Id"].ToString());
             // sender details
             if (LoginUserID == UserID) // Send email to Recruiter
             {
