@@ -274,7 +274,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                                 if (!isadded) {
                                     var tid = $(this).attr("data-taskid");
                                     var titledetail = $(this).html();
-                                    var fName = $("<textarea id=\"txteditChild\" style=\"width:80%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea><input id=\"btnSave\" type=\"button\" value=\"Save\" />");
+                                    var fName = $("<textarea id=\"txteditChild\" style=\"width:80%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea>");
                                     $(this).html(fName);
                                     $('#ContentPlaceHolder1_objucSubTasks_Admin_hdDropZoneTaskId').val(tid);
                                     SetCKEditorForSubTask('txteditChild');

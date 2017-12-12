@@ -212,7 +212,7 @@ function SetCKEditorForChildren(Id) {
                     }
                     else
                         console.log('not saving empty desc');
-                }, 5000);
+                }, 30000);
                 console.log('adding timer: ' + timeoutId);
                 break;
         }
@@ -264,6 +264,9 @@ function SetCKEditorForSubTask(Id) {
                     }
                 }
 
+            },
+            on: {
+                'key': ckeditorKeyPress
             }
         });
     CKEDITOR.instances[Id].on('blur', function () {
@@ -281,6 +284,29 @@ function SetCKEditorForSubTask(Id) {
     var editor = CKEDITOR.instances[Id];
 
     arrCKEditor.push(editor);
+
+
+    function ckeditorKeyPress(event) {
+        if(Id == 'txteditChild') {
+            if (timeoutId != undefined) {
+                console.log('removing timer: ' + timeoutId);
+                clearTimeout(timeoutId);
+            }
+
+            timeoutId = setTimeout(function () {
+                // Runs 1 second (1000 ms) after the last change    
+                var desc = GetCKEditorContent('txteditChild');
+                if (desc != undefined && desc.trim() != '') {
+                    console.log('saving child...');
+                    updateMultiLevelChild(CurrentEditingTaskId, desc);
+                    CKEDITOR.instances[Id].setData('');
+                }
+                else
+                    console.log('not saving empty child');
+            }, 30000);
+            console.log('adding timer: ' + timeoutId);
+        }
+    }
 }
 
 function GetCKEditorContent(Id) {
