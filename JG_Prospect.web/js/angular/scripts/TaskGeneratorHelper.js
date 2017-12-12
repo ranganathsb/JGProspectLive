@@ -101,6 +101,31 @@ function EditAssignedSubTaskUsers(sender) {
         }
     }
 }
+function updateMultiLevelChild(tid, desc) {    
+    ShowAjaxLoader();
+    var postData = {
+        tid: tid,
+        Description: desc
+    };
+
+    $.ajax({
+        url: '../../../WebServices/JGWebService.asmx/UpdateTaskDescriptionChildById',
+        contentType: 'application/json; charset=utf-8;',
+        type: 'POST',
+        dataType: 'json',
+        data: JSON.stringify(postData),
+        asynch: false,
+        success: function (data) {
+            alert('Child saved successfully.');
+            HideAjaxLoader();
+            $('#ChildEdit' + tid).html(desc);
+            isadded = false;
+        },
+        error: function (a, b, c) {
+            HideAjaxLoader();
+        }
+    });
+}
 
 function OnSaveSubTask(taskid,desc) {
     
