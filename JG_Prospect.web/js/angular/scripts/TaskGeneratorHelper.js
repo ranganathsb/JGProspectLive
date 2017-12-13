@@ -101,9 +101,14 @@ function EditAssignedSubTaskUsers(sender) {
         }
     }
 }
-function updateMultiLevelChild(tid, desc) {
+
+function updateMultiLevelChild(tid, desc, autosave) {
     if (desc != '' && desc != undefined) {
-        ShowAjaxLoader();
+        if (autosave)
+            ShowAutoSaveProgress(pid);
+        else
+            ShowAjaxLoader();
+
         var postData = {
             tid: tid,
             Description: desc
@@ -116,11 +121,17 @@ function updateMultiLevelChild(tid, desc) {
             dataType: 'json',
             data: JSON.stringify(postData),
             asynch: false,
-            success: function (data) {
-                alert('Child saved successfully.');
-                HideAjaxLoader();
-                $('#ChildEdit' + tid).html(desc);
-                isadded = false;
+            success: function (data) {                
+
+                if (!autosave) {
+                    $('#ChildEdit' + tid).html(desc);
+                    isadded = false;
+                    HideAjaxLoader();
+                    alert('Updated Successfully.');
+                }
+                else {
+                    HideAutoSaveProgress(pid);
+                }
             },
             error: function (a, b, c) {
                 HideAjaxLoader();
@@ -167,4 +178,13 @@ function OnSaveSubTask(taskid, desc) {
     }
     return false;
 
+}
+
+function ShowAutoSaveProgress(divid) {
+    //$('#TaskloaderDiv' + divid).html('<img src="../../img/ajax-loader.gif" style="height:16px; vertical-align:bottom" /> Auto Saving...');
+    $('#TaskloaderDiv' + divid).fadeIn(500);
+}
+function HideAutoSaveProgress(divid) {
+    $('#TaskloaderDiv' + divid).fadeOut(500);
+    //$('#TaskloaderDiv' + divid).html('');
 }

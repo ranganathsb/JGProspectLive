@@ -357,8 +357,17 @@
     }
     #indentDiv{
         background-color: #fff;
-    width: 99%;
-    height: 34px;
+        height: 34px;
+        float:left;
+    }
+    .TaskloaderDiv{
+        float:right;
+        margin-top: 12px;
+        display: none;
+    }
+    #NewChildDiv{
+        background-color: white;
+        height: 34px;
     }
 </style>
 
@@ -724,7 +733,7 @@
                                                                 <input ng-class="{hide: Child.IndentLevel!= 1}" type="checkbox" />
                                                                 <a href="#" style="color:blue" class="context-menu-child" data-childid="{{Child.Id}}" data-highlighter="{{SubTask.TaskId}}">{{Child.Label}}.</a>
                                                             </div>
-                                                            <div ng-bind-html="Child.Description | trustAsHtml" class="ChildEdit" id="ChildEdit{{Child.Id}}" data-taskid="{{Child.Id}}"></div>
+                                                            <div ng-bind-html="Child.Description | trustAsHtml" class="ChildEdit" id="ChildEdit{{Child.Id}}" data-parentid="{{SubTask.TaskId}}" data-taskid="{{Child.Id}}"></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -740,11 +749,16 @@
                                             <div>
                                                 <div class="multileveledittext" >
                                                     <textarea style="width:80%" rows="1" id="subtaskDesc{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" onkeypress="OnMultiLevelChildSave()" onclick="SetCKEditorForChildren(this.id)"></textarea>
-                                                </div>
-                                                <div class="btn_sec" id="indentDiv">
-                                                    <button class="indentButtonLeft" type="button" id="btnLeft{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="left" onclick="OnIndent(this)" ></button>
-                                                    <button class="indentButtonRight" type="button" id="btnRight{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="right" onclick="OnIndent(this)" ></button>
-                                                </div>
+                                                </div>                                                
+                                            </div>
+                                        </div>
+                                        <div id="NewChildDiv">&nbsp;
+                                            <div class="btn_sec" id="indentDiv">
+                                                <button class="indentButtonLeft" type="button" id="btnLeft{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="left" onclick="OnIndent(this)" ></button>
+                                                <button class="indentButtonRight" type="button" id="btnRight{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="right" onclick="OnIndent(this)" ></button>
+                                            </div>
+                                            <div id="TaskloaderDiv{{SubTask.TaskId}}" class="TaskloaderDiv">
+                                                <img src="../../img/ajax-loader.gif" style="height:16px; vertical-align:bottom" /> Auto Saving...
                                             </div>
                                         </div>
                                         <%--SubTask Part Ends--%>
@@ -2444,11 +2458,15 @@
         );
     }
 
-    function updateDesc(htmldata) {
+    function updateDesc(htmldata, autosave) {
+        console.log(htmldata);
         if (isadded) {
-            control.html(htmldata);
-            EditDesc(control.attr("data-taskid"), htmldata);
-            isadded = false;
+            if (!autosave) {
+                control.html(htmldata);
+                isadded = false;
+            }
+            EditDesc(control.attr("data-taskid"), htmldata, autosave);
+            
         }
     }
     function updateChild(htmldata) {
@@ -2609,15 +2627,21 @@
             }
         );
     }
-    function EditDesc(tid, tdetail) {
-        ShowAjaxLoader();
+    function EditDesc(tid, tdetail,autosave) {
+
+        if (autosave)
+            ShowAutoSaveProgress(tid);
+        else
+            ShowAjaxLoader();
+
+        
         var postData = {
             tid: tid,
             Description: tdetail
         };
 
         $.ajax
-        (
+            (
             {
                 url: '../WebServices/JGWebService.asmx/UpdateTaskDescriptionById',
                 contentType: 'application/json; charset=utf-8;',
@@ -2632,14 +2656,20 @@
                     else {
                         HideAjaxLoader();
                     }
-                    alert('Description saved successfully.');
+                    //alert(autosave);
+                    if (autosave) {
+                        HideAutoSaveProgress(tid);
+                    }
+                    else {
+                        alert('Description saved successfully.');
+                    }
                 },
                 error: function (a, b, c) {
                     HideAjaxLoader();
                 }
             }
-        );
-        }
+            );
+    }
         function EditAssignedTaskUsers(sender) {
             ShowAjaxLoader();
 

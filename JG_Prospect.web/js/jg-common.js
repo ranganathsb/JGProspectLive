@@ -194,6 +194,7 @@ function SetCKEditorForChildren(Id) {
                 event.cancel();
                 event.stop();
                 var desc = GetCKEditorContent('subtaskDesc' + taskid);
+                CKEDITOR.instances[Id].setData('');
                 OnSaveSubTask(taskid, desc);
                 break;
             default:
@@ -271,13 +272,15 @@ function SetCKEditorForSubTask(Id) {
         });
     CKEDITOR.instances[Id].on('blur', function () {
         if (Id != 'txteditChild') {
+            console.log('clear interval: ' + TimerId);
+            clearInterval(TimerId);
             CKEDITOR.instances[Id].updateElement();
-            updateDesc(GetCKEditorContent(Id));
+            updateDesc(GetCKEditorContent(Id), false);
         }
         else {
             //update child
             var htmldata = GetCKEditorContent('txteditChild');
-            updateMultiLevelChild(CurrentEditingTaskId, htmldata);
+            updateMultiLevelChild(CurrentEditingTaskId, htmldata, false);
         }
     });
 
@@ -298,8 +301,8 @@ function SetCKEditorForSubTask(Id) {
                 var desc = GetCKEditorContent('txteditChild');
                 if (desc != undefined && desc.trim() != '') {
                     console.log('saving child...');
-                    updateMultiLevelChild(CurrentEditingTaskId, desc);
-                    CKEDITOR.instances[Id].setData('');
+                    updateMultiLevelChild(CurrentEditingTaskId, desc, true);
+                    //CKEDITOR.instances[Id].setData('');
                 }
                 else
                     console.log('not saving empty child');

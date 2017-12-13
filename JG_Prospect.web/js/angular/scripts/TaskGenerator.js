@@ -273,6 +273,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                             $(this).bind("click", function () {
                                 if (!isadded) {
                                     var tid = $(this).attr("data-taskid");
+                                    var ptid = $(this).attr("data-parentid");
                                     var titledetail = $(this).html();
                                     var fName = $("<textarea id=\"txteditChild\" style=\"width:80%;\" class=\"editedTitle\" rows=\"10\" >" + titledetail + "</textarea>");
                                     $(this).html(fName);
@@ -283,6 +284,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
                                     isadded = true;
                                     CurrentEditingTaskId = tid;
+                                    pid = ptid;
                                 }
                                 return false;
                             });
@@ -359,12 +361,11 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
                         isadded = true;
 
-                        //
-
                         //Start timer for auto save
-                        setTimeout(function () {
-                            updateDesc(GetCKEditorContent('txtedittitle'));
+                        TimerId = setInterval(function () {
+                            updateDesc(GetCKEditorContent('txtedittitle'), true);
                         }, 30000);
+                        console.log('interval started: ' + TimerId);
                     }
                     return false;
                 });
@@ -466,3 +467,5 @@ function LetterToNumber(str) {
 }
 
 var CurrentEditingTaskId = 0;
+var TimerId = 0;
+var pid = 0;
