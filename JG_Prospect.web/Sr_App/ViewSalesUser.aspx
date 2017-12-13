@@ -4987,11 +4987,11 @@ function SetEmailValuefromCtlToHid() {
         Dropzone.autoDiscover = false;
         $(function () {
             Initialize();
-            $.fn.hitch = function (scope, fn) {
-                //return function () {
-                //    return fn.apply(scope, arguments);
-                //}
-            }
+            //$.fn.hitch = function (scope, fn) {
+            //    //return function () {
+            //    //    return fn.apply(scope, arguments);
+            //    //}
+            //}
         });
         var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
         prmTaskGenerator.add_endRequest(function () {

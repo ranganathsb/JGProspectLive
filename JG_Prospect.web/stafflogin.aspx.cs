@@ -898,6 +898,12 @@ namespace JG_Prospect
                             {
                                 Response.Redirect("~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&IE=1");
                             }
+                            // Check for Touch Point Log Url
+                            if (!string.IsNullOrEmpty(Request.QueryString["returnurl"]) && Request.QueryString["returnurl"].ToLower().Contains("touchpointlog.aspx"))
+                            {
+                                strRedirectUrl = HttpUtility.UrlDecode(Request.Url.Query.Replace("?returnurl=", ""));
+                                Response.Redirect(strRedirectUrl);
+                            }
                             //If user has interview date status it should always see interview instruction with them.
                             else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDate)
                             {
