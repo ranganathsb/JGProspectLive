@@ -697,8 +697,12 @@ namespace JG_Prospect.BLL
             else if (LastUserTouchPoint != null) // send email to receiver
             {
                 // send email to user
-                toEmail = getuserdetails(LastUserTouchPoint.First().UserID).Tables[0].Rows[0]["Email"].ToString();
-                messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
+                var lastUser = getuserdetails(LastUserTouchPoint.First().UserID).Tables[0].Rows[0];
+                toEmail = lastUser["Email"].ToString();
+                if (Convert.ToInt32(lastUser["Id"]) == UserID)
+                    messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
+                else
+                    messageUrl = baseUrl + "Sr_App/edituser.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
             }
             else
             {
