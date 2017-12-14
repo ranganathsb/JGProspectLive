@@ -1483,6 +1483,7 @@
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITSN043_I_e_v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\script Feb v0.1.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\AddDesignationCodeInUserDesigLastSequenceNo.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Alter &amp; Fix Data - tblUserDesigLastSequenceNo.sql" />
     <Content Include="Database Scripts\JitendraPancholi\GetUsersByKeyword.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_GetInstallerUserDetailsByLoginId.sql" />
