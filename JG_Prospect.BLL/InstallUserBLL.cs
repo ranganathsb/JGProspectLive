@@ -668,9 +668,7 @@ namespace JG_Prospect.BLL
 
         public int AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog, string strGUID)
         {
-            string id;
-            int HrId;
-            var LastUserTouchPoint = InstallUserDAL.Instance.GetUserTouchPointLogs(1, 1, UserID).Data;
+            var LastUserTouchPoint = InstallUserDAL.Instance.GetUserTouchPointLogs(0, 1, UserID).Data;
 
             int UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog, strGUID);
             // Send email to User / Recruiter
@@ -686,7 +684,7 @@ namespace JG_Prospect.BLL
             html.Body = html.Body.Replace("{Designation}", sender["Designation"].ToString());
             html.Body = html.Body.Replace("{UserInstallID}", sender["UserInstallID"].ToString());
             html.Body = html.Body.Replace("{ProfileUrl}", baseUrl + "Sr_App/ViewSalesUser.aspx?id=" + sender["Id"].ToString());
-            html.Body = html.Body.Replace("{MessageContent}", ChangeLog);
+            html.Body = html.Body.Replace("{MessageContent}", ChangeLog.Replace("Note :", "").Trim());
             //
             if (LastUserTouchPoint == null && LoginUserID == UserID) // first entry
             {
@@ -694,74 +692,74 @@ namespace JG_Prospect.BLL
                 toEmail = "hr@jmgroveconstruction.com";
                 messageUrl = baseUrl + "Sr_App/edituser.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
             }
-            else if (LoginUserID != UserID) // send email to receiver
+            else if (LastUserTouchPoint != null && LoginUserID == UserID) // send email to receiver
             {
                 // send email to user
-                toEmail = getuserdetails(LastUserTouchPoint.First().UserID).Tables[0].Rows[0]["Email"].ToString();
+                var lastSender = getuserdetails(LastUserTouchPoint.First().UpdatedByUserID).Tables[0].Rows[0];
+                if (Convert.ToInt32(lastSender["Id"]) == UserID)
+                {
+                    toEmail = lastSender["Email"].ToString();
+                    messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
+                }
+                else
+                {
+                    toEmail = lastSender["Email"].ToString();
+                    messageUrl = baseUrl + "Sr_App/edituser.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
+                }
+            }
+            else
+            {
+                var receiver = getuserdetails(UserID).Tables[0].Rows[0];
+                // send email to user
+                toEmail = receiver["Email"].ToString();
                 messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
             }
-            // sender details
-            //if (LoginUserID == UserID) // Send email to Recruiter
-            //{
-            //    //id = getuserdetails(UserID).Tables[0].Rows[0]["AddedByUserId"].ToString();
-            //    //HrId = Convert.ToInt32(!string.IsNullOrEmpty(id) ? id : "0");
-            //    //toEmail = HrId > 0 ? getuserdetails(HrId).Tables[0].Rows[0]["Email"].ToString() : "";
-            //    //messageUrl = baseUrl + "Sr_App/edituser.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
-            //}
-            //else // Send email to User
-            //{
-            //    //toEmail = getuserdetails(UserID).Tables[0].Rows[0]["Email"].ToString();
-            //    //messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
-            //}
             body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
 
             EmailManager.SendEmail("Touch Point Log", new string[] { toEmail }.ToArray(), html.Subject, body, null);
 
             // find all emails
             List<string> emails = new List<string>();
-            emails.Add(toEmail);
-            string[] allWords = ChangeLog.Split('@');
+            // emails.Add(toEmail);
+            string[] allWords = ChangeLog.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var item in allWords)
             {
                 switch (item.Trim().ToLower().Substring(0, item.IndexOf(' ')))
                 {
                     case "justin":
-                        emails.Add("jgrove.georgegrovee@gmail.com");//321
+                        if (toEmail != "jgrove.georgegrovee@gmail.com")
+                            emails.Add("jgrove.georgegrovee@gmail.com");//321
                         // add touch point note entry 
                         break;
                     case "yogesh":
-                        emails.Add("kerconsultancy@hotmail.com");//901
+                        if (toEmail != "kerconsultancy@hotmail.com")
+                            emails.Add("kerconsultancy@hotmail.com");//901
                         break;
                     default:
                         break;
                 }
             }
-            foreach (var item in emails.Distinct())
-            {
-                switch (item)
+            if (emails.Count > 1)
+                foreach (var item in emails.Distinct())
                 {
-                    case "jgrove.georgegrovee@gmail.com":
-                        UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 321, LoginUserInstallID, now, ChangeLog, strGUID);
-                        //id = getuserdetails(UserID).Tables[0].Rows[0]["AddedByUserId"].ToString();
-                        //HrId = Convert.ToInt32(!string.IsNullOrEmpty(id) ? id : "0");
-                        //toEmail = HrId > 0 ? getuserdetails(HrId).Tables[0].Rows[0]["Email"].ToString() : "";
-                        messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
-                        body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
-                        EmailManager.SendEmail("Touch Point Log", new string[] { item }, html.Subject, body, null);
-                        break;
-                    case "kerconsultancy@hotmail.com":
-                        UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 901, LoginUserInstallID, now, ChangeLog, strGUID);
-                        //id = getuserdetails(UserID).Tables[0].Rows[0]["AddedByUserId"].ToString();
-                        //HrId = Convert.ToInt32(!string.IsNullOrEmpty(id) ? id : "0");
-                        //toEmail = HrId > 0 ? getuserdetails(HrId).Tables[0].Rows[0]["Email"].ToString() : "";
-                        messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
-                        body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
-                        EmailManager.SendEmail("Touch Point Log", new string[] { item }, html.Subject, body, null);
-                        break;
-                    default:
-                        break;
+                    switch (item)
+                    {
+                        case "jgrove.georgegrovee@gmail.com":
+                            UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 321, LoginUserInstallID, now, ChangeLog, strGUID);
+                            messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
+                            body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
+                            EmailManager.SendEmail("Touch Point Log", new string[] { item }, html.Subject, body, null);
+                            break;
+                        case "kerconsultancy@hotmail.com":
+                            UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 901, LoginUserInstallID, now, ChangeLog, strGUID);
+                            messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
+                            body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
+                            EmailManager.SendEmail("Touch Point Log", new string[] { item }, html.Subject, body, null);
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            }
             return UserTouchPointLogID;
         }
 
