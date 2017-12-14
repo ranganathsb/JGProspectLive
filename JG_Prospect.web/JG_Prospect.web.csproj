@@ -1434,6 +1434,7 @@
     <Content Include="Database Scripts\executed\bhavik\scripts oct _ITSN034_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN014_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN019_V1.sql" />
+    <Content Include="Database Scripts\executed\Kapil\Executed.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Table_SP_Creation_With_Data_Nov_2016_ITSN0145_v1.0.sql" />
     <Content Include="Database Scripts\executed\yogesh\script April v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script August v0.1.sql" />
@@ -1482,14 +1483,19 @@
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITSN043_I_e_v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\script Feb v0.1.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\AddDesignationCodeInUserDesigLastSequenceNo.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Alter &amp; Fix Data - tblUserDesigLastSequenceNo.sql" />
     <Content Include="Database Scripts\JitendraPancholi\GetUsersByKeyword.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_GetInstallerUserDetailsByLoginId.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_IsValidInstallerUser.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Procedures.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Sp_InsertTouchPointLog.sql" />
     <Content Include="Database Scripts\JitendraPancholi\Tables.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\USP_SetUserDisplayID.sql" />
+    <Content Include="Database Scripts\Kapil\Executed_3.sql" />
+    <Content Include="Database Scripts\Kapil\Executed_4.sql" />
     <Content Include="Database Scripts\Kapil\Latest.sql" />
     <Content Include="Database Scripts\Kapil\Executed_2.sql" />
-    <Content Include="Database Scripts\Kapil\Executed.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\Database Script.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\03-04-2017.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\06-04-2017\GetFrozenTasks.sql" />
@@ -2223,6 +2229,7 @@
     <Content Include="Sr_App\TaskGenerator.aspx" />
     <Content Include="Sr_App\TaskList.aspx" />
     <Content Include="Sr_App\Time_Material.aspx" />
+    <Content Include="Sr_App\TouchPointLog.aspx" />
     <Content Include="Sr_App\UploadFile.aspx" />
     <Content Include="Sr_App\UploadFileCustomerDocs.aspx" />
     <Content Include="Sr_App\userbulkupload.aspx" />
@@ -2605,6 +2612,13 @@
     </Compile>
     <Compile Include="Sr_App\resumeupload.aspx.designer.cs">
       <DependentUpon>resumeupload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\TouchPointLog.aspx.cs">
+      <DependentUpon>TouchPointLog.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\TouchPointLog.aspx.designer.cs">
+      <DependentUpon>TouchPointLog.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\UploadFile.aspx.cs">
       <DependentUpon>UploadFile.aspx</DependentUpon>

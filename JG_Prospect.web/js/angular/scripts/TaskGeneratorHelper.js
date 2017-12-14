@@ -102,39 +102,41 @@ function EditAssignedSubTaskUsers(sender) {
     }
 }
 
-function OnSaveSubTask(obj) {
-
-    ShowAjaxLoader();
-    var taskid = $(obj).attr('data-taskid'); 
-    var desc = GetCKEditorContent('subtaskDesc' + taskid);
+function OnSaveSubTask(taskid,desc) {
+    
     var installID = $('#listId' + taskid).attr('data-listid');
     var TaskLvl = $('#nestLevel' + taskid).val();
     var Class = $('#listId' + taskid).attr('data-label');
 
-    if (TaskLvl == '') TaskLvl = 1;
-    
-    var postData = {
-        ParentTaskId: taskid,
-        InstallId: installID,
-        Description: desc,
-        IndentLevel: TaskLvl,
-        Class: Class
-    };
+    if (desc != undefined && desc.trim() != '') {
 
-    CallJGWebService('SaveTaskMultiLevelChild', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
+        ShowAjaxLoader();   
+        if (TaskLvl == '') TaskLvl = 1;
 
-    function OnAddNewSubTaskSuccess(data) {
-        if (data.d==true) {
-            alert('Task saved successfully.');
-            LoadSubTasks();
+        var postData = {
+            ParentTaskId: taskid,
+            InstallId: installID,
+            Description: desc,
+            IndentLevel: TaskLvl,
+            Class: Class
+        };
+
+        CallJGWebService('SaveTaskMultiLevelChild', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
+
+        function OnAddNewSubTaskSuccess(data) {
+            if (data.d == true) {
+                PreventScroll = 1;
+                alert('Task saved successfully.');
+                LoadSubTasks();
+            }
+            else {
+                alert('Task cannot be saved. Please try again.');
+            }
         }
-        else {
+
+        function OnAddNewSubTaskError(err) {
             alert('Task cannot be saved. Please try again.');
         }
-    }
-
-    function OnAddNewSubTaskError(err) {
-        alert('Task cannot be saved. Please try again.');
     }
     return false;
 

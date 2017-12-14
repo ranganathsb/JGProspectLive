@@ -541,8 +541,7 @@ namespace JG_Prospect.Sr_App.Controls
                 Int32 TaskUpdateId = SaveTaskNote(TaskId, null, null, string.Empty, string.Empty);
 
                 LoadTaskData(TaskId);
-
-                txtNote.Text = string.Empty;
+                Page.Response.Redirect(Page.Request.Url.ToString(), true);
             }
         }
 
