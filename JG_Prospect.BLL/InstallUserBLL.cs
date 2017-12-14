@@ -686,7 +686,7 @@ namespace JG_Prospect.BLL
             html.Body = html.Body.Replace("{Designation}", sender["Designation"].ToString());
             html.Body = html.Body.Replace("{UserInstallID}", sender["UserInstallID"].ToString());
             html.Body = html.Body.Replace("{ProfileUrl}", baseUrl + "Sr_App/ViewSalesUser.aspx?id=" + sender["Id"].ToString());
-            html.Body = html.Body.Replace("{MessageContent}", ChangeLog);
+            html.Body = html.Body.Replace("{MessageContent}", ChangeLog.Replace("Note :", "").Trim());
             //
             if (LastUserTouchPoint == null && LoginUserID == UserID) // first entry
             {
@@ -694,10 +694,17 @@ namespace JG_Prospect.BLL
                 toEmail = "hr@jmgroveconstruction.com";
                 messageUrl = baseUrl + "Sr_App/edituser.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
             }
-            else if (LoginUserID != UserID) // send email to receiver
+            else if (LastUserTouchPoint != null) // send email to receiver
             {
                 // send email to user
                 toEmail = getuserdetails(LastUserTouchPoint.First().UserID).Tables[0].Rows[0]["Email"].ToString();
+                messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
+            }
+            else
+            {
+                var receiver = getuserdetails(UserID).Tables[0].Rows[0];
+                // send email to user
+                toEmail = receiver["Email"].ToString();
                 messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
             }
             // sender details
