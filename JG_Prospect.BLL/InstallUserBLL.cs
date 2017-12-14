@@ -720,43 +720,46 @@ namespace JG_Prospect.BLL
 
             // find all emails
             List<string> emails = new List<string>();
-            emails.Add(toEmail);
-            string[] allWords = ChangeLog.Split('@');
+            // emails.Add(toEmail);
+            string[] allWords = ChangeLog.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
             foreach (var item in allWords)
             {
                 switch (item.Trim().ToLower().Substring(0, item.IndexOf(' ')))
                 {
                     case "justin":
-                        emails.Add("jgrove.georgegrovee@gmail.com");//321
+                        if (toEmail != "jgrove.georgegrovee@gmail.com")
+                            emails.Add("jgrove.georgegrovee@gmail.com");//321
                         // add touch point note entry 
                         break;
                     case "yogesh":
-                        emails.Add("kerconsultancy@hotmail.com");//901
+                        if (toEmail != "kerconsultancy@hotmail.com")
+                            emails.Add("kerconsultancy@hotmail.com");//901
                         break;
                     default:
                         break;
                 }
             }
-            foreach (var item in emails.Distinct())
-            {
-                switch (item)
+            if (emails.Count > 1)
+                foreach (var item in emails.Distinct())
                 {
-                    case "jgrove.georgegrovee@gmail.com":
-                        UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 321, LoginUserInstallID, now, ChangeLog, strGUID);
-                        messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
-                        body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
-                        EmailManager.SendEmail("Touch Point Log", new string[] { item }, html.Subject, body, null);
-                        break;
-                    case "kerconsultancy@hotmail.com":
-                        UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 901, LoginUserInstallID, now, ChangeLog, strGUID);
-                        messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
-                        body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
-                        EmailManager.SendEmail("Touch Point Log", new string[] { item }, html.Subject, body, null);
-                        break;
-                    default:
-                        break;
+                    switch (item)
+                    {
+                        case "jgrove.georgegrovee@gmail.com":
+                            UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 321, LoginUserInstallID, now, ChangeLog, strGUID);
+                            messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
+                            body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
+                            EmailManager.SendEmail("Touch Point Log", new string[] { item }, html.Subject, body, null);
+                            break;
+                        case "kerconsultancy@hotmail.com":
+                            UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 901, LoginUserInstallID, now, ChangeLog, strGUID);
+                            messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
+                            body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
+                            EmailManager.SendEmail("Touch Point Log", new string[] { item }, html.Subject, body, null);
+                            break;
+                        default:
+                            break;
+                    }
                 }
-            }
             return UserTouchPointLogID;
         }
 
