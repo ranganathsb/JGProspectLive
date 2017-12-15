@@ -244,48 +244,51 @@ IF EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'GetUs
       DROP PROCEDURE GetUserTouchPointLogs
   END
  Go
-
- /*
-	GetUserTouchPointLogs 3809,0,10,0
- */
- Create PROCEDURE [dbo].[GetUserTouchPointLogs]      
-(
-	@UserID  Int,
-	@PageNumber Int = 0,
-	@PageSize Int = 10,
-	@TotalResults Int output
-)      
-AS      
-BEGIN
-	Select @TotalResults = Count(T.UserTouchPointLogID)
-			from tblUserTouchPointLog T With(NoLock) 
-		Join tblInstallUsers LU With(NoLock) On T.UpdatedByUserId = LU.Id
-		Join tblInstallUsers U With(NoLock) On T.UserId = U.Id
-	Where T.UserID = @UserID
-	
-	
-	Select T.UserTouchPointLogID, T.UserID, T.UpdatedByUserID, T.UpdatedUserInstallID, T.ChangeDateTime, 
-			T.LogDescription,
-			LU.FristName As UpdatedByFirstName, LU.LastName As UpdatedByLastName, LU.Email As UpdatedByEmail,
-			U.FristName, U.LastName, U.Email, U.Phone,
-			Format(T.ChangeDateTime, 'MM/dd/yyyy hh:mm tt') as ChangeDateTimeFormatted,
-			(
-			select ISNULL(Uu.Username,t2.FristName + ' ' + t2.LastName)  
-			 +' - '+ISNULL(t1.[UserInstallId], t2.[UserInstallId])
-			FROM tblInstallUsers tt  
-			  LEFT OUTER JOIN tblUsers Uu ON Uu.Id = tt.SourceUser  
-			  LEFT OUTER JOIN tblInstallUsers t2 ON t2.Id = tt.SourceUser  
-			  LEFT OUTER JOIN tblInstallUsers ru on tt.RejectedUserId= ru.Id  
-			  LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= Uu.Id
-			  Where tt.id=T.UpdatedByUserID
-			  ) As SourceUser
-			from tblUserTouchPointLog T With(NoLock) 
-		Join tblInstallUsers LU With(NoLock) On T.UpdatedByUserId = LU.Id
-		Join tblInstallUsers U With(NoLock) On T.UserId = U.Id
-	Where T.UserID = @UserID
-	ORDER BY T.ChangeDateTime Desc
-	OFFSET @PageSize * (@PageNumber) ROWS
-	FETCH NEXT @PageSize ROWS ONLY;
+ /*  
+ GetUserTouchPointLogs 3809,0,10,0  
+ */  
+ CREATE PROCEDURE [dbo].[GetUserTouchPointLogs]        
+(  
+ @UserID  Int,  
+ @PageNumber Int = 0,  
+ @PageSize Int = 10,  
+ @TotalResults Int output  
+)        
+AS        
+BEGIN  
+ Select @TotalResults = Count(T.UserTouchPointLogID)  
+   from tblUserTouchPointLog T With(NoLock)   
+  Join tblInstallUsers LU With(NoLock) On T.UpdatedByUserId = LU.Id  
+  Join tblInstallUsers U With(NoLock) On T.UserId = U.Id  
+ Where T.UserID = @UserID  
+   
+   
+ Select T.UserTouchPointLogID, T.UserID, T.UpdatedByUserID, T.UpdatedUserInstallID, T.ChangeDateTime,   
+   T.LogDescription,  
+   LU.FristName As UpdatedByFirstName, LU.LastName As UpdatedByLastName, LU.Email As UpdatedByEmail,  
+   U.FristName, U.LastName, U.Email, U.Phone,  
+   Format(T.ChangeDateTime, 'MM/dd/yyyy hh:mm tt') as ChangeDateTimeFormatted,  
+   /*  (
+   
+   
+   select ISNULL(Uu.Username,t2.FristName + ' ' + t2.LastName)    
+    +' - '+ISNULL(t1.[UserInstallId], t2.[UserInstallId])  
+   FROM tblInstallUsers tt    
+     LEFT OUTER JOIN tblUsers Uu ON Uu.Id = tt.SourceUser    
+     LEFT OUTER JOIN tblInstallUsers t2 ON t2.Id = tt.SourceUser    
+     LEFT OUTER JOIN tblInstallUsers ru on tt.RejectedUserId= ru.Id    
+     LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= Uu.Id  
+     Where tt.id=T.UpdatedByUserID  
+     )*/ 
+     LU.Fristname+' '+LU.LastName+' - ' + ISNULL(LU.UserInstallId,LU.Id)
+     As SourceUser  
+   from tblUserTouchPointLog T With(NoLock)   
+  Join tblInstallUsers LU With(NoLock) On T.UpdatedByUserId = LU.Id  
+  Join tblInstallUsers U With(NoLock) On T.UserId = U.Id  
+ Where T.UserID = @UserID  
+ ORDER BY T.ChangeDateTime Desc  
+ OFFSET @PageSize * (@PageNumber) ROWS  
+ FETCH NEXT @PageSize ROWS ONLY;  
 End
 
 GO

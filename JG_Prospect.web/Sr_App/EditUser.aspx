@@ -272,7 +272,7 @@
                 background: #FFF;
                 color: #000;
             }
-            .notes-table tr a{font-size:10px;}
+            /*.notes-table tr a{font-size:10px;}*/
             .notes-table tr:nth-child(even) a, .notes-popup tr:nth-child(even) a{color:#fff;}
             .notes-table tr th:nth-child(1), .notes-table tr td:nth-child(1) {
                 width: 5%;
@@ -523,7 +523,7 @@
                         var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">';
                         $(data.Data).each(function (i) {
                             tbl += '<tr iuid="'+ installUserId+'" uid="'+data.Data[i].UserID+'" id="' + data.Data[i].UserTouchPointLogID + '">' +
-                                        '<td><a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UserID+'" uid="' + data.Data[i].UserID + '">' + data.Data[i].SourceUser + '<br/>'+data.Data[i].ChangeDateTimeFormatted+'</a></td>' +
+                                        '<td>' + data.Data[i].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UserID+'">' + data.Data[i].SourceUserInstallId + '</a><br/>'+data.Data[i].ChangeDateTimeFormatted+'</td>' +
                                         '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
                                     '</tr>';
                         });
@@ -562,7 +562,7 @@
                         var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
                         $(data.Data).each(function (i) {
                             tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
-                                        '<td><a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UserID+'">' + data.Data[i].SourceUser + '<br/>'+data.Data[i].ChangeDateTimeFormatted+'</a></td>' +
+                                        '<td>' + data.Data[i].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UserID+'">' + data.Data[i].SourceUserInstallId + '</a><br/>'+data.Data[i].ChangeDateTimeFormatted+'</td>' +
                                         '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
                                     '</tr>';
                         });
