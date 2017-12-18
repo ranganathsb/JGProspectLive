@@ -495,7 +495,7 @@ namespace JG_Prospect.DAL
                                 UserID = Convert.ToInt32(item["UserID"]),
                                 UpdatedByUserID = Convert.ToInt32(item["UpdatedByUserID"]),
                                 UpdatedUserInstallID = item["UpdatedUserInstallID"].ToString(),
-                                ChangeDateTime = Convert.ToDateTime(item["ChangeDateTime"]),
+                                ChangeDateTime = Convert.ToDateTime(item["ChangeDateTime"]).ToEST(),
                                 LogDescription = item["LogDescription"].ToString(),
                                 UpdatedByFirstName = item["UpdatedByFirstName"].ToString(),
                                 UpdatedByLastName = item["UpdatedByLastName"].ToString(),
@@ -504,7 +504,7 @@ namespace JG_Prospect.DAL
                                 LastName = item["LastName"].ToString(),
                                 Email = item["Email"].ToString(),
                                 Phone = item["Phone"].ToString(),
-                                ChangeDateTimeFormatted = item["ChangeDateTimeFormatted"].ToString(),
+                                ChangeDateTimeFormatted = Convert.ToDateTime(item["ChangeDateTime"]).ToEST().ToString(),
                                 SourceUser = item["SourceUser"].ToString(),
                                 SourceUserInstallId = item["SourceUserInstallId"].ToString(),
                                 SourceUsername = item["SourceUsername"].ToString()

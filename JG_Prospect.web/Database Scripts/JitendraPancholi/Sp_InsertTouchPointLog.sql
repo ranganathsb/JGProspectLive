@@ -1,6 +1,3 @@
-USE [JGBS_Dev_New]
-GO
-
 /****** Object:  StoredProcedure [dbo].[Sp_InsertTouchPointLog]    Script Date: 11/29/2017 1:58:52 AM ******/
 DROP PROCEDURE [dbo].[Sp_InsertTouchPointLog]
 GO
@@ -40,7 +37,8 @@ BEGIN
 		   ,[CurrentUserGUID])
      VALUES
            (@userID , @loginUserID ,@loginUserInstallID            
-           , @LogTime
+           , /*@LogTime*/
+		   GETUTCDATE()
            ,@changeLog
 		   ,@CurrGUID)
 	

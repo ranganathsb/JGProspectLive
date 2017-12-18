@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -63,6 +64,17 @@ namespace JG_Prospect.BLL
     {
         #region Email
         public static bool SendEmail(string strEmailTemplate, string[] strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
+        {
+            Thread email = new Thread(delegate ()
+            {
+                SendEmailAsync(strEmailTemplate, strToAddress, strSubject, strBody, lstAttachments, lstAlternateView);
+            });
+            email.IsBackground = true;
+            email.Start();
+            return true;
+        }
+
+        private static bool SendEmailAsync(string strEmailTemplate, string[] strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
         {
             bool retValue = false;
             //if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(strToAddress))
@@ -161,8 +173,19 @@ namespace JG_Prospect.BLL
             return retValue;
         }
 
+
         public static void SendEmailInternal(string strToAddress, string strSubject, string strBody)
         {
+            Thread email = new Thread(delegate ()
+            {
+                SendEmailAsync(strToAddress, strSubject, strBody);
+            });
+            email.IsBackground = true;
+            email.Start();            
+        }
+
+        private static void SendEmailAsync(string strToAddress, string strSubject, string strBody)
+        {            
             try
             {
                 string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();

@@ -233,40 +233,6 @@
         .itdashtitle {
             margin-left: 7px;
         }
-
-        .orange {
-            background-color: orange;
-        }
-
-        .yellow {
-            background-color: yellow;
-        }
-
-        .gray {
-            background-color: Gray;
-        }
-
-        .red {
-            background-color: red;
-        }
-
-        .black {
-            background-color: black;
-        }
-
-        .lightgray {
-            background-color: lightgray;
-        }
-
-        .green {
-            background-color: green;
-        }
-
-        .defaultColor {
-            background-color: #F6F1F3;
-        }
-        
-            
     </style>
     <link href="../css/chosen.css" rel="stylesheet" />
     <link href="../Styles/dd.css" rel="stylesheet" />

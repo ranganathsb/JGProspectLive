@@ -678,7 +678,9 @@ namespace JG_Prospect.BLL
             HTMLTemplatesMaster html = HTMLTemplateBLL.Instance.GetHTMLTemplateMasterById(HTMLTemplates.HR_EditSales_TouchpointLog_Email);
             // sender details
             var sender = getuserdetails(LoginUserID).Tables[0].Rows[0];
-            string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? baseUrl + "UploadeProfile/default.jpg" : baseUrl + "Employee/ProfilePictures/" + sender["Picture"].ToString();
+            string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? "default.jpg"
+                                : sender["Picture"].ToString().Replace("~/UploadeProfile/", "");
+            pic = baseUrl + "UploadeProfile/" + pic;
             html.Body = html.Body.Replace("{ImageUrl}", pic);
             html.Body = html.Body.Replace("{Name}", sender["FristName"].ToString() + " " + sender["LastName"].ToString());
             html.Body = html.Body.Replace("{Designation}", sender["Designation"].ToString());

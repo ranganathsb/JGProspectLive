@@ -2443,8 +2443,8 @@ input[type='checkbox']:checked.largecheckbox {
 .gridtbl thead th {
     background-color: #000;
 }
- /* The Modal (background) */
- .modal{
+/* The Modal (background) */
+.modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -2470,31 +2470,31 @@ input[type='checkbox']:checked.largecheckbox {
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
     animation-name: animatetop;
-    animation-duration: 0.4s
+    animation-duration: 0.4s;
 }
 
 /* Add Animation */
 @-webkit-keyframes animatetop {
     from {
         top: -300px;
-        opacity: 0
+        opacity: 0;
     }
 
     to {
         top: 0;
-        opacity: 1
+        opacity: 1;
     }
 }
 
 @keyframes animatetop {
     from {
         top: -300px;
-        opacity: 0
+        opacity: 0;
     }
 
     to {
         top: 0;
-        opacity: 1
+        opacity: 1;
     }
 }
 
@@ -2518,7 +2518,11 @@ input[type='checkbox']:checked.largecheckbox {
     background-color: #fff;
     color: white;
 }
-.modal-header h2 {margin-left: 0px !important}
+
+    .modal-header h2 {
+        margin-left: 0px !important;
+    }
+
 .modal-body {
     padding: 2px 16px;
 }
@@ -2529,6 +2533,7 @@ input[type='checkbox']:checked.largecheckbox {
     color: white;
     text-align: right;
 }
+
 .mui-btn--primary.mui-btn--flat {
     color: #2196F3;
     background-color: transparent;
@@ -2607,9 +2612,10 @@ button, input, optgroup, select, textarea {
     line-height: 1.15;
     margin: 0;
 }
-.modal-icons img{
-    height:32px;
-    width:32px;
+
+.modal-icons img {
+    height: 32px;
+    width: 32px;
 }
 
 .modal-body input {
@@ -2620,6 +2626,7 @@ button, input, optgroup, select, textarea {
     border-top-width: 0px;
     font-size: 20px;
 }
+
 ul.auto-complete-users {
     width: 400px;
     list-style: none;
@@ -2651,6 +2658,7 @@ ul.auto-complete-users {
     -moz-border-radius: 8px;
     border-radius: 8px;
 }
+
 ul.auto-complete-users {
     width: 400px;
     list-style: none;
@@ -2665,14 +2673,61 @@ ul.auto-complete-users {
     top: 180px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
+
 .auto-complete-users li {
     margin: 0;
     padding: 0;
-    display: inline-block;width: 100%;
+    display: inline-block;
+    width: 100%;
 }
-.auto-complete-users li div{padding: 5px;
-    width: 100%;}
-.auto-complete-users li:hover{cursor:pointer;background:#007506;color:#fff;}
+
+    .auto-complete-users li div {
+        padding: 5px;
+        width: 100%;
+    }
+
+    .auto-complete-users li:hover {
+        cursor: pointer;
+        background: #007506;
+        color: #fff;
+    }
+
 .employeeinstruction a {
     color: blue !important;
+}
+
+.orange {
+    background-color: orange;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+.gray {
+    background-color: Gray;
+    color: #fff;
+}
+
+.red {
+    background-color: red;
+    color: #fff;
+}
+
+.black {
+    background-color: black;
+    color: #fff;
+}
+
+.lightgray {
+    background-color: lightgray;
+}
+
+.green {
+    background-color: green;
+    color: #fff;
+}
+
+.defaultColor {
+    background-color: #F6F1F3;
 }
