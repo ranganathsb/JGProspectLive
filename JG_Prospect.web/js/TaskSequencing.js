@@ -10,7 +10,7 @@ function initializeAngular() {
 function SetLatestSequenceForAddNewSubTask() {
 
     var sequencetextbox = $('#divNewAddSeq');
-    getLastAvailableSequence(sequencetextbox,false);
+    getLastAvailableSequence(sequencetextbox, false);
 
 
 }
@@ -208,9 +208,9 @@ function ShowTaskSequenceDashBoard(DesId, UserId) {
 
     //debugger;
     //var TechTask = false;
-    var DesignationIds = DesId;
+    var DesignationIds = DesId == '0' ? '' : DesId;
 
-    sequenceScope.UserId = UserId;    
+    sequenceScope.UserId = UserId == '0' ? '' : UserId;
     //search initially all tasks with sequencing.
 
     // set designation id to be search by default
@@ -222,11 +222,8 @@ function ShowTaskSequenceDashBoard(DesId, UserId) {
     //debugger;
 
     var defaultTabIndex;
-    var UserStatus = $('#ddlUserStatus').val();
-    if (UserStatus != undefined)
-        sequenceScope.UserStatus = UserStatus;
-    else
-        sequenceScope.UserStatus = 0;
+    var UserStatus = $('#ddlUserStatus').length > 0 ? $('#ddlUserStatus').val().join() : ':';
+    sequenceScope.UserStatus = UserStatus;
 
     var StartDate = $('#ContentPlaceHolder1_txtfrmdate').val();
     if (StartDate != undefined)
@@ -263,8 +260,12 @@ function ShowAllClosedTasksDashBoard(DesIds, UserId, pageSize) {
 
     //debugger;
     sequenceScope.pageSize = pageSize;
-    sequenceScope.UserSelectedDesigIdsClosedTaks = DesIds;
-    //console.log("Task designation is: " + DesignationIds);    
+    sequenceScope.UserSelectedDesigIdsClosedTaks = DesIds == '0' ? '' : DesIds;
+    var UserStatus = $('#ddlUserStatus').length > 0 ? $('#ddlUserStatus').val().join() : ':';
+
+    sequenceScope.UserStatus = UserStatus;
+
+    //console.log("Task designation is: " + DesignationIds);
     //debugger;
     //Set if tech task than load tech task related sequencing.
     sequenceScope.UserId = UserId;
@@ -360,14 +361,13 @@ function showEditTaskSequence(element) {
 
 }
 
-function showEditTaskSubSequence(element)
-{
+function showEditTaskSubSequence(element) {
 
     var TaskID = $(element).attr('data-taskid');
     var Seq = parseInt($(element).attr('data-taskseq'));
 
-    var sequenceDiv = $('#divSeq' + TaskID);     
-    
+    var sequenceDiv = $('#divSeq' + TaskID);
+
     sequenceDiv.removeClass('hide');
 }
 
@@ -380,7 +380,7 @@ function setDropDownChangedData(dropdown) {
     if (sequenceDiv) {
 
         var DesignationID = $(dropdown).val();
-        getLastAvailableSequence(TaskID, DesignationID,true);
+        getLastAvailableSequence(TaskID, DesignationID, true);
 
     }
 
@@ -420,7 +420,7 @@ function setFirstRowAutoData() {
 
     }
     else {
-        
+
 
         // set default last available sequence in designation.
         DesignationID = $(ddlDesigSeqClientID).val();// take selected designation from top master designation dropdown.
@@ -453,13 +453,13 @@ function getLastAvailableSequence(TaskID, DesignationID, isFromDropDown) {
             var sequence = JSON.parse(data.d);
 
             var valExisting = parseInt($('#txtSeq' + TaskID).val());
-            
+
 
             if (isNaN(valExisting) || valExisting == 0 || valExisting + 1 >= parseInt(sequence.Table[0].Sequence) || isFromDropDown) {
                 $('#txtSeq' + TaskID).val(parseInt(sequence.Table[0].Sequence));
             }
 
-           // console.log($('#txtSeq' + TaskID).val());
+            // console.log($('#txtSeq' + TaskID).val());
 
             DisplySequenceBox(TaskID, sequence.Table[0].Sequence);
 
@@ -1040,8 +1040,7 @@ function SaveTaskSubSequence(hyperlink) {
 }
 
 
-function harddeleteTask(TaskId)
-{
+function harddeleteTask(TaskId) {
     var proceed = confirm('are you sure you want to delete this task and all its children with details?');
 
     if (proceed == true) {
@@ -1056,7 +1055,7 @@ function harddeleteTask(TaskId)
         function OnUpdateHardDeleteTaskSuccess(response) {
             HideAjaxLoader();
 
-            if (response) {                
+            if (response) {
                 HideAjaxLoader();
                 $(updateRepeaterButton).click();
                 alert('All tasks and related informations are deleted successfully!');

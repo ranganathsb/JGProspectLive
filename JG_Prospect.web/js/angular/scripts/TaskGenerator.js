@@ -217,6 +217,8 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                 });
             });
 
+            
+
             $('.MainTask').each(function () {
                 //Load Multilevel Children
                 var id = $(this).attr('data-taskid');
@@ -292,6 +294,10 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                     }
                 }, 1);
             });
+
+            //----------- start DP -----
+            GridDropZone();
+                //----------- end DP -----
         }, 2);
 
 
@@ -372,7 +378,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
             });
         }
 
-        GridDropZone();
+        //GridDropZone();
     };
 
     //Helper Functions

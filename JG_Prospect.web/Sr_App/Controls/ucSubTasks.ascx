@@ -925,7 +925,7 @@
                                             </tr>
                                             <tr>
                                                 <td>
-                                                    <div class="lSSlideOuter sub-task-attachments" style="max-width: 250px;">
+                                                    <div class="lSSlideOuter sub-task-attachments" style="max-width: 420px;">
 
                                                         <div class="lSSlideWrapper usingCss">
                                                             <ul id="lightSlider_{{SubTask.TaskId}}" class="gallery list-unstyled sub-task-attachments-list">
@@ -2957,9 +2957,7 @@
 
                 LoadImageGallery('.sub-task-attachments-list');
 
-                //----------- start DP -----
-                GridDropZone();
-                //----------- end DP -----
+
 
                 SetApprovalUI();
 
