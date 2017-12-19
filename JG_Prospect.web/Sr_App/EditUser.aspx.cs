@@ -904,7 +904,7 @@ namespace JG_Prospect
 
                 string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
                 int userID = Convert.ToInt32(JGSession.LoginUserID);
-                InstallUserBLL.Instance.AddTouchPointLogRecord(userID, StatusId, strUserInstallId, DateTime.UtcNow, "User status updated to " + Status, "");
+                InstallUserBLL.Instance.AddTouchPointLogRecord(userID, StatusId, strUserInstallId, DateTime.UtcNow, "User status updated to " + Status, "", (int)TouchPointSource.EditUserPage);
             }
             else if (e.CommandName == "EditAddedByUserInstall")
             {
@@ -4856,7 +4856,7 @@ namespace JG_Prospect
         {
             string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
             int userID = Convert.ToInt32(JGSession.LoginUserID);
-            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, strValueToAdd, "");
+            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, strValueToAdd, "", (int)TouchPointSource.EditUserPage);
         }
 
         [WebMethod]
@@ -4867,11 +4867,11 @@ namespace JG_Prospect
         }
 
         [WebMethod]
-        public static string AddNotes(int id, string note)
+        public static string AddNotes(int id, string note, int touchPointSource)
         {
             string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
             int userID = Convert.ToInt32(JGSession.LoginUserID);
-            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, "Note : " + note, "");
+            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, "Note : " + note, "", touchPointSource);
             return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
         }
 

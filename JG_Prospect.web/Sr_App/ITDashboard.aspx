@@ -2140,7 +2140,7 @@
                         if (Request.QueryString["PWT"] == "1")
                         {
                             %>
-                    <div class="notes-section" tuid="<%=loggedInUserId %>" style="width:98%;"">
+                    <div class="notes-section" tuid="<%=loggedInUserId %>" style="width:98%;"">                        
                         <div class="notes-popup">
                             <div class="heading">
                                 <div class="title">User Touch Point Logs</div>
@@ -2159,6 +2159,7 @@
                                 </div>
                             </div>
                             <div class="add-notes-container">
+                                <input type="hidden" class="touchPointSource" value="<%=(int)JG_Prospect.Common.TouchPointSource.InterviewPopup %>"/>
                                 <textarea id="note-text" class="note-text textbox"></textarea>
                                 <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addPopupNotes(this)" />
                             </div>
@@ -2303,7 +2304,7 @@
             </div>
         </div>
 
-        <div class="notes-section" tuid="<%=loggedInUserId %>" style="width:98%;">
+        <div class="notes-section" tuid="<%=loggedInUserId %>" style="width:98%;">           
             <div class="notes-popup">
                 <div class="heading">
                     <div class="title">User Touch Point Logs</div>
@@ -2322,6 +2323,7 @@
                     </div>
                 </div>
                 <div class="add-notes-container">
+                     <input type="hidden" class="touchPointSource" value="<%=(int)JG_Prospect.Common.TouchPointSource.ITDashboard %>"/>
                     <textarea id="note-text" class="note-text textbox"></textarea>
                     <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addPopupNotes(this)" />
                 </div>
@@ -3215,11 +3217,12 @@
         }
         function addNotes(sender, uid) {
             var note = $(sender).parent().find('.note-text').val();
+            var touchPointSource = $(sender).parent().find('.touchPointSource').val();
             if (note != '')
                 ajaxExt({
                     url: '/Sr_App/edituser.aspx/AddNotes',
                     type: 'POST',
-                    data: '{ id: ' + uid + ', note: "' + note + '" }',
+                    data: '{ id: ' + uid + ', note: "' + note + '", touchPointSource: ' + touchPointSource + ' }',
                     showThrobber: true,
                     throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                     success: function (data, msg) {

@@ -666,11 +666,11 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone, phoneText, phoneType, UserID, PhoneExtNo, PhoneISDCode, ClearDataBeforInsert);
         }
 
-        public int AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog, string strGUID)
+        public int AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog, string strGUID, int touchPointSource)
         {
             var LastUserTouchPoint = InstallUserDAL.Instance.GetUserTouchPointLogs(0, 1, UserID).Data;
 
-            int UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog, strGUID);
+            int UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog, strGUID, touchPointSource);
             // Send email to User / Recruiter
             // Get Html Template
             string messageUrl = string.Empty, toEmail = string.Empty, body = string.Empty;
@@ -747,13 +747,13 @@ namespace JG_Prospect.BLL
                     switch (item)
                     {
                         case "jgrove.georgegrovee@gmail.com":
-                            UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 321, LoginUserInstallID, now, ChangeLog, strGUID);
+                            UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 321, LoginUserInstallID, now, ChangeLog, strGUID, touchPointSource);
                             messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
                             body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
                             EmailManager.SendEmail("Touch Point Log", new string[] { item }, html.Subject, body, null);
                             break;
                         case "kerconsultancy@hotmail.com":
-                            UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 901, LoginUserInstallID, now, ChangeLog, strGUID);
+                            UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 901, LoginUserInstallID, now, ChangeLog, strGUID, touchPointSource);
                             messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID;
                             body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
                             EmailManager.SendEmail("Touch Point Log", new string[] { item }, html.Subject, body, null);

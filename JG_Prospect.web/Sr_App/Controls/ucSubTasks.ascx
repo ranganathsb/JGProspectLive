@@ -3439,7 +3439,7 @@ function setSelectedUsersLink() {
                 ajaxExt({
                     url: '/Sr_App/edituser.aspx/AddNotes',
                     type: 'POST',
-                    data: '{ id: ' + uid + ', note: "' + note + '" }',
+                    data: '{ id: ' + uid + ', note: "' + note + '", touchPointSource: ' + <%=(int)JG_Prospect.Common.TouchPointSource.TaskGenerator %> + ' }',
                     showThrobber: true,
                     throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                     success: function (data, msg) {
