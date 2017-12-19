@@ -2651,8 +2651,8 @@ ul.auto-complete-users {
     font-size: 10px;
     border: 1px solid gray;
     padding: 15px;
-    max-height: 400px;
-    /* min-height: 100px; */
+    /* max-height: 400px;
+    min-height: 100px; */
     margin: 10px 0;
     /* -webkit-border-radius: 12px; */
     -moz-border-radius: 8px;

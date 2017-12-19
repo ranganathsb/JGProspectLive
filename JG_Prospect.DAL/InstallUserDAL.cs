@@ -27,7 +27,7 @@ namespace JG_Prospect.DAL
             private set {; }
         }
 
-        public DataSet returndata;        
+        public DataSet returndata;
 
         public void AddUserNotes(string Notes, int UserID, int AddedByID)
         {
@@ -375,7 +375,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public int AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID)
+        public int AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID, int touchPointSource)
         {
             try
             {
@@ -389,7 +389,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@LogTime", DbType.DateTime, LogTime);
                     database.AddInParameter(command, "@changeLog", DbType.String, changeLog);
                     database.AddInParameter(command, "@CurrGUID", DbType.String, strGUID);
-
+                    database.AddInParameter(command, "@TouchPointSource", DbType.Int32, touchPointSource);
                     DataSet dsTemp = database.ExecuteDataSet(command);
                     return Convert.ToInt32(dsTemp.Tables[0].Rows[0]["UserTouchPointLogID"]);
                 }
@@ -507,7 +507,8 @@ namespace JG_Prospect.DAL
                                 ChangeDateTimeFormatted = Convert.ToDateTime(item["ChangeDateTime"]).ToEST().ToString(),
                                 SourceUser = item["SourceUser"].ToString(),
                                 SourceUserInstallId = item["SourceUserInstallId"].ToString(),
-                                SourceUsername = item["SourceUsername"].ToString()
+                                SourceUsername = item["SourceUsername"].ToString(),
+                                TouchPointSource = item["TouchPointSource"] != null ? Convert.ToInt32(item["TouchPointSource"]) : 0
                             });
                         }
                     }
