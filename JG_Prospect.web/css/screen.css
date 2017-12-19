@@ -2696,38 +2696,44 @@ ul.auto-complete-users {
     color: blue !important;
 }
 
-.orange {
-    background-color: orange;
+
+.popover__content li{
+    list-style:none;
 }
 
-.yellow {
-    background-color: yellow;
+.popover__content {
+    display: none;
+    position: absolute;
+    transform: translate(0,10px);
+    background-color: #FFF;
+    padding: 15px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    width: 200px;
+    z-index: 9999;
+    line-height: 2;
 }
 
-.gray {
-    background-color: Gray;
-    color: #fff;
+    .popover__content:before {
+        position: absolute;
+        z-index: -1;
+        content: '';
+        right: calc(50% - 10px);
+        top: -8px;
+        border-style: solid;
+        border-width: 0 10px 10px 10px;
+        border-color: transparent transparent #FFF transparent;
+        transition-duration: 0.3s;
+        transition-property: transform;
+    }
+
+.popover__wrapper:hover .popover__content {
+    z-index: 10;
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0,-20px);
+    transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
 }
 
-.red {
-    background-color: red;
-    color: #fff;
-}
-
-.black {
-    background-color: black;
-    color: #fff;
-}
-
-.lightgray {
-    background-color: lightgray;
-}
-
-.green {
-    background-color: green;
-    color: #fff;
-}
-
-.defaultColor {
-    background-color: #F6F1F3;
+.popover__message {
+    text-align: center;
 }

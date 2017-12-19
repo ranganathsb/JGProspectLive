@@ -46,9 +46,9 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetAllTaskWithSequence(page, pageSize, DesignationIds, IsTechTask, HighlightedTaskID);
         }
 
-        public DataSet GetAllInProAssReqTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, int UserStatus, string StartDate, string EndDate)
+        public DataSet GetAllInProAssReqTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, string TaskUserStatus, string UserIds, string StartDate, string EndDate)
         {
-            return TaskGeneratorDAL.Instance.GetAllInProAssReqTaskWithSequence(page, pageSize, DesignationIds, UserStatus, StartDate, EndDate);
+            return TaskGeneratorDAL.Instance.GetAllInProAssReqTaskWithSequence(page, pageSize, DesignationIds, TaskUserStatus, UserIds, StartDate, EndDate);
         }
 
         public DataSet GetAllPartialFrozenTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask)
@@ -213,7 +213,7 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation);
         }
 
-        public DataSet GetInstallUsers(int key, string Designation, int userstatus)
+        public DataSet GetInstallUsers(int key, string Designation, string userstatus)
         {
             return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation, userstatus);
         }
@@ -467,9 +467,9 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetInProgressTasks(userid, desigid, vSearch, pageindex, pagesize);
         }
 
-        public DataSet GetClosedTasks(string userid, string desigid, string vSearch, int pageindex, int pagesize)
+        public DataSet GetClosedTasks(string userid, string desigid, string TaskUserStatus, string vSearch, int pageindex, int pagesize)
         {
-            return TaskGeneratorDAL.Instance.GetClosedTasks(userid, desigid, vSearch, pageindex, pagesize);
+            return TaskGeneratorDAL.Instance.GetClosedTasks(userid, desigid, TaskUserStatus, vSearch, pageindex, pagesize);
         }
         //------- End DP ----------
 

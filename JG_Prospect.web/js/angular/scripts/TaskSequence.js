@@ -1,5 +1,5 @@
-﻿app.controller('TaskSequenceSearchController',function ($scope, $compile, $http, $timeout,$filter) {
-    applyFunctions($scope, $compile, $http, $timeout,$filter);
+﻿app.controller('TaskSequenceSearchController', function ($scope, $compile, $http, $timeout, $filter) {
+    applyFunctions($scope, $compile, $http, $timeout, $filter);
 });
 
 function getTasksWithSearchandPaging(methodName, $http) {
@@ -20,7 +20,7 @@ function getTasksForSubSequencing($http, methodName, filters) {
 
 
 
-function applyFunctions($scope, $compile, $http, $timeout , $filter) {
+function applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
     $scope.Tasks = [];
     $scope.ClosedTask = [];
@@ -36,7 +36,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
     $scope.EndDate = '';
     $scope.IsTechTask = true;
     $scope.ForDashboard = false;
-    $scope.UserId = 0;
+    $scope.UserId = '';
     $scope.vSearch = "";
     $scope.pageFrom = "0";
     $scope.pageTo = "0";
@@ -72,12 +72,75 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             setFirstRowAutoData();
             SetSeqApprovalUI();
             SetChosenAssignedUser();
+
+            var flag = false;
+            //Show only first assigned user, rest on mouseover
+            $('#tblStaffSeq .chosen-container').each(function (i, obj) {
+                //Hide User Selection
+                $(obj).find('li:not(:first):not(:last)').css({ "display": "none" });
+
+                //Add class to li                
+                $(obj).addClass('popover__wrapper');
+                //$(obj).find('li:not(:first)').addClass('popover__wrapper');
+            });         
+
+             //Build Hyperlinks ddcbSeqAssignedStaff
+            $('#tblStaffSeq .chosen-container .search-choice').each(function (i, obj) {
+                var itemIndex = $(this).children('.search-choice-close').attr('data-option-array-index');
+                if (itemIndex) {
+                    //console.log($(this).parent('.chosen-choices').parent('.chosen-container'));
+                    var selectoptionid = '#' + $(this).parent('.chosen-choices').parent('.chosen-container').attr('id').replace("_chosen", "") + ' option';
+                    var chspan = $(this).children('span');
+                    var text = chspan.text();
+                    var name = text.split(' - ')[0]+ ' - ';
+                    var code = text.split(' - ')[1];
+                    if (chspan && code != undefined) {
+                        chspan.html(name+ '<a style="color:blue;" href="/Sr_App/ViewSalesUser.aspx?id=' + $(selectoptionid)[itemIndex].value + '">' + code + '</a>');
+                        chspan.bind("click", "a", function () {
+                            window.open($(this).children("a").attr("href"), "_blank", "", false);
+                        });
+                    }
+                }
+            });
+
+            //Set MouseHover Popup
+            $('.chosen-choices').mouseenter(function () {
+                var parent = $(this).parent().parent().attr('class');
+                if (parent.indexOf('chosen-div') >= 0) {
+                    if ($(this).find('li').length > 1) {
+
+                        $('#popoverCloseButton').click(function () {
+                            $('.popover__content').fadeOut(200);
+                        });
+                        $('.popover__content').mouseleave(function () {
+                            $('.popover__content').hide();
+                        });
+
+                        //Show Popover
+                        var parentOffset = $(this).parent().offset();
+                        var relX = parentOffset.left;
+                        var relY = parentOffset.top + 40;
+
+                        $('.popover__content').css({ "left": relX });
+                        $('.popover__content').css({ "top": relY });
+                        $('.popover__content').fadeIn(200);
+
+
+                        var data = $(this).html();
+                        data = data.replace('type="text"', 'type="hidden"');
+                        //console.log(data);
+                        $('.popover__content div:not(:first)').html(data.replace(/none/gi, 'block'));
+                    }
+                    //$(this).find('li:not(:first)').css({ "display": "block" });
+                }
+            });
+
         }, 1);
     };
 
     $scope.onTechEnd = function () {
         $timeout(function () {
-              if ($scope.IsTechTask) {
+            if ($scope.IsTechTask) {
                 setFirstRowAutoData();
                 SetSeqApprovalUI();
                 SetChosenAssignedUser();
@@ -85,7 +148,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
         }, 1);
     };
 
-   
+
     $scope.getTasks = function (page) {
 
         if (sequenceScope.UserStatus == undefined)
@@ -105,7 +168,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
         $scope.TechTasks = [];
         //debugger;
         //get all Customers
-        getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard, UserStatus: $scope.UserStatus, StartDate: $scope.StartDate, EndDate: $scope.EndDate }).then(function (data) {
+        getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard, TaskUserStatus: $scope.UserStatus, StartDate: $scope.StartDate, EndDate: $scope.EndDate }).then(function (data) {
             console.log(data);
             //debugger;
             $scope.loader.loading = false;
@@ -140,7 +203,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
     };
 
     $scope.getTechTasks = function (page) {
-       
+
         if (sequenceScope.UserStatus == undefined)
             sequenceScope.UserStatus = 0;
         if (sequenceScope.StartDate == undefined)
@@ -177,7 +240,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             });
 
         }
-    };   
+    };
 
     $scope.toRoman = function (num) {
 
@@ -185,8 +248,8 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             return false;
         var digits = String(+num).split(""),
             key = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
-                   "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC",
-                   "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"],
+                "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC",
+                "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"],
             roman = "",
             i = 3;
         while (i--)
@@ -214,7 +277,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             //console.log(results.RecordCount.TotalRecords);		
             //console.log(results.RecordCount.TotalPages);		
         });
-    };		
+    };
 
 
     $scope.correctDataforAngular = function (ary) {
@@ -230,13 +293,13 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
             }
         }
 
-       
+
         return arr;
 
     }
 
     $scope.getAssignUsers = function () {
-        debugger;
+        //debugger;
 
         getDesignationAssignUsers($http, "GetAssignUsers", { TaskDesignations: $scope.UserSelectedDesigIds.join() }).then(function (data) {
 
@@ -260,7 +323,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
         //var selected = false;
 
         //if (AssignedUsers) {
-         
+
         //   $scope.AssignedUsersArray = angular.fromJson("["+AssignedUsers+"]");
 
         //   angular.forEach($scope.AssignedUsersArray, function (value, key) {           
@@ -280,7 +343,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
         }
         return $scope.AssignedUsersArray;
     };
-    
+
     $scope.SetDesignForSearch = function (value, isReload) {
         $scope.UserSelectedDesigIds = [];
         $scope.UserSelectedDesigIds.push(value);
@@ -311,7 +374,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
         }
         else {
             $scope.getTasks();
-        }        
+        }
     };
 
     $scope.getDesignationString = function (Designations) {
@@ -491,7 +554,7 @@ function applyFunctions($scope, $compile, $http, $timeout , $filter) {
 
 }
 
-function initializeOnAjaxUpdate(scope, compile, http, timeout,filter) {
+function initializeOnAjaxUpdate(scope, compile, http, timeout, filter) {
 
 
     Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
@@ -499,7 +562,7 @@ function initializeOnAjaxUpdate(scope, compile, http, timeout,filter) {
         compile(elem.children())(scope);
         scope.$apply();
 
-        applyFunctions(scope, compile, http, timeout,filter);
+        applyFunctions(scope, compile, http, timeout, filter);
     });
 
     //Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function (sender, args) {

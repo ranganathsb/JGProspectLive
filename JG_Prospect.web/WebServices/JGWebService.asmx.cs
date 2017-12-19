@@ -758,7 +758,7 @@ namespace JG_Prospect.WebServices
                     TaskDesignations = "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24";
                 }
             }
-            
+
             // As subtasks are not having any seperate designations other than Parent task, not need to fecth users every time.
             DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, TaskDesignations);
             string strMessage;
@@ -783,7 +783,7 @@ namespace JG_Prospect.WebServices
 
 
         [WebMethod(EnableSession = true)]
-        public String GetAllClosedTasks(int page, int pageSize, String DesignationIDs, string userid, string vSearch)
+        public String GetAllClosedTasks(int page, int pageSize, String DesignationIDs, string userid, string TaskUserStatus, string vSearch)
         {
             string strMessage = string.Empty;
             DataSet dtResult = null;
@@ -793,9 +793,16 @@ namespace JG_Prospect.WebServices
                 Int32.TryParse(JGSession.LoginUserID, out UserId);
                 userid = UserId.ToString();
             }
+            else
+            {
+                //Extract Selected Task & User Status
+                TaskUserStatus = GenerateStatusCodes(TaskUserStatus, true);
+            }
 
-            dtResult = TaskGeneratorBLL.Instance.GetClosedTasks(userid, DesignationIDs, vSearch, page, pageSize);
-            
+
+
+            dtResult = TaskGeneratorBLL.Instance.GetClosedTasks(userid, DesignationIDs, TaskUserStatus, vSearch, page, pageSize);
+
             if (dtResult != null && dtResult.Tables.Count > 0)
             {
                 dtResult.DataSetName = "TasksData";
@@ -852,26 +859,26 @@ namespace JG_Prospect.WebServices
                                                 );
             dtResult.Tables[0].Columns.Add("className");
 
-            DataTable copyTable = dtResult.Tables[0].Clone();            
+            DataTable copyTable = dtResult.Tables[0].Clone();
             copyTable.TableName = "Tasks";
 
             bool isFirstRow = true;
 
-            foreach(DataRow row in dtResult.Tables[0].Select("NestLevel=1","TaskId ASC"))
+            foreach (DataRow row in dtResult.Tables[0].Select("NestLevel=1", "TaskId ASC"))
             {
-                string tid = row[0].ToString();                
+                string tid = row[0].ToString();
                 string className = isFirstRow ? "FirstRow" : "AlternateRow";
                 row["className"] = className;
-                
+
                 //Toggle ClassName
                 isFirstRow = !isFirstRow;
-                
+
                 //Add Parent
                 DataRow dr = copyTable.NewRow();
                 copyTable.ImportRow(row);
-                
+
                 DataRow[] rows = dtResult.Tables[0].Select("ParentTaskId=" + tid, "TaskId ASC");
-                foreach(DataRow r in rows)
+                foreach (DataRow r in rows)
                 {
                     string tid2 = r[0].ToString();
 
@@ -881,7 +888,7 @@ namespace JG_Prospect.WebServices
                     copyTable.ImportRow(r);
 
                     DataRow[] r3 = dtResult.Tables[0].Select("ParentTaskId=" + tid2, "TaskId ASC");
-                    foreach(DataRow r2 in r3)
+                    foreach (DataRow r2 in r3)
                     {
                         //Add Level 3 Child
                         DataRow dr3 = copyTable.NewRow();
@@ -891,7 +898,7 @@ namespace JG_Prospect.WebServices
                 }
             }
 
-            
+
 
             dtResult.Tables.Add(copyTable);
             if (dtResult != null && dtResult.Tables.Count > 0)
@@ -919,10 +926,15 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID, string UserId, bool ForDashboard, int UserStatus, string StartDate, string EndDate)
+        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID, string UserId, bool ForDashboard, string TaskUserStatus, string StartDate, string EndDate)
         {
             string strMessage = string.Empty;
             DataSet dtResult = null;
+            if (UserId.Equals("0"))
+                UserId = "";
+
+            //Extract Selected Task & User Status
+            TaskUserStatus = GenerateStatusCodes(TaskUserStatus, false);
 
             if (ForDashboard)
             {
@@ -933,28 +945,8 @@ namespace JG_Prospect.WebServices
                 }
                 else
                 {
-                    if (UserId == "0")
-                        dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, UserStatus, StartDate, EndDate);
-                    else
-                        dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), IsTechTask, UserId, true);
+                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, TaskUserStatus, UserId, StartDate, EndDate);
                 }
-                //if (dtResult != null && dtResult.Tables.Count > 0)
-                //{
-                //    dtResult.Tables[0].TableName = "Tasks";
-                //    dtResult.Tables[1].TableName = "SubSeqTasks";
-                //    dtResult.Tables[2].TableName = "RecordCount";
-                //    dtResult.DataSetName = "TasksData";
-
-                //    System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
-                //    doc.LoadXml(dtResult.GetXml());
-                //    strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
-                //}
-                //else
-                //{
-                //    strMessage = String.Empty;
-                //}
-
-                //return strMessage;
             }
 
             else
@@ -995,6 +987,41 @@ namespace JG_Prospect.WebServices
             return strMessage;
         }
 
+        private static string GenerateStatusCodes(string TaskUserStatus, bool ForClosedGrid)
+        {
+            string UserStatus = "";
+            string TaskStatus = "";
+            foreach (string value in TaskUserStatus.Split(",".ToCharArray()))
+            {
+                if (value.StartsWith("U"))
+                {
+                    UserStatus += value.TrimStart("U".ToCharArray()) + ",";
+                }
+                else if (value.StartsWith("T"))
+                {
+                    if (ForClosedGrid)
+                    {
+                        if (!"1,2,3,4,8".ToString().Contains(value.TrimStart("T".ToCharArray())))
+                        {
+                            TaskStatus += value.TrimStart("T".ToCharArray()) + ",";
+                        }
+                    }
+                    else
+                    {
+                        if ("1,2,3,4,8".ToString().Contains(value.TrimStart("T".ToCharArray())))
+                        {
+                            TaskStatus += value.TrimStart("T".ToCharArray()) + ",";
+                        }
+                    }
+                    
+                }
+            }
+            TaskStatus = TaskStatus.TrimEnd(",".ToCharArray());
+            UserStatus = UserStatus.TrimEnd(",".ToCharArray());
+
+            TaskUserStatus = TaskStatus + ":" + UserStatus;
+            return TaskUserStatus;
+        }
 
         [WebMethod(EnableSession = true)]
         public String GetAllFrozenTasksWithPaging(int? page, int? pageSize, String DesignationIDs, string UserId, bool IsTechTask)
@@ -1206,7 +1233,7 @@ namespace JG_Prospect.WebServices
         public bool HardDeleteTask(Int64 TaskId)
         {
             String filesToDelete = TaskGeneratorBLL.Instance.HardDeleteTask(TaskId);
-            
+
             if (!String.IsNullOrEmpty(filesToDelete))
             {
                 DeleteTaskFiles(filesToDelete);
@@ -1220,11 +1247,11 @@ namespace JG_Prospect.WebServices
         private void DeleteTaskFiles(string filesToDelete)
         {
             // Seperate each file name to delete.
-            String[] files = filesToDelete.Split(new char[] { ','},StringSplitOptions.RemoveEmptyEntries);
+            String[] files = filesToDelete.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (String fileName in files) // Remove each files.
             {
-                String filePath = Server.MapPath(String.Concat("~/TaskAttachments/",fileName));// Map physical path on server.
+                String filePath = Server.MapPath(String.Concat("~/TaskAttachments/", fileName));// Map physical path on server.
 
                 if (File.Exists(filePath))
                 {
@@ -1232,14 +1259,14 @@ namespace JG_Prospect.WebServices
                     {
                         File.Delete(filePath);// Remove file from server.
                     }
-                    catch (Exception ex )
+                    catch (Exception ex)
                     {
 
                     }
 
                 }
 
-            } 
+            }
         }
 
 
@@ -1455,7 +1482,7 @@ namespace JG_Prospect.WebServices
             }
         }
 
-        
+
 
         private void SendEmailToAssignedUsers(int intTaskId, string strInstallUserIDs)
         {
@@ -1481,7 +1508,7 @@ namespace JG_Prospect.WebServices
                     strBody = strBody.Replace("#Fname#", fullname);
                     strBody = strBody.Replace("#TaskLink#", string.Format("{0}/sr_app/TaskGenerator.aspx?TaskId={1}&{2}", JGApplicationInfo.GetSiteURL(), intTaskId, strTaskLinkTitle));
 
-                    
+
                     strBody = strBody.Replace("#TaskTitle#", string.Format("{0}/sr_app/TaskGenerator.aspx?TaskId={1}", JGApplicationInfo.GetSiteURL(), intTaskId));
                     strBody = strHeader + strBody + strFooter;
 
@@ -1779,7 +1806,7 @@ namespace JG_Prospect.WebServices
 
                 LastName = Convert.ToString(dsUser.Tables[0].Rows[0]["LastName"]);
                 Designation = Convert.ToString(dsUser.Tables[0].Rows[0]["Designation"]);
-               EmployeeType = Convert.ToString(dsUser.Tables[0].Rows[0]["EmpType"]);
+                EmployeeType = Convert.ToString(dsUser.Tables[0].Rows[0]["EmpType"]);
             }
 
             SendEmail(
@@ -1801,7 +1828,7 @@ namespace JG_Prospect.WebServices
             //AssignedTask if any or Default
             if (TaskId > 0)
             {
-                AssignedTaskToUser(UserID, TaskId); 
+                AssignedTaskToUser(UserID, TaskId);
             }
 
             return true;
@@ -1849,7 +1876,7 @@ namespace JG_Prospect.WebServices
 
             return strMessage;
         }
-        
+
         #region "-- Private Methods --"
         private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, int DesignitionId, string HireDate, string EmpType, string PayRates, HTMLTemplates objHTMLTemplateType, List<Attachment> Attachments = null, string strManager = "")
         {
@@ -1995,7 +2022,7 @@ namespace JG_Prospect.WebServices
         #region "-- Employee Legal Desclaimer --"
 
         [WebMethod(EnableSession = true)]
-        public String GetEmployeeLegalDesclaimer(Int32 DesignationId , JGConstant.EmployeeLegalDesclaimerUsedFor UsedFor)
+        public String GetEmployeeLegalDesclaimer(Int32 DesignationId, JGConstant.EmployeeLegalDesclaimerUsedFor UsedFor)
         {
 
             String strLegalDesclaimer = string.Empty;
@@ -2014,7 +2041,7 @@ namespace JG_Prospect.WebServices
                 else
                 {
                     strLegalDesclaimer = String.Empty;
-                } 
+                }
             }
 
             return strLegalDesclaimer;
@@ -2030,14 +2057,14 @@ namespace JG_Prospect.WebServices
 
             String strInstruction = string.Empty;
 
-           DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.InterviewDateAutoEmail, DesignationId.ToString());
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.InterviewDateAutoEmail, DesignationId.ToString());
 
             //DataSet EmployeeInstruction = EmployeeInstructionBLL.Instance.GetEmployeeInstructionByDesignationId(DesignationId, UsedFor);
-            
+
 
             //if (EmployeeInstruction != null && EmployeeInstruction.Tables.Count > 0)
 
-            if(objHTMLTemplate != null)
+            if (objHTMLTemplate != null)
             {
                 //DataTable dtResult = EmployeeInstruction.Tables[0];
 
@@ -2047,8 +2074,8 @@ namespace JG_Prospect.WebServices
                 //    strInstruction = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
                 //}
 
-                strInstruction = objHTMLTemplate.Body;  
-                
+                strInstruction = objHTMLTemplate.Body;
+
             }
             else
             {

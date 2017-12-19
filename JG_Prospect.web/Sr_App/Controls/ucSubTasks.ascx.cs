@@ -2018,11 +2018,11 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void btnSaveGridAttachment_Click(object sender, EventArgs e)
         {
-            Button lnkpop = (Button)sender;
             int vTaskid = Convert.ToInt32(hdDropZoneTaskId.Value.ToString());
             UploadUserAttachements(null, Convert.ToInt64(vTaskid), hdnGridAttachment.Value, JGConstant.TaskFileDestination.SubTask);
             hdnGridAttachment.Value = hdDropZoneTaskId.Value = string.Empty;
-            SetSubTaskDetails();
+            Response.Redirect(Request.RawUrl);
+            //SetSubTaskDetails();
         }
 
         protected void btnUpdateRepeater_Click(object sender, EventArgs e)
