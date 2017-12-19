@@ -236,10 +236,12 @@
 
         .orange {
             background-color: orange;
+            color:black;
         }
 
         .yellow {
             background-color: yellow;
+            color: black;
         }
 
         .gray {
@@ -248,10 +250,12 @@
 
         .red {
             background-color: red;
+            color:white;
         }
 
         .black {
             background-color: black;
+            color:white;
         }
 
         .lightgray {
@@ -260,6 +264,7 @@
 
         .green {
             background-color: green;
+            color:white;
         }
 
         .defaultColor {
@@ -392,6 +397,17 @@
     cursor: pointer;
     border-radius: 5px;
 }
+            .refresh{
+                height: 20px;
+                cursor: pointer;
+                box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+                padding: 5px;
+                background-color: #fff;
+            }
+            #refreshInProgTasks{
+                vertical-align: middle;
+                margin: 10px;                
+            }
             
     </style>
     <link href="../css/chosen.css" rel="stylesheet" />
@@ -1655,7 +1671,7 @@
                     <td>
                         <span id="lblDesignation">Designation</span></td>
                     <td>
-                        <span id="lblUserStatus">User Status</span><span style="color: red">*</span></td>
+                        <span id="lblUserStatus">User & Task Status</span><span style="color: red">*</span></td>
                     <td>
                         <span id="lblAddedBy">Users</span></td>
                     <td style="width:250px">
@@ -1699,11 +1715,27 @@
                         </select>
                     </td>
                     <td>
-                        <select id="ddlUserStatus">
-                            <%--<option value="0">All</option>--%>
-                            <option value="1">Active</option>
-                            <option value="6">Offer Made</option>
-                            <option value="5">Interview Date</option>
+                        <select data-placeholder="Select Designation" class="chosen-dropDownStatus" multiple style="width: 200px;" id="ddlUserStatus">
+                            
+                            <option selected value="A0">All</option>
+                            
+                            <optgroup label="User Status">
+                                <option value="U1">Active</option>
+                                <option value="U6">Offer Made</option>
+                                <option value="U5">Interview Date</option>
+                            </optgroup>
+                            <optgroup label="Task Status">
+                                <option value="T4">In Progress</option>
+                                <option value="T2">Request</option>
+                                <option value="T3">Assigned</option>
+                                <option value="T1">Open</option>
+                                <option value="T8">Specs In Progress-NOT OPEN</option>
+                                <option value="T11">Test Commit</option>
+                                <option value="T12">Live Commit</option>
+                                <option value="T7">Closed</option>
+                                <option value="T14">Billed</option>
+                                <option value="T9">Deleted</option>
+                            </optgroup>
                         </select>
                     </td>
                     <td>
@@ -1762,6 +1794,10 @@
                             <span id="lblof">of</span>
                             <span id="lblCount" style="color: red;">{{pageOf}}</span>
                             <span id="lblselectedchk" style="font-weight: bold;"></span>
+                            <img src="/img/refresh.png" class="refresh" id="refreshInProgTasks">
+                        </div>
+                        <div ng-show="loader.loading" style="align-content: center;width: 90%;text-align: center;" class="">                            
+                            <img src="../img/ajax-loader.gif" style="vertical-align:middle">Please Wait...
                         </div>
                         <div style="clear: both"></div>
                         <div class="div-table-row-header">
@@ -1809,7 +1845,7 @@
                             <!-- Parent Task & SubTask Title ends -->
 
                             <!-- Status & Assigned To starts -->
-                            <div class="div-table-col seq-taskstatus">
+                            <div class="div-table-col seq-taskstatus chosen-div">
                                 <select id="drpStatusSubsequence" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
                                     <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
                                     <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
@@ -1833,7 +1869,7 @@
                                 </select>
                                 <br />
 
-                                <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssignedStaff" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                <select class="ddlAssignedUsers" <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssignedStaff" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                     <option
                                         ng-repeat="item in DesignationAssignUsers"
                                         value="{{item.Id}}"
@@ -1841,6 +1877,9 @@
                                         class="{{item.CssClass}}">{{item.FristName}}
                                     </option>
                                 </select>
+                                  
+
+
 
                             </div>
                             <!-- Status & Assigned To ends -->
@@ -1975,7 +2014,7 @@
                                     <!-- Parent Task & SubTask Title ends -->
 
                                     <!-- Status & Assigned To starts -->
-                                    <div class="div-table-col seq-taskstatus">
+                                    <div class="div-table-col seq-taskstatus chosen-div">
                                         <select id="drpStatusSubsequenceNested" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
                                             <option ng-selected="{{TechTask.Status == '1'}}" value="1">Open</option>
                                             <option ng-selected="{{TechTask.Status == '2'}}" style="color: red" value="2">Requested</option>
@@ -2104,18 +2143,14 @@
                         </div>
                     </div>
 
-                    <div class="text-center">
-                        <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getTasks(page)"></jgpager>
-                    </div>
-                    <div ng-show="loader.loading" style="position: absolute; left: 50%; bottom: 10%">
-                        Loading...
-                        <img src="../img/ajax-loader.gif" />
-                    </div>
+                    
 
                 </div>
 
             </div>
-
+            <div class="text-center" style="float:right">
+                        <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getTasks(page)"></jgpager>
+                    </div>
             <!-- Interview Date popup starts -->
 
             <div id="HighLightedTask" class="modal hide">
@@ -2334,10 +2369,10 @@
             <table width="100%">
                 <tbody>
                     <tr>
-                        <td width="300px" align="left">
+                        <td width="200px" align="left">
                             <h2 class="itdashtitle">Commits, Closed-Billed</h2>
                         </td>
-                        <td></td>
+                        <td><img src="/img/refresh.png" class="refresh" id="refreshClosedTask"></td>
                         <td></td>
                         <td></td>
                         <td style="text-align: right">Number of Records: 
@@ -2372,7 +2407,7 @@
 
             <span id="ContentPlaceHolder1_Label1"></span>
             <div id="dibClosedTask" ng-controller="ClosedTaskController">
-                <table class="table dashboard" rules="all" enablesorting="true" id="ContentPlaceHolder1_grdTaskClosed" style="background-color: White; width: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0" border="1">
+                <table class="table dashboard" rules="all" enablesorting="true" id="ContentPlaceHolder1_grdTaskClosed" style="background-color: White; width: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0" border="1" >
                     <thead>
                         <tr class="trHeader " style="color: White;">
                             <th scope="col" style="width: 100px;" align="center">Assigned To</th>
@@ -2383,7 +2418,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-class="{red: item.Status==='12', black : item.Status==='7', green: item.Status==='14', gray: item.Status==='9'}" data-ng-repeat="item in ClosedTask">
+                        <tr ng-class="{red: item.Status==='12', black : item.Status==='7', green: item.Status==='14', gray: item.Status==='9'}" data-ng-repeat="item in ClosedTask" repeat-end="onClosedTaskEnd()">
                             <td style="width: 100px;" valign="middle" align="center">
                                 <span id="ContentPlaceHolder1_grdTaskClosed_lblAssignedUser_0">{{item.Assigneduser}}</span>
                             </td>
@@ -2393,7 +2428,9 @@
                             <td style="width: 300px;" valign="middle" align="justify">
                                 {{item.Title}}
                             </td>
-                            <td style="width: 100px;">&nbsp;</td>
+                            <td style="width: 100px; text-align:center" class="TotalHours">
+                                {{item.EstimatedHours}}
+                            </td>
                             <td style="width: 120px;" valign="middle" align="center">
                                 <select id="drpStatusClosed" onchange="changeTaskStatusClosed(this);" data-highlighter="{{item.TaskId}}">
                                     <option ng-selected="{{item.Status == '0'}}" value="0">--All--</option>
@@ -2418,6 +2455,17 @@
                                     <%} %>
                                 </select>
                             </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table style="background-color: White; width: 100%; border-collapse: collapse;" cellspacing="0" cellpadding="0" border="1">
+                    <tbody>
+                        <tr>
+                            <td style="width:100px;"></td>
+                            <td style="width:100px;"></td>
+                            <td style="width:300px;"></td>
+                            <td style="width:100px;text-align:left"><b>(Total) IT Lead:  {{totalITLead}} , User: {{totalUser}} </b></td>
+                            <td style="width:120px;"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -2456,6 +2504,15 @@
             </div>
         <asp:HiddenField id="hdnUserId" runat="server"/>
     </div>
+    <div class="push popover__content">
+        <div style="
+    float: right;
+    top: 0px;
+    position: absolute;
+    left: 210px;
+    "><a href="#/" id="popoverCloseButton">x</a></div>
+                                    <div class="content"></div>
+                                  </div>
 
     <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
     
@@ -2481,9 +2538,9 @@
                         var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
                         $(data.Data).each(function (i) {
                             tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
-                                        '<td><a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Data[i].UserID + '">' + data.Data[i].SourceUser + '<br/>' + data.Data[i].ChangeDateTimeFormatted + '</a></td>' +
-                                        '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
-                                    '</tr>';
+                                '<td><a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Data[i].UserID + '">' + data.Data[i].SourceUser + '<br/>' + data.Data[i].ChangeDateTimeFormatted + '</a></td>' +
+                                '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
+                                '</tr>';
                         });
                         tbl += '</table>';
                         $('.notes-popup .content').html(tbl);
@@ -2536,7 +2593,7 @@
                 data: data,
                 success: function (result) {
                     alert("Task Status Changed.");
-                    
+
                     var dids = ""; var uids = '';
                     if ($('.' + ddlDesigSeqClientID).val() != undefined)
                         dids = $('.' + ddlDesigSeqClientID).val().join();
@@ -2544,7 +2601,7 @@
                         uids = $('.chosen-select-users').val().join();
 
                     var attrs = $('#pnlNewFrozenTask').attr('class').split(' ');
-                    var cls = attrs[attrs.length-1];
+                    var cls = attrs[attrs.length - 1];
 
                     if (cls != 'hide') {
                         ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).val(), $("#ddlSelectFrozenTask").val().join());
@@ -2596,9 +2653,10 @@
         }
 
         $(document).ready(function () {
-            Paging($(this));            
+            Paging($(this));
             $(".chosen-select-multi").chosen();
             $('.chosen-dropDown').chosen();
+            $('.chosen-dropDownStatus').chosen();
             $('.chosen-dropdown-FrozenTasks').chosen();
             $(".chosen-select-users").chosen({ no_results_text: "No users found!" });
             $("#ddlSelectUserClosedTask").chosen({ no_results_text: "No users found!" });
@@ -2632,11 +2690,9 @@
                 fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
                 fillUsers(ddlDesigSeqClientIDFrozenTasks, 'ddlSelectFrozenTask', 'lblLoadingFrozen');
             }
-
-            $("#ddlUserStatus").msDropDown();
         });
 
-               
+
 
         $(window).load(function () {
             checkNShowTaskPopup();
@@ -2654,12 +2710,13 @@
 
                 $('.' + ddlDesigSeqClientID).change(function (e) {
                     resetChosen('#ddlDesignationSeq');
-                    ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), 0);
+                    ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), '');
                     ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize)
                     fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
                 });
 
                 $('#ddlUserStatus').change(function () {
+                    //resetChosen("#ddlUserStatus");
                     $('.' + ddlDesigSeqClientID).trigger('change');
                 });
 
@@ -2673,6 +2730,14 @@
 
                 $('#' + '<%=txtTodate.ClientID%>').change(function () {
                     $('.' + ddlDesigSeqClientID).trigger('change');
+                });
+
+                $('#refreshClosedTask').on('click', function () {
+                    ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize);
+                });
+
+                $('#refreshInProgTasks').on('click', function () {
+                    ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join());
                 });
 
 
@@ -2722,7 +2787,7 @@
             sequenceScope.IsTechTask = false;
 
             // Load initial tasks for user.
-            ShowTaskSequenceDashBoard(desId, 0);
+            ShowTaskSequenceDashBoard(desId, '');
             //Load Closed Tasks
             desIds = $(".chosen-select-multi").val();
             if (desIds == undefined) { desIds = ''; }
@@ -2772,6 +2837,22 @@
             // 
             var did = $('.' + selector).val().join();
             var ustatus = $('#ddlUserStatus').val();
+            var TaskStatus = '';
+            var UserStatus = '';
+
+            //Extract User Status from MultiStatusType DropDown
+            $.each(ustatus, function (key, element){
+                if (element.substr(0, 1) == 'T') {
+                    TaskStatus += element.replace('T', '') + ',';
+                }
+                else if (element.substr(0, 1) == 'U') {
+                    UserStatus += element.replace('U', '') + ',';
+                }
+            });
+            TaskStatus = TaskStatus.slice(0, TaskStatus.length - 1);
+            UserStatus = UserStatus.slice(0, UserStatus.length - 1);
+            ustatus = UserStatus;
+
             var options = $('#' + fillDDL);
             $('#ddlSelectFrozenTask_chosen').css({ "width": "300px" });
             $('#ddlFrozenTasksDesignations_chosen').css({ "width": "300px" });
@@ -2785,7 +2866,7 @@
                 url: "ajaxcalls.aspx/GetUsersByDesignationIdWithUserStatus",
                 dataType: "json",
                 contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({ designationId: did, userStatus:ustatus }),
+                data: JSON.stringify({ designationId: did, userStatus: ustatus }),
                 success: function (data) {
                     options.empty();
                     options.append($("<option selected='selected' />").val('0').text('All'));
@@ -2795,14 +2876,14 @@
                         var result = [];
                         result = JSON.parse(data.d);
                         $.each(result, function () {
-                            var names = this.FristName.split(' - ');                            
+                            var names = this.FristName.split(' - ');
                             var Class = 'activeUser';
                             if (this.Status == '5')
                                 Class = 'IOUser';
 
                             var name = names[0] + '&nbsp;-&nbsp;';
-                            var link = names[1] != null && names[1] != '' ? '<a style="color:blue;" href="javascript:;" onclick=redir("/Sr_App/ViewSalesUser.aspx?id=' + this.Id +'")>' + names[1] + '</a>' : '';
-                            options.append($('<option class="' + Class +'" />').val(this.Id).html(name + link));
+                            var link = names[1] != null && names[1] != '' ? '<a style="color:blue;" href="javascript:;" onclick=redir("/Sr_App/ViewSalesUser.aspx?id=' + this.Id + '")>' + names[1] + '</a>' : '';
+                            options.append($('<option class="' + Class + '" />').val(this.Id).html(name + link));
                         });
                         //$("#" + fillDDL).prop('disabled', false);
                     }
@@ -3067,64 +3148,65 @@
         }
 
 
-        
 
-        
+
+
 
         function SetFrozenTaskAutoSuggestion() {
 
-             $("#txtSearchUserFrozen").catcomplete({
-                 delay: 500,
-                 source: function (request, response) {
+            $("#txtSearchUserFrozen").catcomplete({
+                delay: 500,
+                source: function (request, response) {
 
-                     if (request.term == "") {
-                         ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-                         ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-                         $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
-                         return false;
-                     }
+                    if (request.term == "") {
+                        ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                        ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                        $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
+                        return false;
+                    }
 
-                     $.ajax({
-                         type: "POST",
-                         url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
-                         dataType: "json",
-                         contentType: "application/json; charset=utf-8",
-                         data: JSON.stringify({ searchterm: request.term }),
-                         success: function (data) {
-                             // Handle 'no match' indicated by [ "" ] response
-                             if (data.d) {
-                                 ////
-                                 response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                             }
-                             // remove loading spinner image.                                
-                             $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
-                         }
-                     });
-                 },
-                 minLength: 0,
-                 select: function (event, ui) {
-                     //
-                     //alert(ui.item.value);
-                     //alert(ui.item.id);
-                     $("#txtSearchUserFrozen").val(ui.item.value);
-                     //TriggerSearch();
-                     ShowFrozenTaskSequenceDashBoard(0, ui.item.id);
-                     ShowNonFrozenTaskSequenceDashBoard(0, ui.item.id);
-                 }
-             });
-         }
+                    $.ajax({
+                        type: "POST",
+                        url: "ajaxcalls.aspx/GetTaskUsersForDashBoard",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchterm: request.term }),
+                        success: function (data) {
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
+                                ////
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $("#txtSearchUserFrozen").removeClass("ui-autocomplete-loading");
+                        }
+                    });
+                },
+                minLength: 0,
+                select: function (event, ui) {
+                    //
+                    //alert(ui.item.value);
+                    //alert(ui.item.id);
+                    $("#txtSearchUserFrozen").val(ui.item.value);
+                    //TriggerSearch();
+                    ShowFrozenTaskSequenceDashBoard(0, ui.item.id);
+                    ShowNonFrozenTaskSequenceDashBoard(0, ui.item.id);
+                }
+            });
+        }
 
-         function SetInProTaskAutoSuggestion() {
+        function SetInProTaskAutoSuggestion() {
 
-             $("#txtSearchUser").catcomplete({
-                 delay: 500,
-                 source: function (request, response) {
+            $("#txtSearchUser").catcomplete({
+                delay: 500,
+                source: function (request, response) {
 
-                     if (request.term == "") {
-                         ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), 0);
-                         $("#txtSearchUser").removeClass("ui-autocomplete-loading");
-                         return false;
-                     }
+                    if (request.term == "") {
+                        ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), '');
+                        ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize);
+                        $("#txtSearchUser").removeClass("ui-autocomplete-loading");
+                        return false;
+                    }
 
                     $.ajax({
                         type: "POST",
@@ -3151,181 +3233,181 @@
                     $("#txtSearchUser").val(ui.item.value);
                     //TriggerSearch();
                     ShowTaskSequenceDashBoard(0, ui.item.id);
-                    ShowAllClosedTasksDashBoard(0, ui.item.id, pageSize)
+                    ShowAllClosedTasksDashBoard(0, ui.item.id, pageSize);
                 }
             });
         }
 
-         function SetInProTaskAutoSuggestionUI() {
-             //
-             //console.log("SetInProTaskAutoSuggestionUI called");
-             $.widget("custom.catcomplete", $.ui.autocomplete, {
-                 _create: function () {
-                     this._super();
-                     this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                 },
-                 _renderMenu: function (ul, items) {
-                     var that = this,
-                         currentCategory = "";
-                     $.each(items, function (index, item) {
-                         //
-                         var li;
-                         if (item.Category != currentCategory) {
-                             ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                             currentCategory = item.Category;
-                         }
-                         li = that._renderItemData(ul, item);
-                         if (item.Category) {
-                             li.attr("aria-label", item.Category + " : " + item.label);
-                         }
-                     });
-                 }
-             });
-         }
-        
-         function SetTaskCounterPopup() {
-
-            $('#' +'<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
-                // 
-                ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-                ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-            });
-            $('#' + '<%=lblFrozenTaskCounter.ClientID%>').click(function () {
-                
-                ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-                ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+        function SetInProTaskAutoSuggestionUI() {
+            //
+            //console.log("SetInProTaskAutoSuggestionUI called");
+            $.widget("custom.catcomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                        currentCategory = "";
+                    $.each(items, function (index, item) {
+                        //
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
+                        }
+                    });
+                }
             });
         }
 
-        function checkDropdown() {
+        function SetTaskCounterPopup() {
+
+            $('#' +'<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
+                 // 
+                 ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                 ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+             });
+             $('#' + '<%=lblFrozenTaskCounter.ClientID%>').click(function () {
+
+                ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+            });
+         }
+
+         function checkDropdown() {
          <%--   $('#<%=ddlDesigFrozen.ClientID %> [type="checkbox"]').each(function () {
                 $(this).click(function () { console.log($(this).prop('checked')); })
             });--%>
-        }
+         }
 
-        function FreezeTask(sender) {
+         function FreezeTask(sender) {
 
-            var $sender = $(sender);
+             var $sender = $(sender);
 
-            var adminCheckBox = $sender.attr('data-id');
+             var adminCheckBox = $sender.attr('data-id');
 
-            var strTaskId = $sender.attr('data-taskid');
-            var strHoursId = $sender.attr('data-hours-id');
-            var strPasswordId = $sender.attr('data-id');
+             var strTaskId = $sender.attr('data-taskid');
+             var strHoursId = $sender.attr('data-hours-id');
+             var strPasswordId = $sender.attr('data-id');
 
-            var $tr = $('div.approvepopup[data-taskid="' + strTaskId + '"]');
-            var postData;
-            var MethodToCall;
+             var $tr = $('div.approvepopup[data-taskid="' + strTaskId + '"]');
+             var postData;
+             var MethodToCall;
 
-            if (adminCheckBox && adminCheckBox.includes("txtAdminPassword")) {
-                postData = {
-                    strTaskApprovalId: $tr.find('input[id*="hdnTaskApprovalId"]').val(),
-                    strTaskId: strTaskId,
-                    strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
-                };
-                MethodToCall = "AdminFreezeTask";
-            }
-            else {
-                postData = {
-                    strEstimatedHours: $tr.find('input[data-id="' + strHoursId + '"]').val(),
-                    strTaskApprovalId: $tr.find('input[id*="hdnTaskApprovalId"]').val(),
-                    strTaskId: strTaskId,
-                    strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
-                };
-                MethodToCall = "FreezeTask";
-            }
-
-
-            CallJGWebService(MethodToCall, postData, OnFreezeTaskSuccess);
-
-            function OnFreezeTaskSuccess(data) {
-                if (data.d.Success) {
-                    alert(data.d.Message);
-                    HidePopup('.approvepopup')
-                }
-                else {
-                    alert(data.d.Message);
-                }
-            }
-        }
-
-        function FreezeSeqTask(sender) {
-
-            var $sender = $(sender);
-            console.log(sender);
-            var adminCheckBox = $sender.attr('data-id');
-            console.log(adminCheckBox);
-            var strTaskId = $sender.attr('data-taskid');
-            var strHoursId = $sender.attr('data-hours-id');
-            var strPasswordId = $sender.attr('data-id');
-
-            var $tr = $('div.seqapprovepopup[data-taskid="' + strTaskId + '"]');
-            var postData;
-            var MethodToCall;
-
-            if (adminCheckBox && adminCheckBox.includes("txtngstaffAdminPassword")) {
-                alert('AdminFreezeTask');
-                postData = {
-                    strTaskApprovalId: '',
-                    strTaskId: strTaskId,
-                    strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
-                };
-                MethodToCall = "AdminFreezeTask";
-            }
-            else {
-                postData = {
-                    strEstimatedHours: $tr.find('input[data-id="' + strHoursId + '"]').val(),
-                    strTaskApprovalId: '',
-                    strTaskId: strTaskId,
-                    strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
-                };
-                MethodToCall = "FreezeTask";
-            }
+             if (adminCheckBox && adminCheckBox.includes("txtAdminPassword")) {
+                 postData = {
+                     strTaskApprovalId: $tr.find('input[id*="hdnTaskApprovalId"]').val(),
+                     strTaskId: strTaskId,
+                     strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
+                 };
+                 MethodToCall = "AdminFreezeTask";
+             }
+             else {
+                 postData = {
+                     strEstimatedHours: $tr.find('input[data-id="' + strHoursId + '"]').val(),
+                     strTaskApprovalId: $tr.find('input[id*="hdnTaskApprovalId"]').val(),
+                     strTaskId: strTaskId,
+                     strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
+                 };
+                 MethodToCall = "FreezeTask";
+             }
 
 
-            CallJGWebService(MethodToCall, postData, OnFreezeTaskSuccess);
+             CallJGWebService(MethodToCall, postData, OnFreezeTaskSuccess);
 
-            function OnFreezeTaskSuccess(data) {
-                if (data.d.Success) {
-                    alert(data.d.Message);
-                    HidePopup('.seqapprovepopup');
-                    sequenceScope.refreshTasks();
-                }
-                else {
-                    alert(data.d.Message);
-                }
-            }
-        }
+             function OnFreezeTaskSuccess(data) {
+                 if (data.d.Success) {
+                     alert(data.d.Message);
+                     HidePopup('.approvepopup')
+                 }
+                 else {
+                     alert(data.d.Message);
+                 }
+             }
+         }
+
+         function FreezeSeqTask(sender) {
+
+             var $sender = $(sender);
+             console.log(sender);
+             var adminCheckBox = $sender.attr('data-id');
+             console.log(adminCheckBox);
+             var strTaskId = $sender.attr('data-taskid');
+             var strHoursId = $sender.attr('data-hours-id');
+             var strPasswordId = $sender.attr('data-id');
+
+             var $tr = $('div.seqapprovepopup[data-taskid="' + strTaskId + '"]');
+             var postData;
+             var MethodToCall;
+
+             if (adminCheckBox && adminCheckBox.includes("txtngstaffAdminPassword")) {
+                 alert('AdminFreezeTask');
+                 postData = {
+                     strTaskApprovalId: '',
+                     strTaskId: strTaskId,
+                     strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
+                 };
+                 MethodToCall = "AdminFreezeTask";
+             }
+             else {
+                 postData = {
+                     strEstimatedHours: $tr.find('input[data-id="' + strHoursId + '"]').val(),
+                     strTaskApprovalId: '',
+                     strTaskId: strTaskId,
+                     strPassword: $tr.find('input[data-id="' + strPasswordId + '"]').val()
+                 };
+                 MethodToCall = "FreezeTask";
+             }
+
+
+             CallJGWebService(MethodToCall, postData, OnFreezeTaskSuccess);
+
+             function OnFreezeTaskSuccess(data) {
+                 if (data.d.Success) {
+                     alert(data.d.Message);
+                     HidePopup('.seqapprovepopup');
+                     sequenceScope.refreshTasks();
+                 }
+                 else {
+                     alert(data.d.Message);
+                 }
+             }
+         }
 
 
 
-        function SetInterviewDatePopupEmployeeInstructions(DesigId) {
+         function SetInterviewDatePopupEmployeeInstructions(DesigId) {
 
-            var postData;
-            var MethodToCall = "GetEmployeeInstructionByDesignationId";
-            postData = {
-                DesignationId: DesigId,
-                UsedFor: 1 //constant used for InterviewDate popup from EmployeeInstructionUsedFor in JGConstant.cs file.                   
-            };
+             var postData;
+             var MethodToCall = "GetEmployeeInstructionByDesignationId";
+             postData = {
+                 DesignationId: DesigId,
+                 UsedFor: 1 //constant used for InterviewDate popup from EmployeeInstructionUsedFor in JGConstant.cs file.                   
+             };
 
 
-            CallJGWebService(MethodToCall, postData, OnInterviewDatePopupEmployeeInstructionsSuccess);
+             CallJGWebService(MethodToCall, postData, OnInterviewDatePopupEmployeeInstructionsSuccess);
 
-            function OnInterviewDatePopupEmployeeInstructionsSuccess(data) {
-                if (data.d) {
-                    //console.log(data.d);
-                    //var responseObj = JSON.parse(data.d);
-                   // if (responseObj) {
-                        $('#InterviewInstructions').html(data.d);
-                    //}
-                }
-            }
-        }
+             function OnInterviewDatePopupEmployeeInstructionsSuccess(data) {
+                 if (data.d) {
+                     //console.log(data.d);
+                     //var responseObj = JSON.parse(data.d);
+                     // if (responseObj) {
+                     $('#InterviewInstructions').html(data.d);
+                     //}
+                 }
+             }
+         }
 
-        function GetEmployeeInterviewDetails() {
+         function GetEmployeeInterviewDetails() {
 
-            var EmployeeId = $('#<%=hdnUserId.ClientID%>').val();
-           // alert(EmployeeId);
+             var EmployeeId = $('#<%=hdnUserId.ClientID%>').val();
+            // alert(EmployeeId);
             var postData;
             var MethodToCall = "GetEmployeeInterviewDetails";
             postData = {
