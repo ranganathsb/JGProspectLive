@@ -314,7 +314,7 @@ namespace JG_Prospect.BLL
                     Msg.To.Add(strToAddress);
                     Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
                     Msg.Subject = strSubject;// "JG Prospect Notification";
-                    Msg.Body = strBody.Replace("#UNSEMAIL#", HttpContext.Current.Server.UrlEncode(strToAddress));
+                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);
                     Msg.IsBodyHtml = true;
 
                     if (lstAttachments != null)

@@ -10,6 +10,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Hosting;
 
 namespace JG_Prospect.BLL
 {
@@ -100,7 +101,7 @@ namespace JG_Prospect.BLL
 
         private static void UpdateEmailStatistics(string emailId)
         {
-            string logDirectoryPath = HttpContext.Current.Server.MapPath(@"~\EmailStatistics");
+            string logDirectoryPath = AppDomain.CurrentDomain.BaseDirectory + "\\EmailStatistics";
 
             if (!Directory.Exists(logDirectoryPath))
             {
