@@ -841,5 +841,15 @@ namespace JG_Prospect.BLL
 
         }
 
+        public DataSet BulkIntsallUserDuplicateCheck(string xmlDoc)
+        {
+            return InstallUserDAL.Instance.BulkIntsallUserDuplicateCheck(xmlDoc);
+        }
+
+        public Int32 QuickSaveInstallUser(user objuser)
+        {
+            return InstallUserDAL.Instance.QuickSaveInstallUser(objuser);
+
+        }
     }
 }
