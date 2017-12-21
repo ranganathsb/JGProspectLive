@@ -15,6 +15,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Web.Script.Serialization;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -1308,6 +1309,14 @@ namespace JG_Prospect
             string strFooter = objHTMLTemplate.Footer;
 
             JG_Prospect.App_Code.CommonFunction.SendEmail(strUserDesignationId, strUserEmail, strSubject, strBody, objHTMLTemplate.Attachments);
+        }
+
+        [WebMethod]
+        public static void TimezoneOffset(int TimeZoneOffsetValue)
+        {
+            HttpCookie cookie = new HttpCookie(Cookies.TimezoneOffset, TimeZoneOffsetValue.ToString());
+            cookie.Expires = DateTime.Now.AddDays(30);
+            HttpContext.Current.Response.Cookies.Add(cookie);
         }
 
         #endregion
