@@ -2010,8 +2010,11 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
 }
 
 .divtdetails img {
-    max-width: 100%;
+    max-width: 100px;
     height: inherit;
+}
+.divtdetails p {
+    margin: 0px;
 }
 
 .form_panel_custom ul.stulli li {

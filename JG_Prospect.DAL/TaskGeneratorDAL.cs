@@ -1394,6 +1394,31 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetTaskUserFileByFileName(string FileName)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("usp_GetTaskUserFilesByFileName");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@FileName", DbType.String, FileName);
+
+                    
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
         {
             try

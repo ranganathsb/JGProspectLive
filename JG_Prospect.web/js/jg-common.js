@@ -148,24 +148,7 @@ function SetCKEditorForChildren(Id) {
                     //updateDesc(GetCKEditorContent(Id));
                 },
                 fileUploadResponse: function (event) {
-                    // Prevent the default response handler.
-                    event.stop();
-
-                    // Ger XHR and response.
-                    var data = event.data,
-                        xhr = data.fileLoader.xhr,
-                        response = xhr.responseText.split('|');
-
-                    var jsonarray = JSON.parse(response[0]);
-
-                    attachImagesByCKEditor(event.data.fileLoader.fileName, jsonarray.fileName);
-
-                    if (jsonarray && jsonarray.uploaded != "1") {
-                        // Error occurred during upload.                
-                        event.cancel();
-                    } else {
-                        data.url = jsonarray.url;
-                    }
+                    
                 }
 
             },
@@ -174,12 +157,33 @@ function SetCKEditorForChildren(Id) {
             }
         });
 
+    CKEDITOR.instances[Id].on('fileUploadResponse', function (event) {
+        // Prevent the default response handler.
+        event.stop();
+
+        // Ger XHR and response.
+        var data = event.data,
+            xhr = data.fileLoader.xhr,
+            response = xhr.responseText.split('|');
+
+        var jsonarray = JSON.parse(response[0]);
+
+        attachImagesByCKEditor(event.data.fileLoader.fileName, jsonarray.fileName);
+
+        if (jsonarray && jsonarray.uploaded != "1") {
+            // Error occurred during upload.                
+            event.cancel();
+        } else {
+            data.url = jsonarray.url;
+        }
+        
+    });
     //Save when leaves editing
     CKEDITOR.instances[Id].on('blur', function () {
-        CKEDITOR.instances[Id].updateElement();        
+        //CKEDITOR.instances[Id].updateElement();        
 
-        OnSaveSubTask(taskid, GetCKEditorContent('subtaskDesc' + taskid));
-        CKEDITOR.instances[Id].setData('');
+        //OnSaveSubTask(taskid, GetCKEditorContent('subtaskDesc' + taskid));
+        //CKEDITOR.instances[Id].setData('');
     });
 
     //Auto Save after 30 seconds
@@ -244,44 +248,61 @@ function SetCKEditorForSubTask(Id) {
                     event.editor.updateElement();
                     //updateDesc(GetCKEditorContent(Id));
                 },
-                fileUploadResponse: function (event) {
-                    // Prevent the default response handler.
-                    event.stop();
-
-                    // Ger XHR and response.
-                    var data = event.data,
-                        xhr = data.fileLoader.xhr,
-                        response = xhr.responseText.split('|');
-
-                    var jsonarray = JSON.parse(response[0]);
-
-                    attachImagesByCKEditor(event.data.fileLoader.fileName, jsonarray.fileName);
-
-                    if (jsonarray && jsonarray.uploaded != "1") {
-                        // Error occurred during upload.                
-                        event.cancel();
-                    } else {
-                        data.url = jsonarray.url;
-                    }
-                }
 
             },
             on: {
                 'key': ckeditorKeyPress
             }
         });
+    CKEDITOR.instances[Id].on('fileUploadResponse', function (event) {
+        // Prevent the default response handler.
+        event.stop();
+
+        // Ger XHR and response.
+        var data = event.data,
+            xhr = data.fileLoader.xhr,
+            response = xhr.responseText.split('|');
+
+        var jsonarray = JSON.parse(response[0]);
+
+        attachImagesByCKEditor(event.data.fileLoader.fileName, jsonarray.fileName);
+
+        if (jsonarray && jsonarray.uploaded != "1") {
+            // Error occurred during upload.                
+            event.cancel();
+        } else {
+            data.url = jsonarray.url;
+        }
+
+
+
+        RefreshData = false;
+        SaveAttchmentToDB();
+
+        var data = {
+            FileName: jsonarray.fileName
+        };
+
+
+
+        setTimeout(function () {
+            sequenceScopeTG.getFileData(jsonarray.fileName, CKEDITOR.instances[Id]);
+        }, 1);
+
+    });
+
     CKEDITOR.instances[Id].on('blur', function () {
-        if (Id != 'txteditChild') {
-            console.log('clear interval: ' + TimerId);
-            clearInterval(TimerId);
-            CKEDITOR.instances[Id].updateElement();
-            updateDesc(GetCKEditorContent(Id), false);
-        }
-        else {
-            //update child
-            var htmldata = GetCKEditorContent('txteditChild');
-            updateMultiLevelChild(CurrentEditingTaskId, htmldata, false);
-        }
+        //if (Id != 'txteditChild') {
+        //    console.log('clear interval: ' + TimerId);
+        //    clearInterval(TimerId);
+        //    CKEDITOR.instances[Id].updateElement();
+        //    updateDesc(GetCKEditorContent(Id), false);
+        //}
+        //else {
+        //    //update child
+        //    var htmldata = GetCKEditorContent('txteditChild');
+        //    updateMultiLevelChild(CurrentEditingTaskId, htmldata, false);
+        //}
     });
 
     var editor = CKEDITOR.instances[Id];
