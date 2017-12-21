@@ -1,6 +1,10 @@
 ﻿function QuickSaveInstallUser() {
 
-    if (Page_ClientValidate('vgQuickSave')) {
+    var isPageValid = Page_ClientValidate("vgQuickSave");
+
+    alert(isPageValid);
+
+    if (isPageValid) {
         ShowAjaxLoader();
 
         var postData = {

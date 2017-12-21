@@ -1999,6 +1999,14 @@ namespace JG_Prospect
                             dtUniqueRecords.AcceptChanges();
                         }
 
+                        //Show duplicated and invalid records.
+                        rptIncorrectRecords.DataSource = dtInvalid;
+                        rptIncorrectRecords.DataBind();
+
+                        rptDuplicateRecords.DataSource = dsDuplicateCheckResult;
+                        rptDuplicateRecords.DataBind();
+
+                        upnlBulkUpload.Update();
 
                         // Now all data cleaning operations are done.  can start sending emails and insert into database.
                         ShowStatisticsAndSendEmails(dtUniqueRecords,dtInvalid,dsDuplicateCheckResult);
@@ -2034,8 +2042,8 @@ namespace JG_Prospect
         {
 
             //TODO: Implement asynchronus email sending and insertion into database for bulk upload.
-            ImportIntsallUsers(dtUniqueRecords);
-            GetSalesUsersStaticticsAndData();
+            //ImportIntsallUsers(dtUniqueRecords);
+            //GetSalesUsersStaticticsAndData();
         }
 
         private DataTable GetUniqueRecordsFromUpload(DataTable dtAllRecords)
@@ -3161,9 +3169,9 @@ namespace JG_Prospect
 
             if (!IsValid)
             {
-                grdBulkUploadUserErrors.DataSource = dtUserError;
-                grdBulkUploadUserErrors.DataBind();
-                upnlBUPError.Update();
+              //  grdBulkUploadUserErrors.DataSource = dtUserError;
+               // grdBulkUploadUserErrors.DataBind();
+               // upnlBUPError.Update();
                 ScriptManager.RegisterStartupScript
                     (
                         this,

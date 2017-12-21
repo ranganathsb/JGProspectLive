@@ -197,7 +197,7 @@
         function Initialize() {
             ApplyDropZone();
             pageLoad();
-            
+
         }
 
 
@@ -425,7 +425,7 @@
                 $(txtPhoneID).intlTelInput();
                 if (PhoneISDCode != '') {
                     $(txtPhoneID).intlTelInput("setCountry", PhoneISDCode);
-                }               
+                }
             }
             else {
                 //Hide Ext text box                
@@ -1760,7 +1760,7 @@
                                                 <td style="vertical-align: top; width: 220px; padding-right: 0px !important;">First Name<span><asp:Label ID="lblReqFName" Text="*" ForeColor="Green" runat="server"></asp:Label></span>
                                                     <br />
                                                     <asp:RequiredFieldValidator ID="rqFirstName" Display="Dynamic" runat="server" ControlToValidate="txtfirstname"
-                                                        ForeColor="Red" ValidationGroup="submit" ErrorMessage="Enter Name"></asp:RequiredFieldValidator>
+                                                        ForeColor="Red" ValidationGroup="vgQuickSave" ErrorMessage="Enter Name"></asp:RequiredFieldValidator>
                                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator4" Display="Dynamic" runat="server" ControlToValidate="txtfirstname"
                                                         ForeColor="Red" ValidationGroup="Image" ErrorMessage="Enter First Name"></asp:RequiredFieldValidator>
 
@@ -1768,11 +1768,13 @@
                                                 </td>
                                                 <td style="vertical-align: top; margin: 0px; padding-right: 0px !important;">
                                                     <br />
-                                                    <asp:TextBox ID="txtMiddleInitial" Placeholder="I." runat="server" MaxLength="3" Width="10px" TabIndex="504"></asp:TextBox>
+                                                    <asp:TextBox ID="txtMiddleInitial" Placeholder="I."  runat="server" MaxLength="3" Width="10px" TabIndex="504"></asp:TextBox>
+                                                    <asp:RequiredFieldValidator ID="rfvtxtMiddleInitial" Display="Dynamic" runat="server" ControlToValidate="txtMiddleInitial"
+                                                        ForeColor="Red" ValidationGroup="vgQuickSave" ErrorMessage="*"></asp:RequiredFieldValidator>
                                                 </td>
                                                 <td style="vertical-align: top; width: 220px;">Last Name<span><asp:Label ID="lblReqLastName" Text="*" runat="server" ForeColor="Green"></asp:Label></span>
                                                     <asp:RequiredFieldValidator ID="rqLastName" runat="server" ControlToValidate="txtlastname"
-                                                        ForeColor="Red" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Enter Last Name"></asp:RequiredFieldValidator>
+                                                        ForeColor="Red" Display="Dynamic" ValidationGroup="vgQuickSave" ErrorMessage="Enter Last Name"></asp:RequiredFieldValidator>
                                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="txtlastname"
                                                         ForeColor="Red" Display="Dynamic" ValidationGroup="Image">Enter Last Name</asp:RequiredFieldValidator>
                                                     <asp:TextBox ID="txtlastname" Placeholder="Last Name" runat="server" MaxLength="40" autocomplete="off"
@@ -1815,11 +1817,19 @@
                                                     <div>
                                                         Phone#<label class="redtext">*</label><br />
                                                         <asp:TextBox ID="txtPhoneQs" ValidationGroup="vgQuickSave" runat="server"></asp:TextBox>
+                                                        <br />
+                                                        <span id="error-msg" class="hide redtext">Invalid number</span>
+                                                        <asp:RequiredFieldValidator ID="rfvPhoneReq" runat="server" ControlToValidate="txtPhoneQs"
+                                                        ForeColor="Red" Display="Dynamic" ValidationGroup="vgQuickSave" ErrorMessage="Enter Phone"></asp:RequiredFieldValidator>
 
                                                     </div>
                                                     <div>
                                                         Email<label class="redtext">*</label><br />
                                                         <asp:TextBox ID="txtEmailQs" ValidationGroup="vgQuickSave" runat="server"></asp:TextBox>
+                                                         <asp:RequiredFieldValidator ID="rfvEmailReq" runat="server" ControlToValidate="txtEmailQs"
+                                                        ForeColor="Red" Display="Dynamic" ValidationGroup="vgQuickSave" ErrorMessage="Enter Email"></asp:RequiredFieldValidator>
+                                                        <asp:RegularExpressionValidator ID="revEmail" runat="server" ControlToValidate="txtEmailQs"
+                                                        ForeColor="Red" Display="Dynamic" ValidationGroup="vgQuickSave" ErrorMessage="Invalid Email" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"></asp:RegularExpressionValidator>
                                                     </div>
                                                 </td>
                                                 <td style="display: none;">
@@ -1838,7 +1848,7 @@
                                                 <td>Contact Preference
                                                 </td>
                                                 <td>
-                                                    <asp:CheckBox ID="ContactPreferenceChkEmail" runat="server" Text="Email" />
+                                                    <asp:CheckBox ID="ContactPreferenceChkEmail" runat="server" Checked="true" Text="Email" />
                                                 </td>
                                                 <td>
                                                     <asp:CheckBox ID="ContactPreferenceChkCall" runat="server" Text="Call" />
@@ -1881,7 +1891,7 @@
                         </asp:DropDownList>
 
                         <asp:RequiredFieldValidator ID="rqDesignition" runat="server" ControlToValidate="ddldesignation"
-                            ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Select Designation"
+                           ValidationGroup="vgQuickSave" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Select Designation"
                             InitialValue="-1"></asp:RequiredFieldValidator>
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="ddldesignation"
                             ValidationGroup="Image" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Select Designation"
@@ -1893,30 +1903,11 @@
 
                     </td>
                     <td colspan="2" style="vertical-align: top;">Position Applied For
-                                        <asp:DropDownList Width="160" ID="ddlPositionAppliedFor" TabIndex="509" AppendDataBoundItems="true" runat="server" ClientIDMode="Static" AutoPostBack="false">
-                                            <%--<asp:ListItem Text="--Select--" Value="0" Selected="True"></asp:ListItem>
-                                            <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
-                                            <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
-                                            <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
-                                            <asp:ListItem Text="Sales Manager" Value="Sales Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Sr. Sales" Value="Sr. Sales"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Network Admin" Value="ITNetworkAdmin"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Jr .Net Developer" Value="ITJr.NetDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Sr .Net Developer" Value="ITSr.NetDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
-                                            <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>--%>
-                                            <%--<asp:ListItem Text="IT - Lead" Value="ITLead"></asp:ListItem>--%>
-                                            <%--<asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Mechanic" Value="InstallerMechanic"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Lead mechanic" Value="InstallerLeadMechanic"></asp:ListItem>
-                                            <asp:ListItem Text="Installer - Foreman" Value="InstallerForeman"></asp:ListItem>
-                                            <asp:ListItem Text="Commercial Only" Value="CommercialOnly"></asp:ListItem>
-                                            <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>--%>
+                                        <asp:DropDownList Width="160" ID="ddlPositionAppliedFor" TabIndex="509" AppendDataBoundItems="true" runat="server" ClientIDMode="Static" AutoPostBack="false">                                            
                                         </asp:DropDownList>
+                         <asp:RequiredFieldValidator ID="rfvPositionApplied" runat="server" ControlToValidate="ddlPositionAppliedFor"
+                           ValidationGroup="vgQuickSave" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Select Designation"
+                            InitialValue="-1"></asp:RequiredFieldValidator>
                     </td>
                     <td colspan="4">
 
@@ -1935,7 +1926,7 @@
                         <label>
                         </label>
                         <asp:RequiredFieldValidator ID="rqSource" runat="server" ControlToValidate="ddlSource" InitialValue="0"
-                            ForeColor="Red" Display="Dynamic" ValidationGroup="submit">Enter Source</asp:RequiredFieldValidator><br />
+                            ForeColor="Red" Display="Dynamic" ValidationGroup="vgQuickSave">Select Source</asp:RequiredFieldValidator><br />
                     </td>
                 </tr>
                 <tr>
@@ -1959,7 +1950,7 @@
                         </asp:DropDownList>
 
                         <asp:RequiredFieldValidator ID="rqEmpType" runat="server" ControlToValidate="ddlEmpType"
-                            ValidationGroup="submit" ForeColor="Red" Display="Dynamic" ErrorMessage="Please Select Employee Type"
+                            ValidationGroup="vgQuickSave" ForeColor="Red" Display="Dynamic" ErrorMessage="Select Employee Type"
                             InitialValue="0"></asp:RequiredFieldValidator>
 
                     </td>
@@ -1973,15 +1964,14 @@
                         / Year
                     </td>
                     <td colspan="3">Zip<span><asp:Label ID="lblReqZip" runat="server" Text="*" TabIndex="515" ForeColor="Blue"></asp:Label></span>
-                        <br />                        
-                        <asp:TextBox ID="txtZipHomeAdd" runat="server" MaxLength="10" onkeypress="return IsNumeric(event);" 
-                           Width="150px" TabIndex="506"></asp:TextBox>
-                        
+                        <br />
+                        <asp:TextBox ID="txtZipHomeAdd" runat="server" MaxLength="10" Width="150px" TabIndex="506"></asp:TextBox>
+
                         <br />
                         <label>
                         </label>
                         <asp:RequiredFieldValidator ID="rqZip" runat="server" ControlToValidate="txtZip"
-                            Display="Dynamic" ForeColor="Red" ValidationGroup="submit">Enter Zip</asp:RequiredFieldValidator>
+                            Display="Dynamic" ForeColor="Red" ValidationGroup="vgQuickSave">Enter Zip</asp:RequiredFieldValidator>
                     </td>
 
                 </tr>
@@ -4779,37 +4769,33 @@
         var txtSalaryRequirments = $("#<%=txtSalaryRequirments.ClientID%>");
         var ddlPositionAppliedFor = "#<%=ddlPositionAppliedFor.ClientID%>";
         var hdnAddedByUserId = $("#<%=hdnAddedByUserId.ClientID%>");
-        var chkIsEmailContactPreference = $("#<%=ContactPreferenceChkEmail.ClientID%> :checkbox:checked").length > 0 ? true : false;
-        var chkIsCallContactPreference = $("#<%=ContactPreferenceChkCall.ClientID%> :checkbox:checked").length > 0 ? true : false;
-        var chkIsTextContactPreference = $("#<%=ContactPreferenceChkText.ClientID%> :checkbox:checked").length > 0 ? true : false;
-        var chkIsMailContactPreference = $("#<%=ContactPreferenceChkMail.ClientID%> :checkbox:checked").length > 0 ? true : false;
-       
+        var chkIsEmailContactPreference = $("#<%=ContactPreferenceChkEmail.ClientID%>").is(':checked');
+        var chkIsCallContactPreference = $("#<%=ContactPreferenceChkCall.ClientID%>").is(':checked');
+        var chkIsTextContactPreference = $("#<%=ContactPreferenceChkText.ClientID%>").is(':checked');
+        var chkIsMailContactPreference = $("#<%=ContactPreferenceChkMail.ClientID%>").is(':checked');
+
 
         function SetPhoneValidation() {
             var telInput = $("#<%=txtPhoneQs.ClientID%>"),
                 errorMsg = $("#error-msg");
-                
 
             // initialise plugin
             telInput.intlTelInput({
-                utilsScript: "../../build/js/utils.js"
+                utilsScript: "../js/intTel/utils.js"
             });
 
             var reset = function () {
-                telInput.removeClass("error");
                 errorMsg.addClass("hide");
-                validMsg.addClass("hide");
             };
 
             // on blur: validate
-            telInput.blur(function () {
-                reset();
+            telInput.blur(function () {                
                 if ($.trim(telInput.val())) {
                     if (telInput.intlTelInput("isValidNumber")) {
-                        validMsg.removeClass("hide");
+
                     } else {
-                        telInput.addClass("error");
-                        errorMsg.removeClass("hide");
+                        errorMsg.removeClass("hide");                        
+                        telInput.focus();
                     }
                 }
             });

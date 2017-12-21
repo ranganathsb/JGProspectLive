@@ -1415,6 +1415,7 @@
     <Content Include="css\msdropdown\dd_arrow.gif" />
     <Content Include="css\msdropdown\title-bg.gif" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="css\popup.css" />
     <Content Include="css\TimeCircles.css" />
     <Content Include="Customer_Panel.aspx" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2.sql" />
@@ -2095,6 +2096,7 @@
     <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\utils\validate.js" />
     <Content Include="js\ice\src\ice.js" />
     <Content Include="js\intTel\intlTelInput.js" />
+    <Content Include="js\intTel\utils.js" />
     <Content Include="js\JCarousel.js" />
     <Content Include="js\jg-common.js" />
     <Content Include="js\jquery-latest.js" />
@@ -2137,6 +2139,7 @@
     <Content Include="MCQTest\ViewResults.aspx" />
     <Content Include="postdata.html" />
     <Content Include="Properties\PublishProfiles\DeveloperProfile.pubxml.user" />
+    <Content Include="screening-popup.aspx" />
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
@@ -2510,6 +2513,13 @@
     </Compile>
     <Compile Include="MCQTest\ViewResults.aspx.designer.cs">
       <DependentUpon>ViewResults.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="screening-popup.aspx.cs">
+      <DependentUpon>screening-popup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="screening-popup.aspx.designer.cs">
+      <DependentUpon>screening-popup.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\add-edit-aptitude-test.aspx.cs">
       <DependentUpon>add-edit-aptitude-test.aspx</DependentUpon>
