@@ -2339,6 +2339,29 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet getInstallUserDetailsById(Int32 UserId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("usp_GetInstallUserDetailsById");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserId", DbType.Int32, UserId);
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+
+            }
+        }
+
         public DataSet getInstallerUserDetailsByLoginId(string Email, string Password)
         {
             try

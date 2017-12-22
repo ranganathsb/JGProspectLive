@@ -1661,6 +1661,20 @@ namespace JG_Prospect
             }
         }
 
+        public static string LoggedinUserEmail
+        {
+            get
+            {
+                if (HttpContext.Current.Session["LUE"] == null)
+                    return null;
+                return Convert.ToString(HttpContext.Current.Session["LUE"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["LUE"] = value;
+            }
+        }
+
         public static Int32 DesignationId
         {
             get

@@ -842,5 +842,9 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.QuickSaveInstallUser(objuser);
 
         }
+
+        public DataSet getInstallUserDetailsById(Int32 UserId) {
+            return InstallUserDAL.Instance.getInstallUserDetailsById(UserId);
+        }
     }
 }
