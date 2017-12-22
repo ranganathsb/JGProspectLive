@@ -2679,3 +2679,10 @@ ul.auto-complete-users {
 .employeeinstruction a {
     color: blue !important;
 }
+.attachmentImageDiv {
+    font-size: 10px;
+    border: solid;
+    border-width: 1px;
+    border-color: gainsboro;
+    padding: 4px;
+}
