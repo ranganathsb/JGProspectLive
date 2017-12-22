@@ -6,6 +6,7 @@
 
 <link rel="stylesheet" type="text/css" href="../css/lightslider.css">
 <link rel="stylesheet" type="text/css" href="../Content/ui-grid.css">
+<script type="text/javascript" src="../js/jquery.magnific-popup.min.js"></script>
 
 <script type="text/javascript" src="../js/lightslider.js"></script>
 <script type="text/javascript" src="../js/Common.js"></script>

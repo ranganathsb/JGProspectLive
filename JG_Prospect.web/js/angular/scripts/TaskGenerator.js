@@ -31,7 +31,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
     $scope.getFileData = function (fileName, targetEditor) {
         callWebServiceMethod($http, "GetTaskUserFileByFileName", { FileName: fileName }).then(function (data) {
             FileData = JSON.parse(data.data.d);
-            var imgHtml = '<img src="/TaskAttachments/' + fileName + '" >';
+            var imgHtml = '<a class="image-link" href="/TaskAttachments/' + fileName + '"><img src="/TaskAttachments/' + fileName + '" ></a>';
             var ulHtml = '<b>' +
                 '<p>' + FileData.FileData.File.FileName + '</p>' +
                 '<p>' + $filter('date')(new Date(FileData.FileData.File.AttachDate), 'MM/dd/yyyy hh:mm a') + '(EST)</p>' +
@@ -179,7 +179,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
             $(this).click(function () {
                 approvaldialog.dialog('open');
             });
-        });
+        });        
 
         ApplySubtaskLinkContextMenu();
 
@@ -236,6 +236,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                 //ParentIds = ParentIds.substring(0, ParentIds.length - 1);
             });
 
+            $('.image-link').magnificPopup({ type: 'image' });
 
         }, 1);
 
@@ -390,7 +391,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
             
             $(".DescEdit").each(function (index) {
                 // This section is available to admin only.            
-                $(this).bind("click", function () {
+                $(this).bind("click", function (object) {
                     if (!isadded && !isBtnSave) {
                         var tid = $(this).attr("data-taskid");
                         var titledetail = $(this).html();
