@@ -1966,10 +1966,58 @@
                     </div>
 
                     <div style="margin-top: 10px;">
+                        <h2>Users to be Added</h2>
+                        <div>
+                            <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                <asp:Repeater ID="rptUserstoBeAdded" runat="server">
+                                    <HeaderTemplate>
+                                        <thead>
+                                            <tr class="trHeader ">
+                                                <th scope="col" style="width: 75px;">FirstName*</th>
+                                                <th scope="col" style="width: 75px;">LastName*</th>
+                                                <th scope="col" style="width: 90px;">Email*</th>
+                                                <th scope="col" style="width: 75px;">Designation*</th>
+                                                <th scope="col" style="width: 50px;">Status*</th>
+                                                <th scope="col" style="width: 60px;">Source*</th>
+                                                <th scope="col" style="width: 90px;">Primary Contact Phone*</th>
+                                                <th scope="col" style="width: 60px;">Phone Type*</th>
+                                                <th scope="col" style="width: 50px;">Zip*</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
+                                            <td style="width: 10%;"><%#Eval("FirstName") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("LastName") %>
+                                            </td>
+                                            <td style="width: 15%;"><%#Eval("Email") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Designation") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Status") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Source") %></td>
+                                            <td style="width: 15%;"><%#Eval("Phone1") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Phone1Type") %></td>
+                                            <td style="width: 5%;"><%#Eval("Zip") %></td>
+                                        </tr>
+                                    </ItemTemplate>
+                                    <FooterTemplate>
+                                        </tbody>
+                                    </FooterTemplate>
+                                </asp:Repeater>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 10px;">
                         <h2>Successfully entered users</h2>
                         <div>
                             <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
-                                <asp:Repeater ID="rptSuccessfullyEnteredRecords" runat="server">
+                                <asp:Repeater ID="rptSuccessFullyEntered" runat="server">
                                     <HeaderTemplate>
                                         <thead>
                                             <tr class="trHeader ">

@@ -25,6 +25,7 @@ using Newtonsoft.Json;
 using System.Globalization;
 using System.Web.Services;
 using System.Web.Script.Serialization;
+using System.ComponentModel;
 //using System.Diagnostics;
 
 namespace JG_Prospect
@@ -2006,10 +2007,13 @@ namespace JG_Prospect
                         rptDuplicateRecords.DataSource = dsDuplicateCheckResult;
                         rptDuplicateRecords.DataBind();
 
-                        upnlBulkUpload.Update();
+                        rptUserstoBeAdded.DataSource = dtUniqueRecords;
+                        rptUserstoBeAdded.DataBind();
+
+                        upnlBulkUploadStatus.Update();
 
                         // Now all data cleaning operations are done.  can start sending emails and insert into database.
-                        ShowStatisticsAndSendEmails(dtUniqueRecords,dtInvalid,dsDuplicateCheckResult);
+                        ShowStatisticsAndSendEmails(dtUniqueRecords);
 
                         // Old code, Commented due to change in requirements.
                         //if (ValidateUploadedData(dtExcel))
@@ -2033,24 +2037,136 @@ namespace JG_Prospect
                 }
             }
             catch (Exception ex)
-           {
+            {
                 UtilityBAL.AddException("EditUser-btnUploadNew_Click", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
             }
         }
 
-        private void ShowStatisticsAndSendEmails(DataTable dtUniqueRecords, DataTable dtInvalidRecords, DataSet dtDuplicateRecordsinDb)
+        private void ShowStatisticsAndSendEmails(DataTable dtUniqueRecords)
         {
+            DataTable dtSuccessFullyAdded = dtUniqueRecords.Clone();
+            foreach (DataRow drUser in dtUniqueRecords.Rows)
+            {
+                String Email = drUser["Email"].ToString();
 
+                SendEmail("blank", Email, "parallel email", "nothing", null, dtSuccessFullyAdded, drUser);
+
+            }
             //TODO: Implement asynchronus email sending and insertion into database for bulk upload.
             //ImportIntsallUsers(dtUniqueRecords);
             //GetSalesUsersStaticticsAndData();
+        }
+
+        private  void SendCompletedCallback(object sender, AsyncCompletedEventArgs e, DataTable dtUniqueRecord, DataRow rowProcessed)
+        {
+
+            // Get the unique identifier for this asynchronous operation.
+            String token = (string)e.UserState;
+
+            if (e.Error != null)
+            {
+
+            }
+            else
+            {
+                dtUniqueRecord.Rows.Add(rowProcessed);                
+                dtUniqueRecord.AcceptChanges();
+                rptSuccessFullyEntered.DataSource = dtUniqueRecord;
+                rptSuccessFullyEntered.DataBind();
+                upnlBulkUploadStatus.Update();
+                               
+            }
+
+        }
+
+        public  bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, DataTable dtUniqueRecords, DataRow drProcessing, List<AlternateView> lstAlternateView = null)
+        {
+            bool retValue = false;
+            if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(strToAddress))
+            {
+                try
+                {
+                    /* Sample HTML Template
+                     * *****************************************************************************
+                     * Hi #lblFName#,
+                     * <br/>
+                     * <br/>
+                     * You are requested to appear for an interview on #lblDate# - #lblTime#.
+                     * <br/>
+                     * <br/>
+                     * Regards,
+                     * <br/>
+                    */
+
+                    string defaultEmailFrom = ConfigurationManager.AppSettings["defaultEmailFrom"].ToString();
+                    string userName = ConfigurationManager.AppSettings["smtpUName"].ToString();
+                    string password = ConfigurationManager.AppSettings["smtpPwd"].ToString();
+
+                    if (JGApplicationInfo.GetApplicationEnvironment() == "1" || JGApplicationInfo.GetApplicationEnvironment() == "2")
+                    {
+                        strBody = String.Concat(strBody, "<br/><br/><h1>Email is intended for Email Address: " + strToAddress + "</h1><br/><br/>");
+                        strToAddress = "error@kerconsultancy.com";
+
+                    }
+
+                    MailMessage Msg = new MailMessage();
+                    Msg.From = new MailAddress(defaultEmailFrom, "JGrove Construction");
+                    Msg.To.Add(strToAddress);
+                    Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
+                    Msg.Subject = strSubject;// "JG Prospect Notification";
+                    Msg.Body = strBody.Replace("#UNSEMAIL#", HttpContext.Current.Server.UrlEncode(strToAddress));
+                    Msg.IsBodyHtml = true;
+
+                    //ds = AdminBLL.Instance.GetEmailTemplate('');
+                    //// your remote SMTP server IP.
+                    if (lstAttachments != null)
+                    {
+                        foreach (Attachment objAttachment in lstAttachments)
+                        {
+                            Msg.Attachments.Add(objAttachment);
+                        }
+                    }
+
+                    if (lstAlternateView != null)
+                    {
+                        foreach (AlternateView objAlternateView in lstAlternateView)
+                        {
+                            Msg.AlternateViews.Add(objAlternateView);
+                        }
+                    }
+
+                    SmtpClient sc = new SmtpClient(
+                                                    ConfigurationManager.AppSettings["smtpHost"].ToString(),
+                                                    Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
+                                                  );
+
+                    sc.SendCompleted += new SendCompletedEventHandler((s, e) => SendCompletedCallback(s, e, dtUniqueRecords, drProcessing));
+
+                    NetworkCredential ntw = new NetworkCredential(userName, password);
+                    sc.UseDefaultCredentials = false;
+                    sc.Credentials = ntw;
+                    sc.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
+                    sc.SendAsync(Msg,"User Status");
+                    retValue = true;
+
+                    Msg = null;
+                    sc.Dispose();
+                    sc = null;
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            return retValue;
         }
 
         private DataTable GetUniqueRecordsFromUpload(DataTable dtAllRecords)
         {
             //Remove Duplicate Email records from master table
             DataTable dtUniqueEmailRecords = dtAllRecords.AsEnumerable().GroupBy(x => x.Field<string>("Email")).Select(g => g.First()).CopyToDataTable();
-            
+
             //Remove Duplicate Phone records from master table
             DataTable UniquePhone = dtUniqueEmailRecords.AsEnumerable().GroupBy(x => x.Field<string>("Phone1")).Select(g => g.First()).CopyToDataTable();
 
@@ -2910,7 +3026,7 @@ namespace JG_Prospect
         {
             DataTable objDataTable = new DataTable();
 
-            
+
             objDataTable.Columns.Add("Designation", typeof(string));
             objDataTable.Columns.Add("Status", typeof(string));
             objDataTable.Columns.Add("DateSourced", typeof(string));
@@ -2934,7 +3050,7 @@ namespace JG_Prospect
             objDataTable.Columns["RowNum"].AutoIncrement = true;
             objDataTable.Columns["RowNum"].AutoIncrementSeed = 1;
             objDataTable.Columns["RowNum"].AutoIncrementStep = 1;
-            
+
 
             return objDataTable;
         }
@@ -3169,9 +3285,9 @@ namespace JG_Prospect
 
             if (!IsValid)
             {
-              //  grdBulkUploadUserErrors.DataSource = dtUserError;
-               // grdBulkUploadUserErrors.DataBind();
-               // upnlBUPError.Update();
+                //  grdBulkUploadUserErrors.DataSource = dtUserError;
+                // grdBulkUploadUserErrors.DataBind();
+                // upnlBUPError.Update();
                 ScriptManager.RegisterStartupScript
                     (
                         this,
@@ -3225,7 +3341,7 @@ namespace JG_Prospect
                                                                                     .Trim() == dtExcel.Rows[i]["Designation"]
                                                                                                       .ToString()
                                                                                                       .ToUpper()
-                      
+
                                                                                                       .Trim()
                                                                               );
 
@@ -4773,7 +4889,7 @@ namespace JG_Prospect
                 lblCount.Visible = true;
             }
         }
-        
+
         private DataTable GetInvalidRecordsFromUpload(DataTable dtAllRecords)
         {
             DataTable dtInvalidRecords = dtAllRecords.AsEnumerable().Where(r => String.IsNullOrEmpty(r.Field<string>("Designation")) == true ||
@@ -4804,7 +4920,7 @@ namespace JG_Prospect
 
             return dtInvalidRecords;
         }
-        
+
         #region 'Assigned Task ToUser'
 
         private void AssignedTaskToUser(int intEditId, DropDownList ddlTechTask, DropDownList ddlTechSubTask)
@@ -4990,6 +5106,6 @@ namespace JG_Prospect
         #endregion
 
         #endregion
-        
+
     }
 }
