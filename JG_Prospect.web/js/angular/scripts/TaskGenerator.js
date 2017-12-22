@@ -30,26 +30,24 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
     $scope.getFileData = function (fileName, targetEditor) {
         callWebServiceMethod($http, "GetTaskUserFileByFileName", { FileName: fileName }).then(function (data) {
-            debugger;
             FileData = JSON.parse(data.data.d);
             var imgHtml = '<img src="/TaskAttachments/' + fileName + '" >';
             var ulHtml = '<b>' +
                 '<p>' + FileData.FileData.File.FileName + '</p>' +
-                '<p>' + FileData.FileData.File.AttachDate + '</p>' +
-                '<p>' + FileData.FileData.File.UserName+'</p>' +
-                '<p><a href="#/">Delete<a></p></b>';
+                '<p>' + $filter('date')(new Date(FileData.FileData.File.AttachDate), 'MM/dd/yyyy hh:mm a') + '(EST)</p>' +
+                '<p>' + FileData.FileData.File.UserName + '</p></b>';
             targetEditor.insertHtml(imgHtml + ulHtml);
         });
     }
 
     $scope.getUserByDesignation = function () {
-
         callWebServiceMethod($http, "GetAssignUsers", { TaskDesignations: sequenceScopeTG.UserSelectedDesigIds != "" ? sequenceScopeTG.UserSelectedDesigIds.join() : sequenceScopeTG.UserSelectedDesigIds }).then(function (data) {
             var AssignedUsers = JSON.parse(data.data.d);
             $scope.UsersByDesignation = AssignedUsers;
             $scope.SelectedUserId = $scope.UsersByDesignation[0].Id;
         });
     }
+
     $scope.getSubTasksPager = function (page) {
 
         ShowAjaxLoader();
@@ -407,6 +405,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         $('#btnSave').bind("click", function () {
                             isBtnSave = true;
                             clearInterval(TimerId);
+                            console.log('interval removed: ' + TimerId);
                             updateDesc(GetCKEditorContent('txtedittitle'), false);
                         });
 
@@ -414,7 +413,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         TimerId = setInterval(function () {
                             updateDesc(GetCKEditorContent('txtedittitle'), true);
                             console.log('auto saved desc');
-                        }, 30000);
+                        }, 5000);
                         console.log('interval started: ' + TimerId);
                     }
                     return false;

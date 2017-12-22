@@ -540,6 +540,7 @@ namespace JG_Prospect.WebServices
             DataSet dtResult = null;
 
             dtResult = TaskGeneratorBLL.Instance.GetTaskUserFileByFileName(FileName);
+            dtResult.Tables[0].Rows[0]["AttachDate"] = string.Format("{0:MM/dd/yyyy hh:mm tt}", Convert.ToDateTime(dtResult.Tables[0].Rows[0]["AttachDate"]).ToEST());
 
             if (dtResult != null && dtResult.Tables.Count > 0)
             {

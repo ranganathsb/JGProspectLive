@@ -327,7 +327,7 @@ function SetCKEditorForSubTask(Id) {
                 }
                 else
                     console.log('not saving empty child');
-            }, 30000);
+            }, 5000);
             console.log('adding timer: ' + timeoutId);
         }
     }

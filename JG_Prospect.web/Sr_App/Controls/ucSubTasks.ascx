@@ -2655,7 +2655,11 @@
                 success: function (data) {
                     if (idAttachments) {
                         //$('#<%=btnSaveGridAttachment.ClientID%>').click();
-                        RefreshData = true;
+                        if (!autosave)
+                            RefreshData = true;
+                        else
+                            RefreshData = false;
+
                         SaveAttchmentToDB();
                     }
                     else {
