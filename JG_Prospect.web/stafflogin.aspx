@@ -32,25 +32,10 @@
     <script type="text/javascript" src="/js/jquery-latest.js"></script>--%>
     <!--accordion jquery-->
     <script type="text/javascript" src="/js/ddaccordion.js"></script>
-    <script type="text/javascript" src="/js/common-js.js"></script>
+
 
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            var offset = TimeZoneOffset();
-            var timeZoneCookie = getCookie('<%=JG_Prospect.Common.Cookies.TimezoneOffset%>')
-            if (timeZoneCookie == undefined || timeZoneCookie == null || timeZoneCookie == '') {
-                ajaxExt({
-                    url: '/stafflogin.aspx/TimezoneOffset',
-                    type: 'POST',
-                    data: '{ TimeZoneOffsetValue: "' + offset + '" }',
-                    showThrobber: false,
-                    success: function (data, msg) {                        
-                    }
-                });
-            }
-        });
-
         $(function () {
             $("#txtDateOfBith").datepicker({
                 changeMonth: true,

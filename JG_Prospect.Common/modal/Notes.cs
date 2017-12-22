@@ -23,9 +23,6 @@ namespace JG_Prospect.Common.modal
         public string Email { get; set; }
         public string Phone { get; set; }
         public string SourceUser { get; set; }
-        public string SourceUsername { get; set; }
-        public string SourceUserInstallId { get; set; }
-        public int TouchPointSource { get; set; }
     }
 
 

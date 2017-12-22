@@ -91,7 +91,6 @@
     <Compile Include="exceltoXml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Extensions.cs" />
     <Compile Include="HTMLTemplates.cs" />
     <Compile Include="JGCommon.cs" />
     <Compile Include="JGConstant.cs" />

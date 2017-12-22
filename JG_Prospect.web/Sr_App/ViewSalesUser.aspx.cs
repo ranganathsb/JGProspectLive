@@ -6103,8 +6103,7 @@ namespace JG_Prospect.Sr_App
                     , strUserInstallId
                     , DateTime.Now
                     , strValueToAdd
-                    , UserGuid
-                    , (int)TouchPointSource.ViewSalesUser);
+                    , UserGuid);
 
                 BindTouchPointLog();
             }

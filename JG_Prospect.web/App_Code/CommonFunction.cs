@@ -17,7 +17,6 @@ using System.ComponentModel;
 using JG_Prospect.Common.modal;
 using System.Collections.Specialized;
 using System.Globalization;
-using System.Threading;
 
 namespace JG_Prospect.App_Code
 {
@@ -254,17 +253,6 @@ namespace JG_Prospect.App_Code
         /// <param name="lstAttachments">any files to be attached to email.</param>
         public static bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
         {
-            Thread email = new Thread(delegate ()
-            {
-                SendEmailAsync(strEmailTemplate, strToAddress, strSubject, strBody, lstAttachments, lstAlternateView);
-            });
-            email.IsBackground = true;
-            email.Start();
-            return true;
-        }
-
-        private static bool SendEmailAsync(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
-        {
             bool retValue = false;
             if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(strToAddress))
             {
@@ -356,16 +344,6 @@ namespace JG_Prospect.App_Code
         /// <param name="strSubject">subject line of email.</param>
         /// <param name="strBody">contect / body of email.</param>
         public static void SendEmailInternal(string strToAddress, string strSubject, string strBody)
-        {
-            Thread email = new Thread(delegate ()
-            {
-                SendEmailInternalAsync(strToAddress, strSubject, strBody);
-            });
-            email.IsBackground = true;
-            email.Start();
-        }
-
-        private static void SendEmailInternalAsync(string strToAddress, string strSubject, string strBody)
         {
             try
             {
