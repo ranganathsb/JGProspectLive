@@ -76,6 +76,7 @@
     <Compile Include="DLLAttendence.cs" />
     <Compile Include="existing_customerDAL.cs" />
     <Compile Include="HTMLTemplateDAL.cs" />
+    <Compile Include="JobSchedulerDAL.cs" />
     <Compile Include="Roles_ApplicationFeaturesDAL.cs" />
     <Compile Include="EmployeeInstructionDAL.cs" />
     <Compile Include="EmployeeLegalDesclaimerDAL.cs" />

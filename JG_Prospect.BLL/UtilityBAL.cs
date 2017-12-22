@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -63,6 +64,17 @@ namespace JG_Prospect.BLL
     {
         #region Email
         public static bool SendEmail(string strEmailTemplate, string[] strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
+        {
+            Thread email = new Thread(delegate ()
+            {
+                SendEmailAsync(strEmailTemplate, strToAddress, strSubject, strBody, lstAttachments, lstAlternateView);
+            });
+            email.IsBackground = true;
+            email.Start();
+            return true;
+        }
+
+        private static bool SendEmailAsync(string strEmailTemplate, string[] strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
         {
             bool retValue = false;
             //if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(strToAddress))
@@ -161,8 +173,19 @@ namespace JG_Prospect.BLL
             return retValue;
         }
 
+
         public static void SendEmailInternal(string strToAddress, string strSubject, string strBody)
         {
+            Thread email = new Thread(delegate ()
+            {
+                SendEmailAsync(strToAddress, strSubject, strBody);
+            });
+            email.IsBackground = true;
+            email.Start();            
+        }
+
+        private static void SendEmailAsync(string strToAddress, string strSubject, string strBody)
+        {            
             try
             {
                 string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
@@ -243,6 +266,95 @@ namespace JG_Prospect.BLL
                     tw.Close();
                 }
             }
+        }
+
+        public static bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
+        {
+            Thread email = new Thread(delegate ()
+            {
+                SendEmailAsync(strEmailTemplate, strToAddress, strSubject, strBody, lstAttachments, lstAlternateView);
+            });
+            email.IsBackground = true;
+            email.Start();
+            return true;
+        }
+
+        private static bool SendEmailAsync(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
+        {
+            bool retValue = false;
+            if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(strToAddress))
+            {
+                try
+                {
+                    /* Sample HTML Template
+                     * *****************************************************************************
+                     * Hi #lblFName#,
+                     * <br/>
+                     * <br/>
+                     * You are requested to appear for an interview on #lblDate# - #lblTime#.
+                     * <br/>
+                     * <br/>
+                     * Regards,
+                     * <br/>
+                    */
+
+                    string defaultEmailFrom = ConfigurationManager.AppSettings["defaultEmailFrom"].ToString();
+                    string userName = ConfigurationManager.AppSettings["smtpUName"].ToString();
+                    string password = ConfigurationManager.AppSettings["smtpPwd"].ToString();
+
+                    if (JGApplicationInfo.GetApplicationEnvironment() == "1" || JGApplicationInfo.GetApplicationEnvironment() == "2")
+                    {
+                        strBody = String.Concat(strBody, "<br/><br/><h1>Email is intended for Email Address: " + strToAddress + "</h1><br/><br/>");
+                        strToAddress = "error@kerconsultancy.com";
+
+                    }
+
+                    MailMessage Msg = new MailMessage();
+                    Msg.From = new MailAddress(defaultEmailFrom, "JGrove Construction");
+                    Msg.To.Add(strToAddress);
+                    Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
+                    Msg.Subject = strSubject;// "JG Prospect Notification";
+                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);
+                    Msg.IsBodyHtml = true;
+
+                    if (lstAttachments != null)
+                    {
+                        foreach (Attachment objAttachment in lstAttachments)
+                        {
+                            Msg.Attachments.Add(objAttachment);
+                        }
+                    }
+
+                    if (lstAlternateView != null)
+                    {
+                        foreach (AlternateView objAlternateView in lstAlternateView)
+                        {
+                            Msg.AlternateViews.Add(objAlternateView);
+                        }
+                    }
+
+                    SmtpClient sc = new SmtpClient(
+                                                    ConfigurationManager.AppSettings["smtpHost"].ToString(),
+                                                    Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
+                                                  );
+                    NetworkCredential ntw = new NetworkCredential(userName, password);
+                    sc.UseDefaultCredentials = false;
+                    sc.Credentials = ntw;
+                    sc.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
+                    sc.Send(Msg);
+                    retValue = true;
+
+                    Msg = null;
+                    sc.Dispose();
+                    sc = null;
+                }
+                catch (Exception ex)
+                {
+                    UpdateEmailStatistics(ex.Message);
+                }
+            }
+            return retValue;
         }
         #endregion
     }
