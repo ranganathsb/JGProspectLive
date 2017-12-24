@@ -233,7 +233,9 @@
         .right_panel {
             margin: 0 0 0 0 !important;
         }
-
+        .first-col{    width: 20%;float: left;}
+        .second-col{float:left;width:78%}
+        .second-col textarea.note-text{width:100%;}
         .notes-container {
             display: block;
             height: 66px;
@@ -1435,30 +1437,13 @@
                                         </table>
                                     </HeaderTemplate>
                                     <ItemTemplate>
-                                        <%--<div class="GrdContainer">
-                                            <div class="GrdHeader">
-                                                <span>+</span>
-                                            </div>
-                                            <div class="GrdContent">
-                                                
-                                            </div>
-                                        </div>--%>
-                                        <%--<asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>--%>
-
                                         <div class="notes-container" uid="<%#Eval("UserInstallId")%>" id="user-<%#Eval("Id")%>">
                                             Loading Notes...
                                         </div>
                                         <div style="text-align: left; padding: 2px;">                                            
-                                            <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this, '<%# Eval("Id") %>','<%#Eval("UserInstallId")%>')" />
-                                            <textarea class="note-text textbox" id="txt-<%# Eval("Id") %>"></textarea>
+                                            <div class="first-col"><input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this, '<%# Eval("Id") %>','<%#Eval("UserInstallId")%>')" /></div>
+                                            <div class="second-col"><textarea class="note-text textbox" id="txt-<%# Eval("Id") %>"></textarea></div>
                                          </div>
-                                        <%--<div style="text-align: left; padding: 4px;">
-                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"
-                                                Style="height: 36px; vertical-align: middle; padding: 2px!important; width: 70%; float: left; margin-right: 5px;" CssClass="textbox"></asp:TextBox>
-                                            <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
-                                                CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle; overflow: hidden;" />
-
-                                        </div>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
