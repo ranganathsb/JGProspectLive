@@ -1891,6 +1891,7 @@
     <Content Include="img\pdf-icon.png" />
     <Content Include="img\pdf.jpg" />
     <Content Include="img\PlusMinus.png" />
+    <Content Include="img\refresh.png" />
     <Content Include="img\Resource.png" />
     <Content Include="img\sign-in-with-google.png" />
     <Content Include="img\star.png" />
