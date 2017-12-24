@@ -1493,6 +1493,8 @@
     <Content Include="Database Scripts\JitendraPancholi\executed 7.sql" />
     <Content Include="Database Scripts\JitendraPancholi\executed 8.sql" />
     <Content Include="Database Scripts\JitendraPancholi\executed 9.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed 10.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Pending.sql" />
     <Content Include="Database Scripts\Kapil\Executed_3.sql" />
     <Content Include="Database Scripts\Kapil\Executed_4.sql" />
     <Content Include="Database Scripts\Kapil\Latest.sql" />
