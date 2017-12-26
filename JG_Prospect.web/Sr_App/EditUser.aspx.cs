@@ -620,7 +620,12 @@ namespace JG_Prospect
 
                     if (Status != "")
                     {
-                        ddlStatus.Items.FindByValue(Status).Selected = true;
+                        ListItem StatusItem = ddlStatus.Items.FindByValue(Status);
+                        if (StatusItem != null)
+                        {
+                            ddlStatus.SelectedIndex = ddlStatus.Items.IndexOf(StatusItem);
+                        }
+                        
 
                         switch ((JGConstant.InstallUserStatus)Convert.ToByte(Status))
                         {
