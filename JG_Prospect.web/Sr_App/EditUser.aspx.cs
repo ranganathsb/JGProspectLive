@@ -2046,6 +2046,7 @@ namespace JG_Prospect
             DataTable dtSuccessFullyAdded = dtUniqueRecords.Clone();
 
             Dictionary<int, string> dicDesignationTemplate = new Dictionary<int, string>();
+            Dictionary<int, string> dicDesignationSubjectString = new Dictionary<int, string>();
 
             Int64 recordsToProcessed , recordsProcessed = 0;
 
@@ -2058,32 +2059,35 @@ namespace JG_Prospect
                 String Email = drUser["Email"].ToString();
                 Int32 DesignationId = Convert.ToInt32(drUser["DesignationId"].ToString());
                 String HTMLTemlpate = String.Empty;
+                string strSubject = String.Empty;
 
                 // Set this, if both are same, no need to fetch designation email template details from database.
                 if (dicDesignationTemplate.ContainsKey(DesignationId))
                 {
                     //Get HTML template from dictonary stored in memory   
                     HTMLTemlpate = dicDesignationTemplate[DesignationId];
-
+                    strSubject = dicDesignationSubjectString[DesignationId];
                 }
                 else // Else load template from database.
                 {
-                    //string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199, 0, Desig);
+                    
                     DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Applicant_Recontact_Auto_Email, DesignationId.ToString());
                     HTMLTemlpate = objHTMLTemplate.Header + objHTMLTemplate.Body + objHTMLTemplate.Footer;
 
                     // Store new template to access in loop later.
                     dicDesignationTemplate.Add(DesignationId, HTMLTemlpate);
+                    dicDesignationSubjectString.Add(DesignationId, objHTMLTemplate.Subject);
 
                     HTMLTemlpate = HTMLTemlpate.Replace("#name#", String.Concat(drUser["FirstName"].ToString(), " ", drUser["LastName"].ToString()));
                     HTMLTemlpate = HTMLTemlpate.Replace("#Email#", drUser["Email"].ToString());
                     HTMLTemlpate = HTMLTemlpate.Replace("#Phone number#", drUser["Phone1"].ToString());
 
+                    strSubject = objHTMLTemplate.Subject;
                 }
 
                 recordsProcessed++;
 
-                SendEmail(HTMLTemlpate, Email, "JMGrove - Job Application Incomplete Reminder!", HTMLTemlpate, null, dtSuccessFullyAdded, drUser,  recordsToProcessed, recordsProcessed, null);
+                SendEmail(HTMLTemlpate, Email, strSubject, HTMLTemlpate, null, dtSuccessFullyAdded, drUser,  recordsToProcessed, recordsProcessed, null);
                 
             }
 
