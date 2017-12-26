@@ -2098,6 +2098,7 @@
     <Content Include="js\ice\src\ice.js" />
     <Content Include="js\intTel\intlTelInput.js" />
     <Content Include="js\intTel\utils.js" />
+    <Content Include="js\jquery.magnific-popup.min.js" />
     <Content Include="js\JCarousel.js" />
     <Content Include="js\jg-common.js" />
     <Content Include="js\jquery-latest.js" />

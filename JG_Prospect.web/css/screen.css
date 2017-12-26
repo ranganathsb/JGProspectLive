@@ -2010,8 +2010,11 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
 }
 
 .divtdetails img {
-    max-width: 100%;
+    max-width: 100px;
     height: inherit;
+}
+.divtdetails p {
+    margin: 0px;
 }
 
 .form_panel_custom ul.stulli li {
@@ -2675,4 +2678,11 @@ ul.auto-complete-users {
 .auto-complete-users li:hover{cursor:pointer;background:#007506;color:#fff;}
 .employeeinstruction a {
     color: blue !important;
+}
+.attachmentImageDiv {
+    font-size: 10px;
+    border: solid;
+    border-width: 1px;
+    border-color: gainsboro;
+    padding: 4px;
 }

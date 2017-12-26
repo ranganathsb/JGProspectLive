@@ -6,6 +6,7 @@
 
 <link rel="stylesheet" type="text/css" href="../css/lightslider.css">
 <link rel="stylesheet" type="text/css" href="../Content/ui-grid.css">
+<script type="text/javascript" src="../js/jquery.magnific-popup.min.js"></script>
 
 <script type="text/javascript" src="../js/lightslider.js"></script>
 <script type="text/javascript" src="../js/Common.js"></script>
@@ -737,31 +738,33 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                            <%--SubTask Part Starts--%>
+                                            <div id="Div1" runat="server" align="center" class="taskSubPoints" style="background-color:white;padding-top: 5px;">
+                                                <div class="listId">
+                                                    <a href="#" data-listid="{{SubTask.InstallId}}" data-level="{{SubTask.Indent}}" data-label="{{LevelToRoman(SubTask.LastChild,SubTask.Indent)}}" 
+                                                        id="listId{{SubTask.TaskId}}" style="color:blue">{{LevelToRoman(SubTask.LastChild,SubTask.Indent)}}</a>
+                                                    <input id="nestLevel{{SubTask.TaskId}}" value="{{SubTask.Indent}}" data-label="{{LevelToRoman(SubTask.LastChild,SubTask.Indent)}}" type="hidden" />
+                                                    <input id="lastData{{SubTask.TaskId}}" value="{{SubTask.Indent}}" data-label="{{LevelToRoman(SubTask.LastChild,SubTask.Indent)}}" type="hidden" />
+                                                </div>
+                                                <div>
+                                                    <div class="multileveledittext" >
+                                                        <textarea style="width:80%" rows="1" id="subtaskDesc{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" onkeypress="OnMultiLevelChildSave()" onclick="SetCKEditorForChildren(this.id)"></textarea>
+                                                    </div>                                                
+                                                </div>
+                                            </div>
+                                            <div id="NewChildDiv">&nbsp;
+                                                <div class="btn_sec" id="indentDiv">
+                                                    <button class="indentButtonLeft" type="button" id="btnLeft{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="left" onclick="OnIndent(this)" ></button>
+                                                    <button class="indentButtonRight" type="button" id="btnRight{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="right" onclick="OnIndent(this)" ></button>
+                                                    <%--<input type="button" style="padding-left:12px;padding-right:12px" value="Save" onclick="OnSaveSubTask(this)" data-taskid="{{SubTask.TaskId}}"/>--%>
+                                                </div>
+                                                <div id="TaskloaderDiv{{SubTask.TaskId}}" class="TaskloaderDiv">
+                                                    <img src="../../img/ajax-loader.gif" style="height:16px; vertical-align:bottom" /> Auto Saving...
+                                                </div>
+                                            </div>
+                                            <%--SubTask Part Ends--%>
                                         </div>
-                                        <%--SubTask Part Starts--%>
-                                        <div id="Div1" runat="server" align="center" class="taskSubPoints" style="background-color:white;padding-top: 5px;">
-                                            <div class="listId">
-                                                <a href="#" data-listid="{{SubTask.InstallId}}" data-level="{{SubTask.Indent}}" data-label="{{LevelToRoman(SubTask.LastChild,SubTask.Indent)}}" 
-                                                    id="listId{{SubTask.TaskId}}" style="color:blue">{{LevelToRoman(SubTask.LastChild,SubTask.Indent)}}</a>
-                                                <input id="nestLevel{{SubTask.TaskId}}" value="{{SubTask.Indent}}" data-label="{{LevelToRoman(SubTask.LastChild,SubTask.Indent)}}" type="hidden" />
-                                                <input id="lastData{{SubTask.TaskId}}" value="{{SubTask.Indent}}" data-label="{{LevelToRoman(SubTask.LastChild,SubTask.Indent)}}" type="hidden" />
-                                            </div>
-                                            <div>
-                                                <div class="multileveledittext" >
-                                                    <textarea style="width:80%" rows="1" id="subtaskDesc{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" onkeypress="OnMultiLevelChildSave()" onclick="SetCKEditorForChildren(this.id)"></textarea>
-                                                </div>                                                
-                                            </div>
-                                        </div>
-                                        <div id="NewChildDiv">&nbsp;
-                                            <div class="btn_sec" id="indentDiv">
-                                                <button class="indentButtonLeft" type="button" id="btnLeft{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="left" onclick="OnIndent(this)" ></button>
-                                                <button class="indentButtonRight" type="button" id="btnRight{{SubTask.TaskId}}" data-taskid="{{SubTask.TaskId}}" data-action="right" onclick="OnIndent(this)" ></button>
-                                            </div>
-                                            <div id="TaskloaderDiv{{SubTask.TaskId}}" class="TaskloaderDiv">
-                                                <img src="../../img/ajax-loader.gif" style="height:16px; vertical-align:bottom" /> Auto Saving...
-                                            </div>
-                                        </div>
-                                        <%--SubTask Part Ends--%>
+                                        
                                         <div class="clr" style="height: 1px;"></div>
                                         <input type="submit" name="btnshowdivsub1" value="+" onclick="return false;" id="btnshowdivsub1" class="showsubtaskDIV" data-parent-taskid="{{SubTask.TaskId}}" 
                                             style="text-decoration: underline; cursor: pointer; background: none;" data-val-commandname="{{SubTask.NestLevel}}#{{SubTask.InstallId}}#{{SubTask.TaskId}}#1" data-val-tasklvl="{{SubTask.NestLevel}}" 
@@ -929,7 +932,9 @@
 
                                                         <div class="lSSlideWrapper usingCss">
                                                             <ul id="lightSlider_{{SubTask.TaskId}}" class="gallery list-unstyled sub-task-attachments-list">
-                                                                <li repeat-end="onAttachmentEnd({{SubTask.TaskId}})" ng-repeat="File in TaskFiles | filter: {TaskId: SubTask.TaskId} : true" id="liImage" runat="server" class="noborder" style="overflow: inherit !important; width: 247px; margin-right: 0px;">
+                                                                <li repeat-end="onAttachmentEnd({{SubTask.TaskId}})" ng-repeat="File in TaskFiles | filter: {TaskId: SubTask.TaskId} : true" 
+                                                                    id="liImage" runat="server" class="noborder" style="overflow: inherit !important; width: 247px; margin-right: 0px;"
+                                                                    data-thumb="/TaskAttachments/{{File.attachment.split('@')[0]}}">
                                                                     <h5>
                                                                         <a class="sub-task-link" target="_blank" id="lbtnDownload" href="/TaskAttachments/{{File.attachment.split('@')[0]}}">{{File.attachment.split("@")[1]}}</a></h5>
                                                                     <h5>
@@ -2459,14 +2464,13 @@
     }
 
     function updateDesc(htmldata, autosave) {
-        console.log(htmldata);
+        //console.log(htmldata);
         if (isadded) {
             if (!autosave) {
                 control.html(htmldata);
                 isadded = false;
             }
             EditDesc(control.attr("data-taskid"), htmldata, autosave);
-            
         }
     }
     function updateChild(htmldata) {
@@ -2651,7 +2655,13 @@
                 asynch: false,
                 success: function (data) {
                     if (idAttachments) {
-                        $('#<%=btnSaveGridAttachment.ClientID%>').click();
+                        //$('#<%=btnSaveGridAttachment.ClientID%>').click();
+                        if (!autosave)
+                            RefreshData = true;
+                        else
+                            RefreshData = false;
+
+                        SaveAttchmentToDB();
                     }
                     else {
                         HideAjaxLoader();
@@ -2663,6 +2673,7 @@
                     else {
                         alert('Description saved successfully.');
                     }
+                    isBtnSave = false;
                 },
                 error: function (a, b, c) {
                     HideAjaxLoader();
@@ -2957,10 +2968,6 @@
 
                 LoadImageGallery('.sub-task-attachments-list');
 
-                //----------- start DP -----
-                GridDropZone();
-                //----------- end DP -----
-
                 SetApprovalUI();
 
                 var controlmode = $('#<%=hdnAdminMode.ClientID%>').val().toLowerCase();
@@ -3121,7 +3128,10 @@
 
                                 if ($('#<%=btnSaveSubTaskAttachment.ClientID%>').length > 0) {
                                     // saves attachment.
-                                    $('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
+                                    //$('#<%=btnSaveSubTaskAttachment.ClientID%>').click();
+
+                                    
+                                    //Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]
                                     //this.removeFile(file);
                                 }
                             });
@@ -3361,7 +3371,9 @@
 
                         if ($('#<%=btnSaveGridAttachment.ClientID%>').length > 0) {
                             // saves attachment.
-                            $('#<%=btnSaveGridAttachment.ClientID%>').click();
+                            RefreshData = true;
+                            SaveAttchmentToDB();
+                            //$('#<%=btnSaveGridAttachment.ClientID%>').click();
                             //this.removeFile(file);
                         }
                     });
@@ -3370,7 +3382,29 @@
         }
         });
 }
-
+    function SaveAttchmentToDB() {
+        if (IsAdminMode == 'True') {
+            var data = {
+                TaskId: $('#<%=hdDropZoneTaskId.ClientID%>').val(), attachments: $('#<%=hdnGridAttachment.ClientID%>').val()
+            };
+            $.ajax({
+                type: "POST",
+                url: url + "SaveUserAttachements",
+                data: data,
+                success: function (result) {
+                    //alert("Success");
+                    $('#<%=hdnGridAttachment.ClientID%>').val('');
+                    $('#<%=hdDropZoneTaskId.ClientID%>').val('');
+                    if (RefreshData)
+                        LoadSubTasks();
+                },
+                error: function (errorThrown) {
+                    console.log(errorThrown);
+                    alert("Failed!!!");
+                }
+            });
+        }
+    }
 
 function setSelectedUsersLink() {
 

@@ -533,6 +533,60 @@ namespace JG_Prospect.WebServices
         #endregion
 
         #region '--Task--'
+        [WebMethod(EnableSession = true)]
+        public String GetTaskUserFileByFileName(string FileName)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = null;
+
+            dtResult = TaskGeneratorBLL.Instance.GetTaskUserFileByFileName(FileName);
+            dtResult.Tables[0].Rows[0]["AttachDate"] = string.Format("{0:MM/dd/yyyy hh:mm tt}", Convert.ToDateTime(dtResult.Tables[0].Rows[0]["AttachDate"]).ToEST());
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                dtResult.DataSetName = "FileData";
+                dtResult.Tables[0].TableName = "File";
+                System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                doc.LoadXml(dtResult.GetXml());
+                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool SaveUserAttachements(string TaskId, string attachments)
+        {
+            //User has attached file than save it to database.
+            if (!String.IsNullOrEmpty(attachments))
+            {
+                TaskUser taskUserFiles = new TaskUser();
+
+                if (!string.IsNullOrEmpty(attachments))
+                {
+                    String[] files = attachments.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    foreach (String attachment in files)
+                    {
+                        String[] attachements = attachment.Split('@');
+
+                        taskUserFiles.Attachment = attachements[0];
+                        taskUserFiles.OriginalFileName = attachements[1];
+                        taskUserFiles.Mode = 0; // insert data.
+                        taskUserFiles.TaskId = long.Parse(TaskId);
+                        taskUserFiles.UserId = Convert.ToInt32(Session[SessionKey.Key.UserId.ToString()]);
+                        taskUserFiles.TaskUpdateId = null;
+                        taskUserFiles.UserType = JGSession.IsInstallUser ?? false;
+                        taskUserFiles.TaskFileDestination = JGConstant.TaskFileDestination.SubTask;
+                        TaskGeneratorBLL.Instance.SaveOrDeleteTaskUserFiles(taskUserFiles);  // save task files
+                    }
+                }
+            }
+            return true;
+        }
 
         [WebMethod(EnableSession = true)]
         public bool UpdateTaskTitleById(string tid, string title)

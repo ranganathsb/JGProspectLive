@@ -44,3 +44,15 @@ BEGIN
   END  
  END        
 END         
+
+GO
+
+
+alter procedure usp_GetTaskUserFilesByFileName
+(@FileName varchar(max))
+as
+begin
+select u.FristName + ' ' +u.LastName as UserName,AttachmentOriginal as FileName, AttachedFileDate as AttachDate from [tblTaskUserFiles] f
+join tblInstallUsers u on f.UserId = u.Id
+where Attachment=@FileName
+end

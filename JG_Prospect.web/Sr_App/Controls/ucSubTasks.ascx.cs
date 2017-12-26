@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -2018,11 +2019,12 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void btnSaveGridAttachment_Click(object sender, EventArgs e)
         {
-            Button lnkpop = (Button)sender;
+            //Button lnkpop = (Button)sender;
             int vTaskid = Convert.ToInt32(hdDropZoneTaskId.Value.ToString());
             UploadUserAttachements(null, Convert.ToInt64(vTaskid), hdnGridAttachment.Value, JGConstant.TaskFileDestination.SubTask);
             hdnGridAttachment.Value = hdDropZoneTaskId.Value = string.Empty;
-            SetSubTaskDetails();
+            Response.Redirect(Request.RawUrl);
+            //SetSubTaskDetails();
         }
 
         protected void btnUpdateRepeater_Click(object sender, EventArgs e)
@@ -2954,7 +2956,7 @@ namespace JG_Prospect.Sr_App.Controls
             //rptSubTaskAttachments.DataBind();
 
             //upnlAttachments.Update();
-        }
+        }        
 
         private void UploadUserAttachements(int? taskUpdateId, long TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
         {
