@@ -2013,6 +2013,17 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
     max-width: 100px;
     height: inherit;
 }
+.nestedChildren img {
+    max-width: 100px;
+    height: inherit;
+}
+.nestedChildren p {
+    margin: 0px;
+}
+.nestedChildren a {
+    color:blue !important;
+}
+
 .divtdetails p {
     margin: 0px;
 }
@@ -2685,4 +2696,48 @@ ul.auto-complete-users {
     border-width: 1px;
     border-color: gainsboro;
     padding: 4px;
+    max-width:200px !important;
+}
+.multileveledittext img{
+    max-height:100px;
+    max-width:100px;
+}
+.popover__content li {
+    list-style: none;
+}
+
+.popover__content {
+    display: none;
+    position: absolute;
+    transform: translate(0,10px);
+    background-color: #FFF;
+    padding: 15px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    z-index: 9999;
+    line-height: 2;
+}
+
+    /*.popover__content:before {
+        position: absolute;
+        z-index: -1;
+        content: '';
+        right: calc(50% - 10px);
+        top: -8px;
+        border-style: solid;
+        border-width: 0 10px 10px 10px;
+        border-color: transparent transparent #FFF transparent;
+        transition-duration: 0.3s;
+        transition-property: transform;
+    }*/
+
+.popover__wrapper:hover .popover__content {
+    z-index: 10;
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0,-20px);
+    transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+}
+
+.popover__message {
+    text-align: center;
 }

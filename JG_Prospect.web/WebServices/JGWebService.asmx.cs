@@ -904,6 +904,15 @@ namespace JG_Prospect.WebServices
                                                     intPageSize,
                                                     intHighlightTaskId
                                                 );
+            //Convert UTC to EST
+            foreach (DataRow row in dtResult.Tables[3].Rows)
+            {
+                if (row["UpdatedOn"] != null && row["UpdatedOn"].ToString() != "")
+                {
+                    row["UpdatedOn"] = string.Format("{0:MM/dd/yyyy hh:mm tt}", Convert.ToDateTime(row["UpdatedOn"]).ToEST());
+                }
+            }
+
             dtResult.Tables[0].Columns.Add("className");
 
             DataTable copyTable = dtResult.Tables[0].Clone();            

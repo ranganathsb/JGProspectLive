@@ -238,7 +238,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                 //ParentIds = ParentIds.substring(0, ParentIds.length - 1);
             });
 
-            $('.image-link').magnificPopup({ type: 'image' });
+            
 
         }, 1);
 
@@ -285,7 +285,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         $(".ChildEdit").each(function (index) {
                             // This section is available to admin only.
 
-                            $(this).bind("click", function () {
+                            $(this).bind("dblclick", function () {
                                 if (!isadded) {
                                     var tid = $(this).attr("data-taskid");
                                     var ptid = $(this).attr("data-parentid");
@@ -332,6 +332,47 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                             });
                         });
                     }
+                    $('.image-link').magnificPopup({ type: 'image' });
+
+                    $('.image-link img').mouseover(function () {
+
+                        if ($(this).attr('id') != 'imgIcon') {
+                            //alert('click');
+                            // Returns width of browser viewport
+                            var width = $(window).width();
+
+                            //Show Popover
+                            var src = $(this).attr('src');
+                            var h = $(this).attr('height');
+                            var w = $(this).attr('width');
+
+                            var parentOffset = $(this).parent().offset();
+
+                            var relX = parentOffset.left;
+                            var relY = parentOffset.top - 200;
+
+                            if (relX >= (width / 2)) {
+                                relX = parentOffset.left - 100;
+                            }
+                            else {
+                                relX = parentOffset.left + 98;
+                            }
+
+                            $('.popover__content img').attr('height', 150);
+                            $('.popover__content img').attr('src', src);
+                            $('.popover__content').css({ "height": h });
+                            $('.popover__content').css({ "width": w });
+                            $('.popover__content').css({ "left": relX });
+                            $('.popover__content').css({ "top": relY });
+                            $('.popover__content').fadeIn(200);
+                        }
+                    });
+                
+                    $('.image-link img').mouseleave(function () {
+                        //$('.popover__content img').attr('src', "");
+                        $('.popover__content').fadeOut(200);
+                    });
+
                 }, 1);
             });
             //----------- start DP -----
@@ -523,3 +564,7 @@ var isBtnSave = false;
 var UploadUserName = '', UploadFileName = '', UploadTime = '';
 var RefreshData = false;
 var FileData;
+
+function showMedSizePopup() {
+    alert('hi');
+}
