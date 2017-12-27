@@ -833,6 +833,5 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetEmployeeInterviewDetails(UserID);
 
         }
-
     }
 }

@@ -545,16 +545,22 @@ form.inline {
 /*------------------------------------------------------------------
 [6. User Panel]
 */
+.search-box{width: 100px;
+    padding: 2px;
+    border-radius: 3px;}
+.ProfilImg{width: 80px;
+    float: left;}
 .user_panel {
     height: 49px;
     background: url(../img/user-panel-bg.png) repeat-x;
     position: absolute;
     right: 0;
     top: 0;
-    padding: 15px 20px;
+    padding: 5px;
     color: #fefefe;
     border-radius: 0 0 10px 10px;
     font-size: 13px;
+    width: 340px;
 }
 
     .user_panel a {
@@ -581,17 +587,24 @@ form.inline {
 
     .user_panel ul {
         list-style-type: none;
-        margin: 9px 0 0 0;
-        padding: 0;
-        float: right;
-        font-size: 12px;
+    margin: 10px 0 0;
+    padding: 0;
+    float: left;
+    font-size: 12px;
+    width: 258px;
     }
 
         .user_panel ul li {
             float: left;
-            margin: 0 0 0 8px;
+            margin: 0 0 0 2px;
             padding: 0;
+            position:relative;
         }
+        .user_panel .badge{    position: absolute;
+    right: -12px;
+    top: -12px;
+    padding: 2px;
+}
 
 /*------------------------------------------------------------------
 [7. Nav]
@@ -1385,7 +1398,7 @@ ul.left_nav {
 .tasklist {
     overflow: auto;
     max-height: 165px;
-    margin-left: 220px !important;
+    margin-left: 175px !important;
     width: 75%;
     position: relative;
     z-index: 9;
@@ -2400,6 +2413,7 @@ p.mcqQuestion {
 }
 
 .seq-tasktitle {
+        word-wrap: break-word;
     width: 24%;
 }
 
@@ -2654,6 +2668,8 @@ ul.auto-complete-users {
     /* max-height: 400px;
     min-height: 100px; */
     margin: 10px 0;
+    max-height:150px;
+    overflow-y:auto;
     /* -webkit-border-radius: 12px; */
     -moz-border-radius: 8px;
     border-radius: 8px;

@@ -235,14 +235,19 @@
         }
         .first-col{    width: 20%;float: left;}
         .second-col{float:left;width:78%}
-        .second-col textarea.note-text{width:100%;}
+        .second-col textarea.note-text{width:99%;}
         .notes-container {
             display: block;
-            height: 66px;
+            /*height: 66px;*/
             overflow-x: hidden;
             overflow-y: auto;
+           position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
         }
-
+        .pos-rel{position:relative;}
+        .notes-inputs{text-align: left;height:30px;padding: 2px;position: absolute;left: 0;bottom: 0;width: 100%;}
         .notes-table {
             height: auto;
             width: 100%;
@@ -411,7 +416,7 @@
                 padding: 5px !important;
             }
             .notes-container .note-desc {
-                width: 194px;
+                width: 230px;
                 height: 29px;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -530,7 +535,10 @@
                                     '</tr>';
                         });
                         tbl += '</table>';
+                        var tdHeight = $('#user-' + userid).parents('tr').height();
                         $('#user-' + userid).html(tbl);
+                        
+                        $('#user-' + userid).css('height',(tdHeight-36)+'px');
                         var tuid = getUrlVars()["TUID"];
                         var nid = getUrlVars()["NID"];
                         if (tuid != undefined && nid!= undefined) {
@@ -1288,7 +1296,7 @@
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" SortExpression="Status">
+                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="7%" ItemStyle-Width="7%" SortExpression="Status">
                                     <ItemTemplate>
                                         <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
                                         <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99 : Eval("OrderStatus")%>'></asp:HiddenField>
@@ -1393,7 +1401,7 @@
                                         </div>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="4%" ItemStyle-Width="4%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
+                                <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="2%" ItemStyle-Width="2%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
                                     <ItemTemplate>
                                         <div title='<%#Eval("Country") %>' style='<%# string.IsNullOrEmpty(Eval("CountryCode").ToString()) == true ? "": "background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px;" %>' class='<%#Eval("CountryCode").ToString().ToLower()%>'>
                                         </div>
@@ -1425,8 +1433,8 @@
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="22%"
-                                    ItemStyle-Width="22%" ItemStyle-CssClass="noMargin">
+                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="27%"
+                                    ItemStyle-Width="27%" ItemStyle-CssClass="noMargin pos-rel">
                                     <HeaderTemplate>
                                         Notes
                                         <table class="table gridtbl notes-table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
@@ -1440,7 +1448,7 @@
                                         <div class="notes-container" uid="<%#Eval("UserInstallId")%>" id="user-<%#Eval("Id")%>">
                                             Loading Notes...
                                         </div>
-                                        <div style="text-align: left; padding: 2px;">                                            
+                                        <div class="notes-inputs">                                            
                                             <div class="first-col"><input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this, '<%# Eval("Id") %>','<%#Eval("UserInstallId")%>')" /></div>
                                             <div class="second-col"><textarea class="note-text textbox" id="txt-<%# Eval("Id") %>"></textarea></div>
                                          </div>

@@ -18,6 +18,7 @@ using JG_Prospect.Common.modal;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Threading;
+using System.Web.Hosting;
 
 namespace JG_Prospect.App_Code
 {
@@ -298,7 +299,7 @@ namespace JG_Prospect.App_Code
                     Msg.To.Add(strToAddress);
                     Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
                     Msg.Subject = strSubject;// "JG Prospect Notification";
-                    Msg.Body = strBody.Replace("#UNSEMAIL#", HttpContext.Current.Server.UrlEncode(strToAddress));
+                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);
                     Msg.IsBodyHtml = true;
 
                     //ds = AdminBLL.Instance.GetEmailTemplate('');
@@ -1172,7 +1173,7 @@ namespace JG_Prospect.App_Code
 
         private static void UpdateEmailStatistics(string emailId)
         {
-            string logDirectoryPath = HttpContext.Current.Server.MapPath(@"~\EmailStatistics");
+            string logDirectoryPath = HostingEnvironment.MapPath(@"~\EmailStatistics");
 
             if (!Directory.Exists(logDirectoryPath))
             {

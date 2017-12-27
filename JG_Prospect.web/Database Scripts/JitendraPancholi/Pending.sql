@@ -28,3 +28,17 @@ Begin
 	Drop Table #TempData
 
 End
+
+
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'UpdateEmpType' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE UpdateEmpType
+  END
+Go
+Create PROCEDURE UpdateEmpType
+	@ID int,
+	@EmpType varchar(50)
+AS
+BEGIN
+	update tblInstallUsers set EmpType=@EmpType where ID=@ID
+END
