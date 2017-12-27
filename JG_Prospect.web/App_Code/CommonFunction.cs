@@ -1855,6 +1855,20 @@ namespace JG_Prospect
                 HttpContext.Current.Session["cextime"] = value;
             }
         }
+
+        public static string UserInstallId
+        {
+            get
+            {
+                if (HttpContext.Current.Session["UserInstallId"] == null)
+                    return null;
+                return Convert.ToString(HttpContext.Current.Session["UserInstallId"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["UserInstallId"] = value;
+            }
+        }
     }
 }
 

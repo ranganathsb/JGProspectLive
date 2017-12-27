@@ -548,7 +548,7 @@ form.inline {
 .search-box{width: 100px;
     padding: 2px;
     border-radius: 3px;}
-.ProfilImg{width: 80px;
+.ProfilImg{width: 80px;position:relative;
     float: left;}
 .user_panel {
     height: 49px;

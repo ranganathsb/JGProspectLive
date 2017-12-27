@@ -858,6 +858,7 @@ namespace JG_Prospect
                             JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
                             JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
                             JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
+                            JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
                             JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
                             if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
                             {
