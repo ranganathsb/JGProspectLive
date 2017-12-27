@@ -4,7 +4,7 @@
 
 .emp-mltxtbox {
     color: #999999;
-    width: 93%;
+    width: 92%;
     height: 70px;
     border: 1px solid;
     border-radius: 5px;
@@ -12,7 +12,7 @@
 
 .emp-txtbox {
     color: #999999;
-    width: 93%;
+    width: 92%;
     height: 25px;
     border: 1px solid;
     border-radius: 5px;
@@ -20,12 +20,12 @@
 }
 
 .emp-txtboxsmall {
-    width: 3%;
+    width: 2%;
 }
 
 .emp-ddl {
     color: #999999;
-    width: 95%;
+    width: 92%;
     height: 25px;
     border: 1px solid;
     border-radius: 5px;
@@ -34,6 +34,9 @@
 
 .redtext {
     color: red;
+}
+.errortext {
+    color: #c72121 !important;
 }
 
 .profilediv {
@@ -109,4 +112,8 @@ display:none;
 .parallerinput-left {
 }
 .parallerinput-right {
+}
+.loading
+{
+    background:url('/img/loading.png') no-repeat right center;
 }

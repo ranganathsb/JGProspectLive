@@ -178,19 +178,82 @@ IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[usp_GetInstallUserDe
 
     END  
 GO    
-
+  
+  
+-- =============================================              
+-- Author:  Yogesh              
+-- Create date: 21 Dec 2017            
+-- Updated By : Yogesh Keraliya        
+-- Description: Get an install user by id.            
 -- =============================================            
--- Author:  Yogesh            
--- Create date: 21 Dec 2017          
--- Updated By : Yogesh Keraliya      
--- Description: Get an install user by id.          
--- =============================================          
--- [dbo].[usp_GetInstallUserDetailsById]
-Create PROCEDURE [dbo].[usp_GetInstallUserDetailsById]          
- @UserId INT
-AS          
-BEGIN          
-             
-  SELECT * FROM tblInstallUsers  AS tbi WHERE Id = @UserId
-         
+-- [dbo].[usp_GetInstallUserDetailsById]  
+CREATE PROCEDURE [dbo].[usp_GetInstallUserDetailsById]            
+ @UserId INT  
+AS            
+BEGIN            
+               
+  SELECT [Id],[FristName],[NameMiddleInitial],[LastName],[Email],[Phone], [Address],[Zip],[State],[City],[CountryCode],[Password],[Designation],[Status],[Picture],[Source],[EmpType],[InstallId],[DrugTest],  
+  [CrimeStatus],[SalaryReq],[Avialability], [StartDate],[ResumePath],[CruntEmployement],[PrevApply],[CruntEmployement],[LeavingReason],[Notes],[FELONY],[DesignationID],[PositionAppliedFor],[SourceID],[IsEmailContactPreference],[IsCallContactPreference],  
+  [IsTextContactPreference],[IsMailContactPreference]  
+  FROM tblInstallUsers AS tbi WHERE Id = @UserId  
+           
+END
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+IF EXISTS (SELECT * FROM sysobjects WHERE id = object_id(N'[usp_UpdateInstallUserDetailsById]') AND OBJECTPROPERTY(id, N'IsProcedure') = 1)
+    BEGIN
+ 
+    DROP PROCEDURE usp_UpdateInstallUserDetailsById
+
+    END  
+GO    
+  
+-- =============================================              
+-- Author:  Yogesh              
+-- Create date: 26 Dec 2017            
+-- Updated By : Yogesh Keraliya        
+-- Description: Update install user by id.            
+-- =============================================            
+-- [dbo].[usp_UpdateInstallUserDetailsById]  
+CREATE PROCEDURE [dbo].[usp_UpdateInstallUserDetailsById]            
+ @UserId INT,
+ @PositionAppliedFor VARCHAR(50), 
+ @SourceID INT,
+ @Source VARCHAR(250),
+ @FristName VARCHAR(50),
+ @LastName VARCHAR(50), 
+ @NameMiddleInitial VARCHAR(5),
+ @CountryCode VARCHAR(15),
+ @Zip VARCHAR(10),  
+ @City VARCHAR(30),
+ @State VARCHAR(30), 
+ @Address VARCHAR(100), 
+ @LeavingReason VARCHAR(250), 
+ @Phone VARCHAR(25),
+ @Email VARCHAR(250), 
+ @IsEmailContactPreference BIT, 
+ @IsCallContactPreference BIT, 
+ @IsTextContactPreference BIT,
+ @IsMailContactPreference BIT, 
+ @Start_Date VARCHAR(50), 
+ @EmpType VARCHAR(50), 
+ @SalaryReq VARCHAR(50),
+ @CruntEmployement BIT,
+ @DrugTest BIT, 
+ @FELONY BIT, 
+ @PrevApply BIT,
+ @Notes VARCHAR(200),
+ @Picture VARCHAR(250),
+ @ResumePath VARCHAR(250) 
+AS            
+BEGIN            
+               
+ UPDATE       tblInstallUsers
+SET                PositionAppliedFor = @PositionAppliedFor, SourceID = @SourceID, Source = @Source, FristName = @FristName, LastName = @LastName, NameMiddleInitial = @NameMiddleInitial, CountryCode = @CountryCode, Zip = @Zip, 
+                         City = @City, State = @State, Address = @Address, LeavingReason = @LeavingReason, Phone = @Phone, Email = @Email, IsEmailContactPreference = @IsEmailContactPreference, 
+                         IsCallContactPreference = @IsCallContactPreference, IsTextContactPreference = @IsTextContactPreference, IsMailContactPreference = @IsMailContactPreference, [Start_Date] = @Start_Date, EmpType = @EmpType, 
+                         SalaryReq = @SalaryReq, CruntEmployement = @CruntEmployement, DrugTest = @DrugTest, FELONY = @FELONY, PrevApply = @PrevApply, Notes = @Notes, Picture = @Picture, ResumePath = @ResumePath
+WHERE        (Id = @UserId)  
+           
 END

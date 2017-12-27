@@ -229,6 +229,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.TextBox txtPhone;
         
         /// <summary>
+        /// hdnPhone control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnPhone;
+        
+        /// <summary>
         /// rfvPhone control.
         /// </summary>
         /// <remarks>
@@ -364,6 +373,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RadioButtonList rblEmployed;
         
         /// <summary>
+        /// rfvEmployed control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvEmployed;
+        
+        /// <summary>
         /// rblDrugTest control.
         /// </summary>
         /// <remarks>
@@ -371,6 +389,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList rblDrugTest;
+        
+        /// <summary>
+        /// rfvDrug control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvDrug;
         
         /// <summary>
         /// rblFelony control.
@@ -382,6 +409,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RadioButtonList rblFelony;
         
         /// <summary>
+        /// rfvFelony control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvFelony;
+        
+        /// <summary>
         /// rblWorkedForJMG control.
         /// </summary>
         /// <remarks>
@@ -389,6 +425,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList rblWorkedForJMG;
+        
+        /// <summary>
+        /// rfvWorked control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvWorked;
         
         /// <summary>
         /// txtMessageToRecruiter control.
@@ -418,6 +463,24 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.FileUpload fupResume;
         
         /// <summary>
+        /// cvResume control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CustomValidator cvResume;
+        
+        /// <summary>
+        /// hdnResume control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hdnResume;
+        
+        /// <summary>
         /// divProfilePic control.
         /// </summary>
         /// <remarks>
@@ -425,6 +488,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divProfilePic;
+        
+        /// <summary>
+        /// fupProfilePic control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload fupProfilePic;
         
         /// <summary>
         /// imgProfilePic control.
@@ -452,15 +524,6 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CustomValidator cvProfilePic;
-        
-        /// <summary>
-        /// fupProfilePic control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.FileUpload fupProfilePic;
         
         /// <summary>
         /// btnSaveProfile control.

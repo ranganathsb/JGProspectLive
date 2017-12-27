@@ -7,6 +7,8 @@ using System.Web.UI.WebControls;
 using JG_Prospect.BLL;
 using System.Data;
 using JG_Prospect.App_Code;
+using JG_Prospect.Common.modal;
+using System.IO;
 
 namespace JG_Prospect
 {
@@ -53,6 +55,15 @@ namespace JG_Prospect
 
         #region "-- Control Events --"
 
+        protected void btnSaveProfile_Click(object sender, EventArgs e)
+        {
+            if (Page.IsValid)
+            {
+                UpdateUserData();
+            }
+        }
+
+
         #endregion
 
         #region "--Private Methods-"
@@ -82,7 +93,7 @@ namespace JG_Prospect
                 ddlSource.DataValueField = "Id";
                 //ddlSource.DataValueField = "Source";
                 ddlSource.DataBind();
-                ddlSource.Items.Insert(0, "Select Source");
+                ddlSource.Items.Insert(0, new ListItem("Select Source", "0"));
                 ddlSource.SelectedIndex = 0;
             }
 
@@ -203,7 +214,7 @@ namespace JG_Prospect
                 {
                     rblWorkedForJMG.SelectedIndex = rblWorkedForJMG.Items.IndexOf(WorkedForJMG);
                 }
-                
+
                 txtMessageToRecruiter.Text = drDetails["Notes"].ToString();
 
                 if (String.IsNullOrEmpty(drDetails["Picture"].ToString()))
@@ -217,11 +228,79 @@ namespace JG_Prospect
                     imgProfilePic.ImageUrl = String.Concat("~/Employee/ProfilePictures/", drDetails["Picture"].ToString());
                 }
 
+                if (!String.IsNullOrEmpty(drDetails["ResumePath"].ToString()))
+                {
+                    hdnResume.Value = drDetails["ResumePath"].ToString();                    
+                }
+
             }
         }
 
-        #endregion
+        private void UpdateUserData()
+        {
+            user objInstallUser = new user();
 
+            objInstallUser.id = Convert.ToInt32(JGSession.LoginUserID);
+            objInstallUser.fristname = txtfirstname.Text.Trim();
+            objInstallUser.NameMiddleInitial = txtfirstname.Text.Trim();
+            objInstallUser.lastname = txtlastname.Text.Trim();
+            objInstallUser.email = txtEmail.Text.Trim();
+            objInstallUser.phone = hdnPhone.Value;
+            objInstallUser.zip = txtZip.Text.Trim();
+            objInstallUser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Value;
+            objInstallUser.Source = ddlSource.SelectedItem.Text;
+            objInstallUser.SourceId = Convert.ToInt32(ddlSource.SelectedItem.Value);
+            objInstallUser.CountryCode = ddlCountry.SelectedItem.Value;
+            objInstallUser.city = txtCity.Text.Trim();
+            objInstallUser.state = txtState.Text.Trim();
+            objInstallUser.address = txtAddress.Text.Trim();
+            objInstallUser.Reason = txtReasontoLeave.Text.Trim();
+            objInstallUser.city = txtCity.Text.Trim();
+            objInstallUser.IsEmailContactPreference = ContactPreferenceChkEmail.Checked;
+            objInstallUser.IsCallContactPreference = ContactPreferenceChkCall.Checked;
+            objInstallUser.IsTextContactPreference = ContactPreferenceChkText.Checked;
+            objInstallUser.IsMailContactPreference = ContactPreferenceChkMail.Checked;
+            objInstallUser.StartDate = txtStartDate.Text.Trim();
+            objInstallUser.EmpType = ddlEmpType.SelectedItem.Value;            
+            objInstallUser.SalaryReq = txtSalaryRequirments.Text.Trim();
+            objInstallUser.CruntEmployement = rblEmployed.SelectedItem.Value == "0" ?false:true;
+            objInstallUser.DrugTest = rblDrugTest.SelectedItem.Value == "0" ? false : true;
+            objInstallUser.FELONY = rblFelony.SelectedItem.Value == "0" ? false : true;
+            objInstallUser.PrevApply = rblWorkedForJMG.SelectedItem.Value == "0" ? false : true;
+            objInstallUser.Notes = txtMessageToRecruiter.Text.Trim();
+            objInstallUser.ResumePath = UploadResume();
+            objInstallUser.picture = UploadPicture();
+
+            InstallUserBLL.Instance.UpdateUserProfile(objInstallUser);
+                        
+        }
+
+        private string UploadPicture()
+        {
+            String fileName = CommonFunction.UploadFile(fupProfilePic, "~/Employee/ProfilePictures");
+
+            if (String.IsNullOrEmpty(fileName))
+            {
+                fileName = hdnprofilePic.Value;
+            }
+           
+            return fileName;
+        }
+
+        private string UploadResume()
+        {
+            String fileName = CommonFunction.UploadFile(fupResume, "~/Employee/Resume");
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                fileName = hdnResume.Value;
+            }
+
+            return fileName;
+        }
+
+
+        #endregion
 
     }
 }

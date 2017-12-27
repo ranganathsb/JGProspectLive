@@ -837,14 +837,19 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.BulkIntsallUserDuplicateCheck(xmlDoc);
         }
 
-        public Int32 QuickSaveInstallUser(user objuser)
+        public Boolean UpdateUserProfile(user objuser)
         {
-            return InstallUserDAL.Instance.QuickSaveInstallUser(objuser);
+            return InstallUserDAL.Instance.UpdateUserProfile(objuser);
 
         }
 
         public DataSet getInstallUserDetailsById(Int32 UserId) {
             return InstallUserDAL.Instance.getInstallUserDetailsById(UserId);
+        }
+
+        public int QuickSaveInstallUser(user objInstallUser)
+        {
+            return InstallUserDAL.Instance.QuickSaveInstallUser(objInstallUser);
         }
     }
 }

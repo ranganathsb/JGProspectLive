@@ -1435,8 +1435,7 @@ namespace JG_Prospect.App_Code
             }
 
         }
-
-
+        
         public static string GetTaskLinkTitleForAutoEmail(int taskId)
         {
 
@@ -1467,6 +1466,38 @@ namespace JG_Prospect.App_Code
             newTaskLinkTitle = string.Format("TaskID#:{0}:Title:{1}", installId, taskTitle);
 
             return newTaskLinkTitle;
+        }
+
+        /// <summary>
+        /// Upload file on server to given relative path from given file upload control.
+        /// </summary>
+        /// <param name="fupControl"></param>
+        /// <param name="RelativePath">Relative path on server, ex. ~/Employee/</param>
+        /// <returns>Saved file name -> guid-originalfilename</returns>
+        public static string UploadFile(FileUpload fupControl, String RelativePath)
+        {
+            String fileName = string.Empty;
+
+            if (fupControl.HasFile)
+            {
+                DirectoryInfo originalDirectory = new DirectoryInfo(HttpContext.Current.Server.MapPath(RelativePath));
+
+                string originalName = Path.GetFileName(fupControl.FileName);
+                string NewFileName = Guid.NewGuid() + "-" + originalName;
+
+                string pathString = System.IO.Path.Combine(originalDirectory.ToString(), NewFileName);
+
+                bool isExists = System.IO.Directory.Exists(originalDirectory.ToString());
+
+                if (!isExists)
+                    System.IO.Directory.CreateDirectory(originalDirectory.ToString());
+
+                fupControl.SaveAs(pathString);
+
+                fileName = NewFileName;
+            }
+
+            return fileName;
         }
 
     }
