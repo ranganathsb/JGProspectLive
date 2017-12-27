@@ -44,7 +44,7 @@
     }
 
     .ProfilImg .caption {
-        opacity: 0;
+        opacity: 0.6;
         position: absolute;
         height: 28px;
         width: 75px;
@@ -57,9 +57,9 @@
         left: 2px;
     }
 
-    .ProfilImg:hover .caption {
+    /*.ProfilImg:hover .caption {
         opacity: 0.6;
-    }
+    }*/
 </style>
 <script>
 
@@ -77,8 +77,10 @@
             Welcome! 
         <span>
             <asp:Label ID="lbluser" runat="server" Text="User"></asp:Label>
+            
             <asp:Button ID="btnlogout" runat="server" Text="Logout" CssClass="cancel" ValidationGroup="header" OnClick="btnlogout_Click" />
         </span>
+        <span><asp:Label ID="lblDesignation" runat="server" Text="" CssClass="designation-container"></asp:Label></span>
         <ul>
             <li><a href="home.aspx">Home</a></li>
             <li>|</li>

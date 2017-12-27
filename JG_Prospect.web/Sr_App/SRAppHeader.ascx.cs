@@ -21,6 +21,7 @@ namespace JG_Prospect.Sr_App
             if (Session["loginid"] != null)
             {
                 lbluser.Text = Session["Username"].ToString() + " " + Session["LastName"].ToString();
+                lblDesignation.Text = JGSession.Designation;
                 imgProfile.ImageUrl = JGSession.UserProfileImg;
                 hLnkEditProfil.Text = JGSession.UserInstallId;
                 if (JGSession.LoginUserID != null)
