@@ -3300,7 +3300,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
                     database.AddInParameter(command, "@SourceID", DbType.Int32, objuser.SourceId);
                     database.AddInParameter(command, "@Source", DbType.String, objuser.Source);
-                    database.AddInParameter(command, "@FirstName", DbType.String, objuser.fristname);
+                    database.AddInParameter(command, "@FristName", DbType.String, objuser.fristname);
                     database.AddInParameter(command, "@NameMiddleInitial", DbType.String, objuser.NameMiddleInitial);
                     database.AddInParameter(command, "@LastName", DbType.String, objuser.lastname);
                     database.AddInParameter(command, "@CountryCode", DbType.String, objuser.CountryCode);
@@ -3324,7 +3324,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@PrevApply", DbType.Boolean, Convert.ToBoolean(objuser.PrevApply));
                     database.AddInParameter(command, "@Notes", DbType.String, objuser.Notes);
                     database.AddInParameter(command, "@Picture", DbType.String, objuser.picture);
-                    database.AddInParameter(command, "@ResumePath", DbType.String, objuser.picture);
+                    database.AddInParameter(command, "@ResumePath", DbType.String, objuser.ResumePath);
                     
 
                     database.ExecuteScalar(command);

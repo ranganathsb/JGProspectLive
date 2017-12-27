@@ -13,13 +13,31 @@ namespace JG_Prospect {
     public partial class screening_popup {
         
         /// <summary>
-        /// form1 control.
+        /// formScreening control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        protected global::System.Web.UI.HtmlControls.HtmlForm formScreening;
+        
+        /// <summary>
+        /// scmPopup control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.ScriptManager scmPopup;
+        
+        /// <summary>
+        /// upnlProfile control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upnlProfile;
         
         /// <summary>
         /// ddlPositionAppliedFor control.
@@ -479,6 +497,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField hdnResume;
+        
+        /// <summary>
+        /// ltlresume control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltlresume;
         
         /// <summary>
         /// divProfilePic control.

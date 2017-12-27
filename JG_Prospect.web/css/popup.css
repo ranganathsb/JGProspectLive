@@ -35,6 +35,7 @@
 .redtext {
     color: red;
 }
+
 .errortext {
     color: #c72121 !important;
 }
@@ -106,14 +107,15 @@
 }
 
 .hide {
-display:none;
+    display: none;
 }
 
 .parallerinput-left {
 }
+
 .parallerinput-right {
 }
-.loading
-{
-    background:url('/img/loading.png') no-repeat right center;
+
+.loading {
+    background: url('/img/ui-anim_basic_16x16.png') no-repeat right center;
 }

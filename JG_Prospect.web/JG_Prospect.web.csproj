@@ -2141,6 +2141,7 @@
     <Content Include="MCQTest\ViewResults.aspx" />
     <Content Include="postdata.html" />
     <Content Include="Properties\PublishProfiles\DeveloperProfile.pubxml.user" />
+    <Content Include="screening-intermediate.aspx" />
     <Content Include="screening-popup.aspx" />
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular.js" />
@@ -2515,6 +2516,13 @@
     </Compile>
     <Compile Include="MCQTest\ViewResults.aspx.designer.cs">
       <DependentUpon>ViewResults.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="screening-intermediate.aspx.cs">
+      <DependentUpon>screening-intermediate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="screening-intermediate.aspx.designer.cs">
+      <DependentUpon>screening-intermediate.aspx</DependentUpon>
     </Compile>
     <Compile Include="screening-popup.aspx.cs">
       <DependentUpon>screening-popup.aspx</DependentUpon>

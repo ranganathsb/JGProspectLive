@@ -34,6 +34,27 @@ namespace JG_Prospect
                 ViewState["UserId"] = value;
             }
         }
+
+        private String ReturnURL
+        {
+            get
+            {
+                if (ViewState["RL"] == null)
+                {
+                    return String.Empty;
+                }
+                else
+                {
+                    return ViewState["RL"].ToString();
+                }
+
+            }
+            set
+            {
+                ViewState["RL"] = value;
+            }
+        }
+
         #endregion
 
         #region "--page methods--"
@@ -44,6 +65,11 @@ namespace JG_Prospect
             CommonFunction.AuthenticateUser();
             if (!Page.IsPostBack)
             {
+                if (Request.QueryString.Count > 0 && !String.IsNullOrEmpty(Request.QueryString["returnurl"]))
+                {
+                    this.ReturnURL = Page.ResolveClientUrl(HttpUtility.UrlDecode(Request.QueryString["returnurl"].ToString()));
+                }
+
                 LoadDropDownData();
                 LoadUserData();
             }
@@ -131,7 +157,7 @@ namespace JG_Prospect
                     ddlPositionAppliedFor.SelectedIndex = ddlPositionAppliedFor.Items.IndexOf(PositionAppliedFor);
                 }
 
-                ListItem Source = ddlSource.Items.FindByValue(drDetails["Source"].ToString());
+                ListItem Source = ddlSource.Items.FindByValue(drDetails["SourceID"].ToString());
 
                 if (Source != null)
                 {
@@ -187,32 +213,49 @@ namespace JG_Prospect
 
                 txtSalaryRequirments.Text = drDetails["SalaryReq"].ToString();
 
-                ListItem Employed = rblEmployed.Items.FindByValue(drDetails["CruntEmployement"].ToString());
-
-                if (Employed != null)
+                if (!String.IsNullOrEmpty(drDetails["CruntEmployement"].ToString()))
                 {
-                    rblEmployed.SelectedIndex = rblEmployed.Items.IndexOf(Employed);
+                    String CurrentEmployment = Convert.ToBoolean(drDetails["CruntEmployement"].ToString()) == true ? "1" : "0";
+
+                    ListItem Employed = rblEmployed.Items.FindByValue(CurrentEmployment);
+
+                    if (Employed != null)
+                    {
+                        rblEmployed.SelectedIndex = rblEmployed.Items.IndexOf(Employed);
+                    } 
                 }
 
-                ListItem DrugTest = rblDrugTest.Items.FindByValue(drDetails["DrugTest"].ToString());
-
-                if (DrugTest != null)
+                if (!String.IsNullOrEmpty(drDetails["DrugTest"].ToString()))
                 {
-                    rblDrugTest.SelectedIndex = rblDrugTest.Items.IndexOf(DrugTest);
+                    String DrugTestValue = Convert.ToBoolean(drDetails["DrugTest"].ToString()) == true ? "1" : "0";
+                    ListItem DrugTest = rblDrugTest.Items.FindByValue(DrugTestValue);
+
+                    if (DrugTest != null)
+                    {
+                        rblDrugTest.SelectedIndex = rblDrugTest.Items.IndexOf(DrugTest);
+                    } 
                 }
 
-                ListItem Felony = rblFelony.Items.FindByValue(drDetails["FELONY"].ToString());
-
-                if (Felony != null)
+                if (!String.IsNullOrEmpty(drDetails["FELONY"].ToString()))
                 {
-                    rblFelony.SelectedIndex = rblFelony.Items.IndexOf(Felony);
+                    String FelonyValue = Convert.ToBoolean(drDetails["FELONY"].ToString()) == true ? "1" : "0";
+                    ListItem Felony = rblFelony.Items.FindByValue(FelonyValue);
+
+                    if (Felony != null)
+                    {
+                        rblFelony.SelectedIndex = rblFelony.Items.IndexOf(Felony);
+                    } 
                 }
 
-                ListItem WorkedForJMG = rblWorkedForJMG.Items.FindByValue(drDetails["PrevApply"].ToString());
-
-                if (WorkedForJMG != null)
+                if (!String.IsNullOrEmpty(drDetails["PrevApply"].ToString()))
                 {
-                    rblWorkedForJMG.SelectedIndex = rblWorkedForJMG.Items.IndexOf(WorkedForJMG);
+                    String WorkeForJMGValue = Convert.ToBoolean(drDetails["PrevApply"].ToString()) == true ? "1" : "0";
+                    ListItem WorkedForJMG = rblWorkedForJMG.Items.FindByValue(WorkeForJMGValue);
+
+                    if (WorkedForJMG != null)
+                    {
+                        rblWorkedForJMG.SelectedIndex = rblWorkedForJMG.Items.IndexOf(WorkedForJMG);
+                    } 
                 }
 
                 txtMessageToRecruiter.Text = drDetails["Notes"].ToString();
@@ -230,7 +273,8 @@ namespace JG_Prospect
 
                 if (!String.IsNullOrEmpty(drDetails["ResumePath"].ToString()))
                 {
-                    hdnResume.Value = drDetails["ResumePath"].ToString();                    
+                    ltlresume.Text = drDetails["ResumePath"].ToString();
+                    hdnResume.Value = drDetails["ResumePath"].ToString();
                 }
 
             }
@@ -242,7 +286,7 @@ namespace JG_Prospect
 
             objInstallUser.id = Convert.ToInt32(JGSession.LoginUserID);
             objInstallUser.fristname = txtfirstname.Text.Trim();
-            objInstallUser.NameMiddleInitial = txtfirstname.Text.Trim();
+            objInstallUser.NameMiddleInitial = txtMiddleInitial.Text.Trim();
             objInstallUser.lastname = txtlastname.Text.Trim();
             objInstallUser.email = txtEmail.Text.Trim();
             objInstallUser.phone = hdnPhone.Value;
@@ -254,16 +298,15 @@ namespace JG_Prospect
             objInstallUser.city = txtCity.Text.Trim();
             objInstallUser.state = txtState.Text.Trim();
             objInstallUser.address = txtAddress.Text.Trim();
-            objInstallUser.Reason = txtReasontoLeave.Text.Trim();
-            objInstallUser.city = txtCity.Text.Trim();
+            objInstallUser.LeavingReason = txtReasontoLeave.Text.Trim();
             objInstallUser.IsEmailContactPreference = ContactPreferenceChkEmail.Checked;
             objInstallUser.IsCallContactPreference = ContactPreferenceChkCall.Checked;
             objInstallUser.IsTextContactPreference = ContactPreferenceChkText.Checked;
             objInstallUser.IsMailContactPreference = ContactPreferenceChkMail.Checked;
             objInstallUser.StartDate = txtStartDate.Text.Trim();
-            objInstallUser.EmpType = ddlEmpType.SelectedItem.Value;            
+            objInstallUser.EmpType = ddlEmpType.SelectedItem.Value;
             objInstallUser.SalaryReq = txtSalaryRequirments.Text.Trim();
-            objInstallUser.CruntEmployement = rblEmployed.SelectedItem.Value == "0" ?false:true;
+            objInstallUser.CruntEmployement = rblEmployed.SelectedItem.Value == "0" ? false : true;
             objInstallUser.DrugTest = rblDrugTest.SelectedItem.Value == "0" ? false : true;
             objInstallUser.FELONY = rblFelony.SelectedItem.Value == "0" ? false : true;
             objInstallUser.PrevApply = rblWorkedForJMG.SelectedItem.Value == "0" ? false : true;
@@ -272,7 +315,13 @@ namespace JG_Prospect
             objInstallUser.picture = UploadPicture();
 
             InstallUserBLL.Instance.UpdateUserProfile(objInstallUser);
-                        
+
+            if (!String.IsNullOrEmpty(this.ReturnURL))
+            {
+                ScriptManager.RegisterStartupScript(upnlProfile, upnlProfile.GetType()
+                                                  , "Javascript", String.Concat("javascript:closeScreeningPopup('", this.ReturnURL, "');"), true);
+            }
+
         }
 
         private string UploadPicture()
@@ -283,7 +332,7 @@ namespace JG_Prospect
             {
                 fileName = hdnprofilePic.Value;
             }
-           
+
             return fileName;
         }
 
