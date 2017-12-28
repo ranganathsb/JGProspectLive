@@ -2,6 +2,7 @@
 using ASPSnippets.GoogleAPI;
 using ASPSnippets.TwitterAPI;
 using DotNetOpenAuth.AspNet.Clients;
+using JG_Prospect.App_Code;
 using JG_Prospect.BLL;
 using JG_Prospect.Common;
 using JG_Prospect.Common.Logger;
@@ -846,10 +847,14 @@ namespace JG_Prospect
                     ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
                     if (ds.Tables[0].Rows.Count > 0)
                     {
+                        bool isProfileUpdateRequired = CommonFunction.IsProfileUpdateRequired(ds.Tables[0].Rows[0]["LastProfileUpdated"].ToString());
+
                         #region 'Active User Found'
 
                         if (ds.Tables[0].Rows.Count > 0)
                         {
+                            
+
                             Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
 
                             JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
@@ -907,7 +912,14 @@ namespace JG_Prospect
                                 // commented by - yogesh kerliya to implement screening popup.
                                 //Response.Redirect("~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&IE=1");
 
-                                strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/ViewApplicantUser.aspx?Id=", JGSession.LoginUserID, "&IE=1");
+                                if (isProfileUpdateRequired)
+                                {
+                                    strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/ViewApplicantUser.aspx?Id=", JGSession.LoginUserID, "&IE=1"); 
+                                }
+                                else
+                                {
+                                    strRedirectUrl = String.Concat("~/ViewApplicantUser.aspx?Id=", JGSession.LoginUserID, "&IE=1");
+                                }
 
                                 Response.Redirect(strRedirectUrl);
                                 
@@ -919,7 +931,14 @@ namespace JG_Prospect
                                 // commented by - yogesh kerliya to implement screening popup.
                                 //Response.Redirect("~/Sr_App/ITDashboard.aspx?PWT=1");
 
-                                strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/Sr_App/ITDashboard.aspx?PWT=1");
+                                if (isProfileUpdateRequired)
+                                {
+                                    strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/Sr_App/ITDashboard.aspx?PWT=1"); 
+                                }
+                                else
+                                {
+                                    strRedirectUrl = "~/Sr_App/ITDashboard.aspx?PWT=1";
+                                }
 
                                 Response.Redirect(strRedirectUrl);
                                 
@@ -984,7 +1003,14 @@ namespace JG_Prospect
                                     // commented by - yogesh kerliya to implement screening popup.
                                     //strRedirectUrl = "~/Sr_App/ITDashboard.aspx";
 
-                                    strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/Sr_App/ITDashboard.aspx");
+                                    if (isProfileUpdateRequired)
+                                    {
+                                        strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/Sr_App/ITDashboard.aspx"); 
+                                    }
+                                    else
+                                    {
+                                        strRedirectUrl = "~/Sr_App/ITDashboard.aspx";
+                                    }
 
                                     Response.Redirect(strRedirectUrl);                                    
 
@@ -1055,10 +1081,11 @@ namespace JG_Prospect
                         }
 
                         //  Changed by yogesh keraliya to set flow to screening popup.
-                        String finalRedirectUrl = String.Empty;
+                        String finalRedirectUrl = strRedirectUrl;
 
-                        finalRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=", strRedirectUrl.Replace("~",String.Empty));
-
+                        
+                        //    finalRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=", strRedirectUrl.Replace("~", String.Empty)); 
+                        
                         Response.Redirect(finalRedirectUrl);
 
                        

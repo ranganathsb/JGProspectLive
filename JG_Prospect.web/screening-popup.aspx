@@ -256,7 +256,7 @@
             <h2>We are redirecting you to your dashboard, Please wait for few seconds...</h2>
             <img src="img/ui-anim_basic_16x16.png" />
         </div>
-
+        <div class="progress"  style="display: none">Loading&#8230;</div>
         <script src="//code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
         <script src="//code.jquery.com/ui/1.10.1/jquery-ui.js" type="text/javascript"></script>
         <script src="js/intTel/intlTelInput.js"></script>
@@ -278,6 +278,19 @@
             $(function () {
                 Initialize();
             });
+
+            var prm = Sys.WebForms.PageRequestManager.getInstance();
+            if (prm != null) {
+                // debugger;
+                prm.add_beginRequest(function (sender, e) {
+                    if (sender._postBackSettings.panelsToUpdate != null) {
+                        $(".progress").show();
+                    }
+                });
+                prm.add_endRequest(function (sender, e) {
+                    $(".progress").hide();
+                });
+            };
 
             function Initialize() {
                 $(txtStartDate).datepicker();

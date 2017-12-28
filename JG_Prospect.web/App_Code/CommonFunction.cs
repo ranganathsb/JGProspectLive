@@ -1148,6 +1148,18 @@ namespace JG_Prospect.App_Code
 
         }
 
+        internal static bool IsProfileUpdateRequired(string LastProfileUpdateDateTime)
+        {
+            bool ProfileUpdateRequired = true;
+
+            if (!String.IsNullOrEmpty(LastProfileUpdateDateTime))
+            {
+                ProfileUpdateRequired = false;
+            }
+
+            return ProfileUpdateRequired;
+        }
+
         private static void UpdateEmailStatistics(string emailId)
         {
             string logDirectoryPath = HttpContext.Current.Server.MapPath(@"~\EmailStatistics");
