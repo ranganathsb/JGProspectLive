@@ -16,6 +16,8 @@ namespace JG_Prospect.Sr_App
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            JG_Prospect.App_Code.CommonFunction.AuthenticateUser();
+
             IsSuperUser = CommonFunction.CheckAdminAndItLeadMode();
 
             //if (IsSuperUser)
