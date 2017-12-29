@@ -19,6 +19,7 @@ namespace JG_Prospect.Sr_App
         #region Page Variables
         public static bool IsSuperUser = false;
         public int loggedInUserId = 0;
+        public bool TaskListView = true;
         #endregion
 
         protected void Page_Load(object sender, EventArgs e)
@@ -26,6 +27,8 @@ namespace JG_Prospect.Sr_App
             JG_Prospect.App_Code.CommonFunction.AuthenticateUser();
 
             IsSuperUser = CommonFunction.CheckAdminAndItLeadMode();
+            if (Request.QueryString["View"] != null && Request.QueryString["View"] == "C")
+                TaskListView = false;
 
             if (!Page.IsPostBack)
             {
