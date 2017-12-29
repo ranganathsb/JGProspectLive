@@ -39,3 +39,8 @@ JG_Prospect.web/Sr_App/Controls/ucSubTasks - Copy.ascx
 JG_Prospect.web/Log/
 JG_Prospect.web/Employee/
 /DBBackup
+EmailSchedular/bin/Debug/
+EmailSchedular/obj/
+JobScheduler/bin/
+JobScheduler/obj/
+EmailSchedular/bin/

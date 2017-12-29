@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -2954,7 +2955,7 @@ namespace JG_Prospect.Sr_App.Controls
             //rptSubTaskAttachments.DataBind();
 
             //upnlAttachments.Update();
-        }
+        }        
 
         private void UploadUserAttachements(int? taskUpdateId, long TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
         {

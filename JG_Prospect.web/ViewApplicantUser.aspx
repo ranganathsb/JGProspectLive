@@ -5848,8 +5848,7 @@
             }
 
             $(document).ready(function () {
-
-
+                
                 $("#<%=ddlstatus.ClientID%>").click(function () {
                     if ($('#<%=ddlstatus.ClientID%>').val() == "Active") {
                         $('#pnlcolaps').show(500);
