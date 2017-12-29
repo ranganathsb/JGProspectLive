@@ -533,6 +533,34 @@ namespace JG_Prospect.WebServices
 
         #endregion
 
+        [WebMethod(EnableSession = true)]
+        public String GetCalendarTasksByDate(string StartDate, string EndDate)
+        {
+            string strMessage = string.Empty;
+            string userid = "";
+            DataSet dtResult = null;
+            if (!CommonFunction.CheckAdminAndItLeadMode())
+            {
+                int UserId = 0;
+                Int32.TryParse(JGSession.LoginUserID, out UserId);
+                userid = UserId.ToString();
+            }
+
+            dtResult = TaskGeneratorBLL.Instance.GetCalendarTasksByDate(StartDate, EndDate, userid);
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                dtResult.DataSetName = "Events";
+                dtResult.Tables[0].TableName = "AllEvents";
+                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
         #region '--Task--'
         [WebMethod(EnableSession = true)]
         public String GetTaskUserFileByFileName(string FileName)
@@ -912,6 +940,15 @@ namespace JG_Prospect.WebServices
                                                     intPageSize,
                                                     intHighlightTaskId
                                                 );
+            //Convert UTC to EST
+            foreach (DataRow row in dtResult.Tables[3].Rows)
+            {
+                if (row["UpdatedOn"] != null && row["UpdatedOn"].ToString() != "")
+                {
+                    row["UpdatedOn"] = string.Format("{0:MM/dd/yyyy hh:mm tt}", Convert.ToDateTime(row["UpdatedOn"]).ToEST());
+                }
+            }
+
             dtResult.Tables[0].Columns.Add("className");
 
             DataTable copyTable = dtResult.Tables[0].Clone();

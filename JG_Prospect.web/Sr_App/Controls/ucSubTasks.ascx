@@ -264,16 +264,16 @@
             
         }*/
 
-    /*.lSGallery 
+    /*.lSGallery img
    {
-       width:400px;
-       background-color:aqua;
-       overflow:hidden;
+       width:70px !important;
+       height:70px !important;
    }
     .lSGallery li
    {
-       width:40px!important;
+       width:70px!important;
    }*/
+
     .form_panel_custom ul {
         margin: 0px !important;
     }
@@ -377,6 +377,11 @@
 
     <%-- <asp:UpdatePanel ID="upAddSubTask" runat="server" UpdateMode="Conditional">
         <ContentTemplate>--%>
+    <div class="push popover__content">
+        <div class="content">
+            <img src="#" >
+        </div>
+    </div>
 
     <div id="divAddSubTask" runat="server">
         <asp:ValidationSummary ID="ValidationSummary2" runat="server" ValidationGroup="SubmitSubTask" ShowSummary="False" ShowMessageBox="True" />
@@ -947,7 +952,9 @@
                                                                         <a class="sub-task-link" id="lbtnDelete" href="#">Delete</a>
                                                                     </div>
                                                                     <br />
-                                                                    <img id="imgIcon" class="gallery-ele" style="width: 100% !important;" src="/TaskAttachments/{{File.attachment.split('@')[0]}}" />
+                                                                    <a class="image-link" href="/TaskAttachments/{{File.attachment.split('@')[0]}}">
+                                                                        <img  id="imgIcon" class="gallery-ele" style="width: 100% !important;" src="/TaskAttachments/{{File.attachment.split('@')[0]}}" />
+                                                                    </a>
                                                                 </li>
 
                                                             </ul>

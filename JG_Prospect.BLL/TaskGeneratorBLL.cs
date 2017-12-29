@@ -203,6 +203,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskUserFileByFileName(FileName);
         }
 
+        public DataSet GetCalendarTasksByDate(string StartDate, string EndDate, string userid)
+        {
+            return TaskGeneratorDAL.Instance.GetCalendarTasksByDate(StartDate, EndDate, userid);
+        }
+
         public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
         {
             return TaskGeneratorDAL.Instance.GetTaskUserFiles(TaskId, objTaskFileDestination, intPageIndex, intPageSize);
