@@ -2396,8 +2396,8 @@
         </div>
 
         <h2></h2>
-        <%
-            if (TaskListView){ %>
+<%--        <%
+            if (TaskListView){ %>--%>
         <div id="ContentPlaceHolder1_upClosedTask">
 
 
