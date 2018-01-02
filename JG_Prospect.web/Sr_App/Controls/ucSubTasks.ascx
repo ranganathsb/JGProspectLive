@@ -571,7 +571,7 @@
                                         <h5 ng-class="{hide: SubTask.NestLevel == '3'}">
                                             <input type="checkbox" name="bulkaction">
                                             <a id="lbtnInstallId" data-taskfid="{{SubTask.InstallId1}}" data-tasktitle="{{SubTask.Title}}" 
-                                                data-AssignedUserId="{{SubTask.AssignedUserId}}" data-uname="{{SubTask.FLName}}" class="context-menu installidleft" 
+                                                data-AssignedUserId="{{SubTask.TaskAssignedUserIds}}" data-uname="{{SubTask.TaskAssignedUsers}}" class="context-menu installidleft" 
                                                 onclick="javascript:return false;" data-highlighter="{{SubTask.TaskId}}" style="color: Blue; cursor:pointer; display: inline;">
                                                 {{SubTask.InstallId}}
                                             </a>
@@ -583,7 +583,7 @@
                                                 data-val-tasklvl="{{SubTask.NestLevel==1}}" data-installid="{{SubTask.InstallId}}" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">
                                             <%} %>
                                             <img src="../../img/icon_share.JPG" data-taskfid="{{SubTask.InstallId1}}" data-tasktitle="{{SubTask.Title}}" 
-                                                data-AssignedUserId="{{SubTask.AssignedUserId}}" data-uname="{{SubTask.FLName}}" class="share-icon installidleft" 
+                                                data-AssignedUserId="{{SubTask.TaskAssignedUserIds}}" data-uname="{{SubTask.TaskAssignedUsers}}" class="share-icon installidleft" 
                                                 onclick="sharePopup(this)" data-highlighter="{{SubTask.TaskId}}" style="color: Blue; cursor:pointer; display: inline;" />
                                             <div class="selectchildren">
                                                 <a href="#/" onclick="selectChildren(this)" data-taskid="{{SubTask.TaskId}}">Select All</a>
@@ -620,20 +620,20 @@
                                             <div id="divTaskITLead{{SubTask.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
                                                 <div style="width: 10%;" class="display_inline">ITLead: </div>
                                                 <!-- ITLead Hours section -->
-                                                <div style="width: 30%;" ng-class="{hide : StringIsNullOrEmpty(SubTask.ITLeadHours), display_inline : !StringIsNullOrEmpty(SubTask.ITLeadHours) }">
+                                                <div style="width: 30%;" ng-class="{hide : StringIsNullOrEmpty(SubTask.AdminOrITLeadEstimatedHours), display_inline : !StringIsNullOrEmpty(SubTask.AdminOrITLeadEstimatedHours) }">
                                                     <span>
-                                                        <label>{{SubTask.ITLeadHours}}</label>Hour(s)
+                                                        <label>{{SubTask.AdminOrITLeadEstimatedHours}}</label>Hour(s)
                                                     </span>
                                                 </div>
-                                                <div style="width: 30%;" ng-class="{hide : !StringIsNullOrEmpty(SubTask.ITLeadHours), display_inline : StringIsNullOrEmpty(SubTask.ITLeadHours) }">
+                                                <div style="width: 30%;" ng-class="{hide : !StringIsNullOrEmpty(SubTask.AdminOrITLeadEstimatedHours), display_inline : StringIsNullOrEmpty(SubTask.AdminOrITLeadEstimatedHours) }">
                                                     <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtITLeadEstimatedHours" />
                                                 </div>
-                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : !StringIsNullOrEmpty(SubTask.ITLeadHours), display_inline : StringIsNullOrEmpty(SubTask.ITLeadHours) }">
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : !StringIsNullOrEmpty(SubTask.AdminOrITLeadEstimatedHours), display_inline : StringIsNullOrEmpty(SubTask.AdminOrITLeadEstimatedHours) }">
                                                     <input type="password" style="width: 100px;" placeholder="ITLead Password" onchange="javascript:FreezeTask(this);"
                                                         data-id="txtITLeadPassword" data-hours-id="txtITLeadEstimatedHours" ng-attr-data-taskid="{{SubTask.TaskId}}" />
                                                 </div>
                                                 <!-- ITLead password section -->
-                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : StringIsNullOrEmpty(SubTask.ITLeadHours), display_inline : !StringIsNullOrEmpty(SubTask.ITLeadHours) }">
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : StringIsNullOrEmpty(SubTask.AdminOrITLeadEstimatedHours), display_inline : !StringIsNullOrEmpty(SubTask.AdminOrITLeadEstimatedHours) }">
                                                     <a class="bluetext" href="CreateSalesUser.aspx?id={{SubTask.TechLeadUserId}}" target="_blank">{{StringIsNullOrEmpty(SubTask.TechLeadUserInstallId)? SubTask.TechLeadUserId : SubTask.TechLeadUserInstallId}} - {{SubTask.TechLeadUserFirstName}} {{SubTask.TechLeadUserLastName}}
                                                     </a>
                                                     <br />
@@ -643,20 +643,20 @@
                                             <div id="divUser{{SubTask.TaskId}}" style="margin-bottom: 15px; font-size: x-small;">
                                                 <div style="width: 10%;" class="display_inline">User: </div>
                                                 <!-- UserHours section -->
-                                                <div style="width: 30%;" ng-class="{hide : StringIsNullOrEmpty(SubTask.UserHours), display_inline : !StringIsNullOrEmpty(SubTask.UserHours) }">
+                                                <div style="width: 30%;" ng-class="{hide : StringIsNullOrEmpty(SubTask.UserEstimatedHours), display_inline : !StringIsNullOrEmpty(SubTask.UserEstimatedHours) }">
                                                     <span>
-                                                        <label>{{SubTask.UserHours}}</label>Hour(s)
+                                                        <label>{{SubTask.UserEstimatedHours}}</label>Hour(s)
                                                         Hour(s)</span>
                                                 </div>
-                                                <div style="width: 30%;" ng-class="{hide : !StringIsNullOrEmpty(SubTask.UserHours), display_inline : StringIsNullOrEmpty(SubTask.UserHours) }">
+                                                <div style="width: 30%;" ng-class="{hide : !StringIsNullOrEmpty(SubTask.UserEstimatedHours), display_inline : StringIsNullOrEmpty(SubTask.UserEstimatedHours) }">
                                                     <input type="text" style="width: 55px;" placeholder="Est. Hours" data-id="txtUserEstimatedHours" />
                                                 </div>
-                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : !StringIsNullOrEmpty(SubTask.UserHours), display_inline : StringIsNullOrEmpty(SubTask.UserHours) }">
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : !StringIsNullOrEmpty(SubTask.UserEstimatedHours), display_inline : StringIsNullOrEmpty(SubTask.UserEstimatedHours) }">
                                                     <input type="password" style="width: 100px;" placeholder="User Password" onchange="javascript:FreezeTask(this);"
                                                         data-id="txtUserPassword" data-hours-id="txtUserEstimatedHours" ng-attr-data-taskid="{{SubTask.TaskId}}" />
                                                 </div>
                                                 <!-- User password section -->
-                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : StringIsNullOrEmpty(SubTask.UserHours), display_inline : !StringIsNullOrEmpty(SubTask.UserHours) }">
+                                                <div style="width: 50%; float: right; font-size: x-small;" ng-class="{hide : StringIsNullOrEmpty(SubTask.UserEstimatedHours), display_inline : !StringIsNullOrEmpty(SubTask.UserEstimatedHours) }">
                                                     <a class="bluetext" href="CreateSalesUser.aspx?id={{SubTask.TechLeadUserId}}" target="_blank">{{StringIsNullOrEmpty(SubTask.OtherUserInstallId)? SubTask.OtherUserId : SubTask.OtherUserInstallId}} - {{SubTask.OtherUserFirstName}} {{SubTask.OtherUserLastName}}
                                                     </a>
                                                     <br />
@@ -3064,9 +3064,12 @@
 
                     function OnAddNewSubTaskSuccess(data) {
                         if (data.d.Success) {
-                            PreventScroll = 1;
+                            //Allow scroll to newly created task
+                            //PreventScroll = 1;
+                            var tid = data.d.TaskId.toString();
+
                             alert('Task saved successfully.');
-                            $('#<%=hdTaskId.ClientID%>').val(data.d.TaskId.toString());
+                            $('#<%=hdTaskId.ClientID%>').val(tid);
 
                             $("#<%=divNEWSubTask.ClientID%>").hide();
                             $("#<%=pnlCalendar.ClientID%>").hide();
@@ -3074,6 +3077,30 @@
                             $("#<%=txtSubTaskTitle.ClientID%>").val('');
                             $("#<%=txtUrl.ClientID%>").val('');
                             $("#<%=txtSubTaskDescription.ClientID%>").val('');
+
+                            //URL Processing
+                            var url = getUrlVars();
+
+                            switch (url.length) {
+                                case 1: {
+                                    window.history.pushState("", "", "TaskGenerator.aspx?TaskId=" + tid);
+                                    break;
+                                }
+                                case 2: {
+                                    var param1;
+                                    param1 = url['TaskId'];
+                                    window.history.pushState("", "", "TaskGenerator.aspx?TaskId=" + param1 + "&hstid=" + tid);
+                                    break;
+                                }
+                                //case 3: {
+                                //    var param1;
+                                //    param1 = url['TaskId'];
+                                //    param2 = url['hstid'];
+                                //    window.history.pushState("", "", "TaskGenerator.aspx?TaskId=" + param1 + "&hstid=" + param2 + "&mcid=" + tid);
+                                //    break;
+                                //}
+                            }
+
                             LoadSubTasks();
                         }
                         else {
