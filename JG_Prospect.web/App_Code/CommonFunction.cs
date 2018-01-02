@@ -19,6 +19,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Threading;
 using System.Web.Hosting;
+using JG_Prospect.DAL;
 
 namespace JG_Prospect.App_Code
 {
@@ -171,11 +172,59 @@ namespace JG_Prospect.App_Code
         {
             if (!JGSession.IsActive)
             {
-                // redirect user to login page, only when session renewal is not requested.
-                string strRenewSessionKey = HttpContext.Current.Request.Params.Cast<string>().FirstOrDefault(s => s.Contains("_hdnRenewSession"));
-                if (string.IsNullOrEmpty(strRenewSessionKey) || HttpContext.Current.Request.Params[strRenewSessionKey] == "0")
+                bool autoLogin = false;
+                #region Login if auth is present in URL
+                string auth = HttpContext.Current.Request.QueryString["auth"];
+                if (!string.IsNullOrEmpty(auth))
                 {
-                    HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery);
+                    string loginId = InstallUserBLL.Instance.ExpireLoginCode(auth).Object;
+                    if (!string.IsNullOrEmpty(loginId))
+                    {
+                        DataSet ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(loginId.Trim());
+                        if (ds.Tables[0].Rows.Count > 0)
+                        {
+                            HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
+
+                            JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
+                            JGSession.LastName = ds.Tables[0].Rows[0]["LastName"].ToString().Trim();
+                            JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
+                            JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
+                            JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
+                            JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
+                            JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
+                            if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
+                            {
+                                JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
+                            }
+                            if (ds.Tables[0].Rows[0]["IsFirstTime"] != null && ds.Tables[0].Rows[0]["IsFirstTime"].ToString().ToLower() == "true")
+                            {
+                                JGSession.IsFirstTime = true;
+                            }
+
+                            JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                            JGSession.UserLoginId = loginId;
+                            JGSession.UserPassword = "";
+                            string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
+                            if (loginId.Trim() == AdminInstallerId)
+                            {
+                                JGSession.AdminUserId = AdminInstallerId;
+                            }
+
+                            JGSession.UserType = "Installer";
+
+                            autoLogin = true;
+                        }
+                    }
+                }
+                #endregion
+                if (!autoLogin)
+                {
+                    // redirect user to login page, only when session renewal is not requested.
+                    string strRenewSessionKey = HttpContext.Current.Request.Params.Cast<string>().FirstOrDefault(s => s.Contains("_hdnRenewSession"));
+                    if (string.IsNullOrEmpty(strRenewSessionKey) || HttpContext.Current.Request.Params[strRenewSessionKey] == "0")
+                    {
+                        HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery);
+                    }
                 }
             }
         }
@@ -260,6 +309,14 @@ namespace JG_Prospect.App_Code
             {
                 try
                 {
+                    #region Check for autologin url
+                    if (strBody.Contains("{AutoLoginCode}"))
+                    {
+                        // Generate auto login code
+                        string loginCode = InstallUserDAL.Instance.GenerateLoginCode(strToAddress).Object;
+                        strBody = strBody.Replace("{AutoLoginCode}", loginCode);
+                    }
+                    #endregion
                     /* Sample HTML Template
                      * *****************************************************************************
                      * Hi #lblFName#,
@@ -288,7 +345,7 @@ namespace JG_Prospect.App_Code
                     Msg.To.Add(strToAddress);
                     Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
                     Msg.Subject = strSubject;// "JG Prospect Notification";
-                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);
+                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);                    
                     Msg.IsBodyHtml = true;
 
                     //ds = AdminBLL.Instance.GetEmailTemplate('');
@@ -349,6 +406,14 @@ namespace JG_Prospect.App_Code
         {
             try
             {
+                #region Check for autologin url
+                if (strBody.Contains("{AutoLoginCode}"))
+                {
+                    // Generate auto login code
+                    string loginCode = InstallUserDAL.Instance.GenerateLoginCode(strToAddress).Object;
+                    strBody = strBody.Replace("{AutoLoginCode}", loginCode);
+                }
+                #endregion
                 string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
                 string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
 

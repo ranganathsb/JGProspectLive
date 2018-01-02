@@ -523,6 +523,95 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public ActionOutput<string> GenerateLoginCode(int userId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GenerateLoginCode");
+                    database.AddInParameter(command, "@UserId", DbType.Int32, userId);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                }
+                return new ActionOutput<string>
+                {
+                    Object = returndata.Tables[0].Rows[0]["Id"].ToString(),
+                    Status = ActionStatus.Successfull
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<string>
+                {
+                    Status = ActionStatus.Error,
+                    Object = ex.ToString(),
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public ActionOutput<string> GenerateLoginCode(string Email)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GenerateLoginCodeByEmail");
+                    database.AddInParameter(command, "@Email", DbType.String, Email);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                }
+                return new ActionOutput<string>
+                {
+                    Object = returndata.Tables[0].Rows[0]["Id"].ToString(),
+                    Status = ActionStatus.Successfull
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<string>
+                {
+                    Status = ActionStatus.Error,
+                    Object = ex.ToString(),
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public ActionOutput<string> ExpireLoginCode(string Id)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("ExpireLoginCode");
+                    database.AddInParameter(command, "@Id", DbType.String, Id);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                }
+                return new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Object = returndata.Tables[0].Rows[0]["Email"].ToString()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<string>
+                {
+                    Status = ActionStatus.Error,
+                    Message = ex.Message
+                };
+            }
+        }
+
         public ActionOutput<LoginUser> GetUsers(string keyword)
         {
             try
