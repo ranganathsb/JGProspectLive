@@ -19,6 +19,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Threading;
 using System.Web.Hosting;
+using JG_Prospect.DAL;
 
 namespace JG_Prospect.App_Code
 {
@@ -319,6 +320,14 @@ namespace JG_Prospect.App_Code
             {
                 try
                 {
+                    #region Check for autologin url
+                    if (strBody.Contains("{AutoLoginCode}"))
+                    {
+                        // Generate auto login code
+                        string loginCode = InstallUserDAL.Instance.GenerateLoginCode(strToAddress).Object;
+                        strBody = strBody.Replace("{AutoLoginCode}", loginCode);
+                    }
+                    #endregion
                     /* Sample HTML Template
                      * *****************************************************************************
                      * Hi #lblFName#,
@@ -347,7 +356,7 @@ namespace JG_Prospect.App_Code
                     Msg.To.Add(strToAddress);
                     Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
                     Msg.Subject = strSubject;// "JG Prospect Notification";
-                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);
+                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);                    
                     Msg.IsBodyHtml = true;
 
                     //ds = AdminBLL.Instance.GetEmailTemplate('');
@@ -418,6 +427,14 @@ namespace JG_Prospect.App_Code
         {
             try
             {
+                #region Check for autologin url
+                if (strBody.Contains("{AutoLoginCode}"))
+                {
+                    // Generate auto login code
+                    string loginCode = InstallUserDAL.Instance.GenerateLoginCode(strToAddress).Object;
+                    strBody = strBody.Replace("{AutoLoginCode}", loginCode);
+                }
+                #endregion
                 string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
                 string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
 
