@@ -1379,6 +1379,7 @@
     <Content Include="Communication\webphone\sound\rtc_ringtone_orig.wav" />
     <Content Include="Communication\webphone\webphone_api.js" />
     <Content Include="Content\paging.css" />
+    <Content Include="Content\touchPointlogs.css" />
     <Content Include="Content\ui-grid.css" />
     <Content Include="Content\ui-grid.min.css" />
     <Content Include="Content\ui-grid.svg" />
@@ -1869,6 +1870,7 @@
     <Content Include="img\facebook.jpg" />
     <Content Include="img\fb_login.png" />
     <Content Include="img\File.png" />
+    <Content Include="img\flags24.png" />
     <Content Include="img\folder.png" />
     <Content Include="img\gplus.png" />
     <Content Include="img\icon_calendar.gif" />
