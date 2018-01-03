@@ -2079,7 +2079,13 @@ li.activeUser {
 li.IOUser {
     color: blue !important;
 }
+span.activeUser {
+    color: red !important;
+}
 
+span.IOUser {
+    color: blue !important;
+}
 li.testresults {
     font-size: small;
     font-weight: normal;

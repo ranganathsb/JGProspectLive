@@ -179,8 +179,10 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
                     var text = chspan.text();
                     var name = text.split(' - ')[0]+ ' - ';
                     var code = text.split(' - ')[1];
+                    var className = $(selectoptionid)[itemIndex].classList[0];
+                    name = '<span class="' + className + '">' + name + '</span>';
                     if (chspan && code != undefined) {
-                        chspan.html(name+ '<a style="color:blue;" href="/Sr_App/ViewSalesUser.aspx?id=' + $(selectoptionid)[itemIndex].value + '">' + code + '</a>');
+                        chspan.html(name + '<a style="color:blue;" href="/Sr_App/ViewSalesUser.aspx?id=' + $(selectoptionid)[itemIndex].value + '">' + code + '</a>');
                         chspan.bind("click", "a", function () {
                             window.open($(this).children("a").attr("href"), "_blank", "", false);
                         });
