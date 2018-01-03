@@ -17,6 +17,9 @@ using System.ComponentModel;
 using JG_Prospect.Common.modal;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.Threading;
+using System.Web.Hosting;
+using JG_Prospect.DAL;
 
 namespace JG_Prospect.App_Code
 {
@@ -169,11 +172,59 @@ namespace JG_Prospect.App_Code
         {
             if (!JGSession.IsActive)
             {
-                // redirect user to login page, only when session renewal is not requested.
-                string strRenewSessionKey = HttpContext.Current.Request.Params.Cast<string>().FirstOrDefault(s => s.Contains("_hdnRenewSession"));
-                if (string.IsNullOrEmpty(strRenewSessionKey) || HttpContext.Current.Request.Params[strRenewSessionKey] == "0")
+                bool autoLogin = false;
+                #region Login if auth is present in URL
+                string auth = HttpContext.Current.Request.QueryString["auth"];
+                if (!string.IsNullOrEmpty(auth))
                 {
-                    HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery);
+                    string loginId = InstallUserBLL.Instance.ExpireLoginCode(auth).Object;
+                    if (!string.IsNullOrEmpty(loginId))
+                    {
+                        DataSet ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(loginId.Trim());
+                        if (ds.Tables[0].Rows.Count > 0)
+                        {
+                            HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
+
+                            JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
+                            JGSession.LastName = ds.Tables[0].Rows[0]["LastName"].ToString().Trim();
+                            JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
+                            JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
+                            JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
+                            JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
+                            JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
+                            if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
+                            {
+                                JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
+                            }
+                            if (ds.Tables[0].Rows[0]["IsFirstTime"] != null && ds.Tables[0].Rows[0]["IsFirstTime"].ToString().ToLower() == "true")
+                            {
+                                JGSession.IsFirstTime = true;
+                            }
+
+                            JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                            JGSession.UserLoginId = loginId;
+                            JGSession.UserPassword = "";
+                            string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
+                            if (loginId.Trim() == AdminInstallerId)
+                            {
+                                JGSession.AdminUserId = AdminInstallerId;
+                            }
+
+                            JGSession.UserType = "Installer";
+
+                            autoLogin = true;
+                        }
+                    }
+                }
+                #endregion
+                if (!autoLogin)
+                {
+                    // redirect user to login page, only when session renewal is not requested.
+                    string strRenewSessionKey = HttpContext.Current.Request.Params.Cast<string>().FirstOrDefault(s => s.Contains("_hdnRenewSession"));
+                    if (string.IsNullOrEmpty(strRenewSessionKey) || HttpContext.Current.Request.Params[strRenewSessionKey] == "0")
+                    {
+                        HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery);
+                    }
                 }
             }
         }
@@ -253,11 +304,30 @@ namespace JG_Prospect.App_Code
         /// <param name="lstAttachments">any files to be attached to email.</param>
         public static bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
         {
+            Thread email = new Thread(delegate ()
+            {
+                SendEmailAsync(strEmailTemplate, strToAddress, strSubject, strBody, lstAttachments, lstAlternateView);
+            });
+            email.IsBackground = true;
+            email.Start();
+            return true;
+        }
+
+        private static bool SendEmailAsync(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
+        {
             bool retValue = false;
             if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(strToAddress))
             {
                 try
                 {
+                    #region Check for autologin url
+                    if (strBody.Contains("{AutoLoginCode}"))
+                    {
+                        // Generate auto login code
+                        string loginCode = InstallUserDAL.Instance.GenerateLoginCode(strToAddress).Object;
+                        strBody = strBody.Replace("{AutoLoginCode}", loginCode);
+                    }
+                    #endregion
                     /* Sample HTML Template
                      * *****************************************************************************
                      * Hi #lblFName#,
@@ -286,7 +356,7 @@ namespace JG_Prospect.App_Code
                     Msg.To.Add(strToAddress);
                     Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
                     Msg.Subject = strSubject;// "JG Prospect Notification";
-                    Msg.Body = strBody.Replace("#UNSEMAIL#", HttpContext.Current.Server.UrlEncode(strToAddress));
+                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);                    
                     Msg.IsBodyHtml = true;
 
                     //ds = AdminBLL.Instance.GetEmailTemplate('');
@@ -345,8 +415,26 @@ namespace JG_Prospect.App_Code
         /// <param name="strBody">contect / body of email.</param>
         public static void SendEmailInternal(string strToAddress, string strSubject, string strBody)
         {
+            Thread email = new Thread(delegate ()
+            {
+                SendEmailInternalAsync(strToAddress, strSubject, strBody);
+            });
+            email.IsBackground = true;
+            email.Start();
+        }
+
+        private static void SendEmailInternalAsync(string strToAddress, string strSubject, string strBody)
+        {
             try
             {
+                #region Check for autologin url
+                if (strBody.Contains("{AutoLoginCode}"))
+                {
+                    // Generate auto login code
+                    string loginCode = InstallUserDAL.Instance.GenerateLoginCode(strToAddress).Object;
+                    strBody = strBody.Replace("{AutoLoginCode}", loginCode);
+                }
+                #endregion
                 string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
                 string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
 
@@ -1162,7 +1250,7 @@ namespace JG_Prospect.App_Code
 
         private static void UpdateEmailStatistics(string emailId)
         {
-            string logDirectoryPath = HttpContext.Current.Server.MapPath(@"~\EmailStatistics");
+            string logDirectoryPath = HostingEnvironment.MapPath(@"~\EmailStatistics");
 
             if (!Directory.Exists(logDirectoryPath))
             {
@@ -1887,6 +1975,20 @@ namespace JG_Prospect
             set
             {
                 HttpContext.Current.Session["cextime"] = value;
+            }
+        }
+
+        public static string UserInstallId
+        {
+            get
+            {
+                if (HttpContext.Current.Session["UserInstallId"] == null)
+                    return null;
+                return Convert.ToString(HttpContext.Current.Session["UserInstallId"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["UserInstallId"] = value;
             }
         }
     }

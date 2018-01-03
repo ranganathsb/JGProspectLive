@@ -375,7 +375,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public int AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID)
+        public int AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID, int touchPointSource)
         {
             try
             {
@@ -389,7 +389,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@LogTime", DbType.DateTime, LogTime);
                     database.AddInParameter(command, "@changeLog", DbType.String, changeLog);
                     database.AddInParameter(command, "@CurrGUID", DbType.String, strGUID);
-
+                    database.AddInParameter(command, "@TouchPointSource", DbType.Int32, touchPointSource);
                     DataSet dsTemp = database.ExecuteDataSet(command);
                     return Convert.ToInt32(dsTemp.Tables[0].Rows[0]["UserTouchPointLogID"]);
                 }
@@ -495,7 +495,7 @@ namespace JG_Prospect.DAL
                                 UserID = Convert.ToInt32(item["UserID"]),
                                 UpdatedByUserID = Convert.ToInt32(item["UpdatedByUserID"]),
                                 UpdatedUserInstallID = item["UpdatedUserInstallID"].ToString(),
-                                ChangeDateTime = Convert.ToDateTime(item["ChangeDateTime"]),
+                                ChangeDateTime = Convert.ToDateTime(item["ChangeDateTime"]).ToEST(),
                                 LogDescription = item["LogDescription"].ToString(),
                                 UpdatedByFirstName = item["UpdatedByFirstName"].ToString(),
                                 UpdatedByLastName = item["UpdatedByLastName"].ToString(),
@@ -504,8 +504,11 @@ namespace JG_Prospect.DAL
                                 LastName = item["LastName"].ToString(),
                                 Email = item["Email"].ToString(),
                                 Phone = item["Phone"].ToString(),
-                                ChangeDateTimeFormatted = item["ChangeDateTimeFormatted"].ToString(),
-                                SourceUser = item["SourceUser"].ToString()
+                                ChangeDateTimeFormatted = Convert.ToDateTime(item["ChangeDateTime"]).ToEST().ToString(),
+                                SourceUser = item["SourceUser"].ToString(),
+                                SourceUserInstallId = item["SourceUserInstallId"].ToString(),
+                                SourceUsername = item["SourceUsername"].ToString(),
+                                TouchPointSource = item["TouchPointSource"] != null ? Convert.ToInt32(item["TouchPointSource"]) : 0
                             });
                         }
                     }
@@ -520,6 +523,95 @@ namespace JG_Prospect.DAL
             catch (Exception ex)
             {
                 return null;
+            }
+        }
+
+        public ActionOutput<string> GenerateLoginCode(int userId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GenerateLoginCode");
+                    database.AddInParameter(command, "@UserId", DbType.Int32, userId);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                }
+                return new ActionOutput<string>
+                {
+                    Object = returndata.Tables[0].Rows[0]["Id"].ToString(),
+                    Status = ActionStatus.Successfull
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<string>
+                {
+                    Status = ActionStatus.Error,
+                    Object = ex.ToString(),
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public ActionOutput<string> GenerateLoginCode(string Email)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GenerateLoginCodeByEmail");
+                    database.AddInParameter(command, "@Email", DbType.String, Email);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                }
+                return new ActionOutput<string>
+                {
+                    Object = returndata.Tables[0].Rows[0]["Id"].ToString(),
+                    Status = ActionStatus.Successfull
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<string>
+                {
+                    Status = ActionStatus.Error,
+                    Object = ex.ToString(),
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public ActionOutput<string> ExpireLoginCode(string Id)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("ExpireLoginCode");
+                    database.AddInParameter(command, "@Id", DbType.String, Id);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                }
+                return new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Object = returndata.Tables[0].Rows[0]["Email"].ToString()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<string>
+                {
+                    Status = ActionStatus.Error,
+                    Message = ex.Message
+                };
             }
         }
 

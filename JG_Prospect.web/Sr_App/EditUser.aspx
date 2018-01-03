@@ -509,7 +509,7 @@
                 ajaxExt({
                     url: '/Sr_App/edituser.aspx/AddNotes',
                     type: 'POST',
-                    data: '{ id: ' + uid + ', note: "' + note + '" }',
+                    data: '{ id: ' + uid + ', note: "' + note + '", touchPointSource: ' + <%=(int)JG_Prospect.Common.TouchPointSource.EditUserPage %> + ' }',
                     showThrobber: true,
                     throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                     success: function (data, msg) {
@@ -532,12 +532,15 @@
                         var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">';
                         $(data.Data).each(function (i) {
                             tbl += '<tr iuid="'+ installUserId+'" uid="'+data.Data[i].UserID+'" id="' + data.Data[i].UserTouchPointLogID + '">' +
-                                        '<td><a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UserID+'" uid="' + data.Data[i].UserID + '">' + data.Data[i].SourceUser + '<br/>'+data.Data[i].ChangeDateTimeFormatted+'</a></td>' +
+                                        '<td>' + data.Data[i].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UpdatedByUserID+'">' + data.Data[i].SourceUserInstallId + '</a><br/>'+data.Data[i].ChangeDateTimeFormatted+'</td>' +
                                         '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
                                     '</tr>';
                         });
                         tbl += '</table>';
+                        var tdHeight = $('#user-' + userid).parents('tr').height();
                         $('#user-' + userid).html(tbl);
+                        
+                        $('#user-' + userid).css('height',(tdHeight-36)+'px');
                         var tuid = getUrlVars()["TUID"];
                         var nid = getUrlVars()["NID"];
                         if (tuid != undefined && nid!= undefined) {
@@ -571,7 +574,7 @@
                         var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
                         $(data.Data).each(function (i) {
                             tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
-                                        '<td><a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UserID+'">' + data.Data[i].SourceUser + '<br/>'+data.Data[i].ChangeDateTimeFormatted+'</a></td>' +
+                                        '<td>' + data.Data[i].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UpdatedByUserID+'">' + data.Data[i].SourceUserInstallId + '</a><br/>'+data.Data[i].ChangeDateTimeFormatted+'</td>' +
                                         '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
                                     '</tr>';
                         });

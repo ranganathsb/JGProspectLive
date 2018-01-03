@@ -1,8 +1,10 @@
-﻿using System;
+﻿using JG_Prospect.Common;
+using System;
+using System.Globalization;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-
+using System.Web;
 
 namespace JG_Prospect.App_Code
 {
@@ -121,5 +123,15 @@ namespace JG_Prospect.App_Code
         }
         #endregion
 
+        public static DateTime ToClientTime(DateTime dateTime)
+        {
+            HttpCookie cookie = HttpContext.Current.Request.Cookies[Cookies.TimezoneOffset];
+            if (cookie != null)
+            {
+                DateTime utcDateTime = DateTime.Parse(dateTime.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                return utcDateTime.AddMinutes(Convert.ToInt32(cookie.Value));
+            }
+            return dateTime;
+        }        
     }
 }
