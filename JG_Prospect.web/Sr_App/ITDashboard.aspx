@@ -1848,25 +1848,26 @@
                             <!-- Status & Assigned To starts -->
                             <div class="div-table-col seq-taskstatus chosen-div">
                                 <select id="drpStatusSubsequence" onchange="changeTaskStatusClosed(this);" data-highlighter="{{Task.TaskId}}">
-                                    <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
-                                    <option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>
-                                    <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
-                                    <option ng-selected="{{Task.Status == '4'}}" value="4">InProgress</option>
-                                    <% if (IsSuperUser)
-                                        { %>
-                                    <option ng-selected="{{Task.Status == '5'}}" value="5">Pending</option>
-                                    <option ng-selected="{{Task.Status == '6'}}" value="6">ReOpened</option>
-                                    <option ng-selected="{{Task.Status == '7'}}" value="7">Closed</option>
-                                    <option ng-selected="{{Task.Status == '8'}}" value="8">SpecsInProgress</option>
-                                    <%} %>
-                                    <option ng-selected="{{Task.Status == '10'}}" value="10">Finished</option>
-                                    <option ng-selected="{{Task.Status == '11'}}" value="11">Test</option>
-                                    <% if (IsSuperUser)
-                                        { %>
-                                    <option ng-selected="{{Task.Status == '12'}}" value="12">Live</option>
-                                    <option ng-selected="{{Task.Status == '14'}}" value="14">Billed</option>
-                                    <option ng-selected="{{Task.Status == '9'}}" value="9">Deleted</option>
-                                    <%} %>
+                                    <option ng-selected="{{Task.Status == '4'}}" value="4">InProgress-Frozen</option>
+                                            <%--<option ng-selected="{{Task.Status == '2'}}" style="color: red" value="2">Requested</option>--%>
+                                            <option ng-selected="{{Task.Status == '3'}}" style="color: lawngreen" value="3">Request-Assigned</option>                                            
+                                            <option ng-selected="{{Task.Status == '1'}}" value="1">Open</option>
+                                            <% if (IsSuperUser)
+                                                { %>
+                                                <%--<option ng-selected="{{Task.Status == '5'}}" value="5">Pending</option>--%>
+                                                <%--<option ng-selected="{{Task.Status == '6'}}" value="6">ReOpened</option>  --%>                                          
+                                            <option ng-selected="{{Task.Status == '8'}}" value="8">SpecsInProgress-NOT OPEN</option>
+                                            <%} %>
+
+                                                <%--<option ng-selected="{{TechTask.Status == '10'}}" value="10">Finished</option>--%>
+                                            <option ng-selected="{{Task.Status == '11'}}" value="11">Test Commit</option>
+                                            <% if (IsSuperUser)
+                                                { %>
+                                            <option ng-selected="{{Task.Status == '12'}}" value="12">Live Commit</option>
+                                            <option ng-selected="{{Task.Status == '7'}}" value="7">Closed</option>
+                                            <option ng-selected="{{Task.Status == '14'}}" value="14">Billed</option>
+                                            <option ng-selected="{{Task.Status == '9'}}" value="9">Deleted</option>
+                                            <%} %>
                                 </select>
                                 <br />
 
@@ -2017,22 +2018,24 @@
                                     <!-- Status & Assigned To starts -->
                                     <div class="div-table-col seq-taskstatus chosen-div">
                                         <select id="drpStatusSubsequenceNested" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
+                                            
+                                            <option ng-selected="{{TechTask.Status == '4'}}" value="4">InProgress-Frozen</option>
+                                            <%--<option ng-selected="{{TechTask.Status == '2'}}" style="color: red" value="2">Requested</option>--%>
+                                            <option ng-selected="{{TechTask.Status == '3'}}" style="color: lawngreen" value="3">Request-Assigned</option>                                            
                                             <option ng-selected="{{TechTask.Status == '1'}}" value="1">Open</option>
-                                            <option ng-selected="{{TechTask.Status == '2'}}" style="color: red" value="2">Requested</option>
-                                            <option ng-selected="{{TechTask.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
-                                            <option ng-selected="{{TechTask.Status == '4'}}" value="4">InProgress</option>
                                             <% if (IsSuperUser)
                                                 { %>
-                                            <option ng-selected="{{TechTask.Status == '5'}}" value="5">Pending</option>
-                                            <option ng-selected="{{TechTask.Status == '6'}}" value="6">ReOpened</option>
-                                            <option ng-selected="{{TechTask.Status == '7'}}" value="7">Closed</option>
-                                            <option ng-selected="{{TechTask.Status == '8'}}" value="8">SpecsInProgress</option>
+                                                <%--<option ng-selected="{{TechTask.Status == '5'}}" value="5">Pending</option>--%>
+                                                <%--<option ng-selected="{{TechTask.Status == '6'}}" value="6">ReOpened</option>  --%>                                          
+                                            <option ng-selected="{{TechTask.Status == '8'}}" value="8">SpecsInProgress-NOT OPEN</option>
                                             <%} %>
-                                            <option ng-selected="{{TechTask.Status == '10'}}" value="10">Finished</option>
-                                            <option ng-selected="{{TechTask.Status == '11'}}" value="11">Test</option>
+
+                                                <%--<option ng-selected="{{TechTask.Status == '10'}}" value="10">Finished</option>--%>
+                                            <option ng-selected="{{TechTask.Status == '11'}}" value="11">Test Commit</option>
                                             <% if (IsSuperUser)
                                                 { %>
-                                            <option ng-selected="{{TechTask.Status == '12'}}" value="12">Live</option>
+                                            <option ng-selected="{{TechTask.Status == '12'}}" value="12">Live Commit</option>
+                                            <option ng-selected="{{TechTask.Status == '7'}}" value="7">Closed</option>
                                             <option ng-selected="{{TechTask.Status == '14'}}" value="14">Billed</option>
                                             <option ng-selected="{{TechTask.Status == '9'}}" value="9">Deleted</option>
                                             <%} %>
@@ -2466,26 +2469,26 @@
                             </td>
                             <td style="width: 120px;" valign="middle" align="center">
                                 <select id="drpStatusClosed" onchange="changeTaskStatusClosed(this);" data-highlighter="{{item.TaskId}}">
-                                    <option ng-selected="{{item.Status == '0'}}" value="0">--All--</option>
-                                    <% if (IsSuperUser)
-                                        { %>
-                                    <option ng-selected="{{item.Status == '1'}}" value="1">Open</option>
-                                    <option ng-selected="{{item.Status == '2'}}" style="color: red" value="2">Requested</option>
-                                    <option ng-selected="{{item.Status == '3'}}" style="color: lawngreen" value="3">Assigned</option>
-                                    <option ng-selected="{{item.Status == '4'}}" value="4">InProgress</option>
-                                    <option ng-selected="{{item.Status == '5'}}" value="5">Pending</option>
-                                    <option ng-selected="{{item.Status == '6'}}" value="6">ReOpened</option>
-                                    <option ng-selected="{{item.Status == '7'}}" value="7">Closed</option>
-                                    <option ng-selected="{{item.Status == '8'}}" value="8">SpecsInProgress</option>
-                                    <option ng-selected="{{item.Status == '10'}}" value="10">Finished</option>
-                                    <%} %>
-                                    <option ng-selected="{{item.Status == '11'}}" value="11">Test</option>
-                                    <option ng-selected="{{item.Status == '12'}}" value="12">Live</option>
-                                    <% if (IsSuperUser)
-                                        { %>
-                                    <option ng-selected="{{item.Status == '14'}}" value="14">Billed</option>
-                                    <option ng-selected="{{item.Status == '9'}}" value="9">Deleted</option>
-                                    <%} %>
+                                    <option ng-selected="{{item.Status == '4'}}" value="4">InProgress-Frozen</option>
+                                            <%--<option ng-selected="{{item.Status == '2'}}" style="color: red" value="2">Requested</option>--%>
+                                            <option ng-selected="{{item.Status == '3'}}" style="color: lawngreen" value="3">Request-Assigned</option>                                            
+                                            <option ng-selected="{{item.Status == '1'}}" value="1">Open</option>
+                                            <% if (IsSuperUser)
+                                                { %>
+                                                <%--<option ng-selected="{{item.Status == '5'}}" value="5">Pending</option>--%>
+                                                <%--<option ng-selected="{{item.Status == '6'}}" value="6">ReOpened</option>  --%>                                          
+                                            <option ng-selected="{{item.Status == '8'}}" value="8">SpecsInProgress-NOT OPEN</option>
+                                            <%} %>
+
+                                                <%--<option ng-selected="{{item.Status == '10'}}" value="10">Finished</option>--%>
+                                            <option ng-selected="{{item.Status == '11'}}" value="11">Test Commit</option>
+                                            <% if (IsSuperUser)
+                                                { %>
+                                            <option ng-selected="{{item.Status == '12'}}" value="12">Live Commit</option>
+                                            <option ng-selected="{{item.Status == '7'}}" value="7">Closed</option>
+                                            <option ng-selected="{{item.Status == '14'}}" value="14">Billed</option>
+                                            <option ng-selected="{{item.Status == '9'}}" value="9">Deleted</option>
+                                            <%} %>
                                 </select>
                             </td>
                         </tr>
@@ -2870,7 +2873,11 @@
 
         function fillUsers(selector, fillDDL, loader) {
             // 
-            var did = $('.' + selector).val().join();
+            var did = '';
+            if (($('.' + selector).val() != undefined)) {
+                did = $('.' + selector).val().join();
+            }
+
             var ustatus = $('#ddlUserStatus').val();
             var TaskStatus = '';
             var UserStatus = '';
@@ -3090,7 +3097,7 @@
         }
 
         function setSelectedUsersLink() {
-            //// 
+            debugger; 
             $('.chosen-dropDown').each(function () {
                 var itemIndex = $(this).children('.search-choice-close').attr('data-option-array-index');
                 //console.log(itemIndex);

@@ -1146,9 +1146,9 @@ namespace JG_Prospect.App_Code
                 switch (Userstatus)
                 {
                     case JGConstant.InstallUserStatus.Active:
-                    case JGConstant.InstallUserStatus.OfferMade:
                         row["CssClass"] = "activeUser";
                         break;
+                    case JGConstant.InstallUserStatus.OfferMade:                        
                     case JGConstant.InstallUserStatus.InterviewDate:
                         row["CssClass"] = "IOUser";
                         break;

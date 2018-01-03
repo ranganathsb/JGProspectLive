@@ -942,24 +942,24 @@ function EditSeqAssignedTaskUsers(sender) {
     var $sender = $(sender);
     var intTaskID = parseInt($sender.attr('data-taskid'));
     var intTaskStatus = parseInt($sender.attr('data-taskstatus'));
-    var arrAssignedUsers = [];
-    var arrDesignationUsers = [];
+    var arrAssignedUsers = $(sender).val();
+    var arrDesignationUsers = arrAssignedUsers;
     var options = $sender.find('option');
 
-    $.each(options, function (index, item) {
+    //$.each(options, function (index, item) {
 
-        var intUserId = parseInt($(item).attr('value'));
+    //    var intUserId = parseInt($(item).attr('value'));
 
-        if (intUserId > 0) {
-            arrDesignationUsers.push(intUserId);
-            //if ($.inArray(intUserId.toString(), $(sender).val()) != -1) {                
-            //    arrAssignedUsers.push(intUserId);
-            //}
-            if ($(sender).val() == intUserId.toString()) {
-                arrAssignedUsers.push(intUserId);
-            }
-        }
-    });
+    //    if (intUserId > 0) {
+    //        arrDesignationUsers.push(intUserId);
+    //        //if ($.inArray(intUserId.toString(), $(sender).val()) != -1) {                
+    //        //    arrAssignedUsers.push(intUserId);
+    //        //}
+    //        if ($(sender).val() == intUserId.toString()) {
+    //            arrAssignedUsers.push(intUserId);
+    //        }
+    //    }
+    //});
 
     SaveAssignedTaskUsers();
 
