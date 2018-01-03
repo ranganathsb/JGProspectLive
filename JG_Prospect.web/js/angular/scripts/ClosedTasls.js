@@ -43,12 +43,6 @@ function applyFunctionsClosedTask($scope, $compile, $http, $timeout , $filter) {
                 $scope.pagesCountClosedTask = results.RecordCount.TotalPages;
                 $scope.ClosedTask = $scope.correctDataforAngularClosedTaks(results.Tasks);
                 //$scope.TaskSelected = $scope.TechTasks[0];                
-                if ($scope.TotalRecordsClosedTask > 0) {
-                    $('#noDataCT').hide();
-                }
-                else {
-                    $('#noDataCT').fadeIn(500);
-                }
             });
     };
 

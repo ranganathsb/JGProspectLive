@@ -533,34 +533,6 @@ namespace JG_Prospect.WebServices
 
         #endregion
 
-        [WebMethod(EnableSession = true)]
-        public String GetCalendarTasksByDate(string StartDate, string EndDate)
-        {
-            string strMessage = string.Empty;
-            string userid = "";
-            DataSet dtResult = null;
-            if (!CommonFunction.CheckAdminAndItLeadMode())
-            {
-                int UserId = 0;
-                Int32.TryParse(JGSession.LoginUserID, out UserId);
-                userid = UserId.ToString();
-            }
-
-            dtResult = TaskGeneratorBLL.Instance.GetCalendarTasksByDate(StartDate, EndDate, userid);
-
-            if (dtResult != null && dtResult.Tables.Count > 0)
-            {
-                dtResult.DataSetName = "Events";
-                dtResult.Tables[0].TableName = "AllEvents";
-                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
-            }
-            else
-            {
-                strMessage = String.Empty;
-            }
-            return strMessage;
-        }
-
         #region '--Task--'
         [WebMethod(EnableSession = true)]
         public String GetTaskUserFileByFileName(string FileName)
@@ -940,15 +912,6 @@ namespace JG_Prospect.WebServices
                                                     intPageSize,
                                                     intHighlightTaskId
                                                 );
-            //Convert UTC to EST
-            foreach (DataRow row in dtResult.Tables[3].Rows)
-            {
-                if (row["UpdatedOn"] != null && row["UpdatedOn"].ToString() != "")
-                {
-                    row["UpdatedOn"] = string.Format("{0:MM/dd/yyyy hh:mm tt}", Convert.ToDateTime(row["UpdatedOn"]).ToEST());
-                }
-            }
-
             dtResult.Tables[0].Columns.Add("className");
 
             DataTable copyTable = dtResult.Tables[0].Clone();
@@ -1967,46 +1930,6 @@ namespace JG_Prospect.WebServices
             }
 
             return strMessage;
-        }
-
-        [WebMethod(EnableSession = true)]
-        public string QuickSaveInstallUsers(String FirstName, String NameMiddleInitial, String LastName, String Email, String Phone, String Zip, String DesignationText, Int32 DesignationId,
-                                            String  Status, String SourceText, String EmpType, String StartDate, String SalaryReq,
-                                            String SourceUserId, Int32 PositionAppliedForDesignationId, Int32 SourceID, Int32 AddedByUserId, 
-                                            Boolean IsEmailContactPreference, Boolean IsCallContactPreference, Boolean IsTextContactPreference, Boolean IsMailContactPreference)
-        {
-            user objInstallUser = new user();
-
-            objInstallUser.fristname = FirstName;
-            objInstallUser.NameMiddleInitial = NameMiddleInitial;
-            objInstallUser.lastname = LastName;
-            objInstallUser.email = Email;
-            objInstallUser.phone = Phone;
-            objInstallUser.zip = Zip;
-            objInstallUser.designation = DesignationText;
-            objInstallUser.DesignationID = DesignationId;
-            objInstallUser.status = Status;
-            objInstallUser.Source = SourceText;
-            objInstallUser.EmpType = EmpType;
-            objInstallUser.StartDate = StartDate;
-            objInstallUser.SalaryReq = SalaryReq;
-            objInstallUser.SourceUser = SourceUserId;
-            objInstallUser.PositionAppliedFor = PositionAppliedForDesignationId.ToString();
-            objInstallUser.SourceId = SourceID;
-            objInstallUser.AddedBy = AddedByUserId;
-            objInstallUser.IsEmailContactPreference = IsEmailContactPreference;
-            objInstallUser.IsCallContactPreference = IsCallContactPreference;
-            objInstallUser.IsTextContactPreference = IsTextContactPreference;
-            objInstallUser.IsMailContactPreference = IsMailContactPreference;
-
-
-            Int32 Id = InstallUserBLL.Instance.QuickSaveInstallUser(objInstallUser);
-
-            //update user install id.
-            InstallUserBLL.Instance.SetUserDisplayID(Id, DesignationId.ToString(), "YES");
-
-
-            return Id.ToString();
         }
 
         #region "-- Private Methods --"

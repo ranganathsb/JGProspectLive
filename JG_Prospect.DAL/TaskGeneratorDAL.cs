@@ -1395,30 +1395,6 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
-        public DataSet GetCalendarTasksByDate(string StartDate, string EndDate, string userid)
-        {
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("usp_GetCalendarTasksByDate");
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    database.AddInParameter(command, "@StartDate", DbType.Date, StartDate);
-                    database.AddInParameter(command, "@EndDate", DbType.Date, EndDate);
-                    database.AddInParameter(command, "@userid", DbType.String, userid);
-                    returndata = database.ExecuteDataSet(command);
-
-                    return returndata;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
 
         public DataSet GetTaskUserFileByFileName(string FileName)
         {

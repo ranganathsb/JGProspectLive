@@ -21,7 +21,6 @@ function LoadSubTasks() {
         pageSize = 5;
     sequenceScopeTG.pageSize = pageSize;
 
-    $('.ui-dialog').remove();
     sequenceScopeTG.getSubTasks();
     sequenceScopeTG.getAssignUser();
 }

@@ -27,7 +27,7 @@ namespace JG_Prospect.DAL
             private set {; }
         }
 
-        public DataSet returndata;        
+        public DataSet returndata;
 
         public void AddUserNotes(string Notes, int UserID, int AddedByID)
         {
@@ -375,7 +375,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public int AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID)
+        public int AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID, int touchPointSource)
         {
             try
             {
@@ -389,7 +389,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@LogTime", DbType.DateTime, LogTime);
                     database.AddInParameter(command, "@changeLog", DbType.String, changeLog);
                     database.AddInParameter(command, "@CurrGUID", DbType.String, strGUID);
-
+                    database.AddInParameter(command, "@TouchPointSource", DbType.Int32, touchPointSource);
                     DataSet dsTemp = database.ExecuteDataSet(command);
                     return Convert.ToInt32(dsTemp.Tables[0].Rows[0]["UserTouchPointLogID"]);
                 }
@@ -495,7 +495,7 @@ namespace JG_Prospect.DAL
                                 UserID = Convert.ToInt32(item["UserID"]),
                                 UpdatedByUserID = Convert.ToInt32(item["UpdatedByUserID"]),
                                 UpdatedUserInstallID = item["UpdatedUserInstallID"].ToString(),
-                                ChangeDateTime = Convert.ToDateTime(item["ChangeDateTime"]),
+                                ChangeDateTime = Convert.ToDateTime(item["ChangeDateTime"]).ToEST(),
                                 LogDescription = item["LogDescription"].ToString(),
                                 UpdatedByFirstName = item["UpdatedByFirstName"].ToString(),
                                 UpdatedByLastName = item["UpdatedByLastName"].ToString(),
@@ -504,8 +504,11 @@ namespace JG_Prospect.DAL
                                 LastName = item["LastName"].ToString(),
                                 Email = item["Email"].ToString(),
                                 Phone = item["Phone"].ToString(),
-                                ChangeDateTimeFormatted = item["ChangeDateTimeFormatted"].ToString(),
-                                SourceUser = item["SourceUser"].ToString()
+                                ChangeDateTimeFormatted = Convert.ToDateTime(item["ChangeDateTime"]).ToEST().ToString(),
+                                SourceUser = item["SourceUser"].ToString(),
+                                SourceUserInstallId = item["SourceUserInstallId"].ToString(),
+                                SourceUsername = item["SourceUsername"].ToString(),
+                                TouchPointSource = item["TouchPointSource"] != null ? Convert.ToInt32(item["TouchPointSource"]) : 0
                             });
                         }
                     }
@@ -671,26 +674,6 @@ namespace JG_Prospect.DAL
             {
                 return null;
             }
-        }
-
-        public DataSet BulkIntsallUserDuplicateCheck(String xmlDoc)
-        {
-            DataSet dsTemp = new DataSet();
-
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetStoredProcCommand("UDP_BulkInstallUserDuplicateCheck");
-                    database.AddInParameter(command, "@XMLDOC2", SqlDbType.Xml, xmlDoc);
-                    dsTemp = database.ExecuteDataSet(command);
-                    return dsTemp;
-                }
-            }
-            catch (Exception ex)
-            {
-            }
-            return dsTemp;
         }
 
         public string AddUserEmail(bool isPrimaryEmail, string strEmail, int UserID, bool ClearDataBeforInsert)
@@ -2428,29 +2411,6 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet getInstallUserDetailsById(Int32 UserId)
-        {
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("usp_GetInstallUserDetailsById");
-                    command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@UserId", DbType.Int32, UserId);
-                    returndata = database.ExecuteDataSet(command);
-
-                    return returndata;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                return null;
-
-            }
-        }
-
         public DataSet getInstallerUserDetailsByLoginId(string Email, string Password)
         {
             try
@@ -3327,107 +3287,5 @@ namespace JG_Prospect.DAL
             }
             return returndata;
         }
-
-        public Int32 QuickSaveInstallUser(user objuser)
-        {
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetStoredProcCommand("usp_QuickSaveInstallUser");
-                    command.CommandType = CommandType.StoredProcedure;
-                    
-                    database.AddInParameter(command, "@FirstName", DbType.String, objuser.fristname);
-                    database.AddInParameter(command, "@NameMiddleInitial", DbType.String, objuser.NameMiddleInitial);
-                    database.AddInParameter(command, "@LastName", DbType.String, objuser.lastname);
-                    database.AddInParameter(command, "@Email", DbType.String, objuser.email);
-                    database.AddInParameter(command, "@Phone", DbType.String, objuser.phone);
-                    database.AddInParameter(command, "@Zip", DbType.String, objuser.zip);
-                    database.AddInParameter(command, "@DesignationText", DbType.String, objuser.designation);
-                    database.AddInParameter(command, "@DesignationID", DbType.String, objuser.DesignationID);
-                    database.AddInParameter(command, "@Status", DbType.String, objuser.status);
-                    database.AddInParameter(command, "@SourceText", DbType.String, objuser.Source);
-                    database.AddInParameter(command, "@EmpType", DbType.String, objuser.EmpType);
-                    database.AddInParameter(command, "@StartDate", DbType.String, objuser.StartDate);
-                    database.AddInParameter(command, "@SalaryReq", DbType.String, objuser.SalaryReq);
-                    database.AddInParameter(command, "@SourceUserId", DbType.String, objuser.SourceUser);
-                    database.AddInParameter(command, "@PositionAppliedForDesignationId", DbType.String, objuser.PositionAppliedFor);
-                    database.AddInParameter(command, "@SourceID", DbType.Int32, objuser.SourceId == 0 ? DBNull.Value : (object)objuser.SourceId);
-                    database.AddInParameter(command, "@AddedByUserId", DbType.Int32, objuser.AddedBy);
-                    database.AddInParameter(command, "@IsEmailContactPreference", DbType.Boolean, objuser.IsEmailContactPreference);
-                    database.AddInParameter(command, "@IsCallContactPreference", DbType.Boolean, objuser.IsCallContactPreference);
-                    database.AddInParameter(command, "@IsTextContactPreference", DbType.Boolean, objuser.IsTextContactPreference);
-                    database.AddInParameter(command, "@IsMailContactPreference", DbType.Boolean, objuser.IsMailContactPreference);
-
-                    database.AddOutParameter(command, "@Id", DbType.Int32, 1);  
-
-                    database.ExecuteScalar(command);
-
-                    int UserId = Convert.ToInt32(database.GetParameterValue(command, "@Id"));
-
-                    return UserId;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                return 0;
-
-            }
-        }
-
-        public Boolean UpdateUserProfile(user objuser)
-        {
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetStoredProcCommand("usp_UpdateInstallUserDetailsById");
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    database.AddInParameter(command, "@UserId", DbType.Int32, objuser.id);
-                    database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
-                    database.AddInParameter(command, "@SourceID", DbType.Int32, objuser.SourceId);
-                    database.AddInParameter(command, "@Source", DbType.String, objuser.Source);
-                    database.AddInParameter(command, "@FristName", DbType.String, objuser.fristname);
-                    database.AddInParameter(command, "@NameMiddleInitial", DbType.String, objuser.NameMiddleInitial);
-                    database.AddInParameter(command, "@LastName", DbType.String, objuser.lastname);
-                    database.AddInParameter(command, "@CountryCode", DbType.String, objuser.CountryCode);
-                    database.AddInParameter(command, "@Zip", DbType.String, objuser.zip);
-                    database.AddInParameter(command, "@City", DbType.String, objuser.city);
-                    database.AddInParameter(command, "@State", DbType.String, objuser.state);
-                    database.AddInParameter(command, "@Address", DbType.String, objuser.address);
-                    database.AddInParameter(command, "@LeavingReason", DbType.String, objuser.LeavingReason);
-                    database.AddInParameter(command, "@Phone", DbType.String, objuser.phone);
-                    database.AddInParameter(command, "@Email", DbType.String, objuser.email);
-                    database.AddInParameter(command, "@IsEmailContactPreference", DbType.Boolean, objuser.IsEmailContactPreference);
-                    database.AddInParameter(command, "@IsCallContactPreference", DbType.Boolean, objuser.IsCallContactPreference);
-                    database.AddInParameter(command, "@IsTextContactPreference", DbType.Boolean, objuser.IsTextContactPreference);
-                    database.AddInParameter(command, "@IsMailContactPreference", DbType.Boolean, objuser.IsMailContactPreference);
-                    database.AddInParameter(command, "@Start_Date", DbType.String, objuser.StartDate);
-                    database.AddInParameter(command, "@EmpType", DbType.String, objuser.EmpType);
-                    database.AddInParameter(command, "@SalaryReq", DbType.String, objuser.SalaryReq);
-                    database.AddInParameter(command, "@CruntEmployement", DbType.Boolean, Convert.ToBoolean(objuser.CruntEmployement));
-                    database.AddInParameter(command, "@DrugTest", DbType.Boolean, Convert.ToBoolean(objuser.DrugTest));
-                    database.AddInParameter(command, "@FELONY", DbType.Boolean, Convert.ToBoolean(objuser.FELONY));
-                    database.AddInParameter(command, "@PrevApply", DbType.Boolean, Convert.ToBoolean(objuser.PrevApply));
-                    database.AddInParameter(command, "@Notes", DbType.String, objuser.Notes);
-                    database.AddInParameter(command, "@Picture", DbType.String, objuser.picture);
-                    database.AddInParameter(command, "@ResumePath", DbType.String, objuser.ResumePath);
-                    
-
-                    database.ExecuteScalar(command);
-                    
-                    return true;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                return false;
-
-            }
-        }
-
     }
 }

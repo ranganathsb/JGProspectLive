@@ -304,6 +304,17 @@ namespace JG_Prospect.App_Code
         /// <param name="lstAttachments">any files to be attached to email.</param>
         public static bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
         {
+            Thread email = new Thread(delegate ()
+            {
+                SendEmailAsync(strEmailTemplate, strToAddress, strSubject, strBody, lstAttachments, lstAlternateView);
+            });
+            email.IsBackground = true;
+            email.Start();
+            return true;
+        }
+
+        private static bool SendEmailAsync(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
+        {
             bool retValue = false;
             if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(strToAddress))
             {
@@ -403,6 +414,16 @@ namespace JG_Prospect.App_Code
         /// <param name="strSubject">subject line of email.</param>
         /// <param name="strBody">contect / body of email.</param>
         public static void SendEmailInternal(string strToAddress, string strSubject, string strBody)
+        {
+            Thread email = new Thread(delegate ()
+            {
+                SendEmailInternalAsync(strToAddress, strSubject, strBody);
+            });
+            email.IsBackground = true;
+            email.Start();
+        }
+
+        private static void SendEmailInternalAsync(string strToAddress, string strSubject, string strBody)
         {
             try
             {
@@ -1215,18 +1236,6 @@ namespace JG_Prospect.App_Code
 
         }
 
-        internal static bool IsProfileUpdateRequired(string LastProfileUpdateDateTime)
-        {
-            bool ProfileUpdateRequired = true;
-
-            if (!String.IsNullOrEmpty(LastProfileUpdateDateTime))
-            {
-                ProfileUpdateRequired = false;
-            }
-
-            return ProfileUpdateRequired;
-        }
-
         private static void UpdateEmailStatistics(string emailId)
         {
             string logDirectoryPath = HostingEnvironment.MapPath(@"~\EmailStatistics");
@@ -1514,7 +1523,8 @@ namespace JG_Prospect.App_Code
             }
 
         }
-        
+
+
         public static string GetTaskLinkTitleForAutoEmail(int taskId)
         {
 
@@ -1545,38 +1555,6 @@ namespace JG_Prospect.App_Code
             newTaskLinkTitle = string.Format("TaskID#:{0}:Title:{1}", installId, taskTitle);
 
             return newTaskLinkTitle;
-        }
-
-        /// <summary>
-        /// Upload file on server to given relative path from given file upload control.
-        /// </summary>
-        /// <param name="fupControl"></param>
-        /// <param name="RelativePath">Relative path on server, ex. ~/Employee/</param>
-        /// <returns>Saved file name -> guid-originalfilename</returns>
-        public static string UploadFile(FileUpload fupControl, String RelativePath)
-        {
-            String fileName = string.Empty;
-
-            if (fupControl.HasFile)
-            {
-                DirectoryInfo originalDirectory = new DirectoryInfo(HttpContext.Current.Server.MapPath(RelativePath));
-
-                string originalName = Path.GetFileName(fupControl.FileName);
-                string NewFileName = Guid.NewGuid() + "-" + originalName;
-
-                string pathString = System.IO.Path.Combine(originalDirectory.ToString(), NewFileName);
-
-                bool isExists = System.IO.Directory.Exists(originalDirectory.ToString());
-
-                if (!isExists)
-                    System.IO.Directory.CreateDirectory(originalDirectory.ToString());
-
-                fupControl.SaveAs(pathString);
-
-                fileName = NewFileName;
-            }
-
-            return fileName;
         }
 
     }
@@ -1768,20 +1746,6 @@ namespace JG_Prospect
             set
             {
                 HttpContext.Current.Session["LoginUserID"] = value;
-            }
-        }
-
-        public static string LoggedinUserEmail
-        {
-            get
-            {
-                if (HttpContext.Current.Session["LUE"] == null)
-                    return null;
-                return Convert.ToString(HttpContext.Current.Session["LUE"]);
-            }
-            set
-            {
-                HttpContext.Current.Session["LUE"] = value;
             }
         }
 

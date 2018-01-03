@@ -671,11 +671,11 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone, phoneText, phoneType, UserID, PhoneExtNo, PhoneISDCode, ClearDataBeforInsert);
         }        
 
-        public int AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog, string strGUID)
+        public int AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog, string strGUID, int touchPointSource)
         {
             var LastUserTouchPoint = InstallUserDAL.Instance.GetUserTouchPointLogs(0, 1, UserID).Data;
 
-            int UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog, strGUID);
+            int UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog, strGUID, touchPointSource);
             // Send email to User / Recruiter
             // Get Html Template
             string messageUrl = string.Empty, toEmail = string.Empty, body = string.Empty;
@@ -683,7 +683,9 @@ namespace JG_Prospect.BLL
             HTMLTemplatesMaster html = HTMLTemplateBLL.Instance.GetHTMLTemplateMasterById(HTMLTemplates.HR_EditSales_TouchpointLog_Email);
             // sender details
             var sender = getuserdetails(LoginUserID).Tables[0].Rows[0];
-            string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? baseUrl + "UploadeProfile/default.jpg" : baseUrl + "Employee/ProfilePictures/" + sender["Picture"].ToString();
+            string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? "default.jpg"
+                                : sender["Picture"].ToString().Replace("~/UploadeProfile/", "");
+            pic = baseUrl + "UploadeProfile/" + pic;
             html.Body = html.Body.Replace("{ImageUrl}", pic);
             html.Body = html.Body.Replace("{Name}", sender["FristName"].ToString() + " " + sender["LastName"].ToString());
             html.Body = html.Body.Replace("{Designation}", sender["Designation"].ToString());
@@ -840,26 +842,6 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetEmployeeInterviewDetails(UserID);
 
-        }
-
-        public DataSet BulkIntsallUserDuplicateCheck(string xmlDoc)
-        {
-            return InstallUserDAL.Instance.BulkIntsallUserDuplicateCheck(xmlDoc);
-        }
-
-        public Boolean UpdateUserProfile(user objuser)
-        {
-            return InstallUserDAL.Instance.UpdateUserProfile(objuser);
-
-        }
-
-        public DataSet getInstallUserDetailsById(Int32 UserId) {
-            return InstallUserDAL.Instance.getInstallUserDetailsById(UserId);
-        }
-
-        public int QuickSaveInstallUser(user objInstallUser)
-        {
-            return InstallUserDAL.Instance.QuickSaveInstallUser(objInstallUser);
         }
     }
 }

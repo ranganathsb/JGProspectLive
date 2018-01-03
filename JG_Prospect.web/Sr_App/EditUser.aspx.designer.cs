@@ -1201,15 +1201,6 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.ListView lstNewUserAdd;
         
         /// <summary>
-        /// upnlBulkUploadStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlBulkUploadStatus;
-        
-        /// <summary>
         /// divBulkUploadUserErrors control.
         /// </summary>
         /// <remarks>
@@ -1219,40 +1210,22 @@ namespace JG_Prospect {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divBulkUploadUserErrors;
         
         /// <summary>
-        /// rptIncorrectRecords control.
+        /// upnlBUPError control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptIncorrectRecords;
+        protected global::System.Web.UI.UpdatePanel upnlBUPError;
         
         /// <summary>
-        /// rptDuplicateRecords control.
+        /// grdBulkUploadUserErrors control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptDuplicateRecords;
-        
-        /// <summary>
-        /// rptUserstoBeAdded control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptUserstoBeAdded;
-        
-        /// <summary>
-        /// rptSuccessFullyEntered control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptSuccessFullyEntered;
+        protected global::System.Web.UI.WebControls.GridView grdBulkUploadUserErrors;
         
         /// <summary>
         /// divSendEmailToUser control.

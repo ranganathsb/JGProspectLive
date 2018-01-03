@@ -174,7 +174,7 @@ namespace JG_Prospect.Sr_App.Controls
                 controlMode.Value = "0";
                 SetControlDisplay();
                 LoadFilters();
-                //SearchTasks(null);
+                SearchTasks(null);
                 LoadPopupDropdown();
             }
         }

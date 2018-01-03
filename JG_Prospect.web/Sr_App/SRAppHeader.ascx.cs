@@ -27,7 +27,7 @@ namespace JG_Prospect.Sr_App
                 if (JGSession.LoginUserID != null)
                     hLnkEditProfil.NavigateUrl = "/Sr_App/CreateSalesUser.aspx?ID=" + JGSession.LoginUserID;
                 else
-                    hLnkEditProfil.NavigateUrl = "#"; 
+                    hLnkEditProfil.NavigateUrl = "#";
 
                 if ((string)Session["usertype"] == "SSE")
                 {
