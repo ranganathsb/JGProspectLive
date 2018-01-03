@@ -17,7 +17,9 @@ function getDesignationAssignUsers($http, methodName, filters) {
 function getTasksForSubSequencing($http, methodName, filters) {
     return $http.post(url + methodName, filters);
 };
-
+function callWebServiceMethod($http, methodName, filters) {
+    return $http.post(url + methodName, filters);
+};
 
 
 function applyFunctions($scope, $compile, $http, $timeout, $filter) {
@@ -65,6 +67,89 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
     $scope.TechpagesCount = 0;
     $scope.TechCurrentpage = 0;
     $scope.TechTotalRecords = 0;
+
+    $scope.LoadCalendarData = function () {
+
+        
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            //defaultDate: '2017-12-1',
+            defaultView: 'agendaWeek',
+            navLinks: true, // can click day/week names to navigate views
+            editable: true,
+            eventLimit: true, // allow "more" link when too many events
+            events: function (start, end, timezone, callback) {
+                $('#loading').fadeIn(300);
+                callWebServiceMethod($http, "GetCalendarTasksByDate", { StartDate: start, EndDate: end }).then(function (data) {
+                    CalendarData = JSON.parse(data.data.d);
+                    CalendarData = CalendarData.AllEvents;
+                    var events = [];
+                    if (!!CalendarData) {
+                        $.map(CalendarData, function (r) {
+                            events.push({
+                                id: r.TaskId,
+                                title: r.Title.substring(0, 20) + '<span id="shown">...</span><span id="hidden">' + r.Title.substring(20, r.Title.length) + '</span><span id="shown" class="InstallId"> <a target="_blank" href="TaskGenerator.aspx?id=' + r.ParentTaskId + '&hstid=' + r.TaskId + '">' + r.InstallId + '</a></span>'
+                                + '&nbsp; <span class="UserInstallId" id="shown"><a target="_blank" href="ViewSalesUser.aspx?id=' + r.UserId + '">' + r.AssignedUsers + '</a></span>',
+                                start: r.StartDate,
+                                end: r.EndDate,
+                                color: r.Status,
+                                textColor: r.TextColor,
+                                className: 'eventRow'
+                            });
+                        });
+                    }
+                    callback(events);
+                    $('#loading').fadeOut(300);
+                });
+
+            },
+            eventMouseover: function (data, event, view) {
+
+                tooltip = '<div class="tooltiptopicevent" style="width:auto;height:auto;background:#fff;position:absolute;z-index:10001;padding:10px 10px 10px 10px ;  line-height: 200%; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);">' +
+                    data.title.replace("hidden", "").replace("shown", "hidden") + '</div>';
+                tooltip = tooltip.replace("shown", "hidden");
+                tooltip = tooltip.replace("shown", "hidden");
+
+                $("body").append(tooltip);
+                $(this).mouseover(function (e) {
+                    $(this).css('z-index', 10000);
+                    $('.tooltiptopicevent').fadeIn('500');
+                    $('.tooltiptopicevent').fadeTo('10', 1.9);
+                }).mousemove(function (e) {
+                    $('.tooltiptopicevent').css('top', e.pageY + 10);
+                    $('.tooltiptopicevent').css('left', e.pageX + 20);
+                });
+
+
+            },
+            eventMouseout: function (data, event, view) {
+                $(this).css('z-index', 8);
+
+                $('.tooltiptopicevent').remove();
+
+            },
+            dayClick: function () {
+                tooltip.hide()
+            },
+            eventResizeStart: function () {
+                tooltip.hide()
+            },
+            eventDragStart: function () {
+                tooltip.hide()
+            },
+            viewDisplay: function () {
+                tooltip.hide()
+            },
+            eventRender: function (event, element) {
+                element.find('.fc-title').html(event.title);
+            }
+        });
+
+    }
 
 
     $scope.onStaffEnd = function () {
@@ -171,14 +256,14 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
         //debugger;
         //get all Customers
         getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard, TaskUserStatus: $scope.UserStatus, StartDate: $scope.StartDate, EndDate: $scope.EndDate }).then(function (data) {
-            console.log(data);
+            //console.log(data);
             //debugger;
             $scope.loader.loading = false;
             $scope.IsTechTask = false;
             $scope.DesignationSelectModel = [];
             var resultArray = JSON.parse(data.data.d);
             var results = resultArray.TasksData;
-            console.log(results);
+            //console.log(results);
             $scope.page = results.RecordCount.PageIndex;
             $scope.TotalRecords = results.RecordCount.TotalRecords;
             $scope.pagesCount = results.RecordCount.TotalPages;
@@ -187,6 +272,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
                 $scope.TaskSelected = $scope.Tasks[0];
 
             if ($scope.TotalRecords > 0) {
+                $('#noDataIA').hide();
                 $scope.pageFrom = ($scope.page * $scope.pageSize) + 1;
                 if ($scope.TotalRecords <= $scope.pageSize) {
                     $scope.pageTo = $scope.TotalRecords;
@@ -198,6 +284,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
             }
             else {
                 $scope.pageFrom = $scope.pageOf = $scope.pageTo = 0;
+                $('#noDataIA').fadeIn(1000);
             }
         });
         //}
@@ -596,3 +683,4 @@ app.controller('AddNewTaskSequenceController', function PostsController($scope, 
     };
 
 });
+var CalendarData;

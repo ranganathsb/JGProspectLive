@@ -545,11 +545,17 @@ form.inline {
 /*------------------------------------------------------------------
 [6. User Panel]
 */
-.search-box{width: 100px;
+.search-box {
+    width: 100px;
     padding: 2px;
-    border-radius: 3px;}
-.ProfilImg{width: 80px;position:relative;
-    float: left;}
+    border-radius: 3px;
+}
+
+.ProfilImg {
+    width: 80px;
+    position: relative;
+    float: left;
+}
 .user_panel {
     height: 49px;
     background: url(../img/user-panel-bg.png) repeat-x;
@@ -587,29 +593,26 @@ form.inline {
 
     .user_panel ul {
         list-style-type: none;
-    margin: 10px 0 0;
-    padding: 0;
-    float: left;
-    font-size: 12px;
-    width: 258px;
+        margin: 10px 0 0 0;
+        padding: 0;
+        float: left;
+        font-size: 12px;
     }
 
         .user_panel ul li {
             float: left;
             margin: 0 0 0 2px;
             padding: 0;
-            position:relative;
         }
-        .user_panel .badge{    position: absolute;
-    right: -12px;
-    top: -12px;
-    padding: 2px;
-}
-
-/*------------------------------------------------------------------
+    .user_panel .badge {
+        position: absolute;
+        right: -12px;
+        top: -12px;
+        padding: 2px;
+        /*------------------------------------------------------------------
 [7. Nav]
 */
-.nav {
+        .nav {
     background: url(../img/nav-bg.png) repeat-x;
     height: 40px;
     top: 170px;
@@ -1398,7 +1401,7 @@ ul.left_nav {
 .tasklist {
     overflow: auto;
     max-height: 165px;
-    margin-left: 175px !important;
+    margin-left: 220px !important;
     width: 75%;
     position: relative;
     z-index: 9;
@@ -2023,8 +2026,22 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
 }
 
 .divtdetails img {
-    max-width: 100%;
+    max-width: 100px;
     height: inherit;
+}
+.nestedChildren img {
+    max-width: 100px;
+    height: inherit;
+}
+.nestedChildren p {
+    margin: 0px;
+}
+.nestedChildren a {
+    color:blue !important;
+}
+
+.divtdetails p {
+    margin: 0px;
 }
 
 .form_panel_custom ul.stulli li {
@@ -2419,7 +2436,7 @@ p.mcqQuestion {
 }
 
 .seq-tasktitle {
-        word-wrap: break-word;
+    word-wrap: break-word;
     width: 24%;
 }
 
@@ -2674,8 +2691,8 @@ ul.auto-complete-users {
     /* max-height: 400px;
     min-height: 100px; */
     margin: 10px 0;
-    max-height:150px;
-    overflow-y:auto;
+    max-height: 150px;
+    overflow-y: auto;
     /* -webkit-border-radius: 12px; */
     -moz-border-radius: 8px;
     border-radius: 8px;
@@ -2717,10 +2734,20 @@ ul.auto-complete-users {
 .employeeinstruction a {
     color: blue !important;
 }
-
-
-.popover__content li{
-    list-style:none;
+.attachmentImageDiv {
+    font-size: 10px;
+    border: solid;
+    border-width: 1px;
+    border-color: gainsboro;
+    padding: 4px;
+    max-width:200px !important;
+}
+.multileveledittext img{
+    max-height:100px;
+    max-width:100px;
+}
+.popover__content li {
+    list-style: none;
 }
 
 .popover__content {
@@ -2730,12 +2757,11 @@ ul.auto-complete-users {
     background-color: #FFF;
     padding: 15px;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-    width: 200px;
     z-index: 9999;
     line-height: 2;
 }
 
-    .popover__content:before {
+    /*.popover__content:before {
         position: absolute;
         z-index: -1;
         content: '';
@@ -2746,7 +2772,7 @@ ul.auto-complete-users {
         border-color: transparent transparent #FFF transparent;
         transition-duration: 0.3s;
         transition-property: transform;
-    }
+    }*/
 
 .popover__wrapper:hover .popover__content {
     z-index: 10;
@@ -2759,4 +2785,6 @@ ul.auto-complete-users {
 .popover__message {
     text-align: center;
 }
-.designation-container{    margin-left: 61px;}
+.designation-container {
+    margin-left: 61px;
+}

@@ -1990,6 +1990,9 @@
     <Content Include="js\connected-jcarousel.js" />
     <Content Include="js\Custom\JgPopUp.js" />
     <Content Include="js\dropzone.js" />
+    <Content Include="js\fullcalendar\css\fullcalendar.css" />
+    <Content Include="js\fullcalendar\js\fullcalendar.min.js" />
+    <Content Include="js\fullcalendar\js\moment.min.js" />
     <Content Include="js\handleCounter.js" />
     <Content Include="js\ice\ice-master.min.js" />
     <Content Include="js\ice\lib\tinymce\changelog.txt" />
@@ -2098,6 +2101,7 @@
     <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\utils\validate.js" />
     <Content Include="js\ice\src\ice.js" />
     <Content Include="js\intTel\intlTelInput.js" />
+    <Content Include="js\jquery-2.2.4.min.js" />
     <Content Include="js\jquery.magnific-popup.min.js" />
     <Content Include="js\JCarousel.js" />
     <Content Include="js\jg-common.js" />
@@ -2216,6 +2220,7 @@
     <Content Include="Sr_App\InstallCreateUser2.aspx" />
     <Content Include="Sr_App\Inventory.aspx" />
     <Content Include="Sr_App\ITDashboard.aspx" />
+    <Content Include="Sr_App\ITDashboardCalendar.aspx" />
     <Content Include="Sr_App\JabbRChat.aspx" />
     <Content Include="Sr_App\JMGroveCONTRACT-%28email-version%29.html" />
     <Content Include="Sr_App\Maintenace.aspx" />
@@ -2599,6 +2604,13 @@
     </Compile>
     <Compile Include="Sr_App\ITDashboard.aspx.designer.cs">
       <DependentUpon>ITDashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\ITDashboardCalendar.aspx.cs">
+      <DependentUpon>ITDashboardCalendar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\ITDashboardCalendar.aspx.designer.cs">
+      <DependentUpon>ITDashboardCalendar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\JabbRChat.aspx.cs">
       <DependentUpon>JabbRChat.aspx</DependentUpon>

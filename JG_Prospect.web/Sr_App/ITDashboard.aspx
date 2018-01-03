@@ -408,7 +408,28 @@
                 vertical-align: middle;
                 margin: 10px;                
             }
-            
+            #ViewTab{
+                width: 100%;
+                float: right;
+            }
+            #ContentPlaceHolder1_lblalertpopup{
+                float: left;
+            }
+            #ViewTab ul{
+                position: absolute;
+                top: 305px;
+                margin-right: 19px;
+            }
+        #taskSequenceTabs {
+            margin-top: 56px;
+        }
+        .noData {
+            width: 100%;
+            clear: both;
+            text-align: center;
+            line-height: 50px;
+            font-size: 15px;
+        }
     </style>
     <link href="../css/chosen.css" rel="stylesheet" />
     <link href="../Styles/dd.css" rel="stylesheet" />
@@ -434,10 +455,17 @@
         </asp:Panel>--%>
 
         <%--<asp:UpdatePanel runat="server" ID="upAlerts"><ContentTemplate>--%>
-        <h2 runat="server" id="lblalertpopup">Alerts:
+        
+        <div id="ViewTab">
+            <h2 runat="server" id="lblalertpopup">Alerts:
             <a id="lblNonFrozenTaskCounter" runat="server" style="cursor: pointer">NA</a>
-            <a id="lblFrozenTaskCounter" runat="server" style="cursor: pointer">NA</a>
+            <a id="lblFrozenTaskCounter" runat="server" style="cursor: pointer">NA</a>           
         </h2>
+            <ul class="appointment_tab">
+                <li><a href="ITDashboard.aspx" class="active">Tasklist View</a></li>
+                <li><a href="ITDashboardCalendar.aspx">Calendar View</a></li>
+            </ul>
+        </div>
 
         <!--  ------- Start DP new/frozen tasks popup ------  -->
         <div id="pnlNewFrozenTask" class="modal hide">
@@ -518,7 +546,7 @@
                                 </div>
                                 <div class="div-table-col seq-taskduedate">Due Date</div>
                                 <div class="div-table-col seq-notes">Notes</div>
-                            </div>
+                            </div>                            
                             <!-- NG Repeat Div starts -->
                             <div ng-attr-id="divMasterTaskFrozen{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in FrozenTask" ng-class="{orange : Task.Status==='4', yellow: Task.Status==='2', yellow: Task.Status==='3', lightgray: Task.Status==='8'}" repeat-end="onStaffEnd()">
                                 <!-- Sequence# starts -->
@@ -576,7 +604,7 @@
                                             data-chosen="1" data-placeholder="Select Users" ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id" ng-model="DesignationAssignUsersModel"
                                             AutoPostBack="false">--%>
 
-                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssignedFrozen" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                    <select <%=!IsSuperUser ? "disabled" : ""%> id="ddcbSeqAssignedFrozen" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                         <option
                                             ng-repeat="item in DesignationAssignUsers"
                                             value="{{item.Id}}"
@@ -938,7 +966,7 @@
                                         <%} %>
                                     </select>
                                     <br />
-                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                    <select <%=!IsSuperUser ? "disabled" : ""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                         <option
                                             ng-repeat="item in DesignationAssignUsers"
                                             value="{{item.Id}}"
@@ -1156,7 +1184,7 @@
                                             data-chosen="1" data-placeholder="Select Users" ng-options="item as item.FristName for item in DesignationAssignUsers track by item.Id" ng-model="DesignationAssignUsersModel"
                                             AutoPostBack="false">--%>
 
-                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssignedNonFrozen" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                    <select <%=!IsSuperUser ? "disabled" : ""%> id="ddcbSeqAssignedNonFrozen" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                         <option
                                             ng-repeat="item in DesignationAssignUsers"
                                             value="{{item.Id}}"
@@ -1517,7 +1545,7 @@
                                         <%} %>
                                     </select>
                                     <br />
-                                    <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                    <select <%=!IsSuperUser ? "disabled" : ""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                         <option
                                             ng-repeat="item in DesignationAssignUsers"
                                             value="{{item.Id}}"
@@ -1785,7 +1813,11 @@
                 {%>
 
             <h2 class="itdashtitle">In Progress, Assigned-Requested</h2>
-            <%} %>
+            <%}
+                if (TaskListView)
+                {%>
+
+            
             <div id="taskSequenceTabs">
                 <div id="StaffTask">
                     <div id="tblStaffSeq" class="div-table tableSeqTask">
@@ -1818,6 +1850,7 @@
                             </div>
                             <div class="div-table-col seq-notes" style="width:31% !important">Notes</div>
                         </div>
+                        <div class="noData" id="noDataIA">No Records Found!</div>
                         <!-- NG Repeat Div starts -->
                         <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in Tasks" ng-class="{orange : Task.Status==='4', yellow: Task.Status==='2', yellow: Task.Status==='3', lightgray: Task.Status==='8'}" repeat-end="onStaffEnd()">
                             <!-- Sequence# starts -->
@@ -1871,7 +1904,7 @@
                                 </select>
                                 <br />
 
-                                <select class="ddlAssignedUsers" <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssignedStaff" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                <select class="ddlAssignedUsers" <%=!IsSuperUser ? "disabled" : ""%> id="ddcbSeqAssignedStaff" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                     <option
                                         ng-repeat="item in DesignationAssignUsers"
                                         value="{{item.Id}}"
@@ -2041,7 +2074,7 @@
                                             <%} %>
                                         </select>
                                         <br />
-                                        <select <%=!IsSuperUser?"disabled":""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
+                                        <select <%=!IsSuperUser ? "disabled" : ""%> id="ddcbSeqAssigned" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
                                             <option
                                                 ng-repeat="item in DesignationAssignUsers"
                                                 value="{{item.Id}}"
@@ -2155,8 +2188,8 @@
             <div class="text-center" style="float:right">
                         <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getTasks(page)"></jgpager>
                     </div>
+            
             <!-- Interview Date popup starts -->
-
             <div id="HighLightedTask" class="modal hide">
                 <%--<iframe id="ifrmTask" style="height: 100%; width: 100%; overflow: auto;"></iframe>--%>
 
@@ -2222,7 +2255,7 @@
                                 </select>
                                 <br />
 
-                                <select <%=!IsSuperUser?"disabled":""%> id="ddcbIntSeqAssignedStaff" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
+                                <select <%=!IsSuperUser ? "disabled" : ""%> id="ddcbIntSeqAssignedStaff" style="width: 100%;" multiple ng-attr-data-assignedusers="{{Task.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" data-taskid="{{Task.TaskId}}" data-taskstatus="{{Task.Status}}">
                                     <option
                                         ng-repeat="item in DesignationAssignUsers"
                                         value="{{item.Id}}"
@@ -2364,7 +2397,7 @@
                         </div>
                     </div>
                             <%
-                        }
+                                }
                      %>
                     <br />
                     Your default Interview Date & Time Deadline has been scheduled for & with below:
@@ -2393,12 +2426,14 @@
                 </div>
 
             </div>
-
             <!-- Interview Date popup ends -->
+            <%} %>
 
         </div>
 
         <h2></h2>
+        <%
+            if (TaskListView){ %>
         <div id="ContentPlaceHolder1_upClosedTask">
 
 
@@ -2454,6 +2489,11 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr>
+                            <td colspan="5">
+                                <div class="noData" id="noDataCT">No Records Found!</div>
+                            </td>
+                        </tr>
                         <tr ng-class="{red: item.Status==='12', black : item.Status==='7', green: item.Status==='14', gray: item.Status==='9'}" data-ng-repeat="item in ClosedTask" repeat-end="onClosedTaskEnd()">
                             <td style="width: 100px;" valign="middle" align="center">
                                 <span id="ContentPlaceHolder1_grdTaskClosed_lblAssignedUser_0">{{item.Assigneduser}}</span>
@@ -2515,6 +2555,7 @@
             </div>
         </div>
 
+        <%} %>
         <div class="notes-section" tuid="<%=loggedInUserId %>" style="width:98%;">           
             <div class="notes-popup">
                 <div class="heading">
@@ -2540,6 +2581,7 @@
                 </div>
             </div>
         </div>
+
         <asp:HiddenField id="hdnUserId" runat="server"/>
     </div>
     <div class="push popover__content">
