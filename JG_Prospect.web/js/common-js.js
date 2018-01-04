@@ -32,7 +32,7 @@ var EditActionType = {
 //====== End Enums & Constants =====
 
 $(document).ready(function () {
-    
+
 });
 
 

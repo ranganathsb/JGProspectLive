@@ -487,9 +487,11 @@ function LoadImageGallery(strSelector) {
         subtaskSliders = $(strSelector).lightSlider({
             gallery: true,
             item: 1,
-            thumbItem: 9,
+            thumbItem: 6,
             slideMargin: 0,
             speed: 500,
+            currentPagerPosition: 'left',
+            pauseOnHover: true,
             auto: true,
             loop: true,
             onSliderLoad: function () {
