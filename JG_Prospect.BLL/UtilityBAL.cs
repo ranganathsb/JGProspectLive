@@ -106,20 +106,20 @@ namespace JG_Prospect.BLL
 
                 MailMessage Msg = new MailMessage();
                 Msg.From = new MailAddress(defaultEmailFrom, "JGrove Construction");
+                if (JGApplicationInfo.GetApplicationEnvironment() == "1" || JGApplicationInfo.GetApplicationEnvironment() == "2")
+                {
+                    strBody = String.Concat(strBody, "<br/><br/><h1>Email is intended for Email Address: " + string.Join(", ", strToAddress) + "</h1><br/><br/>");
+                    Msg.To.Add("error@kerconsultancy.com");
 
-                //if (JGApplicationInfo.GetApplicationEnvironment() == "1" || JGApplicationInfo.GetApplicationEnvironment() == "2")
-                //{
-                //    strBody = String.Concat(strBody, "<br/><br/><h1>Email is intended for Email Address: " + string.Join(", ", strToAddress) + "</h1><br/><br/>");
-                //    Msg.To.Add("error@kerconsultancy.com");
-                //}
-                //else
-                //{
-                //    foreach (var item in strToAddress)
-                //    {
-                //        if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(item))
-                //            Msg.To.Add(item);
-                //    }
-                //}
+                }
+                else
+                {
+                    foreach (var item in strToAddress)
+                    {
+                        if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(item))
+                            Msg.To.Add(item);
+                    }
+                }
                 // Msg.To.Add(strToAddress);
                 Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
                 Msg.Subject = strSubject;// "JG Prospect Notification";
@@ -153,32 +153,7 @@ namespace JG_Prospect.BLL
                 sc.Credentials = ntw;
                 sc.DeliveryMethod = SmtpDeliveryMethod.Network;
                 sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
-
-                if (JGApplicationInfo.GetApplicationEnvironment() == "1" || JGApplicationInfo.GetApplicationEnvironment() == "2")
-                {
-                    strBody = String.Concat(strBody, "<br/><br/><h1>Email is intended for Email Address: " + string.Join(", ", strToAddress) + "</h1><br/><br/>");
-                    Msg.To.Add("error@kerconsultancy.com");
-                    sc.Send(Msg);
-                }
-                else
-                {
-                    foreach (var item in strToAddress)
-                    {
-                        if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(item))
-                        {
-                            Msg.To.Add(item);
-                            #region Check for autologin url
-                            if (strBody.Contains("{AutoLoginCode}"))
-                            {
-                                // Generate auto login code
-                                string loginCode = InstallUserDAL.Instance.GenerateLoginCode(item).Object;
-                                Msg.Body = strBody.Replace("{AutoLoginCode}", loginCode);
-                                sc.Send(Msg);
-                            }
-                            #endregion
-                        }
-                    }
-                }
+                sc.Send(Msg);
                 retValue = true;
 
                 Msg = null;
@@ -218,7 +193,11 @@ namespace JG_Prospect.BLL
 
                 MailMessage Msg = new MailMessage();
                 Msg.From = new MailAddress(userName, "JGrove Construction");
-                
+                foreach (string strEmailAddress in strToAddress.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    Msg.To.Add(strEmailAddress);
+                }
+
                 Msg.Subject = strSubject;// "JG Prospect Notification";
                 Msg.Body = strBody;
                 Msg.IsBodyHtml = true;
@@ -234,19 +213,7 @@ namespace JG_Prospect.BLL
                 sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
                 try
                 {
-                    foreach (string strEmailAddress in strToAddress.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        Msg.To.Add(strEmailAddress);
-                        #region Check for autologin url
-                        if (strBody.Contains("{AutoLoginCode}"))
-                        {
-                            // Generate auto login code
-                            string loginCode = InstallUserDAL.Instance.GenerateLoginCode(strEmailAddress).Object;
-                            strBody = strBody.Replace("{AutoLoginCode}", loginCode);
-                        }
-                        #endregion
-                        sc.Send(Msg);
-                    }
+                    sc.Send(Msg);
                 }
                 catch
                 {
@@ -319,14 +286,6 @@ namespace JG_Prospect.BLL
             {
                 try
                 {
-                    #region Check for autologin url
-                    if (strBody.Contains("{AutoLoginCode}"))
-                    {
-                        // Generate auto login code
-                        string loginCode = InstallUserDAL.Instance.GenerateLoginCode(strToAddress).Object;
-                        strBody = strBody.Replace("{AutoLoginCode}", loginCode);
-                    }
-                    #endregion
                     /* Sample HTML Template
                      * *****************************************************************************
                      * Hi #lblFName#,
