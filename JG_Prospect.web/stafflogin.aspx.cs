@@ -800,7 +800,9 @@ namespace JG_Prospect
                                 JGSession.UserType = "Installer";
 
                                 #region Redirection
+                                bool isProfileUpdateRequired = CommonFunction.IsProfileUpdateRequired(ds.Tables[0].Rows[0]["LastProfileUpdated"].ToString());
                                 string strRedirectUrl = string.Empty;
+                                // Check for Touch Point Log Url
                                 if (!string.IsNullOrEmpty(Request.QueryString["returnurl"]) && Request.QueryString["returnurl"].ToLower().Contains("touchpointlog.aspx"))
                                 {
                                     JGSession.IsFirstTime = false;
@@ -809,22 +811,55 @@ namespace JG_Prospect
                                 }
                                 else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.Applicant)
                                 {
-                                    strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID;
+                                    if (isProfileUpdateRequired)
+                                        strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/ViewApplicantUser.aspx?Id=", JGSession.LoginUserID);
+                                    else
+                                        strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID;
+
                                 }
                                 else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDateExpired)
                                 {
-                                    strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&Exp=1";
+                                    if (isProfileUpdateRequired)
+                                        strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/ViewApplicantUser.aspx?Id=", JGSession.LoginUserID, "&Exp=1");
+                                    else
+                                        strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&Exp=1";
                                 }
                                 // if user has passed exam and didn't assigned sequence he should be redirect to view applicant page for auto sequence assignment.
                                 else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDate && ds.Tables[0].Rows[0]["AssignedSequence"].ToString() == "0")
                                 {
-                                    Response.Redirect("~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&IE=1");
+                                    // commented by - yogesh kerliya to implement screening popup.
+                                    //Response.Redirect("~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&IE=1");
+
+                                    if (isProfileUpdateRequired)
+                                    {
+                                        strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/ViewApplicantUser.aspx?Id=", JGSession.LoginUserID, "&IE=1");
+                                    }
+                                    else
+                                    {
+                                        strRedirectUrl = String.Concat("~/ViewApplicantUser.aspx?Id=", JGSession.LoginUserID, "&IE=1");
+                                    }
+
+                                    Response.Redirect(strRedirectUrl);
+
                                 }
 
                                 //If user has interview date status it should always see interview instruction with them.
                                 else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDate)
                                 {
-                                    Response.Redirect("~/Sr_App/ITDashboard.aspx?PWT=1");
+                                    // commented by - yogesh kerliya to implement screening popup.
+                                    //Response.Redirect("~/Sr_App/ITDashboard.aspx?PWT=1");
+
+                                    if (isProfileUpdateRequired)
+                                    {
+                                        strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/Sr_App/ITDashboard.aspx?PWT=1");
+                                    }
+                                    else
+                                    {
+                                        strRedirectUrl = "~/Sr_App/ITDashboard.aspx?PWT=1";
+                                    }
+
+                                    Response.Redirect(strRedirectUrl);
+
                                 }
                                 else
                                 {
@@ -883,7 +918,20 @@ namespace JG_Prospect
 
                                     else if (Convert.ToString(JGSession.Designation).Contains("IT") || Convert.ToString(JGSession.Designation).ToLower().Contains("developer"))
                                     {
-                                        strRedirectUrl = "~/Sr_App/ITDashboard.aspx";
+                                        // commented by - yogesh kerliya to implement screening popup.
+                                        //strRedirectUrl = "~/Sr_App/ITDashboard.aspx";
+
+                                        if (isProfileUpdateRequired)
+                                        {
+                                            strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/Sr_App/ITDashboard.aspx");
+                                        }
+                                        else
+                                        {
+                                            strRedirectUrl = "~/Sr_App/ITDashboard.aspx";
+                                        }
+
+                                        Response.Redirect(strRedirectUrl);
+
                                     }
 
                                     else if (Convert.ToString(JGSession.Designation).StartsWith("Installer") && JGSession.IsFirstTime == false)
@@ -906,6 +954,7 @@ namespace JG_Prospect
                                     {
                                         // Response.Redirect("~/Installer/InstallerHome.aspx");//
                                     }
+
                                 }
                                 // redirects user to the last accessed page.
                                 if (!string.IsNullOrEmpty(strRedirectUrl))
@@ -921,7 +970,16 @@ namespace JG_Prospect
                                             strRedirectUrl = HttpUtility.UrlDecode(Request.Url.Query.Replace("?returnurl=", ""));
                                         }
                                     }
-                                    Response.Redirect(strRedirectUrl);
+
+                                    //  Changed by yogesh keraliya to set flow to screening popup.
+                                    String finalRedirectUrl = strRedirectUrl;
+
+
+                                    //    finalRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=", strRedirectUrl.Replace("~", String.Empty)); 
+
+                                    Response.Redirect(finalRedirectUrl);
+
+
                                 }
                                 #endregion
                             }
@@ -1063,11 +1121,18 @@ namespace JG_Prospect
                             }
                             else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.Applicant)
                             {
-                                strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID;
+                                if (isProfileUpdateRequired)
+                                    strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/ViewApplicantUser.aspx?Id=", JGSession.LoginUserID);
+                                else
+                                    strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID;
+
                             }
                             else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDateExpired)
                             {
-                                strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&Exp=1";
+                                if (isProfileUpdateRequired)
+                                    strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/ViewApplicantUser.aspx?Id=", JGSession.LoginUserID, "&Exp=1");
+                                else
+                                    strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&Exp=1";
                             }
                             // if user has passed exam and didn't assigned sequence he should be redirect to view applicant page for auto sequence assignment.
                             else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDate && ds.Tables[0].Rows[0]["AssignedSequence"].ToString() == "0")

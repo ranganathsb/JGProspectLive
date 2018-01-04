@@ -302,7 +302,22 @@ namespace JG_Prospect.App_Code
         /// <param name="strSubject">subject line of email.</param>
         /// <param name="strBody">contect / body of email.</param>
         /// <param name="lstAttachments">any files to be attached to email.</param>
-        public static bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
+        public static bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody,
+            List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null,
+            string[] CC = null, string[] BCC = null)
+        {
+            Thread email = new Thread(delegate ()
+            {
+                SendEmailAsync(strEmailTemplate, strToAddress, strSubject, strBody, lstAttachments, lstAlternateView,CC, BCC);
+            });
+            email.IsBackground = true;
+            email.Start();
+            return true;
+        }
+
+        private static bool SendEmailAsync(string strEmailTemplate, string strToAddress, string strSubject, string strBody,
+            List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null,
+            string[] CC = null, string[] BCC = null)
         {
             Thread email = new Thread(delegate ()
             {
@@ -354,10 +369,21 @@ namespace JG_Prospect.App_Code
                     MailMessage Msg = new MailMessage();
                     Msg.From = new MailAddress(defaultEmailFrom, "JGrove Construction");
                     Msg.To.Add(strToAddress);
-                    Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
+                    //Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
                     Msg.Subject = strSubject;// "JG Prospect Notification";
-                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);                    
+                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);
                     Msg.IsBodyHtml = true;
+
+                    if(CC!=null)
+                        foreach (string email in CC)
+                        {
+                            Msg.CC.Add(email);
+                        }
+                    if (BCC != null)
+                        foreach (string email in BCC)
+                        {
+                            Msg.Bcc.Add(email);
+                        }
 
                     //ds = AdminBLL.Instance.GetEmailTemplate('');
                     //// your remote SMTP server IP.
@@ -413,7 +439,18 @@ namespace JG_Prospect.App_Code
         /// <param name="strToAddress">it will receive email.</param>
         /// <param name="strSubject">subject line of email.</param>
         /// <param name="strBody">contect / body of email.</param>
-        public static void SendEmailInternal(string strToAddress, string strSubject, string strBody)
+        public static void SendEmailInternal(string strToAddress, string strSubject, string strBody, string[] CC = null, string[] BCC = null)
+        {
+            Thread email = new Thread(delegate ()
+            {
+                SendEmailInternalAsync(strToAddress, strSubject, strBody,CC,BCC);
+            });
+            email.IsBackground = true;
+            email.Start();
+        }
+
+        private static void SendEmailInternalAsync(string strToAddress, string strSubject, string strBody,
+             string[] CC = null, string[] BCC = null)
         {
             Thread email = new Thread(delegate ()
             {
@@ -448,7 +485,16 @@ namespace JG_Prospect.App_Code
                 Msg.Subject = strSubject;// "JG Prospect Notification";
                 Msg.Body = strBody;
                 Msg.IsBodyHtml = true;
-
+                if (CC != null)
+                    foreach (string email in CC)
+                    {
+                        Msg.CC.Add(email);
+                    }
+                if (BCC != null)
+                    foreach (string email in BCC)
+                    {
+                        Msg.Bcc.Add(email);
+                    }
                 SmtpClient sc = new SmtpClient(
                                                 ConfigurationManager.AppSettings["smtpHost"].ToString(),
                                                 Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
@@ -1523,7 +1569,6 @@ namespace JG_Prospect.App_Code
             }
 
         }
-
 
         public static string GetTaskLinkTitleForAutoEmail(int taskId)
         {
