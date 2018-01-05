@@ -310,12 +310,12 @@ namespace JG_Prospect.App_Code
             List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null,
             string[] CC = null, string[] BCC = null)
         {
-            Thread email = new Thread(delegate ()
-            {
+            //Thread email = new Thread(delegate ()
+            //{
                 SendEmailAsync(strEmailTemplate, strToAddress, strSubject, strBody, lstAttachments, lstAlternateView, CC, BCC);
-            });
-            email.IsBackground = true;
-            email.Start();
+            //});
+            //email.IsBackground = true;
+            //email.Start();
             return true;
         }
 
@@ -447,12 +447,12 @@ namespace JG_Prospect.App_Code
         /// <param name="strBody">contect / body of email.</param>
         public static void SendEmailInternal(string strToAddress, string strSubject, string strBody, string[] CC = null, string[] BCC = null)
         {
-            Thread email = new Thread(delegate ()
-            {
+            //Thread email = new Thread(delegate ()
+            //{
                 SendEmailInternalAsync(strToAddress, strSubject, strBody, CC, BCC);
-            });
-            email.IsBackground = true;
-            email.Start();
+            //});
+            //email.IsBackground = true;
+            //email.Start();
         }
 
         private static void SendEmailInternalAsync(string strToAddress, string strSubject, string strBody,
