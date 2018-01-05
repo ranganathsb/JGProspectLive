@@ -25,6 +25,10 @@ namespace JG_Prospect.App_Code
 {
     public static class CommonFunction
     {
+        static ReaderWriterLock locker = new ReaderWriterLock();
+        static ReaderWriterLock lockerEmailLogs = new ReaderWriterLock();
+        static ReaderWriterLock lockerErrors = new ReaderWriterLock();
+
         public static String PreConfiguredAdminUserId
         {
             get { return ConfigurationManager.AppSettings["AdminUserId"].ToString(); }
@@ -308,7 +312,7 @@ namespace JG_Prospect.App_Code
         {
             Thread email = new Thread(delegate ()
             {
-                SendEmailAsync(strEmailTemplate, strToAddress, strSubject, strBody, lstAttachments, lstAlternateView,CC, BCC);
+                SendEmailAsync(strEmailTemplate, strToAddress, strSubject, strBody, lstAttachments, lstAlternateView, CC, BCC);
             });
             email.IsBackground = true;
             email.Start();
@@ -363,7 +367,7 @@ namespace JG_Prospect.App_Code
                     Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);
                     Msg.IsBodyHtml = true;
 
-                    if(CC!=null)
+                    if (CC != null)
                         foreach (string email in CC)
                         {
                             Msg.CC.Add(email);
@@ -401,7 +405,20 @@ namespace JG_Prospect.App_Code
                     sc.Credentials = ntw;
                     sc.DeliveryMethod = SmtpDeliveryMethod.Network;
                     sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
+
                     sc.Send(Msg);
+                    //try
+                    //{
+                    //    lockerEmailLogs.AcquireWriterLock(int.MaxValue);
+                    //    using (var tw = new StreamWriter(HostingEnvironment.MapPath("~/EmailStatistics/EmailLogs.txt"), true))
+                    //    {
+                    //        tw.WriteLine(strToAddress + "  - " + DateTime.Now + " - " + strSubject);
+                    //        tw.Close();
+                    //    }
+                    //}finally
+                    //{
+                    //    lockerEmailLogs.ReleaseWriterLock();
+                    //}
                     retValue = true;
 
                     Msg = null;
@@ -410,7 +427,7 @@ namespace JG_Prospect.App_Code
                 }
                 catch (Exception ex)
                 {
-                    CommonFunction.UpdateEmailStatistics(ex.Message);
+                    CommonFunction.LogError(ex.ToString());
 
                     //if (JGApplicationInfo.IsSendEmailExceptionOn())
                     //{
@@ -432,7 +449,7 @@ namespace JG_Prospect.App_Code
         {
             Thread email = new Thread(delegate ()
             {
-                SendEmailInternalAsync(strToAddress, strSubject, strBody,CC,BCC);
+                SendEmailInternalAsync(strToAddress, strSubject, strBody, CC, BCC);
             });
             email.IsBackground = true;
             email.Start();
@@ -1254,11 +1271,46 @@ namespace JG_Prospect.App_Code
                     }
                     catch (Exception ex)
                     {
-
+                        CommonFunction.LogError(ex.ToString());                        
                     }
                 }
             }
 
+        }
+
+        private static void LogError(string error)
+        {
+            try
+            {
+                locker.AcquireWriterLock(int.MaxValue);
+
+                string logDirectoryPath = HostingEnvironment.MapPath(@"~\EmailStatistics");
+                if (!Directory.Exists(logDirectoryPath))
+                {
+                    Directory.CreateDirectory(logDirectoryPath);
+                }
+                string path = String.Concat(logDirectoryPath, "\\errors.txt");
+                if (!File.Exists(path))
+                {
+                    using (TextWriter tw = File.CreateText(path))
+                    {
+                        tw.WriteLine(error + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
+                }
+                else if (File.Exists(path))
+                {
+                    using (var tw = new StreamWriter(path, true))
+                    {
+                        tw.WriteLine(error + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
+                }
+            }
+            finally
+            {
+                lockerErrors.ReleaseWriterLock();
+            }
         }
 
         internal static bool IsProfileUpdateRequired(string LastProfileUpdateDateTime)
@@ -1275,33 +1327,36 @@ namespace JG_Prospect.App_Code
 
         private static void UpdateEmailStatistics(string emailId)
         {
-            string logDirectoryPath = HostingEnvironment.MapPath(@"~\EmailStatistics");
-
-            if (!Directory.Exists(logDirectoryPath))
+            try
             {
-                Directory.CreateDirectory(logDirectoryPath);
-            }
+                locker.AcquireWriterLock(int.MaxValue);
 
-            string path = String.Concat(logDirectoryPath, "\\statistics.txt");
-
-            if (!File.Exists(path))
-            {
-
-                using (TextWriter tw = File.CreateText(path))
+                string logDirectoryPath = HostingEnvironment.MapPath(@"~\EmailStatistics");
+                if (!Directory.Exists(logDirectoryPath))
                 {
-                    tw.WriteLine(emailId + "  - " + DateTime.Now);
-                    tw.Close();
+                    Directory.CreateDirectory(logDirectoryPath);
                 }
-
-
-            }
-            else if (File.Exists(path))
-            {
-                using (var tw = new StreamWriter(path, true))
+                string path = String.Concat(logDirectoryPath, "\\statistics.txt");
+                if (!File.Exists(path))
                 {
-                    tw.WriteLine(emailId + "  - " + DateTime.Now);
-                    tw.Close();
+                    using (TextWriter tw = File.CreateText(path))
+                    {
+                        tw.WriteLine(emailId + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
                 }
+                else if (File.Exists(path))
+                {
+                    using (var tw = new StreamWriter(path, true))
+                    {
+                        tw.WriteLine(emailId + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
+                }
+            }
+            finally
+            {
+                locker.ReleaseWriterLock();
             }
         }
 
