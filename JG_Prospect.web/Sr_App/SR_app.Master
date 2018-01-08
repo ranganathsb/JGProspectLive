@@ -15,6 +15,7 @@
     <link href="../css/screen.css" rel="stylesheet" media="screen" type="text/css" />
     <link href="../css/jquery.ui.theme.css" rel="stylesheet" media="screen" type="text/css" />
     <link rel="stylesheet" type="text/css" href="//twitter.github.com/bootstrap/assets/css/bootstrap.css">
+    <link href="../css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="../js/mention/recommended-styles.css" rel="stylesheet" />
     <%--<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/redmond/jquery-ui.css" />--%>
 
