@@ -102,7 +102,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         $.map(CalendarData, function (r) {
                             events.push({
                                 id: r.TaskId,
-                                title: r.Title.substring(0, 20) + '<span id="shown">...</span><span id="hidden">' + r.Title.substring(20, r.Title.length) + '</span><span id="shown" class="InstallId"> <a target="_blank" href="TaskGenerator.aspx?id=' + r.ParentTaskId + '&hstid=' + r.TaskId + '">' + r.InstallId + '</a></span>'
+                                title: r.Title.substring(0, 20) + '<span id="shown">...</span><span id="hidden">' + r.Title.substring(20, r.Title.length) + '</span><span id="shown" class="InstallId"> <a target="_blank" href="TaskGenerator.aspx?TaskId=' + r.ParentTaskId + '&hstid=' + r.TaskId + '">' + r.InstallId + '</a></span>'
                                 + '&nbsp; <span class="UserInstallId" id="shown"><a target="_blank" href="ViewSalesUser.aspx?id=' + r.UserId + '">' + r.AssignedUsers + '</a></span>',
                                 start: r.StartDate,
                                 end: r.EndDate,
