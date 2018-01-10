@@ -63,7 +63,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             if ('<%=IsSuperUser.ToString().ToLower().Trim()%>' == 'true') {
-                //$.noConflict();
+                $.noConflict();
                 $('#refreshInProgTasks').on('click', function () {                    
                     $('#calendar').fullCalendar('refetchEvents');
                 });
