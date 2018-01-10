@@ -245,7 +245,7 @@ function ShowTaskSequenceDashBoard(DesId, UserId, For) {
 
     //For [true,false]
     sequenceScope.ForInProgress = For;
-
+    sequenceScope.getAssignUsers();
     //For Grid [true,false]
     if (For) {
         //Call Function
