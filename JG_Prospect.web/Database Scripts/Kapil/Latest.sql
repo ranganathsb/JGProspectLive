@@ -57,57 +57,291 @@ END
 END 
 GO
 
-ALTER PROCEDURE [dbo].[usp_GetAllInProAssReqTaskWithSequence]                             
+ALTER PROCEDURE [dbo].[usp_GetAllInProAssReqTaskWithSequence]                                 
+(                                
+                               
+ @PageIndex INT = 0,                                   
+ @PageSize INT = 20,                            
+ @DesignationIds VARCHAR(200) = NULL,                                       
+ @TaskStatus VARCHAR(100) = NULL,      
+ @UserStatus VARCHAR(100) = NULL,          
+ @StartDate datetime = NULL,          
+ @EndDate datetime = NULL,      
+ @UserIds varchar(100) = NULL,    
+ @ForInProgress BIT = 0       
+)                                
+As                                
+BEGIN                                
+                          
+                          
+IF @StartDate=''        
+BEGIN        
+SET @StartDate = (SELECT TOP 1 CreatedOn FROM tblTask ORDER BY TASKID ASC)        
+END        
+        
+IF @EndDate = ''        
+BEGIN        
+ SET @EndDate = (SELECT TOP 1 CreatedOn FROM tblTask ORDER BY TASKID DESC)        
+END        
+        
+IF( @DesignationIds = '' )                          
+BEGIN                          
+                          
+ SET @DesignationIds = NULL                          
+                          
+END      
+IF( @TaskStatus = '' )                          
+BEGIN                          
+                          
+ SET @TaskStatus = NULL                          
+                          
+END      
+IF( @UserStatus = '' )                          
+BEGIN                          
+                          
+ SET @UserStatus = NULL                          
+                          
+END      
+IF( @UserIds = '' )                          
+BEGIN                          
+                          
+ SET @UserIds = NULL                          
+                          
+END       
+                                
+;WITH                                 
+ Tasklist AS                                
+ (                                 
+  SELECT DISTINCT TaskId ,[Status],[SequenceDesignationId],[Sequence], [SubSequence],                              
+  Title,ParentTaskId,IsTechTask,ParentTaskTitle,InstallId as InstallId1,(select * from [GetParent](TaskId)) as MainParentId,  TaskDesignation,                
+  [AdminStatus] , [TechLeadStatus], [OtherUserStatus],[AdminStatusUpdated],[TechLeadStatusUpdated],[OtherUserStatusUpdated],[AdminUserId],[TechLeadUserId],[OtherUserId],                 
+  AdminUserInstallId, AdminUserFirstName, AdminUserLastName,                
+  TechLeadUserInstallId,ITLeadHours,UserHours, TechLeadUserFirstName, TechLeadUserLastName,                
+  OtherUserInstallId, OtherUserFirstName,OtherUserLastName,TaskAssignedUserIDs,CreatedOn,                
+  case                                 
+   when (ParentTaskId is null and  TaskLevel=1) then InstallId                                 
+   when (tasklevel =1 and ParentTaskId>0) then                                 
+    (select installid from tbltask where taskid=x.parenttaskid) +'-'+InstallId                                  
+   when (tasklevel =2 and ParentTaskId>0) then                                
+    (select InstallId from tbltask where taskid in (                                
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))                                
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId                                 
+                                     
+   when (tasklevel =3 and ParentTaskId>0) then                                
+   (select InstallId from tbltask where taskid in (                                
+   (select parenttaskid from tbltask where taskid in (                                
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))))                                
+   +'-'+                                
+    (select InstallId from tbltask where taskid in (                                
+   (select parentTaskId from tbltask where   taskid=x.parenttaskid) ))              
+   +'-'+ (select InstallId from tbltask where   taskid=x.parenttaskid) + '-' +InstallId                                 
+  end as 'InstallId' ,Row_number() OVER (order by x.TaskId ) AS RowNo_Order                                
+  from (                                
+   select DISTINCT a.*                                
+   ,(select Title from tbltask where TaskId=(select * from [GetParent](a.TaskId))) AS ParentTaskTitle,                
+   (SELECT EstimatedHours FROM [dbo].[tblTaskApprovals] WHERE TaskId = a.TaskId AND UserId = a.TechLeadUserId) AS ITLeadHours ,   
+   (SELECT EstimatedHours FROM [dbo].[tblTaskApprovals] WHERE TaskId = a.TaskId AND UserId = a.OtherUserId) AS UserHours,           
+    
+      
+      
+      
+       
+   ta.InstallId AS AdminUserInstallId, ta.FristName AS AdminUserFirstName, ta.LastName AS AdminUserLastName,                
+   tT.InstallId AS TechLeadUserInstallId, tT.FristName AS TechLeadUserFirstName, tT.LastName AS TechLeadUserLastName,                
+   tU.InstallId AS OtherUserInstallId, tU.FristName AS OtherUserFirstName, tU.LastName AS OtherUserLastName,                
+   --,t.FristName + ' ' + t.LastName AS Assigneduser,                              
+   (                              
+   STUFF((SELECT ', {"Name": "' + Designation +'","Id":'+ CONVERT(VARCHAR(5),DesignationID)+'}'                            
+           FROM tblTaskdesignations td                               
+           WHERE td.TaskID = a.TaskId                               
+          FOR XML PATH('')), 1, 2, '')                              
+  )  AS TaskDesignation,            
+  (            
+    STUFF((SELECT ', {"Id" : "'+ CONVERT(VARCHAR(5),UserId) + '"}'                            
+           FROM tbltaskassignedusers as tau            
+           WHERE tau.TaskId = a.TaskId                               
+          FOR XML PATH('')), 1, 2, '')                              
+  ) AS TaskAssignedUserIDs                     
+  --(SELECT TOP 1 DesignationID                             
+  --         FROM tblTaskdesignations td                               
+  --         WHERE td.TaskID = a.TaskId ) AS DesignationId                             
+   from  tbltask a                                
+   --LEFT OUTER JOIN tblTaskdesignations as b ON a.TaskId = b.TaskId                                 
+   --LEFT OUTER JOIN tbltaskassignedusers as c ON a.TaskId = c.TaskId                                
+   LEFT OUTER JOIN tblInstallUsers as ta ON a.[AdminUserId] = ta.Id                 
+   LEFT OUTER JOIN tblInstallUsers as tT ON a.[TechLeadUserId] = tT.Id                 
+   LEFT OUTER JOIN tblInstallUsers as tU ON a.[OtherUserId] = tU.Id             
+   JOIN tbltaskassignedusers as tau ON a.TaskId = tau.TaskId        
+   JOIN tblInstallUsers as iu ON tau.[UserId] = iu.[Id]        
+  -- LEFT OUTER JOIN tbltaskassignedusers as tau ON a.TaskId = tau.TaskId                                
+   WHERE                           
+  (                         
+    (a.[Sequence] IS NOT NULL)                            
+    AND (a.[SequenceDesignationId] IN (SELECT * FROM [dbo].[SplitString](ISNULL(@DesignationIds,a.[SequenceDesignationId]),',') ) )                               
+ AND a.[Status] in (SELECT * FROM [dbo].[SplitString](ISNULL(@TaskStatus,a.[Status]),','))        
+ AND ((a.[Status] in (3,4) AND @ForInProgress=1) OR (a.[Status] in (7,11,12,14) AND @ForInProgress=0))      
+ AND iu.[Status] in( SELECT * FROM [dbo].[SplitString](ISNULL(@UserStatus,iu.[Status]),','))        
+ AND iu.[Id] in ( SELECT * FROM [dbo].[SplitString](ISNULL(@UserIds,iu.[Id]),','))        
+ AND CreatedOn between @StartDate and @EndDate        
+   )                           
+                              
+   --and (CreatedOn >=@startdate and CreatedOn <= @enddate )                                 
+  ) as x                                
+ )                      
+                                
+ ---- get CTE data into temp table                                
+ SELECT *                                
+ INTO #Tasks                                
+ FROM Tasklist                                
+                          
+---- find page number to show taskid sent.                          
+DECLARE @StartIndex INT  = 0                                
+                          
+                                
+--IF @HighLightedTaskID  > 0                         
+-- BEGIN                          
+--  DECLARE @RowNumber BIGINT = NULL                          
+                          
+--  -- Find in which rownumber highlighter taskid is.                          
+--  SELECT @RowNumber = RowNo_Order                           
+--  FROM #Tasks                           
+--  WHERE TaskId = @HighLightedTaskID                          
+                     
+--  -- if row number found then divide it with page size and round it to nearest integer , so will found pagenumber to be selected.                          
+--  -- for ex. if total 60 records are there,pagesize is 20 and highlighted task id is at 42 row number than.                           
+--  -- 42/20 = 2.1 ~ 3 - 1 = 2 = @Page Index                          
+--  -- StartIndex = (2*20)+1 = 41, so records 41 to 60 will be fetched.                          
+                             
+--  IF @RowNumber IS NOT NULL                          
+--  BEGIN                          
+--   SELECT @PageIndex = (CEILING(@RowNumber / CAST(@PageSize AS FLOAT))) - 1                          
+--  END                          
+-- END                            
+                          
+ -- Set start index to fetch record.                          
+ SET @StartIndex = (@PageIndex * @PageSize) + 1                                
+                           
+ ----missing rows bug solution BEGIN: kapil pancholi        
+ --create temp table for Sequences        
+ CREATE TABLE #S (TASKID INT, ROW_ID INT,[SEQUENCE] INT, [Status] INT)        
+         
+ INSERT INTO #S (TASKID,ROW_ID,[SEQUENCE],[Status])         
+ SELECT TASKID, Row_Number() over (order by [Sequence]),[SEQUENCE],[Status] FROM #TASKS WHERE SubSequence IS NULL        
+        
+ update #Tasks set #Tasks.RowNo_Order = #S.ROW_ID        
+ from #Tasks,#S        
+ where #Tasks.TaskId=#S.TASKID        
+        
+ --create temp table for SubSequences        
+ CREATE TABLE #SS (TASKID INT, ROW_ID INT,[SUB_SEQUENCE] INT,[Status] INT)        
+         
+ INSERT INTO #SS (TASKID,ROW_ID,[SUB_SEQUENCE],[Status])         
+ SELECT TASKID, Row_Number() over (order by [SUBSEQUENCE]),[SUBSEQUENCE],[Status] FROM #TASKS WHERE SubSequence IS NOT NULL        
+        
+ update #Tasks set #Tasks.RowNo_Order = #SS.ROW_ID        
+ from #Tasks,#SS        
+ where #Tasks.TaskId=#SS.TASKID        
+ ----missing rows bug solution END: kapil pancholi        
+        
+ -- fetch parent sequence records from temptable                          
+ SELECT *                                 
+ FROM #Tasks                                 
+ WHERE                                 
+ (RowNo_Order >= @StartIndex AND                                 
+ (                                
+  @PageSize = 0 OR                                 
+  RowNo_Order < (@StartIndex + @PageSize)                                
+ ))              
+ AND SubSequence IS NULL              
+-- ORDER BY  [SequenceDesignationId], [Sequence]  DESC                              
+ORDER BY   
+CASE [Status]         
+    WHEN 11 THEN 1       --TestCommit  
+    WHEN 12 THEN 2       --LiveCommit  
+    WHEN 7 THEN 3        --Closed  
+ WHEN 14 THEN 4       --Billed  
+   
+ WHEN 4 THEN 5   --InProgress  
+ WHEN 3 THEN 6   --Request-Assigned  
+    END         
+              
+ -- fetch sub sequence records from temptable                          
+ SELECT *                                 
+ FROM #Tasks                                 
+ WHERE                                 
+ (RowNo_Order >= @StartIndex AND                                 
+ (                                
+  @PageSize = 0 OR                                 
+  RowNo_Order < (@StartIndex + @PageSize)                                
+ ))              
+ AND                       
+ SubSequence IS NOT NULL              
+-- ORDER BY  [SequenceDesignationId], [Sequence]  DESC                                                    
+order by  
+CASE [Status]         
+    WHEN 11 THEN 1       --TestCommit  
+    WHEN 12 THEN 2       --LiveCommit  
+    WHEN 7 THEN 3        --Closed  
+ WHEN 14 THEN 4       --Billed  
+   
+ WHEN 4 THEN 5   --InProgress  
+ WHEN 3 THEN 6   --Request-Assigned  
+    END         
+              
+              
+ --or                      
+ --(                      
+ -- TaskId = @HighLightedTaskID                  
+ --)                                
+ --ORDER BY CASE WHEN (TaskId = @HighLightedTaskID) THEN 0 ELSE 1 END , [Sequence]  DESC                              
+                                
+ -- fetch other statistics, total records, total pages, pageindex to highlighted.                               
+ SELECT                                
+ COUNT(*) AS TotalRecords, CEILING(COUNT(*)/CAST(@PageSize AS FLOAT)) AS TotalPages, @PageIndex AS PageIndex                               
+  FROM #Tasks  WHERE SubSequence IS NULL                         
+  
+  Select sum(convert(float,ITLeadHours)) as TotalITLeadHours, sum(convert(float,UserHours)) as TotalUserHours from #Tasks  
+  WHERE  
+ (RowNo_Order >= @StartIndex AND                                 
+ (                                
+  @PageSize = 0 OR                                 
+  RowNo_Order < (@StartIndex + @PageSize)                                
+ ))              
+    
+  --select * from #Tasks  
+                          
+ DROP TABLE #Tasks                          
+ DROP TABLE #S            
+ DROP TABLE #SS         
+                              
+END   
+  
+GO  
+ALTER PROCEDURE [dbo].[usp_GetAllInProAssReqUserTaskWithSequence]                             
 (                            
                            
- @PageIndex INT = 0,                               
- @PageSize INT = 20,                        
- @DesignationIds VARCHAR(200) = NULL,                                   
- @TaskStatus VARCHAR(100) = NULL,  
- @UserStatus VARCHAR(100) = NULL,      
- @StartDate datetime = NULL,      
- @EndDate datetime = NULL,  
- @UserIds varchar(100) = NULL  
+ @PageIndex INT = 0,                             
+ @PageSize INT =20,                                    
+ @UserId VARCHAR(MAX),                   
+ @IsTechTask BIT = 0,    
+ @ForDashboard BIT = 0,  
+ @ForInProgress BIT = 0,
+ @StartDate datetime = NULL,          
+ @EndDate datetime = NULL                      
 )                            
 As                            
-BEGIN                            
-                      
-                      
-IF @StartDate=''    
-BEGIN    
-SET @StartDate = (SELECT TOP 1 CreatedOn FROM tblTask ORDER BY TASKID ASC)    
-END    
+BEGIN                                            
     
-IF @EndDate = ''    
-BEGIN    
- SET @EndDate = (SELECT TOP 1 CreatedOn FROM tblTask ORDER BY TASKID DESC)    
-END    
-    
-IF( @DesignationIds = '' )                      
-BEGIN                      
-                      
- SET @DesignationIds = NULL                      
-                      
+IF @StartDate=''        
+BEGIN        
+SET @StartDate = (SELECT TOP 1 CreatedOn FROM tblTask ORDER BY TASKID ASC)        
+END        
+        
+IF @EndDate = ''        
+BEGIN        
+ SET @EndDate = (SELECT TOP 1 CreatedOn FROM tblTask ORDER BY TASKID DESC)        
 END  
-IF( @TaskStatus = '' )                      
-BEGIN                      
-                      
- SET @TaskStatus = NULL                      
-                      
-END  
-IF( @UserStatus = '' )                      
-BEGIN                      
-                      
- SET @UserStatus = NULL                      
-                      
-END  
-IF( @UserIds = '' )                      
-BEGIN                      
-                      
- SET @UserIds = NULL                      
-                      
-END   
-                            
+
 ;WITH                             
  Tasklist AS                            
  (                             
@@ -116,7 +350,7 @@ END
   [AdminStatus] , [TechLeadStatus], [OtherUserStatus],[AdminStatusUpdated],[TechLeadStatusUpdated],[OtherUserStatusUpdated],[AdminUserId],[TechLeadUserId],[OtherUserId],             
   AdminUserInstallId, AdminUserFirstName, AdminUserLastName,            
   TechLeadUserInstallId,ITLeadHours,UserHours, TechLeadUserFirstName, TechLeadUserLastName,            
-  OtherUserInstallId, OtherUserFirstName,OtherUserLastName,TaskAssignedUserIDs,CreatedOn,            
+  OtherUserInstallId, OtherUserFirstName,OtherUserLastName,TaskAssignedUserIDs,            
   case                             
    when (ParentTaskId is null and  TaskLevel=1) then InstallId                             
    when (tasklevel =1 and ParentTaskId>0) then                             
@@ -140,8 +374,6 @@ END
    ,(select Title from tbltask where TaskId=(select * from [GetParent](a.TaskId))) AS ParentTaskTitle,            
    (SELECT EstimatedHours FROM [dbo].[tblTaskApprovals] WHERE TaskId = a.TaskId AND UserId = a.TechLeadUserId) AS ITLeadHours , (SELECT EstimatedHours FROM [dbo].[tblTaskApprovals] WHERE TaskId = a.TaskId AND UserId = a.OtherUserId) AS UserHours,         
   
-  
-  
    
    ta.InstallId AS AdminUserInstallId, ta.FristName AS AdminUserFirstName, ta.LastName AS AdminUserLastName,            
    tT.InstallId AS TechLeadUserInstallId, tT.FristName AS TechLeadUserFirstName, tT.LastName AS TechLeadUserLastName,            
@@ -158,7 +390,9 @@ END
            FROM tbltaskassignedusers as tau        
            WHERE tau.TaskId = a.TaskId                           
           FOR XML PATH('')), 1, 2, '')                          
-  ) AS TaskAssignedUserIDs                 
+  ) AS TaskAssignedUserIDs      
+  ,    
+  tau.UserId as AssignedUserId    
   --(SELECT TOP 1 DesignationID                         
   --         FROM tblTaskdesignations td                           
   --         WHERE td.TaskID = a.TaskId ) AS DesignationId                         
@@ -168,20 +402,22 @@ END
    LEFT OUTER JOIN tblInstallUsers as ta ON a.[AdminUserId] = ta.Id             
    LEFT OUTER JOIN tblInstallUsers as tT ON a.[TechLeadUserId] = tT.Id             
    LEFT OUTER JOIN tblInstallUsers as tU ON a.[OtherUserId] = tU.Id         
-   JOIN tbltaskassignedusers as tau ON a.TaskId = tau.TaskId    
-   JOIN tblInstallUsers as iu ON tau.[UserId] = iu.[Id]    
-  -- LEFT OUTER JOIN tbltaskassignedusers as tau ON a.TaskId = tau.TaskId                            
+   JOIN tbltaskassignedusers as tau ON a.TaskId = tau.TaskId                            
    WHERE                       
-  (                     
-    (a.[Sequence] IS NOT NULL)                        
-    AND (a.[SequenceDesignationId] IN (SELECT * FROM [dbo].[SplitString](ISNULL(@DesignationIds,a.[SequenceDesignationId]),',') ) )                           
- AND a.[Status] in (SELECT * FROM [dbo].[SplitString](ISNULL(@TaskStatus,a.[Status]),','))    
- AND a.[Status] not in (7,8,9,10,11,12,14)  
- AND iu.[Status] in( SELECT * FROM [dbo].[SplitString](ISNULL(@UserStatus,iu.[Status]),','))    
- AND iu.[Id] in ( SELECT * FROM [dbo].[SplitString](ISNULL(@UserIds,iu.[Id]),','))    
- AND CreatedOn between @StartDate and @EndDate    
-   )                       
-                          
+  (                       
+    (a.[Sequence] IS NOT NULL)                                     
+    --AND (ISNULL(a.[IsTechTask],@IsTechTask) = @IsTechTask)                      
+ AND (tau.UserId in(select * from [dbo].[SplitString](@UserId,',')))    
+ AND ((a.[Status] in (3,4) AND @ForInProgress=1) OR (a.[Status] in (7,11,12,14) AND @ForInProgress=0))      
+ AND    
+ (    
+  (@ForDashboard=0 AND IsTechTask=@IsTechTask)    
+  OR    
+  (@ForDashboard=1 AND IsTechTask IN(0,1))    
+ )
+ AND CreatedOn between @StartDate and @EndDate  
+    
+   )                                             
    --and (CreatedOn >=@startdate and CreatedOn <= @enddate )                             
   ) as x                            
  )                  
@@ -203,7 +439,7 @@ DECLARE @StartIndex INT  = 0
 --  SELECT @RowNumber = RowNo_Order                       
 --  FROM #Tasks                       
 --  WHERE TaskId = @HighLightedTaskID                      
-                 
+                      
 --  -- if row number found then divide it with page size and round it to nearest integer , so will found pagenumber to be selected.                      
 --  -- for ex. if total 60 records are there,pagesize is 20 and highlighted task id is at 42 row number than.                       
 --  -- 42/20 = 2.1 ~ 3 - 1 = 2 = @Page Index                      
@@ -217,16 +453,15 @@ DECLARE @StartIndex INT  = 0
                       
  -- Set start index to fetch record.                      
  SET @StartIndex = (@PageIndex * @PageSize) + 1                            
-                       
+    
  ----missing rows bug solution BEGIN: kapil pancholi    
  --create temp table for Sequences    
- CREATE TABLE #S (TASKID INT, ROW_ID INT,[SEQUENCE] INT, [Status] INT)    
+ CREATE TABLE #S (TASKID INT, ROW_ID INT,[SEQUENCE] INT,[Status] INT)    
      
  INSERT INTO #S (TASKID,ROW_ID,[SEQUENCE],[Status])     
  SELECT TASKID, Row_Number() over (order by [Sequence]),[SEQUENCE],[Status] FROM #TASKS WHERE SubSequence IS NULL    
     
- update #Tasks set #Tasks.RowNo_Order = #S.ROW_ID    
- from #Tasks,#S    
+ update #Tasks set #Tasks.RowNo_Order = #S.ROW_ID     from #Tasks,#S    
  where #Tasks.TaskId=#S.TASKID    
     
  --create temp table for SubSequences    
@@ -249,15 +484,19 @@ DECLARE @StartIndex INT  = 0
   @PageSize = 0 OR                             
   RowNo_Order < (@StartIndex + @PageSize)                            
  ))          
- AND SubSequence IS NULL          
- ORDER BY  [SequenceDesignationId], [Sequence]  DESC                          
---ORDER BY CASE [Status]     
---    WHEN 4 THEN 1     
---    WHEN 3 THEN 2     
---    WHEN 2 THEN 3     
--- WHEN 1 THEN 4    
--- WHEN 8 THEN 5    
---    END     
+ AND                     
+ SubSequence IS NULL          
+ --ORDER BY  [Sequence]  DESC                          
+ORDER BY   
+CASE [Status]         
+    WHEN 11 THEN 1       --TestCommit  
+    WHEN 12 THEN 2       --LiveCommit  
+    WHEN 7 THEN 3        --Closed  
+ WHEN 14 THEN 4       --Billed  
+   
+ WHEN 4 THEN 5   --InProgress  
+ WHEN 3 THEN 6   --Request-Assigned  
+    END                     
           
  -- fetch sub sequence records from temptable                      
  SELECT *                             
@@ -270,15 +509,17 @@ DECLARE @StartIndex INT  = 0
  ))          
  AND                   
  SubSequence IS NOT NULL          
- ORDER BY  [SequenceDesignationId], [Sequence]  DESC                                                
---ORDER BY CASE [Status]     
---    WHEN 4 THEN 1     
---    WHEN 3 THEN 2     
---    WHEN 2 THEN 3     
--- WHEN 1 THEN 4    
--- WHEN 8 THEN 5    
---    END     
-          
+ --ORDER BY  [Sequence]  DESC                          
+ORDER BY   
+CASE [Status]         
+    WHEN 11 THEN 1       --TestCommit  
+    WHEN 12 THEN 2       --LiveCommit  
+    WHEN 7 THEN 3        --Closed  
+ WHEN 14 THEN 4       --Billed  
+   
+ WHEN 4 THEN 5   --InProgress  
+ WHEN 3 THEN 6   --Request-Assigned  
+    END     
           
  --or                  
  --(                  
@@ -291,13 +532,21 @@ DECLARE @StartIndex INT  = 0
  COUNT(*) AS TotalRecords, CEILING(COUNT(*)/CAST(@PageSize AS FLOAT)) AS TotalPages, @PageIndex AS PageIndex                           
   FROM #Tasks  WHERE SubSequence IS NULL                     
                       
+Select sum(convert(float,ITLeadHours)) as TotalITLeadHours, sum(convert(float,UserHours)) as TotalUserHours from #Tasks  
+  WHERE  
+ (RowNo_Order >= @StartIndex AND                                 
+ (                                
+  @PageSize = 0 OR                                 
+  RowNo_Order < (@StartIndex + @PageSize)                                
+ ))              
+    
  DROP TABLE #Tasks                      
  DROP TABLE #S        
- DROP TABLE #SS     
+ DROP TABLE #SS       
                           
-END   
-GO  
-  
+END     
+GO
+
 ALTER PROCEDURE [dbo].[GetClosedTasks]   
  -- Add the parameters for the stored procedure here  
  --@userid int,  
