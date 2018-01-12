@@ -1404,7 +1404,7 @@ ul.left_nav {
 .tasklist {
     overflow: auto;
     max-height: 165px;
-    margin-left: 220px !important;
+    margin-left: 175px !important;
     width: 75%;
     position: relative;
     z-index: 9;
@@ -2797,4 +2797,5 @@ ul.auto-complete-users {
 
 .designation-container {
     margin-left: 61px;
+    display:none;
 }
