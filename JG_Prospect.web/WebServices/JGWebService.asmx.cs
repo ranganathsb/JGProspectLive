@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System.Web.Script.Services;
 using System.Configuration;
 using System.Web.Script.Serialization;
+using JG_Prospect.Chat.Hubs;
 
 namespace JG_Prospect.WebServices
 {
@@ -1068,7 +1069,7 @@ namespace JG_Prospect.WebServices
                             TaskStatus += value.TrimStart("T".ToCharArray()) + ",";
                         }
                     }
-                    
+
                 }
             }
             TaskStatus = TaskStatus.TrimEnd(",".ToCharArray());
@@ -2176,11 +2177,68 @@ namespace JG_Prospect.WebServices
 
         #endregion
 
-        [WebMethod(EnableSession =true)]
+        [WebMethod(EnableSession = true)]
         public string SetEmployeeType(int id, string type)
         {
             InstallUserBLL.Instance.UpdateEmpType(id, type);
             return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
         }
+
+        #region Chat Section
+        [WebMethod(EnableSession = true)]
+        public string InitiateChat(int userID)
+        {
+            string ChatGroupId = string.Empty;
+            string ChatGroupName = string.Empty;
+            var sender = ChatBLL.Instance.GetChatUser(JGSession.UserId).Object;
+            var receiver = ChatBLL.Instance.GetChatUser(userID).Object;
+            if (receiver != null && receiver.OnlineAt.HasValue)
+            {
+                List<ChatUser> chatUsers = new List<ChatUser>();
+                #region Chat Users
+                chatUsers.Add(new ChatUser // Set Sender
+                {
+                    ConnectionIds = sender.ConnectionIds,
+                    Email = sender.Email,
+                    FirstName = sender.FirstName,
+                    LastName = sender.LastName,
+                    OnlineAt = sender.OnlineAt,
+                    UserId = sender.UserId,
+                    OnlineAtFormatted = sender.OnlineAtFormatted
+                });
+                chatUsers.Add(new ChatUser // Set Receiver
+                {
+                    ConnectionIds = receiver.ConnectionIds,
+                    Email = receiver.Email,
+                    FirstName = receiver.FirstName,
+                    LastName = receiver.LastName,
+                    OnlineAt = receiver.OnlineAt,
+                    UserId = receiver.UserId,
+                    OnlineAtFormatted = receiver.OnlineAtFormatted
+                });
+                #endregion
+                UserChatGroups.ChatGroups = new List<ChatGroup>();
+                ChatGroupId = Guid.NewGuid().ToString();
+                ChatGroupName = string.Join("-", chatUsers.Select(m => m.FirstName).ToList());
+                UserChatGroups.ChatGroups.Add(new ChatGroup
+                {
+                    SenderId = JGSession.UserId,
+                    ChatGroupId = ChatGroupId,
+                    ChatGroupName = ChatGroupName,
+                    ChatUsers = chatUsers,
+                    ChatMessages = new List<ChatMessage>()
+                });
+            }
+            else
+            {
+                // User is offline, send email chat notification
+            }
+            return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+            {
+                Object = ChatGroupId + "`" + ChatGroupName,
+                Status = ActionStatus.Successfull
+            });
+        }
+        #endregion
     }
 }

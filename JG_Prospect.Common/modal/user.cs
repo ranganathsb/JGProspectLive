@@ -254,4 +254,51 @@ namespace JG_Prospect.Common.modal
         public string Email { get; set; }
         public string Phone { get; set; }
     }
+
+    public class ChatUser
+    {
+        public ChatUser()
+        {
+            ConnectionIds = new List<string>();
+        }
+        public int UserId { get; set; }
+        public List<string> ConnectionIds { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public DateTime? OnlineAt { get; set; }
+        public string OnlineAtFormatted { get; set; }
+    }
+
+    public class ChatMessage
+    {
+        public int UserId { get; set; }
+        public string UserInstallId { get; set; }
+        public string UserProfilePic { get; set; }
+        public string UserFullname { get; set; }
+        public string Message { get; set; }
+        public DateTime MessageAt { get; set; }
+        public string MessageAtFormatted { get; set; }
+
+        public int ChatSourceId { get; set; }
+        
+    }
+    public class ChatGroup
+    {
+        public ChatGroup()
+        {
+            ChatUsers = new List<ChatUser>();
+            ChatMessages = new List<ChatMessage>();
+        }
+        public string ChatGroupId { get; set; }
+        public string ChatGroupName { get; set; }
+        public List<ChatUser> ChatUsers { get; set; }
+        public List<ChatMessage> ChatMessages { get; set; }
+        public int SenderId { get; set; }
+    }
+
+    public static class UserChatGroups
+    {
+        public static List<ChatGroup> ChatGroups { get; set; }
+    }
 }

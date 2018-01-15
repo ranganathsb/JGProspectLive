@@ -50,6 +50,14 @@ namespace JG_Prospect.App_Code
             }
         }
 
+        public static int GetUserIdCookie()
+        {
+            HttpCookie auth_cookie = HttpContext.Current.Request.Cookies[Cookies.UserId];
+            if (auth_cookie != null)
+                return Convert.ToInt32(auth_cookie.Value);
+            return 0;
+        }
+
         /// <summary>
         /// Add a GitHub user as Collaborator in repo        
         /// </summary>
@@ -168,6 +176,13 @@ namespace JG_Prospect.App_Code
             return formateddatetime;
         }
 
+        public static void SetUserIdCookie(string UserId)
+        {
+            HttpCookie auth = new HttpCookie(Cookies.UserId, UserId);
+            auth.Expires = DateTime.Now.AddMonths(20);
+            HttpContext.Current.Response.Cookies.Add(auth);
+        }
+
         public static void AuthenticateUser()
         {
             if (!JGSession.IsActive)
@@ -192,6 +207,7 @@ namespace JG_Prospect.App_Code
                             JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
                             JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
                             JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
+                            SetUserIdCookie(ds.Tables[0].Rows[0]["Id"].ToString());
                             if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
                             {
                                 JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
@@ -356,7 +372,7 @@ namespace JG_Prospect.App_Code
                     Msg.To.Add(strToAddress);
                     Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
                     Msg.Subject = strSubject;// "JG Prospect Notification";
-                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);                    
+                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);
                     Msg.IsBodyHtml = true;
 
                     //ds = AdminBLL.Instance.GetEmailTemplate('');

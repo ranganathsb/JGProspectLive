@@ -19,4 +19,10 @@
         CreateSalesUser = 7,
         TaskGenerator = 8
     }
+
+    public enum ChatSource
+    {
+        UserChat = 1,
+        TaskChat = 2
+    }
 }
