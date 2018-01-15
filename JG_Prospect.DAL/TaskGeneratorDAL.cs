@@ -57,7 +57,7 @@ namespace JG_Prospect.DAL
 
         }
 
-        public DataSet GetAllInProAssReqTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, string TaskUserStatus, string UserIds, string StartDate, string EndDate)
+        public DataSet GetAllInProAssReqTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, string TaskUserStatus, string UserIds, string StartDate, string EndDate, bool ForInProgress)
         {
             try
             {
@@ -73,6 +73,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@StartDate", SqlDbType.VarChar, StartDate.Equals("All") ? "" : StartDate);
                     database.AddInParameter(command, "@EndDate", SqlDbType.VarChar, EndDate);
                     database.AddInParameter(command, "@UserIds", SqlDbType.VarChar, UserIds);
+                    database.AddInParameter(command, "@ForInProgress", SqlDbType.Bit, ForInProgress);
                     command.CommandType = CommandType.StoredProcedure;
 
                     DataSet result = database.ExecuteDataSet(command);
@@ -216,7 +217,7 @@ namespace JG_Prospect.DAL
         }
 
 
-        public DataSet GetAllInProAssReqUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId, bool ForDashboard)
+        public DataSet GetAllInProAssReqUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId, bool ForDashboard, string StartDate, string EndDate, bool ForInProgress)
         {
             try
             {
@@ -229,6 +230,9 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@UserId", SqlDbType.VarChar, UserId);
                     database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
                     database.AddInParameter(command, "@ForDashboard", SqlDbType.Bit, ForDashboard);
+                    database.AddInParameter(command, "@ForInProgress", SqlDbType.Bit, ForInProgress);
+                    database.AddInParameter(command, "@StartDate", SqlDbType.VarChar, StartDate.Equals("All") ? "" : StartDate);
+                    database.AddInParameter(command, "@EndDate", SqlDbType.VarChar, EndDate);
                     command.CommandType = CommandType.StoredProcedure;
 
                     DataSet result = database.ExecuteDataSet(command);
@@ -1384,6 +1388,30 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@HighlightTaskId", DbType.Int32, intHighlightTaskId);
 
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        public DataSet GetCalendarTasksByDate(string StartDate, string EndDate, string userid)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("usp_GetCalendarTasksByDate");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@StartDate", DbType.Date, StartDate);
+                    database.AddInParameter(command, "@EndDate", DbType.Date, EndDate);
+                    database.AddInParameter(command, "@userid", DbType.String, userid);
                     returndata = database.ExecuteDataSet(command);
 
                     return returndata;

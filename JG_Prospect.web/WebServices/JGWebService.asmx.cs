@@ -534,6 +534,34 @@ namespace JG_Prospect.WebServices
 
         #endregion
 
+        [WebMethod(EnableSession = true)]
+        public String GetCalendarTasksByDate(string StartDate, string EndDate)
+        {
+            string strMessage = string.Empty;
+            string userid = "";
+            DataSet dtResult = null;
+            if (!CommonFunction.CheckAdminAndItLeadMode())
+            {
+                int UserId = 0;
+                Int32.TryParse(JGSession.LoginUserID, out UserId);
+                userid = UserId.ToString();
+            }
+
+            dtResult = TaskGeneratorBLL.Instance.GetCalendarTasksByDate(StartDate, EndDate, userid);
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                dtResult.DataSetName = "Events";
+                dtResult.Tables[0].TableName = "AllEvents";
+                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
         #region '--Task--'
         [WebMethod(EnableSession = true)]
         public String GetTaskUserFileByFileName(string FileName)
@@ -913,6 +941,15 @@ namespace JG_Prospect.WebServices
                                                     intPageSize,
                                                     intHighlightTaskId
                                                 );
+            //Convert UTC to EST
+            foreach (DataRow row in dtResult.Tables[3].Rows)
+            {
+                if (row["UpdatedOn"] != null && row["UpdatedOn"].ToString() != "")
+                {
+                    row["UpdatedOn"] = string.Format("{0:MM/dd/yyyy hh:mm tt}", Convert.ToDateTime(row["UpdatedOn"]).ToEST());
+                }
+            }
+
             dtResult.Tables[0].Columns.Add("className");
 
             DataTable copyTable = dtResult.Tables[0].Clone();
@@ -982,7 +1019,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID, string UserId, bool ForDashboard, string TaskUserStatus, string StartDate, string EndDate)
+        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID, string UserId, bool ForDashboard, string TaskUserStatus, string StartDate, string EndDate, bool ForInProgress)
         {
             string strMessage = string.Empty;
             DataSet dtResult = null;
@@ -990,18 +1027,18 @@ namespace JG_Prospect.WebServices
                 UserId = "";
 
             //Extract Selected Task & User Status
-            TaskUserStatus = GenerateStatusCodes(TaskUserStatus, false);
+            TaskUserStatus = GenerateStatusCodes(TaskUserStatus, !ForInProgress);
 
             if (ForDashboard)
             {
-                if (!CommonFunction.CheckAdminAndItLeadMode())
+                if (!CommonFunction.CheckAdminAndItLeadMode() && UserId=="")
                 {
                     UserId = JGSession.LoginUserID;
-                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), Session["UserStatus"].Equals(JGConstant.InstallUserStatus.InterviewDate) ? true : false, UserId, false);
+                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), Session["UserStatus"].Equals(JGConstant.InstallUserStatus.InterviewDate) ? true : false, UserId, false, StartDate, EndDate, ForInProgress);
                 }
                 else
                 {
-                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, TaskUserStatus, UserId, StartDate, EndDate);
+                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, TaskUserStatus, UserId, StartDate, EndDate, ForInProgress);
                 }
             }
 
@@ -1018,6 +1055,8 @@ namespace JG_Prospect.WebServices
                 dtResult.Tables[0].TableName = "Tasks";
                 dtResult.Tables[1].TableName = "SubSeqTasks";
                 dtResult.Tables[2].TableName = "RecordCount";
+                if (dtResult.Tables.Count == 4)
+                    dtResult.Tables[3].TableName = "Hours";
 
                 DataColumn[] SeqCols = new DataColumn[] { dtResult.Tables["Tasks"].Columns["Sequence"], dtResult.Tables["Tasks"].Columns["SequenceDesignationId"], dtResult.Tables["Tasks"].Columns["IsTechTask"] };
                 DataColumn[] SubSeqCols = new DataColumn[] { dtResult.Tables["SubSeqTasks"].Columns["Sequence"], dtResult.Tables["SubSeqTasks"].Columns["SequenceDesignationId"], dtResult.Tables["SubSeqTasks"].Columns["IsTechTask"] };
@@ -1030,7 +1069,7 @@ namespace JG_Prospect.WebServices
 
                 System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
                 doc.LoadXml(dtResult.GetXml());
-                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+                strMessage = JsonConvert.SerializeXmlNode(doc);//.Replace("null", "\"\"").Replace("'", "\'");
 
 
                 //strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);

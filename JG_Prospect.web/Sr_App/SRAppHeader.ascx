@@ -46,15 +46,15 @@
     .ProfilImg .caption {
         opacity: 0.6;
         position: absolute;
-        height: 28px;
+        /*height: 28px;*/
         width: 75px;
-        bottom: 0px;
-        padding: 2px 0px;
+        bottom:3px;
+        padding: 1px 0px;
         color: #ffffff;
         background: #1f211f;
         text-align: center;
-        font-weight: bold;
-        left: 2px;
+        font-weight: normal;
+        left: 1px;
     }
 
     /*.ProfilImg:hover .caption {

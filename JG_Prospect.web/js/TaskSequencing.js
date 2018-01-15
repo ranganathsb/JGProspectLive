@@ -204,55 +204,57 @@ function ShowNonFrozenTaskSequenceDashBoard(DesId, UserId) {
 
 }
 
-function ShowTaskSequenceDashBoard(DesId, UserId) {
+function ShowTaskSequenceDashBoard(DesId, UserId, For) {
 
-    //debugger;
-    //var TechTask = false;
-    var DesignationIds = DesId == '0' ? '' : DesId;
+    //Prepare Params for Getting Tasks
 
+    //Set Page Size
+    sequenceScope.pageSize = 20;
+
+    //Designation IDs
+    var DesignationIds = DesId == '0' ? '' : DesId;    
+
+    //User IDs
     sequenceScope.UserId = UserId == '0' ? '' : UserId;
-    //search initially all tasks with sequencing.
-
-    // set designation id to be search by default
-    sequenceScope.SetDesignForSearch(DesignationIds, false);
 
     // Bind Assign user master dropdown for selected designation.
     sequenceScope.getAssignUsers();
 
-    //debugger;
+    sequenceScope.UserSelectedDesigIds = DesignationIds != '' ? DesignationIds.split(",") : '';
 
-    var defaultTabIndex;
+    //User Status(s)
     var UserStatus = $('#ddlUserStatus').length > 0 ? $('#ddlUserStatus').val().join() : ':';
     sequenceScope.UserStatus = UserStatus;
 
-    var StartDate = $('#ContentPlaceHolder1_txtfrmdate').val();
+    //Start Date
+    var StartDate = $('.dateFrom').val();
     if (StartDate != undefined)
         sequenceScope.StartDate = StartDate;
     else
         sequenceScope.StartDate = "";
 
-    var EndDate = $('#ContentPlaceHolder1_txtTodate').val();
+    //End Date
+    var EndDate = $('.dateTo').val();
     if (EndDate != undefined)
         sequenceScope.EndDate = EndDate;
     else
         sequenceScope.EndDate = "";
 
-    if (sequenceScope.IsTechTask == true) {
-        defaultTabIndex = 1;
-        //console.log("calling search tech task after popup initialized....");
-        sequenceScope.IsTechTask = true;
-        sequenceScope.getTechTasks();
-        //sequenceUIGridScope.getUITechTasks();
-        applyTaskSequenceTabs(1);
+    //Task Type [true,false]
+    sequenceScope.IsTechTask = false;
+
+    //For [true,false]
+    sequenceScope.ForInProgress = For;
+    sequenceScope.getAssignUsers();
+    //For Grid [true,false]
+    if (For) {
+        //Call Function
+        sequenceScope.getTasks();
     }
     else {
-        defaultTabIndex = 0;
-        sequenceScope.IsTechTask = false;
-        sequenceScope.getTasks();
-        applyTaskSequenceTabs(0);
+        sequenceScope.getClosedTasks();
     }
-
-    sequenceScope.getAssignUsers();
+    //sequenceScope.getAssignUsers();
 
 }
 
@@ -942,24 +944,24 @@ function EditSeqAssignedTaskUsers(sender) {
     var $sender = $(sender);
     var intTaskID = parseInt($sender.attr('data-taskid'));
     var intTaskStatus = parseInt($sender.attr('data-taskstatus'));
-    var arrAssignedUsers = [];
-    var arrDesignationUsers = [];
+    var arrAssignedUsers = $(sender).val();
+    var arrDesignationUsers = arrAssignedUsers;
     var options = $sender.find('option');
 
-    $.each(options, function (index, item) {
+    //$.each(options, function (index, item) {
 
-        var intUserId = parseInt($(item).attr('value'));
+    //    var intUserId = parseInt($(item).attr('value'));
 
-        if (intUserId > 0) {
-            arrDesignationUsers.push(intUserId);
-            //if ($.inArray(intUserId.toString(), $(sender).val()) != -1) {                
-            //    arrAssignedUsers.push(intUserId);
-            //}
-            if ($(sender).val() == intUserId.toString()) {
-                arrAssignedUsers.push(intUserId);
-            }
-        }
-    });
+    //    if (intUserId > 0) {
+    //        arrDesignationUsers.push(intUserId);
+    //        //if ($.inArray(intUserId.toString(), $(sender).val()) != -1) {                
+    //        //    arrAssignedUsers.push(intUserId);
+    //        //}
+    //        if ($(sender).val() == intUserId.toString()) {
+    //            arrAssignedUsers.push(intUserId);
+    //        }
+    //    }
+    //});
 
     SaveAssignedTaskUsers();
 
