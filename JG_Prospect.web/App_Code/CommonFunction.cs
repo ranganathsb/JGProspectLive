@@ -19,11 +19,16 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Threading;
 using System.Web.Hosting;
+using JG_Prospect.DAL;
 
 namespace JG_Prospect.App_Code
 {
     public static class CommonFunction
     {
+        static ReaderWriterLock locker = new ReaderWriterLock();
+        static ReaderWriterLock lockerEmailLogs = new ReaderWriterLock();
+        static ReaderWriterLock lockerErrors = new ReaderWriterLock();
+
         public static String PreConfiguredAdminUserId
         {
             get { return ConfigurationManager.AppSettings["AdminUserId"].ToString(); }
@@ -47,6 +52,14 @@ namespace JG_Prospect.App_Code
                 //Log exception 
                 Console.WriteLine("{0} Exception caught.", ex);
             }
+        }
+
+        public static int GetUserIdCookie()
+        {
+            HttpCookie auth_cookie = HttpContext.Current.Request.Cookies[Cookies.UserId];
+            if (auth_cookie != null)
+                return Convert.ToInt32(auth_cookie.Value);
+            return 0;
         }
 
         /// <summary>
@@ -167,15 +180,71 @@ namespace JG_Prospect.App_Code
             return formateddatetime;
         }
 
+        public static void SetUserIdCookie(string UserId)
+        {
+            HttpCookie auth = new HttpCookie(Cookies.UserId, UserId);
+            auth.Expires = DateTime.Now.AddMonths(20);
+            HttpContext.Current.Response.Cookies.Add(auth);
+        }
+
         public static void AuthenticateUser()
         {
             if (!JGSession.IsActive)
             {
-                // redirect user to login page, only when session renewal is not requested.
-                string strRenewSessionKey = HttpContext.Current.Request.Params.Cast<string>().FirstOrDefault(s => s.Contains("_hdnRenewSession"));
-                if (string.IsNullOrEmpty(strRenewSessionKey) || HttpContext.Current.Request.Params[strRenewSessionKey] == "0")
+                bool autoLogin = false;
+                #region Login if auth is present in URL
+                string auth = HttpContext.Current.Request.QueryString["auth"];
+                if (!string.IsNullOrEmpty(auth))
                 {
-                    HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery);
+                    string loginId = InstallUserBLL.Instance.ExpireLoginCode(auth).Object;
+                    if (!string.IsNullOrEmpty(loginId))
+                    {
+                        DataSet ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(loginId.Trim());
+                        if (ds.Tables[0].Rows.Count > 0)
+                        {
+                            HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
+
+                            JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
+                            JGSession.LastName = ds.Tables[0].Rows[0]["LastName"].ToString().Trim();
+                            JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
+                            JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
+                            JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
+                            JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
+                            JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
+                            SetUserIdCookie(ds.Tables[0].Rows[0]["Id"].ToString());
+                            if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
+                            {
+                                JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
+                            }
+                            if (ds.Tables[0].Rows[0]["IsFirstTime"] != null && ds.Tables[0].Rows[0]["IsFirstTime"].ToString().ToLower() == "true")
+                            {
+                                JGSession.IsFirstTime = true;
+                            }
+
+                            JGSession.GuIdAtLogin = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                            JGSession.UserLoginId = loginId;
+                            JGSession.UserPassword = "";
+                            string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
+                            if (loginId.Trim() == AdminInstallerId)
+                            {
+                                JGSession.AdminUserId = AdminInstallerId;
+                            }
+
+                            JGSession.UserType = "Installer";
+
+                            autoLogin = true;
+                        }
+                    }
+                }
+                #endregion
+                if (!autoLogin)
+                {
+                    // redirect user to login page, only when session renewal is not requested.
+                    string strRenewSessionKey = HttpContext.Current.Request.Params.Cast<string>().FirstOrDefault(s => s.Contains("_hdnRenewSession"));
+                    if (string.IsNullOrEmpty(strRenewSessionKey) || HttpContext.Current.Request.Params[strRenewSessionKey] == "0")
+                    {
+                        HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery);
+                    }
                 }
             }
         }
@@ -253,13 +322,36 @@ namespace JG_Prospect.App_Code
         /// <param name="strSubject">subject line of email.</param>
         /// <param name="strBody">contect / body of email.</param>
         /// <param name="lstAttachments">any files to be attached to email.</param>
-        public static bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
+        public static bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody,
+            List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null,
+            string[] CC = null, string[] BCC = null)
+        {
+            //Thread email = new Thread(delegate ()
+            //{
+                SendEmailAsync(strEmailTemplate, strToAddress, strSubject, strBody, lstAttachments, lstAlternateView, CC, BCC);
+            //});
+            //email.IsBackground = true;
+            //email.Start();
+            return true;
+        }
+
+        private static bool SendEmailAsync(string strEmailTemplate, string strToAddress, string strSubject, string strBody,
+            List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null,
+            string[] CC = null, string[] BCC = null)
         {
             bool retValue = false;
             if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(strToAddress))
             {
                 try
                 {
+                    #region Check for autologin url
+                    if (strBody.Contains("{AutoLoginCode}"))
+                    {
+                        // Generate auto login code
+                        string loginCode = InstallUserDAL.Instance.GenerateLoginCode(strToAddress).Object;
+                        strBody = strBody.Replace("{AutoLoginCode}", loginCode);
+                    }
+                    #endregion
                     /* Sample HTML Template
                      * *****************************************************************************
                      * Hi #lblFName#,
@@ -286,10 +378,21 @@ namespace JG_Prospect.App_Code
                     MailMessage Msg = new MailMessage();
                     Msg.From = new MailAddress(defaultEmailFrom, "JGrove Construction");
                     Msg.To.Add(strToAddress);
-                    Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
+                    //Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
                     Msg.Subject = strSubject;// "JG Prospect Notification";
                     Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);
                     Msg.IsBodyHtml = true;
+
+                    if (CC != null)
+                        foreach (string email in CC)
+                        {
+                            Msg.CC.Add(email);
+                        }
+                    if (BCC != null)
+                        foreach (string email in BCC)
+                        {
+                            Msg.Bcc.Add(email);
+                        }
 
                     //ds = AdminBLL.Instance.GetEmailTemplate('');
                     //// your remote SMTP server IP.
@@ -318,7 +421,20 @@ namespace JG_Prospect.App_Code
                     sc.Credentials = ntw;
                     sc.DeliveryMethod = SmtpDeliveryMethod.Network;
                     sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
+
                     sc.Send(Msg);
+                    //try
+                    //{
+                    //    lockerEmailLogs.AcquireWriterLock(int.MaxValue);
+                    //    using (var tw = new StreamWriter(HostingEnvironment.MapPath("~/EmailStatistics/EmailLogs.txt"), true))
+                    //    {
+                    //        tw.WriteLine(strToAddress + "  - " + DateTime.Now + " - " + strSubject);
+                    //        tw.Close();
+                    //    }
+                    //}finally
+                    //{
+                    //    lockerEmailLogs.ReleaseWriterLock();
+                    //}
                     retValue = true;
 
                     Msg = null;
@@ -327,7 +443,7 @@ namespace JG_Prospect.App_Code
                 }
                 catch (Exception ex)
                 {
-                    CommonFunction.UpdateEmailStatistics(ex.Message);
+                    CommonFunction.LogError(ex.ToString());
 
                     //if (JGApplicationInfo.IsSendEmailExceptionOn())
                     //{
@@ -345,10 +461,29 @@ namespace JG_Prospect.App_Code
         /// <param name="strToAddress">it will receive email.</param>
         /// <param name="strSubject">subject line of email.</param>
         /// <param name="strBody">contect / body of email.</param>
-        public static void SendEmailInternal(string strToAddress, string strSubject, string strBody)
+        public static void SendEmailInternal(string strToAddress, string strSubject, string strBody, string[] CC = null, string[] BCC = null)
+        {
+            //Thread email = new Thread(delegate ()
+            //{
+                SendEmailInternalAsync(strToAddress, strSubject, strBody, CC, BCC);
+            //});
+            //email.IsBackground = true;
+            //email.Start();
+        }
+
+        private static void SendEmailInternalAsync(string strToAddress, string strSubject, string strBody,
+             string[] CC = null, string[] BCC = null)
         {
             try
             {
+                #region Check for autologin url
+                if (strBody.Contains("{AutoLoginCode}"))
+                {
+                    // Generate auto login code
+                    string loginCode = InstallUserDAL.Instance.GenerateLoginCode(strToAddress).Object;
+                    strBody = strBody.Replace("{AutoLoginCode}", loginCode);
+                }
+                #endregion
                 string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
                 string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
 
@@ -362,7 +497,16 @@ namespace JG_Prospect.App_Code
                 Msg.Subject = strSubject;// "JG Prospect Notification";
                 Msg.Body = strBody;
                 Msg.IsBodyHtml = true;
-
+                if (CC != null)
+                    foreach (string email in CC)
+                    {
+                        Msg.CC.Add(email);
+                    }
+                if (BCC != null)
+                    foreach (string email in BCC)
+                    {
+                        Msg.Bcc.Add(email);
+                    }
                 SmtpClient sc = new SmtpClient(
                                                 ConfigurationManager.AppSettings["smtpHost"].ToString(),
                                                 Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
@@ -1143,11 +1287,46 @@ namespace JG_Prospect.App_Code
                     }
                     catch (Exception ex)
                     {
-
+                        CommonFunction.LogError(ex.ToString());                        
                     }
                 }
             }
 
+        }
+
+        private static void LogError(string error)
+        {
+            try
+            {
+                locker.AcquireWriterLock(int.MaxValue);
+
+                string logDirectoryPath = HostingEnvironment.MapPath(@"~\EmailStatistics");
+                if (!Directory.Exists(logDirectoryPath))
+                {
+                    Directory.CreateDirectory(logDirectoryPath);
+                }
+                string path = String.Concat(logDirectoryPath, "\\errors.txt");
+                if (!File.Exists(path))
+                {
+                    using (TextWriter tw = File.CreateText(path))
+                    {
+                        tw.WriteLine(error + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
+                }
+                else if (File.Exists(path))
+                {
+                    using (var tw = new StreamWriter(path, true))
+                    {
+                        tw.WriteLine(error + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
+                }
+            }
+            finally
+            {
+                lockerErrors.ReleaseWriterLock();
+            }
         }
 
         internal static bool IsProfileUpdateRequired(string LastProfileUpdateDateTime)
@@ -1164,33 +1343,36 @@ namespace JG_Prospect.App_Code
 
         private static void UpdateEmailStatistics(string emailId)
         {
-            string logDirectoryPath = HostingEnvironment.MapPath(@"~\EmailStatistics");
-
-            if (!Directory.Exists(logDirectoryPath))
+            try
             {
-                Directory.CreateDirectory(logDirectoryPath);
-            }
+                locker.AcquireWriterLock(int.MaxValue);
 
-            string path = String.Concat(logDirectoryPath, "\\statistics.txt");
-
-            if (!File.Exists(path))
-            {
-
-                using (TextWriter tw = File.CreateText(path))
+                string logDirectoryPath = HostingEnvironment.MapPath(@"~\EmailStatistics");
+                if (!Directory.Exists(logDirectoryPath))
                 {
-                    tw.WriteLine(emailId + "  - " + DateTime.Now);
-                    tw.Close();
+                    Directory.CreateDirectory(logDirectoryPath);
                 }
-
-
-            }
-            else if (File.Exists(path))
-            {
-                using (var tw = new StreamWriter(path, true))
+                string path = String.Concat(logDirectoryPath, "\\statistics.txt");
+                if (!File.Exists(path))
                 {
-                    tw.WriteLine(emailId + "  - " + DateTime.Now);
-                    tw.Close();
+                    using (TextWriter tw = File.CreateText(path))
+                    {
+                        tw.WriteLine(emailId + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
                 }
+                else if (File.Exists(path))
+                {
+                    using (var tw = new StreamWriter(path, true))
+                    {
+                        tw.WriteLine(emailId + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
+                }
+            }
+            finally
+            {
+                locker.ReleaseWriterLock();
             }
         }
 
@@ -1449,7 +1631,7 @@ namespace JG_Prospect.App_Code
             }
 
         }
-        
+
         public static string GetTaskLinkTitleForAutoEmail(int taskId)
         {
 

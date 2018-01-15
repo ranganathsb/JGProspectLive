@@ -1401,7 +1401,7 @@ namespace JG_Prospect
             // display text in notes" User successfully passed aptitude test"
             string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
             int userID = Convert.ToInt32(JGSession.LoginUserID);
-            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, userID, strUserInstallId, DateTime.UtcNow, "User successfully passed aptitude test", "");
+            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, userID, strUserInstallId, DateTime.UtcNow, "User successfully passed aptitude test", "", (int)TouchPointSource.ViewApplicantUser);
         }
 
         private string GetViewSalesUserAlertPopup()
@@ -5109,7 +5109,7 @@ namespace JG_Prospect
             //  User successfully accepted tech task
             string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
             int userID = Convert.ToInt32(JGSession.LoginUserID);
-            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, userID, strUserInstallId, DateTime.UtcNow, " User successfully accepted tech task", "");
+            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, userID, strUserInstallId, DateTime.UtcNow, " User successfully accepted tech task", "", (int)TouchPointSource.ViewApplicantUser);
 
             ScriptManager.RegisterStartupScript(this, this.Page.GetType(), "SuccessfulRedirect", "TaskAcceptSuccessRedirect('" + hypTaskLink.HRef + "');", true);
 
@@ -6722,7 +6722,8 @@ namespace JG_Prospect
                     , strUserInstallId
                     , DateTime.Now
                     , strValueToAdd
-                    , UserGuid);
+                    , UserGuid
+                    , (int)TouchPointSource.ViewApplicantUser);
 
                 BindTouchPointLog();
             }

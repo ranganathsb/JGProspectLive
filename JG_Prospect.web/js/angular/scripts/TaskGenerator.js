@@ -119,7 +119,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
             var NextInstallId = result.Table4.LastSubTaskInstallId;
             $('#ContentPlaceHolder1_objucSubTasks_Admin_txtTaskListID').val(NextInstallId);
             HideAjaxLoader();
-            //PreventScroll = 0;
+            //PreventScroll = 0;            
         });
     }
 
@@ -153,7 +153,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
     };
 
     $scope.onAssignEnd = function (object) {
-        $('.chosen-input').trigger('chosen:updated');
+        //$('.chosen-input').trigger('chosen:updated');
 
         //Set Assigned Users
         SetChosenAssignedUsers();
@@ -164,6 +164,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
     }
 
     $scope.onEnd = function (obj) {
+        
         var ParentIds = [];
         //Initialize Chosens
         $('.chosen-input').chosen();
@@ -245,12 +246,13 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         }, 1);
 
         $timeout(function () {
-
+            $('.chosen-input').trigger('chosen:updated');
             callWebServiceMethod($http, "GetMultilevelChildren", { ParentTaskId: ParentIds.join() }).then(function (data) {
                 var result = JSON.parse(data.data.d);
                 $scope.MultiLevelChildren = $scope.correctDataforAngular(result.ChildrenData.Children);
 
                 $timeout(function () {
+
                     //Add Blink Class
                     var ChildId = getUrlVars()["mcid"];
                     var hstid = getUrlVars()["hstid"];
@@ -377,7 +379,6 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
                 }, 1);
             });
-
             //----------- start DP -----
             GridDropZone();
                 //----------- end DP -----
@@ -467,6 +468,8 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                 });
             });
         }
+
+        //GridDropZone();
     };
 
     //Helper Functions

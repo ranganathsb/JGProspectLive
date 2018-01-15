@@ -26,7 +26,6 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
     $scope.Tasks = [];
     $scope.ClosedTask = [];
-    $scope.dish = [];
     $scope.ParentTaskDesignations = [];
     $scope.DesignationAssignUsers = [];
     $scope.DesignationAssignUsersModel = [{ FristName: "Select", Id: 0, Status: "", CssClass: "" }];
@@ -43,7 +42,13 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
     $scope.pageFrom = "0";
     $scope.pageTo = "0";
     $scope.pageOf = "0";
+    $scope.pageFromCT = "0";
+    $scope.pageToCT = "0";
+    $scope.pageOfCT = "0";
+    $scope.TotalHoursITLead = 0;
+    $scope.TotalHoursUsers = 0;
     $scope.SeqSubsets = [];
+    $scope.ForInProgress = true;
 
 
     $scope.loader = {
@@ -55,9 +60,14 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
     };
 
     $scope.page = 0;
+    $scope.pageSize = 5;
     $scope.pagesCount = 0;
     $scope.Currentpage = 0;
     $scope.TotalRecords = 0;
+    $scope.pageCT = 0;
+    $scope.pagesCountCT = 0;
+    $scope.CurrentpageCT = 0;
+    $scope.TotalRecordsCT = 0;
     $scope.HighLightTaskId = 0;
     $scope.BlinkTaskId = 0;
 
@@ -92,7 +102,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         $.map(CalendarData, function (r) {
                             events.push({
                                 id: r.TaskId,
-                                title: r.Title.substring(0, 20) + '<span id="shown">...</span><span id="hidden">' + r.Title.substring(20, r.Title.length) + '</span><span id="shown" class="InstallId"> <a target="_blank" href="TaskGenerator.aspx?id=' + r.ParentTaskId + '&hstid=' + r.TaskId + '">' + r.InstallId + '</a></span>'
+                                title: r.Title.substring(0, 20) + '<span id="shown">...</span><span id="hidden">' + r.Title.substring(20, r.Title.length) + '</span><span id="shown" class="InstallId"> <a target="_blank" href="TaskGenerator.aspx?TaskId=' + r.ParentTaskId + '&hstid=' + r.TaskId + '">' + r.InstallId + '</a></span>'
                                 + '&nbsp; <span class="UserInstallId" id="shown"><a target="_blank" href="ViewSalesUser.aspx?id=' + r.UserId + '">' + r.AssignedUsers + '</a></span>',
                                 start: r.StartDate,
                                 end: r.EndDate,
@@ -170,7 +180,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
             });         
 
              //Build Hyperlinks ddcbSeqAssignedStaff
-            $('#tblStaffSeq .chosen-container .search-choice').each(function (i, obj) {
+            $('#taskSequence .chosen-container .search-choice').each(function (i, obj) {
                 var itemIndex = $(this).children('.search-choice-close').attr('data-option-array-index');
                 if (itemIndex) {
                     //console.log($(this).parent('.chosen-choices').parent('.chosen-container'));
@@ -179,8 +189,10 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
                     var text = chspan.text();
                     var name = text.split(' - ')[0]+ ' - ';
                     var code = text.split(' - ')[1];
+                    var className = $(selectoptionid)[itemIndex].classList[0];
+                    name = '<span class="' + className + '">' + name + '</span>';
                     if (chspan && code != undefined) {
-                        chspan.html(name+ '<a style="color:blue;" href="/Sr_App/ViewSalesUser.aspx?id=' + $(selectoptionid)[itemIndex].value + '">' + code + '</a>');
+                        chspan.html(name + '<a style="color:blue;" href="/Sr_App/ViewSalesUser.aspx?id=' + $(selectoptionid)[itemIndex].value + '">' + code + '</a>');
                         chspan.bind("click", "a", function () {
                             window.open($(this).children("a").attr("href"), "_blank", "", false);
                         });
@@ -235,7 +247,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
 
     $scope.getTasks = function (page) {
-
+        $scope.ForInProgress = true;
         if (sequenceScope.UserStatus == undefined)
             sequenceScope.UserStatus = 0;
         if (sequenceScope.StartDate == undefined)
@@ -244,16 +256,17 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
             sequenceScope.EndDate = "";
 
         //if (!$scope.IsTechTask) {
-        console.log("Url: " + url);
-        console.log("Staff Task called....");
+        //console.log("Url: " + url);
+        console.log("Fetching Top Grid Tasks....");
         $scope.loader.loading = true;
         $scope.page = page || 0;
 
         // make it blank so TechTask grid don't bind.
         $scope.TechTasks = [];
+
         //debugger;
         //get all Customers
-        getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard, TaskUserStatus: $scope.UserStatus, StartDate: $scope.StartDate, EndDate: $scope.EndDate }).then(function (data) {
+        getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.page, pageSize: $scope.pageSize, DesignationIDs: $scope.UserSelectedDesigIds!=''?$scope.UserSelectedDesigIds.join():'', IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard, TaskUserStatus: $scope.UserStatus, StartDate: $scope.StartDate, EndDate: $scope.EndDate, ForInProgress: $scope.ForInProgress }).then(function (data) {
             //console.log(data);
             //debugger;
             $scope.loader.loading = false;
@@ -266,6 +279,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
             $scope.TotalRecords = results.RecordCount.TotalRecords;
             $scope.pagesCount = results.RecordCount.TotalPages;
             $scope.Tasks = $scope.correctDataforAngular(results.Tasks);
+
             if ($scope.Tasks != null)
                 $scope.TaskSelected = $scope.Tasks[0];
 
@@ -285,12 +299,10 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
                 $('#noDataIA').fadeIn(1000);
             }
         });
-        //}
-
     };
 
-    $scope.getTechTasks = function (page) {
-
+    $scope.getClosedTasks = function (page) {
+        $scope.ForInProgress = false;
         if (sequenceScope.UserStatus == undefined)
             sequenceScope.UserStatus = 0;
         if (sequenceScope.StartDate == undefined)
@@ -298,35 +310,50 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
         if (sequenceScope.EndDate == undefined)
             sequenceScope.EndDate = "";
 
-        if ($scope.IsTechTask) {
-            //console.log("Tech Task called....");
-            $scope.loader.loading = true;
-            $scope.Techpage = page || 0
+        console.log("Fetching Bottom Grid Tasks....");
+        $scope.loaderClosedTask.loading = true;
+        $scope.pageCT = page || 0;
 
-            // make it blank so StaffTask grid don't bind.
-            $scope.Tasks = [];
+        // make it blank so TechTask grid don't bind.
+        $scope.TechTasks = [];
 
+        //debugger;
+        //get all Customers
+        getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.pageCT, pageSize: $scope.pageSize, DesignationIDs: $scope.UserSelectedDesigIds != '' ? $scope.UserSelectedDesigIds.join() : '', IsTechTask: false, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard, TaskUserStatus: $scope.UserStatus, StartDate: $scope.StartDate, EndDate: $scope.EndDate, ForInProgress: $scope.ForInProgress }).then(function (data) {
+            //console.log(data);
+            //debugger;
+            $scope.loaderClosedTask.loading = false;
+            $scope.IsTechTask = false;
+            $scope.DesignationSelectModel = [];
+            var resultArray = JSON.parse(data.data.d);
+            var results = resultArray.TasksData;
+            //console.log(results);
+            $scope.pageCT = results.RecordCount.PageIndex;
+            $scope.TotalRecordsCT = results.RecordCount.TotalRecords;
+            $scope.pagesCountCT = results.RecordCount.TotalPages;
+            $scope.TotalHoursITLead = results.Hours.TotalITLeadHours;
+            $scope.TotalHoursUsers = results.Hours.TotalUserHours;
+            $scope.ClosedTask = $scope.correctDataforAngular(results.Tasks);
 
-            //get all Customers
-            getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.Techpage, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds.join(), IsTechTask: true, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard, UserStatus: $scope.UserStatus, StartDate: $scope.StartDate, EndDate: $scope.EndDate }).then(function (data) {
-                $scope.loader.loading = false;
-                $scope.IsTechTask = true;
-                $scope.DesignationSelectModel = [];
-                var resultArray = JSON.parse(data.data.d);
-                var results = resultArray.TasksData;
-                //console.log("type of tasks is");
-                //console.log(typeof results.Tasks);
-                //console.log(results.Tasks);
-                $scope.Techpage = results.RecordCount.PageIndex;
-                $scope.TechTotalRecords = results.RecordCount.TotalRecords;
-                $scope.TechpagesCount = results.RecordCount.TotalPages;
-                $scope.TechTasks = $scope.correctDataforAngular(results.Tasks);
-                //console.log($scope.TechTasks);
-                //$scope.TaskSelected = $scope.TechTasks[0];
+            if ($scope.ClosedTask != null)
+                $scope.TaskSelected = $scope.ClosedTask[0];
 
-            });
-
-        }
+            if ($scope.TotalRecordsCT > 0) {
+                $('#noDataCT').hide();
+                $scope.pageFromCT = ($scope.pageCT * $scope.pageSize) + 1;
+                if ($scope.TotalRecordsCT <= $scope.pageSize) {
+                    $scope.pageToCT = $scope.TotalRecordsCT;
+                }
+                else {
+                    $scope.pageToCT = ($scope.pageCT + 1) * $scope.pageSize;
+                }
+                $scope.pageOfCT = $scope.TotalRecordsCT;
+            }
+            else {
+                $scope.pageFromCT = $scope.pageOfCT = $scope.pageToCT = 0;
+                $('#noDataCT').fadeIn(1000);
+            }
+        });
     };
 
     $scope.toRoman = function (num) {
@@ -388,7 +415,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
     $scope.getAssignUsers = function () {
         //debugger;
 
-        getDesignationAssignUsers($http, "GetAssignUsers", { TaskDesignations: $scope.UserSelectedDesigIds.join() }).then(function (data) {
+        getDesignationAssignUsers($http, "GetAssignUsers", { TaskDesignations: $scope.UserSelectedDesigIds != '' ? $scope.UserSelectedDesigIds.join() : '' }).then(function (data) {
 
             var AssignedUsers = JSON.parse(data.data.d);
 
@@ -461,6 +488,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
         }
         else {
             $scope.getTasks();
+            $scope.getClosedTasks();
         }
     };
 

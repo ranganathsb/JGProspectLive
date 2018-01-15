@@ -32,7 +32,7 @@ var EditActionType = {
 //====== End Enums & Constants =====
 
 $(document).ready(function () {
-    
+
 });
 
 
@@ -546,12 +546,24 @@ function pad(number, length) {
 }
 
 function TimeZoneOffset() {
-    var offset = new Date().getTimezoneOffset();
-    offset = ((offset < 0 ? '+' : '-') + pad(parseInt(Math.abs(offset / 60)), 2) + ":" + pad(Math.abs(offset % 60), 2));
-    return offset;
+    return new Date().getTimezoneOffset();
 }
 
-
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 
 
 
@@ -625,22 +637,23 @@ function sendEmail(sender, contents, uid) {
     }
 }
 
-function addNote(sender, uid, note) {
-    if (note != '') {
-        $('.search-label').html('Please Wait...');
-        ajaxExt({
-            url: '/Sr_App/edituser.aspx/AddNotes',
-            type: 'POST',
-            data: '{ id: ' + uid + ', note: "' + note + '" }',
-            showThrobber: true,
-            throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
-            success: function (data, msg) {
-                $('#txtSearchUser').val('');
-                $('.search-label').html('Note Sent.');
-            }
-        });
-    }
-}
+//function addNote(sender, uid, note) {
+//    if (note != '') {
+//        $('.search-label').html('Please Wait...');
+//        ajaxExt({
+//            url: '/Sr_App/edituser.aspx/AddNotes',
+//            type: 'POST',
+//            data: '{ id: ' + uid + ', note: "' + note + '" }',
+//            showThrobber: true,
+//            throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+//            success: function (data, msg) {
+//                $('#txtSearchUser').val('');
+//                $('.search-label').html('Note Sent.');
+//            }
+//        });
+//    }
+//}
+
 function setUserData(sender, data, id) {
     uid = id;
     $('#txtSearchUser').val(data);

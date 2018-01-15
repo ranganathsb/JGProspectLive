@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System.Web.Script.Services;
 using System.Configuration;
 using System.Web.Script.Serialization;
+using JG_Prospect.Chat.Hubs;
 
 namespace JG_Prospect.WebServices
 {
@@ -1018,7 +1019,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID, string UserId, bool ForDashboard, string TaskUserStatus, string StartDate, string EndDate)
+        public String GetAllTasksWithPaging(int? page, int? pageSize, String DesignationIDs, bool IsTechTask, Int64 HighlightedTaskID, string UserId, bool ForDashboard, string TaskUserStatus, string StartDate, string EndDate, bool ForInProgress)
         {
             string strMessage = string.Empty;
             DataSet dtResult = null;
@@ -1026,18 +1027,18 @@ namespace JG_Prospect.WebServices
                 UserId = "";
 
             //Extract Selected Task & User Status
-            TaskUserStatus = GenerateStatusCodes(TaskUserStatus, false);
+            TaskUserStatus = GenerateStatusCodes(TaskUserStatus, !ForInProgress);
 
             if (ForDashboard)
             {
-                if (!CommonFunction.CheckAdminAndItLeadMode())
+                if (!CommonFunction.CheckAdminAndItLeadMode() && UserId=="")
                 {
                     UserId = JGSession.LoginUserID;
-                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), Session["UserStatus"].Equals(JGConstant.InstallUserStatus.InterviewDate) ? true : false, UserId, false);
+                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), Session["UserStatus"].Equals(JGConstant.InstallUserStatus.InterviewDate) ? true : false, UserId, false, StartDate, EndDate, ForInProgress);
                 }
                 else
                 {
-                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, TaskUserStatus, UserId, StartDate, EndDate);
+                    dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), DesignationIDs, TaskUserStatus, UserId, StartDate, EndDate, ForInProgress);
                 }
             }
 
@@ -1054,6 +1055,8 @@ namespace JG_Prospect.WebServices
                 dtResult.Tables[0].TableName = "Tasks";
                 dtResult.Tables[1].TableName = "SubSeqTasks";
                 dtResult.Tables[2].TableName = "RecordCount";
+                if (dtResult.Tables.Count == 4)
+                    dtResult.Tables[3].TableName = "Hours";
 
                 DataColumn[] SeqCols = new DataColumn[] { dtResult.Tables["Tasks"].Columns["Sequence"], dtResult.Tables["Tasks"].Columns["SequenceDesignationId"], dtResult.Tables["Tasks"].Columns["IsTechTask"] };
                 DataColumn[] SubSeqCols = new DataColumn[] { dtResult.Tables["SubSeqTasks"].Columns["Sequence"], dtResult.Tables["SubSeqTasks"].Columns["SequenceDesignationId"], dtResult.Tables["SubSeqTasks"].Columns["IsTechTask"] };
@@ -1066,7 +1069,7 @@ namespace JG_Prospect.WebServices
 
                 System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
                 doc.LoadXml(dtResult.GetXml());
-                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+                strMessage = JsonConvert.SerializeXmlNode(doc);//.Replace("null", "\"\"").Replace("'", "\'");
 
 
                 //strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
@@ -1105,7 +1108,7 @@ namespace JG_Prospect.WebServices
                             TaskStatus += value.TrimStart("T".ToCharArray()) + ",";
                         }
                     }
-                    
+
                 }
             }
             TaskStatus = TaskStatus.TrimEnd(",".ToCharArray());
@@ -1969,46 +1972,6 @@ namespace JG_Prospect.WebServices
             return strMessage;
         }
 
-        [WebMethod(EnableSession = true)]
-        public string QuickSaveInstallUsers(String FirstName, String NameMiddleInitial, String LastName, String Email, String Phone, String Zip, String DesignationText, Int32 DesignationId,
-                                            String  Status, String SourceText, String EmpType, String StartDate, String SalaryReq,
-                                            String SourceUserId, Int32 PositionAppliedForDesignationId, Int32 SourceID, Int32 AddedByUserId, 
-                                            Boolean IsEmailContactPreference, Boolean IsCallContactPreference, Boolean IsTextContactPreference, Boolean IsMailContactPreference)
-        {
-            user objInstallUser = new user();
-
-            objInstallUser.fristname = FirstName;
-            objInstallUser.NameMiddleInitial = NameMiddleInitial;
-            objInstallUser.lastname = LastName;
-            objInstallUser.email = Email;
-            objInstallUser.phone = Phone;
-            objInstallUser.zip = Zip;
-            objInstallUser.designation = DesignationText;
-            objInstallUser.DesignationID = DesignationId;
-            objInstallUser.status = Status;
-            objInstallUser.Source = SourceText;
-            objInstallUser.EmpType = EmpType;
-            objInstallUser.StartDate = StartDate;
-            objInstallUser.SalaryReq = SalaryReq;
-            objInstallUser.SourceUser = SourceUserId;
-            objInstallUser.PositionAppliedFor = PositionAppliedForDesignationId.ToString();
-            objInstallUser.SourceId = SourceID;
-            objInstallUser.AddedBy = AddedByUserId;
-            objInstallUser.IsEmailContactPreference = IsEmailContactPreference;
-            objInstallUser.IsCallContactPreference = IsCallContactPreference;
-            objInstallUser.IsTextContactPreference = IsTextContactPreference;
-            objInstallUser.IsMailContactPreference = IsMailContactPreference;
-
-
-            Int32 Id = InstallUserBLL.Instance.QuickSaveInstallUser(objInstallUser);
-
-            //update user install id.
-            InstallUserBLL.Instance.SetUserDisplayID(Id, DesignationId.ToString(), "YES");
-
-
-            return Id.ToString();
-        }
-
         #region "-- Private Methods --"
         private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, int DesignitionId, string HireDate, string EmpType, string PayRates, HTMLTemplates objHTMLTemplateType, List<Attachment> Attachments = null, string strManager = "")
         {
@@ -2253,11 +2216,68 @@ namespace JG_Prospect.WebServices
 
         #endregion
 
-        [WebMethod(EnableSession =true)]
+        [WebMethod(EnableSession = true)]
         public string SetEmployeeType(int id, string type)
         {
             InstallUserBLL.Instance.UpdateEmpType(id, type);
             return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
         }
+
+        #region Chat Section
+        [WebMethod(EnableSession = true)]
+        public string InitiateChat(int userID)
+        {
+            string ChatGroupId = string.Empty;
+            string ChatGroupName = string.Empty;
+            var sender = ChatBLL.Instance.GetChatUser(JGSession.UserId).Object;
+            var receiver = ChatBLL.Instance.GetChatUser(userID).Object;
+            if (receiver != null && receiver.OnlineAt.HasValue)
+            {
+                List<ChatUser> chatUsers = new List<ChatUser>();
+                #region Chat Users
+                chatUsers.Add(new ChatUser // Set Sender
+                {
+                    ConnectionIds = sender.ConnectionIds,
+                    Email = sender.Email,
+                    FirstName = sender.FirstName,
+                    LastName = sender.LastName,
+                    OnlineAt = sender.OnlineAt,
+                    UserId = sender.UserId,
+                    OnlineAtFormatted = sender.OnlineAtFormatted
+                });
+                chatUsers.Add(new ChatUser // Set Receiver
+                {
+                    ConnectionIds = receiver.ConnectionIds,
+                    Email = receiver.Email,
+                    FirstName = receiver.FirstName,
+                    LastName = receiver.LastName,
+                    OnlineAt = receiver.OnlineAt,
+                    UserId = receiver.UserId,
+                    OnlineAtFormatted = receiver.OnlineAtFormatted
+                });
+                #endregion
+                UserChatGroups.ChatGroups = new List<ChatGroup>();
+                ChatGroupId = Guid.NewGuid().ToString();
+                ChatGroupName = string.Join("-", chatUsers.Select(m => m.FirstName).ToList());
+                UserChatGroups.ChatGroups.Add(new ChatGroup
+                {
+                    SenderId = JGSession.UserId,
+                    ChatGroupId = ChatGroupId,
+                    ChatGroupName = ChatGroupName,
+                    ChatUsers = chatUsers,
+                    ChatMessages = new List<ChatMessage>()
+                });
+            }
+            else
+            {
+                // User is offline, send email chat notification
+            }
+            return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+            {
+                Object = ChatGroupId + "`" + ChatGroupName,
+                Status = ActionStatus.Successfull
+            });
+        }
+        #endregion
     }
 }

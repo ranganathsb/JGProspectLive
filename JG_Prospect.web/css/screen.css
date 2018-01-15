@@ -545,13 +545,19 @@ form.inline {
 /*------------------------------------------------------------------
 [6. User Panel]
 */
-.search-box{width: 100px;
+.search-box {
+    width: 100px;
     padding: 2px;
-    border-radius: 3px;}
-.ProfilImg{width: 80px;position:relative;
-    float: left;}
+    border-radius: 3px;
+}
+
+.ProfilImg {
+    width: 80px;
+    position: relative;
+    float: left;
+}
 .user_panel {
-    height: 49px;
+    height: 95px;
     background: url(../img/user-panel-bg.png) repeat-x;
     position: absolute;
     right: 0;
@@ -587,24 +593,24 @@ form.inline {
 
     .user_panel ul {
         list-style-type: none;
-    margin: 10px 0 0;
-    padding: 0;
-    float: left;
-    font-size: 12px;
-    width: 258px;
+        margin: 10px 0 0 0;
+        padding: 0;
+        float: left;
+        font-size: 12px;
     }
 
         .user_panel ul li {
             float: left;
             margin: 0 0 0 2px;
             padding: 0;
-            position:relative;
         }
-        .user_panel .badge{    position: absolute;
-    right: -12px;
-    top: -12px;
-    padding: 2px;
-}
+
+    .user_panel .badge {
+        position: absolute;
+        right: -12px;
+        top: -12px;
+        padding: 2px;
+    }
 
 /*------------------------------------------------------------------
 [7. Nav]
@@ -2026,15 +2032,18 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
     max-width: 100px;
     height: inherit;
 }
+
 .nestedChildren img {
     max-width: 100px;
     height: inherit;
 }
+
 .nestedChildren p {
     margin: 0px;
 }
+
 .nestedChildren a {
-    color:blue !important;
+    color: blue !important;
 }
 
 .divtdetails p {
@@ -2090,6 +2099,13 @@ li.activeUser {
 }
 
 li.IOUser {
+    color: blue !important;
+}
+span.activeUser {
+    color: red !important;
+}
+
+span.IOUser {
     color: blue !important;
 }
 
@@ -2427,7 +2443,7 @@ p.mcqQuestion {
 }
 
 .seq-tasktitle {
-        word-wrap: break-word;
+    word-wrap: break-word;
     width: 24%;
 }
 
@@ -2471,8 +2487,8 @@ input[type='checkbox']:checked.largecheckbox {
 .gridtbl thead th {
     background-color: #000;
 }
- /* The Modal (background) */
- .modal{
+/* The Modal (background) */
+.modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -2546,7 +2562,11 @@ input[type='checkbox']:checked.largecheckbox {
     background-color: #fff;
     color: white;
 }
-.modal-header h2 {margin-left: 0px !important}
+
+    .modal-header h2 {
+        margin-left: 0px !important
+    }
+
 .modal-body {
     padding: 2px 16px;
 }
@@ -2557,6 +2577,7 @@ input[type='checkbox']:checked.largecheckbox {
     color: white;
     text-align: right;
 }
+
 .mui-btn--primary.mui-btn--flat {
     color: #2196F3;
     background-color: transparent;
@@ -2635,9 +2656,10 @@ button, input, optgroup, select, textarea {
     line-height: 1.15;
     margin: 0;
 }
-.modal-icons img{
-    height:32px;
-    width:32px;
+
+.modal-icons img {
+    height: 32px;
+    width: 32px;
 }
 
 .modal-body input {
@@ -2648,6 +2670,7 @@ button, input, optgroup, select, textarea {
     border-top-width: 0px;
     font-size: 20px;
 }
+
 ul.auto-complete-users {
     width: 400px;
     list-style: none;
@@ -2675,12 +2698,13 @@ ul.auto-complete-users {
     max-height: 400px;
     /* min-height: 100px; */
     margin: 10px 0;
-    max-height:150px;
-    overflow-y:auto;
+    max-height: 150px;
+    overflow-y: auto;
     /* -webkit-border-radius: 12px; */
     -moz-border-radius: 8px;
     border-radius: 8px;
 }
+
 ul.auto-complete-users {
     width: 400px;
     list-style: none;
@@ -2695,14 +2719,25 @@ ul.auto-complete-users {
     top: 180px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
+
 .auto-complete-users li {
     margin: 0;
     padding: 0;
-    display: inline-block;width: 100%;
+    display: inline-block;
+    width: 100%;
 }
-.auto-complete-users li div{padding: 5px;
-    width: 100%;}
-.auto-complete-users li:hover{cursor:pointer;background:#007506;color:#fff;}
+
+    .auto-complete-users li div {
+        padding: 5px;
+        width: 100%;
+    }
+
+    .auto-complete-users li:hover {
+        cursor: pointer;
+        background: #007506;
+        color: #fff;
+    }
+
 .employeeinstruction a {
     color: blue !important;
 }
@@ -2712,12 +2747,14 @@ ul.auto-complete-users {
     border-width: 1px;
     border-color: gainsboro;
     padding: 4px;
-    max-width:200px !important;
+    max-width: 200px !important;
 }
-.multileveledittext img{
-    max-height:100px;
-    max-width:100px;
+
+.multileveledittext img {
+    max-height: 100px;
+    max-width: 100px;
 }
+
 .popover__content li {
     list-style: none;
 }
@@ -2733,7 +2770,7 @@ ul.auto-complete-users {
     line-height: 2;
 }
 
-    /*.popover__content:before {
+/*.popover__content:before {
         position: absolute;
         z-index: -1;
         content: '';
@@ -2757,4 +2794,90 @@ ul.auto-complete-users {
 .popover__message {
     text-align: center;
 }
-.designation-container{    margin-left: 61px;}
+.designation-container{margin-left: 61px;}
+
+.header-msg:hover{height: 159px;}
+.header-msg {
+    width: 340px;
+    position: absolute;
+    top: 100px;
+    right: 0;
+    background: #fff;
+    z-index:1;
+    border: 1px solid #666;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    -webkit-transition: height 1s ease;
+    -moz-transition: height 1s ease;
+    -o-transition: height 1s ease;
+    transition: height 1s ease;
+    height:40px;
+}
+.header-msg .row {
+    display: inline-block;
+    width: 100%;    border-bottom: 2px solid #ccc;
+}.header-msg .row .user-image img {
+    width: 45px;
+    height: 45px;
+}.header-msg .row .user-image {
+    float: left;
+    width: 45px;    position: relative;
+    margin-right: 5px;
+}.header-msg .row .user-image .status-icon {
+    position: absolute;
+    height: 10px;
+    width: 10px;
+    background: green;
+    top: 2px;
+    right: 2px;
+    border-radius: 5px;
+}.header-msg .row .user-image .installid {
+    position: absolute;
+    bottom: 3px;
+    background: #ddd;
+    font-size: 7px;
+    text-align: center;
+    width: 100%;
+}.header-msg .row .contents {
+        display: inline-block;
+    width: 197px;
+    padding: 2px 0;position:relative;height: 40px;border-right: 2px solid #ccc;float:left;
+}.header-msg .row .contents .top{width:100%;float: left;}
+ .header-msg .row .contents .top .name{
+    float: left;
+    width: 135px;
+    padding: 2px 0;color: #000;
+    font-weight: bold;
+}
+ .header-msg .row .contents .top .time{
+    float: right;
+    width:50px;
+    padding: 2px 0;color: #666;
+}.header-msg .row .contents .msg-container{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+}
+.header-msg .row .contents .msg-container .tick {    float: left;
+}
+.header-msg .row .contents .msg-container .msg {float: left;
+    width: 160px;
+    text-overflow: ellipsis;
+    white-space: nowrap;    color: #666;
+    overflow: hidden;
+}
+.header-msg .row .contents .msg-container .counter {float: left;display:none;}
+.header-msg .row .caller{float: left;margin-left:3px;
+    /*font-size: 12px;
+    width: 88px;*/}
+.header-msg .row .caller div{float: left;font-size: 26px;}
+.header-msg .row .caller .phone{margin-right: 2px;color: #e55456;}
+.header-msg .row .caller .email{margin-right: 2px;color: #000;}
+.header-msg .row .caller .video{color:#e55456;}
+.chat-container {position: fixed;bottom: 0;right: 0;z-index: 1;}
+.chat-container iframe {height: 300px;width: 1000px;}
+
+.designation-container {
+    margin-left: 61px;
+    display:none;
+}
