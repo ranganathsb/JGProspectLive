@@ -4555,35 +4555,35 @@ namespace JG_Prospect
             }
         }
 
-        private void fullTouchPointLog(string strValueToAdd, int id)
-        {
-            string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
-            int userID = Convert.ToInt32(JGSession.LoginUserID);
-            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, strValueToAdd, "", (int)TouchPointSource.EditUserPage);
-        }
-        public void LabelSet()
-        {
-            if (grdUsers.PageCount == 0)
-            {
-                lblTo.Text = string.Empty;
-                lblFrom.Text = string.Empty;
-                Label5.Visible = false;
-                lblof.Visible = false;
-                lblCount.Visible = false;
-            }
-            else
-            {
-                int currentPage = grdUsers.PageIndex + 1;
-                int selValue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
-                int last = selValue * currentPage;
-                int first = (last - selValue) + 1;
-                lblTo.Text = last.ToString();
-                lblFrom.Text = first.ToString();
-                Label5.Visible = true;
-                lblof.Visible = true;
-                lblCount.Visible = true;
-            }
-        }
+        //private void fullTouchPointLog(string strValueToAdd, int id)
+        //{
+        //    string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
+        //    int userID = Convert.ToInt32(JGSession.LoginUserID);
+        //    InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, strValueToAdd, "", (int)TouchPointSource.EditUserPage);
+        //}
+        //public void LabelSet()
+        //{
+        //    if (grdUsers.PageCount == 0)
+        //    {
+        //        lblTo.Text = string.Empty;
+        //        lblFrom.Text = string.Empty;
+        //        Label5.Visible = false;
+        //        lblof.Visible = false;
+        //        lblCount.Visible = false;
+        //    }
+        //    else
+        //    {
+        //        int currentPage = grdUsers.PageIndex + 1;
+        //        int selValue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
+        //        int last = selValue * currentPage;
+        //        int first = (last - selValue) + 1;
+        //        lblTo.Text = last.ToString();
+        //        lblFrom.Text = first.ToString();
+        //        Label5.Visible = true;
+        //        lblof.Visible = true;
+        //        lblCount.Visible = true;
+        //    }
+        //}
 
         #region 'Assigned Task ToUser'
 

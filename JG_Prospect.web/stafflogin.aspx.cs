@@ -2,6 +2,7 @@
 using ASPSnippets.GoogleAPI;
 using ASPSnippets.TwitterAPI;
 using DotNetOpenAuth.AspNet.Clients;
+using JG_Prospect.App_Code;
 using JG_Prospect.BLL;
 using JG_Prospect.Common;
 using JG_Prospect.Common.Logger;
@@ -1112,6 +1113,7 @@ namespace JG_Prospect
                             JGSession.UserType = "Installer";
 
                             RememberMe();
+                            bool isProfileUpdateRequired = CommonFunction.IsProfileUpdateRequired(ds.Tables[0].Rows[0]["LastProfileUpdated"].ToString());
                             // Check for Touch Point Log Url
                             if (!string.IsNullOrEmpty(Request.QueryString["returnurl"]) && Request.QueryString["returnurl"].ToLower().Contains("touchpointlog.aspx"))
                             {
