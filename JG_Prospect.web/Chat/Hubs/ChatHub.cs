@@ -33,17 +33,19 @@ namespace JG_Prospect.Chat.Hubs
             ChatMessage chatMessage = new ChatMessage
             {
                 Message = message,
-                ChatSourceId= chatSourceId,
+                ChatSourceId = chatSourceId,
                 UserId = UserId,
                 UserProfilePic = pic,
                 UserFullname = sender["FristName"].ToString() + " " + sender["Lastname"].ToString(),
-                UserInstallId= sender["UserInstallID"].ToString(),
+                UserInstallId = sender["UserInstallID"].ToString(),
                 MessageAt = DateTime.UtcNow.ToEST(),
                 MessageAtFormatted = DateTime.UtcNow.ToEST().ToString()
             };
             // Finding correct chat group in which message suppose to be posted.
-            ChatGroup chatGroup = UserChatGroups.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
+            ChatGroup chatGroup = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
             // Adding chat message into chatGroup
+            // Remove old Messages from list and newly one.
+            chatGroup.ChatMessages.RemoveRange(0, chatGroup.ChatMessages.Count()); // May require to comment in future.
             chatGroup.ChatMessages.Add(chatMessage);
 
             // Checking in database to fetch all connectionIds of browser of this chat group
@@ -98,17 +100,29 @@ namespace JG_Prospect.Chat.Hubs
             //});
         }
 
-        //public void UserAcvititySend(string UserSessionViewString)
-        //{
-        //    var context = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
-        //    // Call the updateUserActivity method to update clients.
-        //    var view =
-        //    context.Clients.All.updateUserActivity(new ActionOutput
-        //    {
-        //        Status = ActionStatus.Successfull,
-        //        Results = new List<string> { UserSessionViewString }
-        //    });
-        //}
+        public void CloseChat(string chatGroupId)
+        {
+            int UserId = App_Code.CommonFunction.GetUserIdCookie();
+            // Finding correct chat group in which message suppose to be posted.
+            ChatGroup chatGroup = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
+            chatGroup.ChatUsers.Where(m => m.UserId == UserId).FirstOrDefault().ChatClosed = true;
+            if (chatGroup.ChatUsers.Where(m => m.ChatClosed).Count() == chatGroup.ChatUsers.Count())
+            {
+                // Remove group from list because all users has closed the chat.
+                SingletonUserChatGroups.Instance.ChatGroups.Remove(chatGroup);
+                Clients.Group(chatGroupId).closeChatCallback(new ActionOutput<bool>
+                {
+                    Status = ActionStatus.Successfull,
+                    Object = true
+                });
+            }
+            Clients.Group(chatGroupId).closeChatCallback(new ActionOutput<bool>
+            {
+                Status = ActionStatus.Successfull,
+                Object = false,
+                Message= chatGroupId
+            });
+        }
 
         public override System.Threading.Tasks.Task OnConnected()
         {

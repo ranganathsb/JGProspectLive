@@ -81,6 +81,7 @@ width: 30px;
 position: absolute;
 left: 0;
 top: 0;
+font-size: 4px;
 }
 
 .chat-box .chats .chat-row.receiver .profile span {
@@ -117,7 +118,7 @@ width: 100%;
 }
 
 .chat-box .chat-text input[type=text] {
-width: 80%;
+width: 99%;
 }
 
 .chat-box .chat-text input[type=button] {
@@ -127,6 +128,7 @@ padding: 1px;
 
 .chat-box .chats .chat-row .message .tick, .chat-box .chats .chat-row .message .time, .chat-box .chats .chat-row .message .est {
 display: inline-block;
+font-size:10px;
 }
 
 .tick img {
@@ -141,12 +143,19 @@ color: #A33E3F;
 .all-chats .header .minimize {
     color: #fff;
     font-size: inherit;
-    float: right;
-}.all-chats .header .close {
+    float: right;cursor: pointer;
+}
+.all-chats .header .minimize:hover {
+    background: #666;
+}
+.all-chats .header .close {
     color: #fff;
     font-size: inherit;
     float: right;    position: relative;
     top: 0;
     right: 0;
 }
+.all-chats .header .close:hover {
+    background: #666;
+} 
 .all-chats .header .group-name{}

@@ -63,7 +63,7 @@ namespace JG_Prospect.Common.modal
         public int SecondoryTradeId;
         public string Notes;
         public string Source;
-        public int    SourceId;
+        public int SourceId;
         public string Reason;
         public string GeneralLiability;
         public string PqLicense;
@@ -213,7 +213,7 @@ namespace JG_Prospect.Common.modal
         public string city;
         public string zip;
         public string firstname;
-        public string lastname;        
+        public string lastname;
         public int PrimeryTradeId;
         public int SecondoryTradeId;
         public string Source;
@@ -268,6 +268,8 @@ namespace JG_Prospect.Common.modal
         public string Email { get; set; }
         public DateTime? OnlineAt { get; set; }
         public string OnlineAtFormatted { get; set; }
+
+        public bool ChatClosed { get; set; }
     }
 
     public class ChatMessage
@@ -281,7 +283,7 @@ namespace JG_Prospect.Common.modal
         public string MessageAtFormatted { get; set; }
 
         public int ChatSourceId { get; set; }
-        
+
     }
     public class ChatGroup
     {
@@ -297,8 +299,43 @@ namespace JG_Prospect.Common.modal
         public int SenderId { get; set; }
     }
 
-    public static class UserChatGroups
+    //public static class UserChatGroups
+    //{
+    //    static UserChatGroups()
+    //    {
+    //        ChatGroups = new List<ChatGroup>();
+    //    }
+    //    public static List<ChatGroup> ChatGroups { get; set; }
+    //}
+
+    public sealed class SingletonUserChatGroups
     {
-        public static List<ChatGroup> ChatGroups { get; set; }
+        SingletonUserChatGroups()
+        {
+            ChatGroups = new List<ChatGroup>();
+        }
+
+        private static readonly object padlock = new object();
+        private static SingletonUserChatGroups instance = null;
+        public List<ChatGroup> ChatGroups { get; set; }
+        public static SingletonUserChatGroups Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (padlock)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new SingletonUserChatGroups();
+                        }
+                    }
+                }
+                return instance;
+            }
+        }
     }
+
+
 }

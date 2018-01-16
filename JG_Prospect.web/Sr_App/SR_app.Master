@@ -30,7 +30,7 @@
     <script src="../Scripts/jquery-2.2.4.min.js"></script>
 
     <script type="text/javascript" src="../js/jquery.watermarkinput.js"></script>
-    <script src="//code.jquery.com/ui/1.10.1/jquery-ui.js" type="text/javascript"></script>
+    <script src="../js/jquery-ui.js"></script>
 
     <script type="text/javascript" src="../js/ddaccordion.js"></script>
 
@@ -650,7 +650,7 @@
         });
     </script>--%>
     <%--<iframe src="../Chat/initialize.html" style="display:none;"></iframe>--%>
-    
+
     <div class="chat-container" id="chat-container">
         <%--<iframe src="../Chat/chatwindow.html"></iframe>--%>
         <div class="all-chats"></div>
@@ -659,75 +659,95 @@
     <script src="/Scripts/jquery.signalR-2.2.2.min.js"></script>
     <script src="/signalr/hubs"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            // Reference the auto-generated proxy for the hub.
-            var chat = $.connection.chatHub;
-            // Start the connection.
-            $.connection.hub.start().done(function () {
-                console.log('started...')
+        // $(document).ready(function () {
+        // Reference the auto-generated proxy for the hub.
+        var chat = $.connection.chatHub;
 
-                $('#sendChat').click(function () {
-                    chat.server.sendChatMessage($('#ChatGroupId').val(), $('#chattext').val(),'<%=(int)JG_Prospect.Common.ChatSource.UserChat %>');
-                    $('#chattext').val('');
-                });
-                $(document).on('keyup', '#chattext', function (ev) {
-                    if (ev.which === 13) {
-                        chat.server.sendChatMessage($('#ChatGroupId').val(), $('#chattext').val(),'<%=(int)JG_Prospect.Common.ChatSource.UserChat %>');
-                        $('#chattext').val('');
-                    }
-                });
-            }).fail(function (reason) {
-                debugger;
-                console.log(reason);
-            });
+        sendChat = function (e, sender) {
+            var charCode = (typeof e.which === "number") ? e.which : e.keyCode;
+            if (charCode === 13) {
+                console.log($(sender).parents('.chat-box').html());
+                var chatGrpId = $(sender).parents('.chat-box').find('#ChatGroupId').val();
+                var chatText = $(sender).val();
+                chat.server.sendChatMessage(chatGrpId, chatText, '<%=(int)JG_Prospect.Common.ChatSource.UserChat %>');
+                $(sender).val('');
+            }
+        }
+        minimize = function (sender) {
+            if ($(sender).parents('.chat-box').find('.chats').is(':visible')) {
+                $(sender).parents('.chat-box').find('.chats').hide();
+                $(sender).parents('.chat-box').find('.chat-text').hide();
+            } else {
+                $(sender).parents('.chat-box').find('.chats').show();
+                $(sender).parents('.chat-box').find('.chat-text').show();
+            }
+        }
+        closechat = function (sender) {            
+            chat.server.closeChat($(sender).parents('.chat-box').attr('id'));
+            $(sender).parents('.chat-box').remove();
+        }
+        // Start the connection.
+        $.connection.hub.start().done(function () {
+            console.log('started...')
 
-            //Callback function which the hub will call when it has finished processing,
-            // is attached to the proxy
-            chat.client.updateClient = function (data) {
-                var id = data.Message.split('`')[0];
-                var name = data.Message.split('`')[1];
-                var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
-                                            '<div class="header"><span class="group-name">' + name +
-                                                '</span><span class="close"><i class="fa fa-times" aria-hidden="true"></i></span>' +
-                                                '<span class="minimize"><i class="fa fa-minus" aria-hidden="true"></i></span></div>' +
-                                            '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
-                                            '<div class="chats"></div>' +
-                                            '<div class="chat-text">' +
-                                                '<input type="text" id="chattext" />' +
-                                                '<input type="button" value="Send" id="sendChat" />' +
-                                            '</div>' +
-                                       '</div>';
-                if ($('.all-chats').find('#' + id).length <= 0) {
-                    $('.all-chats').append(strChat);
-                }
 
-                // Add the message to the page.
-                // Identify sender/receiver
-                var loggedInUserId = getCookie('<%=JG_Prospect.Common.Cookies.UserId%>');
-                var senderReceiver = loggedInUserId == data.Object.UserId ? 'sender' : 'receiver';
-                var str = '<div class="chat-row ' + senderReceiver + '"><div class="profile">' +
-                                '<img src="' + data.Object.UserProfilePic + '" title="' + data.Object.UserFullname + '" />' +
-                                '<div class="status-icon"></div><div class="installid">' +
-                                    '<a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Object.UserId + '">' + data.Object.UserInstallId + '</a></div>' +
-                            '</div>' +
-                            '<div class="message"><div class="msg">' + data.Object.Message + '</div>' +
-                            '<div class="time-container"><div class="tick">' +
-                                '<img src="../img/grey-tick.png" /> </div>' +
-                                '<div class="time">' + data.Object.MessageAtFormatted + '</div>' +
-                                '<div class="est">(EST)</div> </div>' +
-                            '</div></div>';
-                $('.chat-box .chats').append(str);
-                //$('.chat-box .chats').scrollTop(d.prop("scrollHeight"));
-                $('.chat-box .chats').animate({ scrollTop: $('.chat-box .chats').prop("scrollHeight") }, 500);
-                // Show Chat Container
-                //window.parent.document.getElementById('chat-container').style.display = 'block';
-                //$('.chat-box').find('#ChatGroupId').val(data.Message);
-            };
-            chat.client.receiveMessage = function (data) {
-                // Add the message to the page.
-
-            };
+        }).fail(function (reason) {
+            debugger;
+            console.log(reason);
         });
+
+        //Callback function which the hub will call when it has finished processing,
+        // is attached to the proxy
+        chat.client.updateClient = function (data) {
+            var id = data.Message.split('`')[0];
+            var name = data.Message.split('`')[1];
+            var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
+                                        '<div class="header"><span class="group-name">' + name +
+                                            '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
+                                            '<span class="minimize" onclick="minimize(this)"><i class="fa fa-minus" aria-hidden="true"></i></span></div>' +
+                                        '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
+                                        '<div class="chats"></div>' +
+                                        '<div class="chat-text">' +
+                                            '<input type="text" id="chattext" onkeyup="sendChat(event, this);" />' +
+                                            //'<input type="button" value="Send" id="sendChat" />' +
+                                        '</div>' +
+                                   '</div>';
+            if ($('.all-chats').find('#' + id).length <= 0) {
+                $('.all-chats').append(strChat);
+            }
+
+            // Add the message to the page.
+            // Identify sender/receiver
+            var loggedInUserId = getCookie('<%=JG_Prospect.Common.Cookies.UserId%>');
+            var senderReceiver = loggedInUserId == data.Object.UserId ? 'sender' : 'receiver';
+            var str = '<div class="chat-row ' + senderReceiver + '"><div class="profile">' +
+                            '<img src="' + data.Object.UserProfilePic + '" title="' + data.Object.UserFullname + '" />' +
+                            '<div class="status-icon"></div><div class="installid">' +
+                                '<a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Object.UserId + '">' + data.Object.UserInstallId + '</a></div>' +
+                        '</div>' +
+                        '<div class="message"><div class="msg">' + data.Object.Message + '</div>' +
+                        '<div class="time-container"><div class="tick">' +
+                            '<img src="../img/grey-tick.png" /> </div>' +
+                            '<div class="time">' + data.Object.MessageAtFormatted + '</div>' +
+                            '<div class="est">(EST)</div> </div>' +
+                        '</div></div>';
+            $('.chat-box#' + id + ' .chats').append(str);
+            //$('.chat-box .chats').scrollTop(d.prop("scrollHeight"));
+            $('.chat-box#' + id + ' .chats').animate({ scrollTop: $('.chat-box#' + id + ' .chats').prop("scrollHeight") }, 500);
+            // Show Chat Container
+            //window.parent.document.getElementById('chat-container').style.display = 'block';
+            //$('.chat-box').find('#ChatGroupId').val(data.Message);
+        };
+        chat.client.receiveMessage = function (data) {
+            // Add the message to the page.
+
+        };
+        chat.client.closeChatCallback = function (data) {
+            if (data.Object) {
+                $('.chat-box#' + data.Message).remove();
+            }
+        };
+        // });
     </script>
 </body>
 
