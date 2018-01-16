@@ -603,6 +603,7 @@ form.inline {
             float: left;
             margin: 0 0 0 2px;
             padding: 0;
+            position:relative;
         }
 
     .user_panel .badge {
@@ -2840,7 +2841,7 @@ ul.auto-complete-users {
     width: 100%;
 }.header-msg .row .contents {
         display: inline-block;
-    width: 197px;
+    width: 197px;border-radius: 0px;
     padding: 2px 0;position:relative;height: 40px;border-right: 2px solid #ccc;float:left;
 }.header-msg .row .contents .top{width:100%;float: left;}
  .header-msg .row .contents .top .name{
