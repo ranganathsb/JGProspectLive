@@ -195,7 +195,7 @@ namespace JG_Prospect.DAL
                         user = new ChatUser
                         {
                             UserId = UserId,
-                            FirstName = usr["FirstName"].ToString(),
+                            FirstName = usr["FristName"].ToString(),
                             LastName = usr["LastName"].ToString(),
                             Email = usr["Email"].ToString(),
                             OnlineAt = null,

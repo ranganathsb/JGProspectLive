@@ -1031,7 +1031,7 @@ namespace JG_Prospect.WebServices
 
             if (ForDashboard)
             {
-                if (!CommonFunction.CheckAdminAndItLeadMode() && UserId=="")
+                if (!CommonFunction.CheckAdminAndItLeadMode() && UserId == "")
                 {
                     UserId = JGSession.LoginUserID;
                     dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), Session["UserStatus"].Equals(JGConstant.InstallUserStatus.InterviewDate) ? true : false, UserId, false, StartDate, EndDate, ForInProgress);
@@ -2231,8 +2231,9 @@ namespace JG_Prospect.WebServices
             string ChatGroupName = string.Empty;
             var sender = ChatBLL.Instance.GetChatUser(JGSession.UserId).Object;
             var receiver = ChatBLL.Instance.GetChatUser(userID).Object;
-            if (receiver != null && receiver.OnlineAt.HasValue)
+            if (receiver != null)
             {
+                ChatGroupId = Guid.NewGuid().ToString();
                 List<ChatUser> chatUsers = new List<ChatUser>();
                 #region Chat Users
                 chatUsers.Add(new ChatUser // Set Sender
@@ -2243,7 +2244,8 @@ namespace JG_Prospect.WebServices
                     LastName = sender.LastName,
                     OnlineAt = sender.OnlineAt,
                     UserId = sender.UserId,
-                    OnlineAtFormatted = sender.OnlineAtFormatted
+                    OnlineAtFormatted = sender.OnlineAtFormatted,
+                    ChatClosed = false
                 });
                 chatUsers.Add(new ChatUser // Set Receiver
                 {
@@ -2253,24 +2255,44 @@ namespace JG_Prospect.WebServices
                     LastName = receiver.LastName,
                     OnlineAt = receiver.OnlineAt,
                     UserId = receiver.UserId,
-                    OnlineAtFormatted = receiver.OnlineAtFormatted
+                    OnlineAtFormatted = receiver.OnlineAtFormatted,
+                    ChatClosed = false
                 });
                 #endregion
-                UserChatGroups.ChatGroups = new List<ChatGroup>();
-                ChatGroupId = Guid.NewGuid().ToString();
+                //SingletonUserChatGroups.Instance.ChatGroups
+                //UserChatGroups.ChatGroups = new List<ChatGroup>();
+
                 ChatGroupName = string.Join("-", chatUsers.Select(m => m.FirstName).ToList());
-                UserChatGroups.ChatGroups.Add(new ChatGroup
+
+                // If both users does not have any personal chat then add it
+                var existing = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatUsers.Count() == 2)
+                                                           //.Select(m => m.ChatUsers)
+                                                           //.ToList()
+                                                           .Where(m => m.ChatUsers.Where(x => x.UserId == userID).Any())
+                                                           .FirstOrDefault();
+                if (existing != null)
                 {
-                    SenderId = JGSession.UserId,
-                    ChatGroupId = ChatGroupId,
-                    ChatGroupName = ChatGroupName,
-                    ChatUsers = chatUsers,
-                    ChatMessages = new List<ChatMessage>()
-                });
-            }
-            else
-            {
-                // User is offline, send email chat notification
+                    ChatGroupId = existing.ChatGroupId;
+                    ChatGroupName = existing.ChatGroupName;
+
+                    existing.ChatUsers.Where(m => m.UserId == userID).ToList().ForEach(m => m.ChatClosed = false);
+                    SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatUsers.Count() == 2)
+                                                           .Where(m => m.ChatUsers.Where(x => x.UserId == userID).Any())
+                                                           .Select(m => m.ChatUsers)
+                                                           .FirstOrDefault()
+                                                           .ForEach(m => m.ChatClosed = false);
+                }
+                else
+                {
+                    SingletonUserChatGroups.Instance.ChatGroups.Add(new ChatGroup
+                    {
+                        SenderId = JGSession.UserId,
+                        ChatGroupId = ChatGroupId,
+                        ChatGroupName = ChatGroupName,
+                        ChatUsers = chatUsers,
+                        ChatMessages = new List<ChatMessage>()
+                    });
+                }
             }
             return new JavaScriptSerializer().Serialize(new ActionOutput<string>
             {

@@ -843,5 +843,25 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetEmployeeInterviewDetails(UserID);
 
         }
+
+        public DataSet BulkIntsallUserDuplicateCheck(string xmlDoc)
+        {
+            return InstallUserDAL.Instance.BulkIntsallUserDuplicateCheck(xmlDoc);
+        }
+
+        public Boolean UpdateUserProfile(user objuser)
+        {
+            return InstallUserDAL.Instance.UpdateUserProfile(objuser);
+
+        }
+
+        public DataSet getInstallUserDetailsById(Int32 UserId) {
+            return InstallUserDAL.Instance.getInstallUserDetailsById(UserId);
+        }
+
+        public int QuickSaveInstallUser(user objInstallUser)
+        {
+            return InstallUserDAL.Instance.QuickSaveInstallUser(objInstallUser);
+        }
     }
 }

@@ -722,20 +722,22 @@
                         var id = data.Object.split('`')[0];
                         var name = data.Object.split('`')[1];
                         //$('.chat-container').show();
-                        var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
-                                            '<div class="header"><span class="group-name">' + name +
-                                                '</span><span class="close"><i class="fa fa-times" aria-hidden="true"></i></span>' +
-                                                '<span class="minimize"><i class="fa fa-minus" aria-hidden="true"></i></span></div>' +
-                                            '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
-                                            '<div class="chats"></div>' +
-                                            '<div class="chat-text">' +
-                                                '<input type="text" id="chattext" />' +
-                                                '<input type="button" value="Send" id="sendChat" />' +
-                                            '</div>' +
-                                       '</div>';
-                        $('.all-chats').append(strChat);
-                        //$('#chat-container').find('iframe').contents().find('.all-chats').append(strChat);
-                        //$('#chat-container-' + data.Object+"'").find('iframe').contents().find('#ChatGroupId').val(data.Object);
+                        if($('#'+id).length <= 0){
+                            var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
+                                                '<div class="header"><span class="group-name">' + name +
+                                                    '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
+                                                    '<span class="minimize" onclick="minimize(this)"><i class="fa fa-minus" aria-hidden="true"></i></span></div>' +
+                                                '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
+                                                '<div class="chats"></div>' +
+                                                '<div class="chat-text">' +
+                                                    '<input type="text" id="chattext" onkeyup="sendChat(event, this);"  />' +
+                                                    //'<input type="button" value="Send" id="sendChat" />' +
+                                                '</div>' +
+                                           '</div>';
+                            $('.all-chats').append(strChat);
+                            //$('#chat-container').find('iframe').contents().find('.all-chats').append(strChat);
+                            //$('#chat-container-' + data.Object+"'").find('iframe').contents().find('#ChatGroupId').val(data.Object);
+                        }
                     }
                 });
             }
