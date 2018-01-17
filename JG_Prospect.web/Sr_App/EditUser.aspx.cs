@@ -2990,8 +2990,9 @@ namespace JG_Prospect
         protected void DownloadFile(object sender, EventArgs e)
         {
             string filePath = (sender as LinkButton).CommandArgument;
+            string PhysicalMappedPath = Server.MapPath(filePath);
             Response.ContentType = ContentType;
-            Response.AppendHeader("Content-Disposition", "attachment; filename=" + Path.GetFileName(filePath));
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + Path.GetFileName(PhysicalMappedPath));
             Response.WriteFile(filePath);
             Response.End();
         }

@@ -1489,7 +1489,7 @@
                     <table style="width: 100%">
                         <tr style="width: 100%">
                             <td>
-                                <asp:LinkButton ID="lnkDownload" Text="Download Sample Excel Format For Bulk Upload" CommandArgument='../UserFile/SalesSample.xlsx' runat="server" OnClick="DownloadFile"></asp:LinkButton>
+                                <asp:LinkButton ID="lnkDownload" Text="Download Sample Excel Format For Bulk Upload" CommandArgument='~/UserFile/SalesSample.xlsx' runat="server" OnClick="DownloadFile"></asp:LinkButton>
                                 <%--<br />
                         <br />
                         <asp:LinkButton ID="lnkDownloadCSV" Text="Download Sample CSV Format For Bulk Upload" CommandArgument='../UserFile/SalesSample.csv' runat="server" OnClick="DownloadFile"></asp:LinkButton>--%>
@@ -1538,6 +1538,7 @@
                 </ContentTemplate>
                 <Triggers>
                     <asp:AsyncPostBackTrigger ControlID="btnUploadNew" EventName="Click" />
+                    <asp:PostBackTrigger ControlID="lnkDownload"   />
                 </Triggers>
             </asp:UpdatePanel>
             <br />
