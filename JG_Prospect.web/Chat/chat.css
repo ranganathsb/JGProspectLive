@@ -73,6 +73,7 @@ text-align: center;
 background: #ddd;
 opacity: 0.6;
 font-size:5px;
+display:none;
 }
 
 .chat-box .chats .chat-row .profile img {
@@ -119,6 +120,7 @@ width: 100%;
 
 .chat-box .chat-text input[type=text] {
 width: 99%;
+position:relative;
 }
 
 .chat-box .chat-text input[type=button] {

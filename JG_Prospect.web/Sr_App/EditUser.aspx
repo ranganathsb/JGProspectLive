@@ -730,13 +730,32 @@
                                                 '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
                                                 '<div class="chats"></div>' +
                                                 '<div class="chat-text">' +
-                                                    '<input type="text" id="chattext" onkeyup="sendChat(event, this);"  />' +
+                                                    '<input type="text" class="mention" id="chattext" onkeyup="sendChat(event, this);"  />' +
                                                     //'<input type="button" value="Send" id="sendChat" />' +
                                                 '</div>' +
                                            '</div>';
                             $('.all-chats').append(strChat);
-                            //$('#chat-container').find('iframe').contents().find('.all-chats').append(strChat);
-                            //$('#chat-container-' + data.Object+"'").find('iframe').contents().find('#ChatGroupId').val(data.Object);
+                            // reset existing @mention and add new @mention support 
+                            $('input.mention').parent().find('.mentions').remove();
+                            $('input.mention').parent().find('.mentions-autocomplete-list').remove();
+                            $('input.mention').mentionsInput({
+                                onDataRequest: function (mode, query, callback) {
+                                    ajaxExt({
+                                        url: '/WebServices/JGWebService.asmx/GetUsers',
+                                        type: 'POST',
+                                        data: '{ keyword: "' + query + '", chatGroupId:"' + userTobeAddedIntoChatGroupId + '" }',
+                                        showThrobber: true,
+                                        throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
+                                        success: function (data, msg) {
+                                            responseData = data.Results;
+                                            responseData = _.filter(responseData, function (item) {
+                                                return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
+                                            });
+                                            callback.call(this, responseData);
+                                        }
+                                    });
+                                }
+                            });
                         }
                     }
                 });

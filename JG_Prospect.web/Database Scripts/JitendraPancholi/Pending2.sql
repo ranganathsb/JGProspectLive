@@ -205,3 +205,31 @@ BEGIN
 	Select S.Id, S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn From SaveChatMessage S With(NoLock) 
 		Where S.ChatGroupId = @ChatGroupId
 END
+
+
+GO
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'GetUsersByKeyword' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE GetUsersByKeyword
+  END
+Go
+ -- =============================================      
+-- Author:  Jitendra Pancholi      
+-- Create date: 27 Nov 2017   
+-- Description: Get a list of top 5 users by starts with name, email 
+-- =============================================    
+/*
+	GetUsersByKeyword 'kapilpancholi','3697,1015'
+*/
+Create PROCEDURE GetUsersByKeyword
+  @Keyword varchar(50),
+  @ExceptUserIds varchar(100) = null
+AS    
+BEGIN
+	Select top 5 U.Id, U.FristName, U.LastName, U.Email, U.Phone, ISNULL(U.Picture,'') As Picture, U.UserInstallId
+	From tblInstallUsers U With(NoLock)
+	Where (FristName like @Keyword + '%' OR LastName like @Keyword + '%' OR Email like @Keyword + '%' OR
+	(FristName+LastName) Like  @Keyword + '%'
+	) --order by @keyword
+	And U.Id not in (Select * From [dbo].[CSVtoTable](@ExceptUserIds,','))
+END   
