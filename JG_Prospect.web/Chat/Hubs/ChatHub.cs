@@ -23,7 +23,7 @@ namespace JG_Prospect.Chat.Hubs
             try
             {
                 // Getting Website's base URL
-                string baseUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" + System.Web.HttpContext.Current.Request.Url.Authority + System.Web.HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
+                //string baseUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" + System.Web.HttpContext.Current.Request.Url.Authority + System.Web.HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
                 // Getting Logged In UserID from cookie. 
                 // FYI: Sessions are not allowed in SignalR, so have to user some other way to pass information
                 int UserId = App_Code.CommonFunction.GetUserIdCookie();
@@ -32,7 +32,7 @@ namespace JG_Prospect.Chat.Hubs
                 DataRow sender = InstallUserBLL.Instance.getuserdetails(UserId).Tables[0].Rows[0];
                 string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? "default.jpg"
                                     : sender["Picture"].ToString().Replace("~/UploadeProfile/", "");
-                pic = baseUrl + "UploadeProfile/" + pic;
+                pic = /*baseUrl +*/ "UploadeProfile/" + pic;
                 // Instatiate ChatMessage
                 ChatMessage chatMessage = new ChatMessage
                 {
