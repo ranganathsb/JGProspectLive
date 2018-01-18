@@ -29,6 +29,8 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetUsers(keyword, exceptUserIds);
         }
 
+        
+
         public void AddUserNotes(string Notes, int UserID, int AddedByID)
         {
             InstallUserDAL.Instance.AddUserNotes(Notes, UserID, AddedByID);

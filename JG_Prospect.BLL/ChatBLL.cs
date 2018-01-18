@@ -52,5 +52,11 @@ namespace JG_Prospect.BLL
         {
             ChatDAL.Instance.SaveChatMessage(message, ChatGroupId, ReceiverIds);
         }
+
+
+        public void ChatLogger(string chatGroupId, string message, int chatSourceId, int UserId, string IP)
+        {
+            ChatDAL.Instance.ChatLogger(chatGroupId, message, chatSourceId, UserId, IP);
+        }
     }
 }

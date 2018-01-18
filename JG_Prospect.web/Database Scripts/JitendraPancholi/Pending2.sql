@@ -35,6 +35,33 @@ BEGIN
 END
 
 Go
+IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ChatLog]') AND type in (N'U'))
+BEGIN
+	CREATE TABLE [dbo].[ChatLog](
+		Id int Primary Key Identity(1,1),
+		ChatGroupId varchar(100),
+		[Message] nvarchar(max),
+		ChatSourceId int,
+		UserId int,
+		IP Varchar(20),
+		CreatedOn DateTime Not Null Default(GetUTCDate())
+	) 
+END
+
+Go
+IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ApplicationErrors]') AND type in (N'U'))
+BEGIN
+	CREATE TABLE [dbo].[ApplicationErrors](
+		Id int Primary Key Identity(1,1),
+		Type varchar(100),
+		[Message] varchar(2000),
+		StackTrace varchar(max),
+		PageUrl  varchar(2000),
+		CreatedOn DateTime Not Null Default(GetUTCDate())
+	) 
+END
+
+Go
 IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'GetChatUsers' AND SPECIFIC_SCHEMA = 'dbo')
   BEGIN
       DROP PROCEDURE GetChatUsers
@@ -233,3 +260,54 @@ BEGIN
 	) --order by @keyword
 	And U.Id not in (Select * From [dbo].[CSVtoTable](@ExceptUserIds,','))
 END   
+
+GO
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'SaveChatLog' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE SaveChatLog
+  END
+Go
+ -- =============================================      
+-- Author:  Jitendra Pancholi      
+-- Create date: 27 Nov 2017   
+-- Description: Get a list of top 5 users by starts with name, email 
+-- =============================================    
+/*
+	SaveChatLog 'kapilpancholi','3697,1015'
+*/
+Create PROCEDURE SaveChatLog
+	@ChatGroupId varchar(100),
+	@Message varchar(50),
+	@ChatSourceId int,
+	@UserId int,
+	@IP Varchar(20)
+AS    
+BEGIN
+	Insert Into ChatLog (ChatGroupId, Message, ChatSourceId, UserId, IP) 
+		Values (@ChatGroupId, @Message, @ChatSourceId, @UserId, @IP)
+END   
+
+
+GO
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'SaveApplicationError' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE SaveApplicationError
+  END
+Go
+ -- =============================================      
+-- Author:  Jitendra Pancholi      
+-- Create date: 27 Nov 2017   
+-- Description: Get a list of top 5 users by starts with name, email 
+-- =============================================    
+/*
+	SaveChatLog 'kapilpancholi','3697,1015'
+*/
+Create PROCEDURE SaveApplicationError
+	@Type varchar(100),
+	@Message varchar(8000),
+	@StackTrace varchar(max),
+	@PageUrl varchar(8000)
+AS    
+BEGIN
+	Insert Into ApplicationErrors (Type, Message, StackTrace, PageUrl) Values (@Type, @Message, @StackTrace, @PageUrl)
+END

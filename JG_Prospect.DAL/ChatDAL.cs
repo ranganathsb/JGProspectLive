@@ -97,6 +97,26 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public void ChatLogger(string chatGroupId, string message, int chatSourceId, int UserId, string IP)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("SaveChatLog");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@ChatGroupId", DbType.String, chatGroupId);
+                    database.AddInParameter(command, "@Message", DbType.String, message);
+                    database.AddInParameter(command, "@ChatSourceId", DbType.String, chatSourceId);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, UserId);
+                    database.AddInParameter(command, "@IP", DbType.String, IP);
+                    database.ExecuteNonQuery(command);
+                }
+            }
+            catch (Exception ex)
+            { Console.Write(ex.Message); }
+        }
+
         public ActionOutput<ChatUser> GetChatUsers(List<int> userIds)
         {
             try
