@@ -669,7 +669,7 @@ namespace JG_Prospect.BLL
         public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType, int UserID, string PhoneExtNo, string PhoneISDCode, bool ClearDataBeforInsert)
         {
             return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone, phoneText, phoneType, UserID, PhoneExtNo, PhoneISDCode, ClearDataBeforInsert);
-        }
+        }        
 
         public int AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog, string strGUID, int touchPointSource)
         {
@@ -842,26 +842,6 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetEmployeeInterviewDetails(UserID);
 
-        }
-
-        public DataSet BulkIntsallUserDuplicateCheck(string xmlDoc)
-        {
-            return InstallUserDAL.Instance.BulkIntsallUserDuplicateCheck(xmlDoc);
-        }
-
-        public Boolean UpdateUserProfile(user objuser)
-        {
-            return InstallUserDAL.Instance.UpdateUserProfile(objuser);
-
-        }
-
-        public DataSet getInstallUserDetailsById(Int32 UserId) {
-            return InstallUserDAL.Instance.getInstallUserDetailsById(UserId);
-        }
-
-        public int QuickSaveInstallUser(user objInstallUser)
-        {
-            return InstallUserDAL.Instance.QuickSaveInstallUser(objInstallUser);
         }
     }
 }

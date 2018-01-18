@@ -1188,9 +1188,9 @@ namespace JG_Prospect.App_Code
                 switch (Userstatus)
                 {
                     case JGConstant.InstallUserStatus.Active:
-                    case JGConstant.InstallUserStatus.OfferMade:
                         row["CssClass"] = "activeUser";
                         break;
+                    case JGConstant.InstallUserStatus.OfferMade:                        
                     case JGConstant.InstallUserStatus.InterviewDate:
                         row["CssClass"] = "IOUser";
                         break;
@@ -1321,7 +1321,6 @@ namespace JG_Prospect.App_Code
             {
                 ProfileUpdateRequired = false;
             }
-
             return ProfileUpdateRequired;
         }
 
@@ -1648,38 +1647,6 @@ namespace JG_Prospect.App_Code
             return newTaskLinkTitle;
         }
 
-        /// <summary>
-        /// Upload file on server to given relative path from given file upload control.
-        /// </summary>
-        /// <param name="fupControl"></param>
-        /// <param name="RelativePath">Relative path on server, ex. ~/Employee/</param>
-        /// <returns>Saved file name -> guid-originalfilename</returns>
-        public static string UploadFile(FileUpload fupControl, String RelativePath)
-        {
-            String fileName = string.Empty;
-
-            if (fupControl.HasFile)
-            {
-                DirectoryInfo originalDirectory = new DirectoryInfo(HttpContext.Current.Server.MapPath(RelativePath));
-
-                string originalName = Path.GetFileName(fupControl.FileName);
-                string NewFileName = Guid.NewGuid() + "-" + originalName;
-
-                string pathString = System.IO.Path.Combine(originalDirectory.ToString(), NewFileName);
-
-                bool isExists = System.IO.Directory.Exists(originalDirectory.ToString());
-
-                if (!isExists)
-                    System.IO.Directory.CreateDirectory(originalDirectory.ToString());
-
-                fupControl.SaveAs(pathString);
-
-                fileName = NewFileName;
-            }
-
-            return fileName;
-        }
-
     }
 }
 
@@ -1869,20 +1836,6 @@ namespace JG_Prospect
             set
             {
                 HttpContext.Current.Session["LoginUserID"] = value;
-            }
-        }
-
-        public static string LoggedinUserEmail
-        {
-            get
-            {
-                if (HttpContext.Current.Session["LUE"] == null)
-                    return null;
-                return Convert.ToString(HttpContext.Current.Session["LUE"]);
-            }
-            set
-            {
-                HttpContext.Current.Session["LUE"] = value;
             }
         }
 

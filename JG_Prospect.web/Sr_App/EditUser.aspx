@@ -233,14 +233,21 @@
         .right_panel {
             margin: 0 0 0 0 !important;
         }
-
+        .first-col{    width: 20%;float: left;}
+        .second-col{float:left;width:78%}
+        .second-col textarea.note-text{width:99%;}
         .notes-container {
             display: block;
-            height: 66px;
+            /*height: 66px;*/
             overflow-x: hidden;
             overflow-y: auto;
+           position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
         }
-
+        .pos-rel{position:relative;}
+        .notes-inputs{text-align: left;height:30px;padding: 2px;position: absolute;left: 0;bottom: 0;width: 100%;}
         .notes-table {
             height: auto;
             width: 100%;
@@ -272,19 +279,12 @@
                 background: #FFF;
                 color: #000;
             }
-
-            .notes-table tr a {
-                font-size: 10px;
-            }
-
-            .notes-table tr:nth-child(even) a, .notes-popup tr:nth-child(even) a {
-                color: #fff;
-            }
-
+            /*.notes-table tr a{font-size:10px;}*/
+            .notes-table tr:nth-child(even) a, .notes-popup tr:nth-child(even) a{color:#fff;}
             .notes-table tr th:nth-child(1), .notes-table tr td:nth-child(1) {
                 width: 5%;
             }
-
+            
             .notes-table tr th:nth-child(2), .notes-table tr td:nth-child(2) {
                 width: 27%;
             }
@@ -415,22 +415,20 @@
                 height: 50px !important;
                 padding: 5px !important;
             }
-
-        .notes-container .note-desc {
-            width: 194px;
-            height: 29px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .notes-popup .notes-container .note-desc {
-            width: 194px;
-            height: 29px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
+            .notes-container .note-desc {
+                width: 230px;
+                height: 29px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            .notes-popup .notes-container .note-desc {
+                width: 194px;
+                height: 29px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
     </style>
     <style type="text/css">
         #hint {
@@ -497,7 +495,7 @@
             height: 22px;
             vertical-align: middle;
             padding: 2px !important;
-            width: 255px;
+            width: 255px;            
             margin: 0px;
         }
     </style>
@@ -1298,7 +1296,7 @@
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" SortExpression="Status">
+                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="7%" ItemStyle-Width="7%" SortExpression="Status">
                                     <ItemTemplate>
                                         <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
                                         <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99 : Eval("OrderStatus")%>'></asp:HiddenField>
@@ -1403,7 +1401,7 @@
                                         </div>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="4%" ItemStyle-Width="4%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
+                                <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="2%" ItemStyle-Width="2%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
                                     <ItemTemplate>
                                         <div title='<%#Eval("Country") %>' style='<%# string.IsNullOrEmpty(Eval("CountryCode").ToString()) == true ? "": "background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px;" %>' class='<%#Eval("CountryCode").ToString().ToLower()%>'>
                                         </div>
@@ -1435,43 +1433,25 @@
                                         <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
                                     </ItemTemplate>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="22%"
-                                    ItemStyle-Width="22%" ItemStyle-CssClass="noMargin">
+                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="27%"
+                                    ItemStyle-Width="27%" ItemStyle-CssClass="noMargin pos-rel">
                                     <HeaderTemplate>
                                         Notes
                                         <table class="table gridtbl notes-table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
                                             <tr class="trHeader " style="color: White;">
-                                                <th>User ID<br />
-                                                    Date&nbsp;&&nbsp;Time</th>
+                                                <th>User ID<br />Date&nbsp;&&nbsp;Time</th>
                                                 <th>Note/Status</th>
                                             </tr>
                                         </table>
                                     </HeaderTemplate>
                                     <ItemTemplate>
-                                        <%--<div class="GrdContainer">
-                                            <div class="GrdHeader">
-                                                <span>+</span>
-                                            </div>
-                                            <div class="GrdContent">
-                                                
-                                            </div>
-                                        </div>--%>
-                                        <%--<asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>--%>
-
                                         <div class="notes-container" uid="<%#Eval("UserInstallId")%>" id="user-<%#Eval("Id")%>">
                                             Loading Notes...
                                         </div>
-                                        <div style="text-align: left; padding: 2px;">
-                                            <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this, '<%# Eval("Id") %>    ','<%#Eval("UserInstallId")%>    ')" />
-                                            <textarea class="note-text textbox" id="txt-<%# Eval("Id") %>"></textarea>
-                                        </div>
-                                        <%--<div style="text-align: left; padding: 4px;">
-                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"
-                                                Style="height: 36px; vertical-align: middle; padding: 2px!important; width: 70%; float: left; margin-right: 5px;" CssClass="textbox"></asp:TextBox>
-                                            <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
-                                                CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle; overflow: hidden;" />
-
-                                        </div>--%>
+                                        <div class="notes-inputs">                                            
+                                            <div class="first-col"><input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this, '<%# Eval("Id") %>','<%#Eval("UserInstallId")%>')" /></div>
+                                            <div class="second-col"><textarea class="note-text textbox" id="txt-<%# Eval("Id") %>"></textarea></div>
+                                         </div>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
@@ -1507,7 +1487,7 @@
                                     </div>
                                 </div>
                                 <div class="btn_sec" style="float: left;">
-                                    <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" OnClientClick="showBulkUploadProgressPopup()" CssClass="ui-button" Style="padding: 0px 10px 0px 10px!important;" />
+                                    <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" CssClass="ui-button" Style="padding: 0px 10px 0px 10px!important;" />
                                 </div>
                                 <div class="hide">
                                     <input id="hdnBulkUploadFile" runat="server" type="hidden" />
@@ -1867,213 +1847,73 @@
     </div>
     <%--Modal Popup Ends--%>
     <%--Popup Stars--%>
-    <div id="bulkUpload" class="modal hide">
-        <asp:UpdatePanel ID="upnlBulkUploadStatus" runat="server" UpdateMode="Conditional">
-            <ContentTemplate>
-                <div id="divBulkUploadUserErrors" runat="server" title="Information" data-width="900px">
-
-                    <div>
-                        <h2>Incomplete users</h2>
-                        <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
-
-                            <asp:Repeater ID="rptIncorrectRecords" runat="server">
-                                <HeaderTemplate>
-                                    <thead>
-                                        <tr class="trHeader ">
-                                            <th scope="col" style="width: 75px;">FirstName*</th>
-                                            <th scope="col" style="width: 75px;">LastName*</th>
-                                            <th scope="col" style="width: 90px;">Email*</th>
-                                            <th scope="col" style="width: 75px;">Designation*</th>
-                                            <th scope="col" style="width: 50px;">Status*</th>
-                                            <th scope="col" style="width: 60px;">Source*</th>
-                                            <th scope="col" style="width: 90px;">Primary Contact Phone*</th>
-                                            <th scope="col" style="width: 60px;">Phone Type*</th>
-                                            <th scope="col" style="width: 50px;">Zip*</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                </HeaderTemplate>
-                                <ItemTemplate>
-                                    <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
-                                        <td style="width: 10%;"><%#Eval("FirstName") %>
-                                        </td>
-                                        <td style="width: 10%;"><%#Eval("LastName") %>
-                                        </td>
-                                        <td style="width: 15%;"><%#Eval("Email") %>
-                                        </td>
-                                        <td style="width: 10%;"><%#Eval("Designation") %>
-                                        </td>
-                                        <td style="width: 10%;"><%#Eval("Status") %>
-                                        </td>
-                                        <td style="width: 10%;"><%#Eval("Source") %></td>
-                                        <td style="width: 15%;"><%#Eval("Phone1") %>
-                                        </td>
-                                        <td style="width: 10%;"><%#Eval("Phone1Type") %></td>
-                                        <td style="width: 5%;"><%#Eval("Zip") %></td>
-                                    </tr>
-                                </ItemTemplate>
-                                <FooterTemplate>
-                                    </tbody>
-                                </FooterTemplate>
-                            </asp:Repeater>
-
-                        </table>
-
-                    </div>
-
-                    <div style="margin-top: 10px;">
-                        <h2>Duplicate users</h2>
-                        <div>
-                            <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
-                                <asp:Repeater ID="rptDuplicateRecords" runat="server">
-                                    <HeaderTemplate>
-                                        <thead>
-                                            <tr class="trHeader ">
-                                                <th scope="col" style="width: 75px;">FirstName*</th>
-                                                <th scope="col" style="width: 75px;">LastName*</th>
-                                                <th scope="col" style="width: 90px;">Email*</th>
-                                                <th scope="col" style="width: 75px;">Designation*</th>
-                                                <th scope="col" style="width: 50px;">Status*</th>
-                                                <th scope="col" style="width: 60px;">Source*</th>
-                                                <th scope="col" style="width: 90px;">Primary Contact Phone*</th>
-                                                <th scope="col" style="width: 60px;">Phone Type*</th>
-                                                <th scope="col" style="width: 50px;">Zip*</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
-                                            <td style="width: 10%;"><%#Eval("FirstName") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("LastName") %>
-                                            </td>
-                                            <td style="width: 15%;"><%#Eval("Email") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("Designation") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("Status") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("Source") %></td>
-                                            <td style="width: 15%;"><%#Eval("phone") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("phonetype") %></td>
-                                            <td style="width: 5%;"><%#Eval("Zip") %></td>
-                                        </tr>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        </tbody>
-                                    </FooterTemplate>
-                                </asp:Repeater>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 10px;">
-                        <h2>Users to be Added</h2>
-                        <div>
-                            <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
-                                <asp:Repeater ID="rptUserstoBeAdded" runat="server">
-                                    <HeaderTemplate>
-                                        <thead>
-                                            <tr class="trHeader ">
-                                                <th scope="col" style="width: 75px;">FirstName*</th>
-                                                <th scope="col" style="width: 75px;">LastName*</th>
-                                                <th scope="col" style="width: 90px;">Email*</th>
-                                                <th scope="col" style="width: 75px;">Designation*</th>
-                                                <th scope="col" style="width: 50px;">Status*</th>
-                                                <th scope="col" style="width: 60px;">Source*</th>
-                                                <th scope="col" style="width: 90px;">Primary Contact Phone*</th>
-                                                <th scope="col" style="width: 60px;">Phone Type*</th>
-                                                <th scope="col" style="width: 50px;">Zip*</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
-                                            <td style="width: 10%;"><%#Eval("FirstName") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("LastName") %>
-                                            </td>
-                                            <td style="width: 15%;"><%#Eval("Email") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("Designation") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("Status") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("Source") %></td>
-                                            <td style="width: 15%;"><%#Eval("Phone1") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("Phone1Type") %></td>
-                                            <td style="width: 5%;"><%#Eval("Zip") %></td>
-                                        </tr>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        </tbody>
-                                    </FooterTemplate>
-                                </asp:Repeater>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div style="margin-top: 10px;">
-                        <h2>Successfully entered users</h2>
-                        <div>
-                            <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
-                                <asp:Repeater ID="rptSuccessFullyEntered" runat="server">
-                                    <HeaderTemplate>
-                                        <thead>
-                                            <tr class="trHeader ">
-                                                <th scope="col" style="width: 75px;">FirstName*</th>
-                                                <th scope="col" style="width: 75px;">LastName*</th>
-                                                <th scope="col" style="width: 90px;">Email*</th>
-                                                <th scope="col" style="width: 75px;">Designation*</th>
-                                                <th scope="col" style="width: 50px;">Status*</th>
-                                                <th scope="col" style="width: 60px;">Source*</th>
-                                                <th scope="col" style="width: 90px;">Primary Contact Phone*</th>
-                                                <th scope="col" style="width: 60px;">Phone Type*</th>
-                                                <th scope="col" style="width: 50px;">Zip*</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                    </HeaderTemplate>
-                                    <ItemTemplate>
-                                        <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
-                                            <td style="width: 10%;"><%#Eval("FirstName") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("LastName") %>
-                                            </td>
-                                            <td style="width: 15%;"><%#Eval("Email") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("Designation") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("Status") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("Source") %></td>
-                                            <td style="width: 15%;"><%#Eval("Phone1") %>
-                                            </td>
-                                            <td style="width: 10%;"><%#Eval("Phone1Type") %></td>
-                                            <td style="width: 5%;"><%#Eval("Zip") %></td>
-                                        </tr>
-                                    </ItemTemplate>
-                                    <FooterTemplate>
-                                        </tbody>
-                                    </FooterTemplate>
-                                </asp:Repeater>
-                            </table>
-                        </div>
-                    </div>
-
-                </div>
-            </ContentTemplate>
-            <Triggers>
-                <asp:AsyncPostBackTrigger ControlID="btnUploadNew" EventName="Click" />
-            </Triggers>
-        </asp:UpdatePanel>
-    </div>
     <div class="hide">
-
+        <div id="divBulkUploadUserErrors" runat="server" title="Information" data-width="900px">
+            <div style="padding: 5px 10px;">
+                Below records contain empty values for mandatory fields. Please update cells marked by <span style="color: blue; font-weight: bold; text-align: center; font-size: 20px;">x</span> below in your file and upload again. If you see several empty rows at the end of the records, please delete those empty lines from your file.
+            </div>
+            <div style="max-height: 500px; height: 500px; overflow: auto;">
+                <asp:UpdatePanel ID="upnlBUPError" runat="server" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <asp:GridView ID="grdBulkUploadUserErrors" runat="server" AutoGenerateColumns="false"
+                            CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical">
+                            <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                            <HeaderStyle CssClass="trHeader " />
+                            <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
+                            <AlternatingRowStyle CssClass="AlternateRow " />
+                            <Columns>
+                                <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
+                                    <ItemTemplate>
+                                        <%#Eval("FirstName")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
+                                    <ItemTemplate>
+                                        <%#Eval("LastName")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Email*" HeaderStyle-Width="90" ItemStyle-Width="90">
+                                    <ItemTemplate>
+                                        <%#Eval("Email")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Designation*" HeaderStyle-Width="75" ItemStyle-Width="75">
+                                    <ItemTemplate>
+                                        <%#Eval("Designation")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Status*" HeaderStyle-Width="50" ItemStyle-Width="50">
+                                    <ItemTemplate>
+                                        <%#Eval("Status")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Source*" HeaderStyle-Width="60" ItemStyle-Width="60">
+                                    <ItemTemplate>
+                                        <%#Eval("Source")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Primary Contact Phone*" HeaderStyle-Width="90" ItemStyle-Width="90">
+                                    <ItemTemplate>
+                                        <%#Eval("Phone1")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Phone Type*" HeaderStyle-Width="60" ItemStyle-Width="60">
+                                    <ItemTemplate>
+                                        <%#Eval("Phone1Type")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Zip*" HeaderStyle-Width="50" ItemStyle-Width="50">
+                                    <ItemTemplate>
+                                        <%#Eval("Zip")%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+            <br />
+        </div>
         <%--Send Email To User Popup--%>
         <div id="divSendEmailToUser" runat="server" title="Send Email">
             <asp:UpdatePanel ID="upSendEmailToUser" runat="server" UpdateMode="Conditional">
@@ -2706,32 +2546,14 @@
             ReLoadNotes();
         });
 
-            function ReLoadNotes() {
-                $('.notes-container').each(function (i) {
-                    var id = $(this).attr('id').split('-')[1];
-                    var installUserId = $(this).attr('uid');
-                    LoadNotes($('#user' + id), installUserId, id);
-                });
-            }
-            //============== End DP ==============
+        function ReLoadNotes() {
+            $('.notes-container').each(function (i) {
+                var id = $(this).attr('id').split('-')[1];
+                var installUserId = $(this).attr('uid');
+                LoadNotes($('#user' + id), installUserId, id);
+            });
+        }
+        //============== End DP ==============
 
-            function showBulkUploadProgressPopup() {
-
-                $('#bulkUpload').removeClass('hide');               
-
-                $('#bulkUpload').dialog({
-                    modal: false,
-                    height: 700,
-                    width: 1000,
-                    title: "Bulk upload progress...",
-                    
-                }).parent().appendTo($("form:first"));
-
-                $('#bulkUpload').show();
-                
-                
-                
-                return true;
-            }
     </script>
 </asp:Content>

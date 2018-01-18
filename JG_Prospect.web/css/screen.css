@@ -545,16 +545,28 @@ form.inline {
 /*------------------------------------------------------------------
 [6. User Panel]
 */
+.search-box {
+    width: 100px;
+    padding: 2px;
+    border-radius: 3px;
+}
+
+.ProfilImg {
+    width: 80px;
+    position: relative;
+    float: left;
+}
 .user_panel {
     height: 49px;
     background: url(../img/user-panel-bg.png) repeat-x;
     position: absolute;
     right: 0;
     top: 0;
-    padding: 15px 20px;
+    padding: 5px;
     color: #fefefe;
     border-radius: 0 0 10px 10px;
     font-size: 13px;
+    width: 340px;
 }
 
     .user_panel a {
@@ -581,17 +593,24 @@ form.inline {
 
     .user_panel ul {
         list-style-type: none;
-        margin: 9px 0 0 0;
+        margin: 10px 0 0 0;
         padding: 0;
-        float: right;
+        float: left;
         font-size: 12px;
     }
 
         .user_panel ul li {
             float: left;
-            margin: 0 0 0 8px;
+            margin: 0 0 0 2px;
             padding: 0;
         }
+
+    .user_panel .badge {
+        position: absolute;
+        right: -12px;
+        top: -12px;
+        padding: 2px;
+    }
 
 /*------------------------------------------------------------------
 [7. Nav]
@@ -2013,6 +2032,20 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
     max-width: 100px;
     height: inherit;
 }
+
+.nestedChildren img {
+    max-width: 100px;
+    height: inherit;
+}
+
+.nestedChildren p {
+    margin: 0px;
+}
+
+.nestedChildren a {
+    color: blue !important;
+}
+
 .divtdetails p {
     margin: 0px;
 }
@@ -2066,6 +2099,13 @@ li.activeUser {
 }
 
 li.IOUser {
+    color: blue !important;
+}
+span.activeUser {
+    color: red !important;
+}
+
+span.IOUser {
     color: blue !important;
 }
 
@@ -2403,6 +2443,7 @@ p.mcqQuestion {
 }
 
 .seq-tasktitle {
+    word-wrap: break-word;
     width: 24%;
 }
 
@@ -2446,8 +2487,8 @@ input[type='checkbox']:checked.largecheckbox {
 .gridtbl thead th {
     background-color: #000;
 }
- /* The Modal (background) */
- .modal{
+/* The Modal (background) */
+.modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
@@ -2521,7 +2562,11 @@ input[type='checkbox']:checked.largecheckbox {
     background-color: #fff;
     color: white;
 }
-.modal-header h2 {margin-left: 0px !important}
+
+    .modal-header h2 {
+        margin-left: 0px !important
+    }
+
 .modal-body {
     padding: 2px 16px;
 }
@@ -2532,6 +2577,7 @@ input[type='checkbox']:checked.largecheckbox {
     color: white;
     text-align: right;
 }
+
 .mui-btn--primary.mui-btn--flat {
     color: #2196F3;
     background-color: transparent;
@@ -2610,9 +2656,10 @@ button, input, optgroup, select, textarea {
     line-height: 1.15;
     margin: 0;
 }
-.modal-icons img{
-    height:32px;
-    width:32px;
+
+.modal-icons img {
+    height: 32px;
+    width: 32px;
 }
 
 .modal-body input {
@@ -2623,6 +2670,7 @@ button, input, optgroup, select, textarea {
     border-top-width: 0px;
     font-size: 20px;
 }
+
 ul.auto-complete-users {
     width: 400px;
     list-style: none;
@@ -2650,11 +2698,14 @@ ul.auto-complete-users {
     max-height: 400px;
     /* min-height: 100px; */
     margin: 10px 0;
+    max-height: 150px;
+    overflow-y: auto;
     /* -webkit-border-radius: 12px; */
     -moz-border-radius: 8px;
     border-radius: 8px;
     overflow: auto;
 }
+
 ul.auto-complete-users {
     width: 400px;
     list-style: none;
@@ -2669,14 +2720,25 @@ ul.auto-complete-users {
     top: 180px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
+
 .auto-complete-users li {
     margin: 0;
     padding: 0;
-    display: inline-block;width: 100%;
+    display: inline-block;
+    width: 100%;
 }
-.auto-complete-users li div{padding: 5px;
-    width: 100%;}
-.auto-complete-users li:hover{cursor:pointer;background:#007506;color:#fff;}
+
+    .auto-complete-users li div {
+        padding: 5px;
+        width: 100%;
+    }
+
+    .auto-complete-users li:hover {
+        cursor: pointer;
+        background: #007506;
+        color: #fff;
+    }
+
 .employeeinstruction a {
     color: blue !important;
 }
@@ -2686,4 +2748,54 @@ ul.auto-complete-users {
     border-width: 1px;
     border-color: gainsboro;
     padding: 4px;
+    max-width: 200px !important;
+}
+
+.multileveledittext img {
+    max-height: 100px;
+    max-width: 100px;
+}
+
+.popover__content li {
+    list-style: none;
+}
+
+.popover__content {
+    display: none;
+    position: absolute;
+    transform: translate(0,10px);
+    background-color: #FFF;
+    padding: 15px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    z-index: 9999;
+    line-height: 2;
+}
+
+/*.popover__content:before {
+        position: absolute;
+        z-index: -1;
+        content: '';
+        right: calc(50% - 10px);
+        top: -8px;
+        border-style: solid;
+        border-width: 0 10px 10px 10px;
+        border-color: transparent transparent #FFF transparent;
+        transition-duration: 0.3s;
+        transition-property: transform;
+    }*/
+
+.popover__wrapper:hover .popover__content {
+    z-index: 10;
+    opacity: 1;
+    visibility: visible;
+    transform: translate(0,-20px);
+    transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
+}
+
+.popover__message {
+    text-align: center;
+}
+
+.designation-container {
+    margin-left: 61px;
 }

@@ -1416,7 +1416,6 @@
     <Content Include="css\msdropdown\dd_arrow.gif" />
     <Content Include="css\msdropdown\title-bg.gif" />
     <Content Include="css\pgwslideshow.min.css" />
-    <Content Include="css\popup.css" />
     <Content Include="css\TimeCircles.css" />
     <Content Include="Customer_Panel.aspx" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2.sql" />
@@ -1485,15 +1484,17 @@
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITSN043_I_e_v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\script Feb v0.1.sql" />
-    <Content Include="Database Scripts\JitendraPancholi\AddDesignationCodeInUserDesigLastSequenceNo.sql" />
-    <Content Include="Database Scripts\JitendraPancholi\Alter &amp; Fix Data - tblUserDesigLastSequenceNo.sql" />
-    <Content Include="Database Scripts\JitendraPancholi\GetUsersByKeyword.sql" />
-    <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_GetInstallerUserDetailsByLoginId.sql" />
-    <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_IsValidInstallerUser.sql" />
-    <Content Include="Database Scripts\JitendraPancholi\Procedures.sql" />
-    <Content Include="Database Scripts\JitendraPancholi\Sp_InsertTouchPointLog.sql" />
-    <Content Include="Database Scripts\JitendraPancholi\Tables.sql" />
-    <Content Include="Database Scripts\JitendraPancholi\USP_SetUserDisplayID.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed 1.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed 2.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed 3.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed 4.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed 5.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed 6.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed 7.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed 8.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed 9.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed 10.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Pending.sql" />
     <Content Include="Database Scripts\Kapil\Executed_3.sql" />
     <Content Include="Database Scripts\Kapil\Executed_4.sql" />
     <Content Include="Database Scripts\Kapil\Latest.sql" />
@@ -1515,13 +1516,12 @@
     <Content Include="Database Scripts\executed\yogesh\Script July v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script August v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script October v0.1.sql" />
-    <Content Include="Database Scripts\yogesh\CountryMaster.sql" />
     <Content Include="Database Scripts\yogesh\FreeProjectQuote.sql" />
-    <Content Include="Database Scripts\yogesh\Script December v0.1.sql" />
     <Content Include="Database Scripts\yogesh\Script November v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
     <Content Include="datetime\jq\jquery.ui.timepicker.js" />
+    <Content Include="EmailStatistics\statistics.txt" />
     <Content Include="Employment_Redirect.aspx" />
     <Content Include="External Dependencies\AjaxControlToolkit.dll" />
     <Content Include="External Dependencies\aspsnippets.facebookapi.dll" />
@@ -1870,7 +1870,6 @@
     <Content Include="img\facebook.jpg" />
     <Content Include="img\fb_login.png" />
     <Content Include="img\File.png" />
-    <Content Include="img\flags24.png" />
     <Content Include="img\folder.png" />
     <Content Include="img\gplus.png" />
     <Content Include="img\icon_calendar.gif" />
@@ -1893,6 +1892,7 @@
     <Content Include="img\pdf-icon.png" />
     <Content Include="img\pdf.jpg" />
     <Content Include="img\PlusMinus.png" />
+    <Content Include="img\refresh.png" />
     <Content Include="img\Resource.png" />
     <Content Include="img\sign-in-with-google.png" />
     <Content Include="img\star.png" />
@@ -1982,7 +1982,6 @@
     <Content Include="js\angular\templates\sequence-header-template.html" />
     <Content Include="js\angular\templates\pager-template.html" />
     <Content Include="js\common-js.js" />
-    <Content Include="js\createsales.js" />
     <Content Include="js\edituser.js" />
     <Content Include="js\flipclock.min.js" />
     <Content Include="js\angular\scripts\jgapp.js" />
@@ -1991,6 +1990,9 @@
     <Content Include="js\connected-jcarousel.js" />
     <Content Include="js\Custom\JgPopUp.js" />
     <Content Include="js\dropzone.js" />
+    <Content Include="js\fullcalendar\css\fullcalendar.css" />
+    <Content Include="js\fullcalendar\js\fullcalendar.min.js" />
+    <Content Include="js\fullcalendar\js\moment.min.js" />
     <Content Include="js\handleCounter.js" />
     <Content Include="js\ice\ice-master.min.js" />
     <Content Include="js\ice\lib\tinymce\changelog.txt" />
@@ -2099,7 +2101,7 @@
     <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\utils\validate.js" />
     <Content Include="js\ice\src\ice.js" />
     <Content Include="js\intTel\intlTelInput.js" />
-    <Content Include="js\intTel\utils.js" />
+    <Content Include="js\jquery-2.2.4.min.js" />
     <Content Include="js\jquery.magnific-popup.min.js" />
     <Content Include="js\JCarousel.js" />
     <Content Include="js\jg-common.js" />
@@ -2136,6 +2138,7 @@
     <Content Include="Location_img\Jellyfish.jpg" />
     <Content Include="Location_img\Lighthouse.jpg" />
     <Content Include="Location_img\Tulips.jpg" />
+    <Content Include="Log\Log.txt" />
     <Content Include="MCQTest\ExamSummary.aspx" />
     <Content Include="MCQTest\McqTestPage.aspx" />
     <Content Include="MCQTest\ObjectiveExamSummary.aspx" />
@@ -2143,8 +2146,6 @@
     <Content Include="MCQTest\ViewResults.aspx" />
     <Content Include="postdata.html" />
     <Content Include="Properties\PublishProfiles\DeveloperProfile.pubxml.user" />
-    <Content Include="screening-intermediate.aspx" />
-    <Content Include="screening-popup.aspx" />
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
@@ -2219,6 +2220,7 @@
     <Content Include="Sr_App\InstallCreateUser2.aspx" />
     <Content Include="Sr_App\Inventory.aspx" />
     <Content Include="Sr_App\ITDashboard.aspx" />
+    <Content Include="Sr_App\ITDashboardCalendar.aspx" />
     <Content Include="Sr_App\JabbRChat.aspx" />
     <Content Include="Sr_App\JMGroveCONTRACT-%28email-version%29.html" />
     <Content Include="Sr_App\Maintenace.aspx" />
@@ -2519,20 +2521,6 @@
     <Compile Include="MCQTest\ViewResults.aspx.designer.cs">
       <DependentUpon>ViewResults.aspx</DependentUpon>
     </Compile>
-    <Compile Include="screening-intermediate.aspx.cs">
-      <DependentUpon>screening-intermediate.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="screening-intermediate.aspx.designer.cs">
-      <DependentUpon>screening-intermediate.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="screening-popup.aspx.cs">
-      <DependentUpon>screening-popup.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="screening-popup.aspx.designer.cs">
-      <DependentUpon>screening-popup.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Sr_App\add-edit-aptitude-test.aspx.cs">
       <DependentUpon>add-edit-aptitude-test.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2616,6 +2604,13 @@
     </Compile>
     <Compile Include="Sr_App\ITDashboard.aspx.designer.cs">
       <DependentUpon>ITDashboard.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\ITDashboardCalendar.aspx.cs">
+      <DependentUpon>ITDashboardCalendar.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\ITDashboardCalendar.aspx.designer.cs">
+      <DependentUpon>ITDashboardCalendar.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\JabbRChat.aspx.cs">
       <DependentUpon>JabbRChat.aspx</DependentUpon>

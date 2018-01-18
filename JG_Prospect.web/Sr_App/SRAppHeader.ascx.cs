@@ -20,8 +20,10 @@ namespace JG_Prospect.Sr_App
 
             if (Session["loginid"] != null)
             {
-                lbluser.Text = Session["Username"].ToString();
+                lbluser.Text = Session["Username"].ToString() + " " + Session["LastName"].ToString();
+                lblDesignation.Text = JGSession.Designation;
                 imgProfile.ImageUrl = JGSession.UserProfileImg;
+                hLnkEditProfil.Text = JGSession.UserInstallId;
                 if (JGSession.LoginUserID != null)
                     hLnkEditProfil.NavigateUrl = "/Sr_App/CreateSalesUser.aspx?ID=" + JGSession.LoginUserID;
                 else
@@ -88,18 +90,18 @@ namespace JG_Prospect.Sr_App
         // TODO: If user is admin then only show email link as of now.
         private void SetEmailCountersAccess()
         {
-            if (JGSession.UserLoginId == CommonFunction.PreConfiguredAdminUserId)
-            {
-                hypEmail.HRef = "javascript:window.open('/webmail/checkemail.aspx','mywindow','width=900,height=600')";
-                this.Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "EmailCount", "SetEmailCounts();", true);
-                idPhoneLink.Visible = true;
+            //if (JGSession.UserLoginId == CommonFunction.PreConfiguredAdminUserId)
+            //{
+            hypEmail.HRef = "javascript:window.open('/webmail/checkemail.aspx','mywindow','width=900,height=600')";
+            this.Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "EmailCount", "SetEmailCounts();", true);
+            idPhoneLink.Visible = true;
 
-            }
-            else
-            {
-                idPhoneLink.Visible = false;
-            }
+            //}
+            //else
+            //{
+            //    idPhoneLink.Visible = false;
+            //}
         }
-        
+
     }
 }
