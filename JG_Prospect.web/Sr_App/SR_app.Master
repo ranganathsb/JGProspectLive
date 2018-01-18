@@ -669,7 +669,9 @@
             debugger;
             console.log(reason);
         });
-
+        chat.client.sendChatMessageCallbackError = function (data) {
+            console.log(data.Object);
+        };
         //Callback function which the hub will call when it has finished processing,
         // is attached to the proxy
         chat.client.updateClient = function (data) {

@@ -20,81 +20,88 @@ namespace JG_Prospect.Chat.Hubs
 
         public void SendChatMessage(string chatGroupId, string message, int chatSourceId)
         {
-            // Getting Website's base URL
-            string baseUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" + System.Web.HttpContext.Current.Request.Url.Authority + System.Web.HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
-            // Getting Logged In UserID from cookie. 
-            // FYI: Sessions are not allowed in SignalR, so have to user some other way to pass information
-            int UserId = App_Code.CommonFunction.GetUserIdCookie();
-            DataRow sender = InstallUserBLL.Instance.getuserdetails(UserId).Tables[0].Rows[0];
-            string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? "default.jpg"
-                                : sender["Picture"].ToString().Replace("~/UploadeProfile/", "");
-            pic = baseUrl + "UploadeProfile/" + pic;
-            // Instatiate ChatMessage
-            ChatMessage chatMessage = new ChatMessage
+            try
             {
-                Message = message,
-                ChatSourceId = chatSourceId,
-                UserId = UserId,
-                UserProfilePic = pic,
-                UserFullname = sender["FristName"].ToString() + " " + sender["Lastname"].ToString(),
-                UserInstallId = sender["UserInstallID"].ToString(),
-                MessageAt = DateTime.UtcNow.ToEST(),
-                MessageAtFormatted = DateTime.UtcNow.ToEST().ToString()
-            };
-
-            // Finding correct chat group in which message suppose to be posted.
-            ChatGroup chatGroup = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
-            // Adding chat message into chatGroup
-            // Remove old Messages from list and newly one.
-            chatGroup.ChatMessages.RemoveRange(0, chatGroup.ChatMessages.Count()); // May require to comment in future.
-            chatGroup.ChatMessages.Add(chatMessage);
-
-            // Checking in database to fetch all connectionIds of browser of this chat group
-            // FYI: Everytime, we reload a web page, SignalR brower connectionId gets changed, So
-            // we have to always look database for correct connectionIds
-            var newConnections = ChatBLL.Instance.GetChatUsers(chatGroup.ChatUsers.Select(m => m.UserId).ToList()).Results;
-            List<int> onlineUserIds = newConnections.Select(m => m.UserId).ToList();
-            // Modify existing connectionIds into particular ChatGroup and save into static "UserChatGroups" object
-            foreach (var user in chatGroup.ChatUsers.Where(m => onlineUserIds.Contains(m.UserId)))
-            {
-                user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
-                user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
-                user.OnlineAtFormatted = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt.Value).FirstOrDefault().ToEST().ToString();
-            }
-
-            // Adding each connection into SignalR Group, so that we can send messages to all connected users.
-            foreach (var item in chatGroup.ChatUsers.Where(m => m.OnlineAt.HasValue))
-            {
-                foreach (string connectionId in item.ConnectionIds)
+                // Getting Website's base URL
+                string baseUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" + System.Web.HttpContext.Current.Request.Url.Authority + System.Web.HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
+                // Getting Logged In UserID from cookie. 
+                // FYI: Sessions are not allowed in SignalR, so have to user some other way to pass information
+                int UserId = App_Code.CommonFunction.GetUserIdCookie();
+                //add logger
+                ChatBLL.Instance.ChatLogger(chatGroupId, message, chatSourceId, UserId, System.Web.HttpContext.Current.Request.UserHostAddress);
+                DataRow sender = InstallUserBLL.Instance.getuserdetails(UserId).Tables[0].Rows[0];
+                string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? "default.jpg"
+                                    : sender["Picture"].ToString().Replace("~/UploadeProfile/", "");
+                pic = baseUrl + "UploadeProfile/" + pic;
+                // Instatiate ChatMessage
+                ChatMessage chatMessage = new ChatMessage
                 {
-                    Groups.Add(connectionId, chatGroupId);
+                    Message = message,
+                    ChatSourceId = chatSourceId,
+                    UserId = UserId,
+                    UserProfilePic = pic,
+                    UserFullname = sender["FristName"].ToString() + " " + sender["Lastname"].ToString(),
+                    UserInstallId = sender["UserInstallID"].ToString(),
+                    MessageAt = DateTime.UtcNow.ToEST(),
+                    MessageAtFormatted = DateTime.UtcNow.ToEST().ToString()
+                };
+
+                // Finding correct chat group in which message suppose to be posted.
+                ChatGroup chatGroup = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
+                // Adding chat message into chatGroup
+                // Remove old Messages from list and newly one.
+                chatGroup.ChatMessages.RemoveRange(0, chatGroup.ChatMessages.Count()); // May require to comment in future.
+                chatGroup.ChatMessages.Add(chatMessage);
+
+                // Checking in database to fetch all connectionIds of browser of this chat group
+                // FYI: Everytime, we reload a web page, SignalR brower connectionId gets changed, So
+                // we have to always look database for correct connectionIds
+                var newConnections = ChatBLL.Instance.GetChatUsers(chatGroup.ChatUsers.Select(m => m.UserId).ToList()).Results;
+                List<int> onlineUserIds = newConnections.Select(m => m.UserId).ToList();
+                // Modify existing connectionIds into particular ChatGroup and save into static "UserChatGroups" object
+                foreach (var user in chatGroup.ChatUsers.Where(m => onlineUserIds.Contains(m.UserId)))
+                {
+                    user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
+                    user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
+                    user.OnlineAtFormatted = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt.Value).FirstOrDefault().ToEST().ToString();
                 }
+
+                // Adding each connection into SignalR Group, so that we can send messages to all connected users.
+                foreach (var item in chatGroup.ChatUsers.Where(m => m.OnlineAt.HasValue))
+                {
+                    foreach (string connectionId in item.ConnectionIds)
+                    {
+                        Groups.Add(connectionId, chatGroupId);
+                    }
+                }
+                // Send Email notification to all offline users
+                foreach (var item in chatGroup.ChatUsers.Where(m => !m.OnlineAt.HasValue))
+                {
+                    // Send Chat Notification Email
+                }
+
+                // Saving chat into database
+                string ReceiverId = string.Join(",", chatGroup.ChatUsers.Where(m => m.UserId != UserId).Select(m => m.UserId).ToList());
+                ChatBLL.Instance.SaveChatMessage(chatMessage, chatGroupId, ReceiverId);
+
+                //ActionOutput<ChatUser> user = ChatBLL.Instance.GetChatUser(UserId);
+                Clients.Group(chatGroupId).updateClient(new ActionOutput<ChatMessage>
+                {
+                    Status = ActionStatus.Successfull,
+                    Object = chatMessage,
+                    Message = chatGroupId + "`" + chatGroup.ChatGroupName
+                });
             }
-            // Send Email notification to all offline users
-            foreach (var item in chatGroup.ChatUsers.Where(m => !m.OnlineAt.HasValue))
+            catch (Exception ex)
             {
-                // Send Chat Notification Email
+                ErrorLogBLL.Instance.SaveApplicationError("ChatHub",ex.Message, ex.ToString(), ""); 
+                Clients.Group(chatGroupId).sendChatMessageCallbackError(new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Object = ex.ToString(),
+                    Message = chatGroupId
+                });
             }
-
-            // Saving chat into database
-            string ReceiverId = string.Join(",", chatGroup.ChatUsers.Where(m => m.UserId != UserId).Select(m => m.UserId).ToList());
-            ChatBLL.Instance.SaveChatMessage(chatMessage, chatGroupId, ReceiverId);
-
-            //ActionOutput<ChatUser> user = ChatBLL.Instance.GetChatUser(UserId);
-            Clients.Group(chatGroupId).updateClient(new ActionOutput<ChatMessage>
-            {
-                Status = ActionStatus.Successfull,
-                Object = chatMessage,
-                Message = chatGroupId + "`" + chatGroup.ChatGroupName
-            });
-
-            //Clients.All.hello();
-            // Call the addNewMessageToPage method to update clients.
-            //Clients.Client(user.Object.ConnectionId).updateClient(new ActionOutput<ChatMessage>
-            //{
-            //    Status = ActionStatus.Successfull,
-            //    Object = chatMessage
-            //});
         }
 
         public void addUserIntoChatGroup(string chatGroupId, int userId)

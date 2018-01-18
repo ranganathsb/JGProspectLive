@@ -75,6 +75,7 @@
     <Compile Include="DepartmentDAL.cs" />
     <Compile Include="DesignationDAL.cs" />
     <Compile Include="DLLAttendence.cs" />
+    <Compile Include="ErrorLogDAL.cs" />
     <Compile Include="existing_customerDAL.cs" />
     <Compile Include="HTMLTemplateDAL.cs" />
     <Compile Include="JobSchedulerDAL.cs" />
