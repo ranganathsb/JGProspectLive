@@ -6,7 +6,11 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit.HTMLEditor"
     TagPrefix="cc1" %>
 <%@ Register Src="~/UserControl/ucRenewSession.ascx" TagPrefix="uc1" TagName="ucRenewSession" %>
-
+<%
+    string baseUrl = HttpContext.Current.Request.Url.Scheme + 
+                        "://" + HttpContext.Current.Request.Url.Authority + 
+                        HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
+ %>
 <!DOCTYPE html>
 <html data-ng-app="JGApp">
 <head id="Head1" runat="server">
@@ -697,7 +701,7 @@
             var loggedInUserId = getCookie('<%=JG_Prospect.Common.Cookies.UserId%>');
             var senderReceiver = loggedInUserId == data.Object.UserId ? 'sender' : 'receiver';
             var str = '<div class="chat-row ' + senderReceiver + '"><div class="profile">' +
-                            '<img src="' + data.Object.UserProfilePic + '" title="' + data.Object.UserFullname + '" />' +
+                            '<img src="<%=baseUrl %>' + data.Object.UserProfilePic + '" title="' + data.Object.UserFullname + '" />' +
                             '<div class="status-icon"></div><div class="installid">' +
                                 '<a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Object.UserId + '">' + data.Object.UserInstallId + '</a></div>' +
                         '</div>' +
