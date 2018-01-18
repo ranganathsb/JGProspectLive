@@ -25,6 +25,10 @@ namespace JG_Prospect.App_Code
 {
     public static class CommonFunction
     {
+        static ReaderWriterLock locker = new ReaderWriterLock();
+        static ReaderWriterLock lockerEmailLogs = new ReaderWriterLock();
+        static ReaderWriterLock lockerErrors = new ReaderWriterLock();
+
         public static String PreConfiguredAdminUserId
         {
             get { return ConfigurationManager.AppSettings["AdminUserId"].ToString(); }
@@ -302,18 +306,22 @@ namespace JG_Prospect.App_Code
         /// <param name="strSubject">subject line of email.</param>
         /// <param name="strBody">contect / body of email.</param>
         /// <param name="lstAttachments">any files to be attached to email.</param>
-        public static bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
+        public static bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody,
+            List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null,
+            string[] CC = null, string[] BCC = null)
         {
-            Thread email = new Thread(delegate ()
-            {
-                SendEmailAsync(strEmailTemplate, strToAddress, strSubject, strBody, lstAttachments, lstAlternateView);
-            });
-            email.IsBackground = true;
-            email.Start();
+            //Thread email = new Thread(delegate ()
+            //{
+                SendEmailAsync(strEmailTemplate, strToAddress, strSubject, strBody, lstAttachments, lstAlternateView, CC, BCC);
+            //});
+            //email.IsBackground = true;
+            //email.Start();
             return true;
         }
 
-        private static bool SendEmailAsync(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null)
+        private static bool SendEmailAsync(string strEmailTemplate, string strToAddress, string strSubject, string strBody,
+            List<Attachment> lstAttachments, List<AlternateView> lstAlternateView = null,
+            string[] CC = null, string[] BCC = null)
         {
             bool retValue = false;
             if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(strToAddress))
@@ -354,10 +362,21 @@ namespace JG_Prospect.App_Code
                     MailMessage Msg = new MailMessage();
                     Msg.From = new MailAddress(defaultEmailFrom, "JGrove Construction");
                     Msg.To.Add(strToAddress);
-                    Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
+                    //Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
                     Msg.Subject = strSubject;// "JG Prospect Notification";
-                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);                    
+                    Msg.Body = strBody.Replace("#UNSEMAIL#", strToAddress);
                     Msg.IsBodyHtml = true;
+
+                    if (CC != null)
+                        foreach (string email in CC)
+                        {
+                            Msg.CC.Add(email);
+                        }
+                    if (BCC != null)
+                        foreach (string email in BCC)
+                        {
+                            Msg.Bcc.Add(email);
+                        }
 
                     //ds = AdminBLL.Instance.GetEmailTemplate('');
                     //// your remote SMTP server IP.
@@ -386,7 +405,20 @@ namespace JG_Prospect.App_Code
                     sc.Credentials = ntw;
                     sc.DeliveryMethod = SmtpDeliveryMethod.Network;
                     sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
+
                     sc.Send(Msg);
+                    //try
+                    //{
+                    //    lockerEmailLogs.AcquireWriterLock(int.MaxValue);
+                    //    using (var tw = new StreamWriter(HostingEnvironment.MapPath("~/EmailStatistics/EmailLogs.txt"), true))
+                    //    {
+                    //        tw.WriteLine(strToAddress + "  - " + DateTime.Now + " - " + strSubject);
+                    //        tw.Close();
+                    //    }
+                    //}finally
+                    //{
+                    //    lockerEmailLogs.ReleaseWriterLock();
+                    //}
                     retValue = true;
 
                     Msg = null;
@@ -395,7 +427,7 @@ namespace JG_Prospect.App_Code
                 }
                 catch (Exception ex)
                 {
-                    CommonFunction.UpdateEmailStatistics(ex.Message);
+                    CommonFunction.LogError(ex.ToString());
 
                     //if (JGApplicationInfo.IsSendEmailExceptionOn())
                     //{
@@ -413,17 +445,18 @@ namespace JG_Prospect.App_Code
         /// <param name="strToAddress">it will receive email.</param>
         /// <param name="strSubject">subject line of email.</param>
         /// <param name="strBody">contect / body of email.</param>
-        public static void SendEmailInternal(string strToAddress, string strSubject, string strBody)
+        public static void SendEmailInternal(string strToAddress, string strSubject, string strBody, string[] CC = null, string[] BCC = null)
         {
-            Thread email = new Thread(delegate ()
-            {
-                SendEmailInternalAsync(strToAddress, strSubject, strBody);
-            });
-            email.IsBackground = true;
-            email.Start();
+            //Thread email = new Thread(delegate ()
+            //{
+                SendEmailInternalAsync(strToAddress, strSubject, strBody, CC, BCC);
+            //});
+            //email.IsBackground = true;
+            //email.Start();
         }
 
-        private static void SendEmailInternalAsync(string strToAddress, string strSubject, string strBody)
+        private static void SendEmailInternalAsync(string strToAddress, string strSubject, string strBody,
+             string[] CC = null, string[] BCC = null)
         {
             try
             {
@@ -448,7 +481,16 @@ namespace JG_Prospect.App_Code
                 Msg.Subject = strSubject;// "JG Prospect Notification";
                 Msg.Body = strBody;
                 Msg.IsBodyHtml = true;
-
+                if (CC != null)
+                    foreach (string email in CC)
+                    {
+                        Msg.CC.Add(email);
+                    }
+                if (BCC != null)
+                    foreach (string email in BCC)
+                    {
+                        Msg.Bcc.Add(email);
+                    }
                 SmtpClient sc = new SmtpClient(
                                                 ConfigurationManager.AppSettings["smtpHost"].ToString(),
                                                 Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
@@ -1229,42 +1271,91 @@ namespace JG_Prospect.App_Code
                     }
                     catch (Exception ex)
                     {
-
+                        CommonFunction.LogError(ex.ToString());                        
                     }
                 }
             }
 
         }
 
+        private static void LogError(string error)
+        {
+            try
+            {
+                locker.AcquireWriterLock(int.MaxValue);
+
+                string logDirectoryPath = HostingEnvironment.MapPath(@"~\EmailStatistics");
+                if (!Directory.Exists(logDirectoryPath))
+                {
+                    Directory.CreateDirectory(logDirectoryPath);
+                }
+                string path = String.Concat(logDirectoryPath, "\\errors.txt");
+                if (!File.Exists(path))
+                {
+                    using (TextWriter tw = File.CreateText(path))
+                    {
+                        tw.WriteLine(error + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
+                }
+                else if (File.Exists(path))
+                {
+                    using (var tw = new StreamWriter(path, true))
+                    {
+                        tw.WriteLine(error + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
+                }
+            }
+            finally
+            {
+                lockerErrors.ReleaseWriterLock();
+            }
+        }
+
+        internal static bool IsProfileUpdateRequired(string LastProfileUpdateDateTime)
+        {
+            bool ProfileUpdateRequired = true;
+
+            if (!String.IsNullOrEmpty(LastProfileUpdateDateTime))
+            {
+                ProfileUpdateRequired = false;
+            }
+            return ProfileUpdateRequired;
+        }
+
         private static void UpdateEmailStatistics(string emailId)
         {
-            string logDirectoryPath = HostingEnvironment.MapPath(@"~\EmailStatistics");
-
-            if (!Directory.Exists(logDirectoryPath))
+            try
             {
-                Directory.CreateDirectory(logDirectoryPath);
-            }
+                locker.AcquireWriterLock(int.MaxValue);
 
-            string path = String.Concat(logDirectoryPath, "\\statistics.txt");
-
-            if (!File.Exists(path))
-            {
-
-                using (TextWriter tw = File.CreateText(path))
+                string logDirectoryPath = HostingEnvironment.MapPath(@"~\EmailStatistics");
+                if (!Directory.Exists(logDirectoryPath))
                 {
-                    tw.WriteLine(emailId + "  - " + DateTime.Now);
-                    tw.Close();
+                    Directory.CreateDirectory(logDirectoryPath);
                 }
-
-
-            }
-            else if (File.Exists(path))
-            {
-                using (var tw = new StreamWriter(path, true))
+                string path = String.Concat(logDirectoryPath, "\\statistics.txt");
+                if (!File.Exists(path))
                 {
-                    tw.WriteLine(emailId + "  - " + DateTime.Now);
-                    tw.Close();
+                    using (TextWriter tw = File.CreateText(path))
+                    {
+                        tw.WriteLine(emailId + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
                 }
+                else if (File.Exists(path))
+                {
+                    using (var tw = new StreamWriter(path, true))
+                    {
+                        tw.WriteLine(emailId + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
+                }
+            }
+            finally
+            {
+                locker.ReleaseWriterLock();
             }
         }
 
@@ -1523,7 +1614,6 @@ namespace JG_Prospect.App_Code
             }
 
         }
-
 
         public static string GetTaskLinkTitleForAutoEmail(int taskId)
         {

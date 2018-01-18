@@ -2703,6 +2703,7 @@ ul.auto-complete-users {
     /* -webkit-border-radius: 12px; */
     -moz-border-radius: 8px;
     border-radius: 8px;
+    overflow: auto;
 }
 
 ul.auto-complete-users {
