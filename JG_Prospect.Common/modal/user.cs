@@ -253,6 +253,15 @@ namespace JG_Prospect.Common.modal
         public string Password { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
+        public string ProfilePic { get; set; }
+    }
+
+    public class ChatMentionUser
+    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public string avatar { get; set; }
+        public string type { get; set; }
     }
 
     public class ChatUser

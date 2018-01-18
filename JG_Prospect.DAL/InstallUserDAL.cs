@@ -615,7 +615,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public ActionOutput<LoginUser> GetUsers(string keyword)
+        public ActionOutput<LoginUser> GetUsers(string keyword, string exceptUserIds = null)
         {
             try
             {
@@ -625,6 +625,7 @@ namespace JG_Prospect.DAL
                     returndata = new DataSet();
                     DbCommand command = database.GetStoredProcCommand("GetUsersByKeyword");
                     database.AddInParameter(command, "@Keyword", DbType.String, keyword);
+                    database.AddInParameter(command, "@ExceptUserIds", DbType.String, exceptUserIds);
 
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
@@ -639,7 +640,8 @@ namespace JG_Prospect.DAL
                                 FirstName = item["FristName"].ToString(),
                                 LastName = item["LastName"].ToString(),
                                 Email = item["Email"].ToString(),
-                                Phone = item["Phone"].ToString()
+                                Phone = item["Phone"].ToString(),
+                                ProfilePic = item["Picture"].ToString()
                             });
                         }
                     }
@@ -3339,7 +3341,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("usp_QuickSaveInstallUser");
                     command.CommandType = CommandType.StoredProcedure;
-                    
+
                     database.AddInParameter(command, "@FirstName", DbType.String, objuser.fristname);
                     database.AddInParameter(command, "@NameMiddleInitial", DbType.String, objuser.NameMiddleInitial);
                     database.AddInParameter(command, "@LastName", DbType.String, objuser.lastname);
@@ -3362,7 +3364,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@IsTextContactPreference", DbType.Boolean, objuser.IsTextContactPreference);
                     database.AddInParameter(command, "@IsMailContactPreference", DbType.Boolean, objuser.IsMailContactPreference);
 
-                    database.AddOutParameter(command, "@Id", DbType.Int32, 1);  
+                    database.AddOutParameter(command, "@Id", DbType.Int32, 1);
 
                     database.ExecuteScalar(command);
 
@@ -3417,10 +3419,10 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Notes", DbType.String, objuser.Notes);
                     database.AddInParameter(command, "@Picture", DbType.String, objuser.picture);
                     database.AddInParameter(command, "@ResumePath", DbType.String, objuser.ResumePath);
-                    
+
 
                     database.ExecuteScalar(command);
-                    
+
                     return true;
                 }
             }

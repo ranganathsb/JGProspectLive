@@ -41,6 +41,7 @@ namespace JG_Prospect.Chat.Hubs
                 MessageAt = DateTime.UtcNow.ToEST(),
                 MessageAtFormatted = DateTime.UtcNow.ToEST().ToString()
             };
+
             // Finding correct chat group in which message suppose to be posted.
             ChatGroup chatGroup = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
             // Adding chat message into chatGroup
@@ -60,10 +61,6 @@ namespace JG_Prospect.Chat.Hubs
                 user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
                 user.OnlineAtFormatted = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt.Value).FirstOrDefault().ToEST().ToString();
             }
-
-            //chatGroup.ChatUsers.ForEach(x => x.ConnectionIds = newConnections.Where(m => m.UserId == x.UserId).Select(m => m.ConnectionIds).FirstOrDefault());
-            //chatGroup.ChatUsers.ForEach(x => x.OnlineAt = newConnections.Where(m => m.UserId == x.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault());
-            //chatGroup.ChatUsers.ForEach(x => x.OnlineAtFormatted = newConnections.Where(m => m.UserId == x.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt.Value).FirstOrDefault().ToEST().ToString());
 
             // Adding each connection into SignalR Group, so that we can send messages to all connected users.
             foreach (var item in chatGroup.ChatUsers.Where(m => m.OnlineAt.HasValue))
@@ -100,6 +97,41 @@ namespace JG_Prospect.Chat.Hubs
             //});
         }
 
+        public void addUserIntoChatGroup(string chatGroupId, int userId)
+        {
+            var receiver = ChatBLL.Instance.GetChatUser(userId).Object;
+            string newChatGroupName = string.Empty;
+            if (!SingletonUserChatGroups.Instance.ChatGroups
+                                                 .Where(m => m.ChatGroupId == chatGroupId)
+                                                 .FirstOrDefault()
+                                                 .ChatUsers.Where(m => m.UserId == userId)
+                                                 .Any())
+            {
+                // Add user into chat group
+                SingletonUserChatGroups.Instance.ChatGroups
+                                                 .Where(m => m.ChatGroupId == chatGroupId)
+                                                 .FirstOrDefault()
+                                                 .ChatUsers
+                                                 .Add(receiver);
+                // update chatgroup name
+                SingletonUserChatGroups.Instance.ChatGroups
+                                                 .Where(m => m.ChatGroupId == chatGroupId)
+                                                 .FirstOrDefault()
+                                                 .ChatGroupName += "-" + receiver.FirstName;
+
+                newChatGroupName = SingletonUserChatGroups.Instance.ChatGroups
+                                                 .Where(m => m.ChatGroupId == chatGroupId)
+                                                 .FirstOrDefault()
+                                                 .ChatGroupName;
+            }
+            Clients.Group(chatGroupId).addUserIntoChatGroupCallback(new ActionOutput<string>
+            {
+                Status = ActionStatus.Successfull,
+                Object = chatGroupId + "`" + newChatGroupName,
+                Message = receiver.FirstName + " was added to chat"
+            });
+        }
+
         public void CloseChat(string chatGroupId)
         {
             int UserId = App_Code.CommonFunction.GetUserIdCookie();
@@ -120,7 +152,7 @@ namespace JG_Prospect.Chat.Hubs
             {
                 Status = ActionStatus.Successfull,
                 Object = false,
-                Message= chatGroupId
+                Message = chatGroupId
             });
         }
 

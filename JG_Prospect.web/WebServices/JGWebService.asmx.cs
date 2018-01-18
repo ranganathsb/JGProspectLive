@@ -2300,6 +2300,38 @@ namespace JG_Prospect.WebServices
                 Status = ActionStatus.Successfull
             });
         }
+
+        [WebMethod(EnableSession = true)]
+        public string GetUsers(string keyword, string chatGroupId)
+        {
+            string baseUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" +
+                                System.Web.HttpContext.Current.Request.Url.Authority +
+                                System.Web.HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
+            string existingUsers = string.Join(",", SingletonUserChatGroups.Instance.ChatGroups
+                                                                 .Where(m => m.ChatGroupId == chatGroupId)
+                                                                 .Select(m => m.ChatUsers)
+                                                                 .FirstOrDefault()
+                                                                 .Select(m => m.UserId)
+                                                                 .ToList());
+            List<ChatMentionUser> users = new List<ChatMentionUser>();
+            ActionOutput<LoginUser> op = InstallUserBLL.Instance.GetUsers(keyword, existingUsers);
+            if (op != null && op.Status == ActionStatus.Successfull)
+            {
+                users = op.Results.Select(m => new ChatMentionUser
+                {
+                    id = m.ID,
+                    name = m.FirstName + "(" + m.Email + ")",
+                    type = "contact",
+                    avatar = baseUrl + "UploadeProfile/" + (string.IsNullOrEmpty(m.ProfilePic) ? "default.jpg"
+                                : m.ProfilePic.Replace("~/UploadeProfile/", ""))
+                }).ToList();
+            }
+            return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMentionUser>
+            {
+                Status = ActionStatus.Successfull,
+                Results = users
+            });
+        }
         #endregion
     }
 }
