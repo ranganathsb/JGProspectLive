@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Web;
 
 namespace JG_Prospect.Chat.Hubs
 {
@@ -22,13 +23,15 @@ namespace JG_Prospect.Chat.Hubs
         {
             try
             {
-                // Getting Website's base URL
-                //string baseUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" + System.Web.HttpContext.Current.Request.Url.Authority + System.Web.HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
+                System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
                 // Getting Logged In UserID from cookie. 
                 // FYI: Sessions are not allowed in SignalR, so have to user some other way to pass information
-                int UserId = App_Code.CommonFunction.GetUserIdCookie();
+                int UserId = 0; // App_Code.CommonFunction.GetUserIdCookie();
+                HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
+                if (auth_cookie != null)
+                    UserId = Convert.ToInt32(auth_cookie.Value);               
                 //add logger
-                ChatBLL.Instance.ChatLogger(chatGroupId, message, chatSourceId, UserId, System.Web.HttpContext.Current.Request.UserHostAddress);
+                ChatBLL.Instance.ChatLogger(chatGroupId, message, chatSourceId, UserId, httpContext.Request.UserHostAddress);
                 DataRow sender = InstallUserBLL.Instance.getuserdetails(UserId).Tables[0].Rows[0];
                 string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? "default.jpg"
                                     : sender["Picture"].ToString().Replace("~/UploadeProfile/", "");
@@ -94,7 +97,7 @@ namespace JG_Prospect.Chat.Hubs
             }
             catch (Exception ex)
             {
-                ErrorLogBLL.Instance.SaveApplicationError("ChatHub",ex.Message, ex.ToString(), ""); 
+                ErrorLogBLL.Instance.SaveApplicationError("ChatHub", ex.Message, ex.ToString(), "");
                 Clients.Group(chatGroupId).sendChatMessageCallbackError(new ActionOutput<string>
                 {
                     Status = ActionStatus.Successfull,
