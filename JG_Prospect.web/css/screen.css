@@ -603,6 +603,7 @@ form.inline {
             float: left;
             margin: 0 0 0 2px;
             padding: 0;
+            position:relative;
         }
 
     .user_panel .badge {
