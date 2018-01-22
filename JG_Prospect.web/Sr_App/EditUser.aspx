@@ -712,58 +712,59 @@
                 //Paging($(this));
                 
                 // Open Chat Window
-                ajaxExt({
-                    url: '/WebServices/JGWebService.asmx/InitiateChat',
-                    type: 'POST',
-                    data: '{ userID: ' + $(this).attr('uid') + ' }',
-                    showThrobber: true,
-                    throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
-                    success: function (data, msg) {
-                        var id = data.Object.split('`')[0];
-                        var name = data.Object.split('`')[1];
-                        //$('.chat-container').show();
-                        if($('#'+id).length <= 0){
-                            $('.telecom-dashboard-popup').show();
-                            $('.overlay').show();
-                            window.scrollTo(0, 0);                            
-                            var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
-                                                '<div class="header"><span class="group-name">' + name +
-                                                    '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
-                                                    '<span class="minimize" onclick="minimize(this)"><i class="fa fa-minus" aria-hidden="true"></i></span></div>' +
-                                                '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
-                                                '<div class="chats"></div>' +
-                                                '<div class="chat-text">' +
-                                                    '<input type="text" class="mention" id="chattext" onkeyup="sendChat(event, this);"  />' +
-                                                    //'<input type="button" value="Send" id="sendChat" />' +
-                                                '</div>' +
-                                           '</div>';
-                            $('.all-chats').append(strChat);
-                            // reset existing @mention and add new @mention support 
-                            $('input.mention').parent().find('.mentions').remove();
-                            $('input.mention').parent().find('.mentions-autocomplete-list').remove();
-                            $('input.mention').mentionsInput({
-                                onDataRequest: function (mode, query, callback) {
-                                    ajaxExt({
-                                        url: '/WebServices/JGWebService.asmx/GetUsers',
-                                        type: 'POST',
-                                        data: '{ keyword: "' + query + '", chatGroupId:"' + userTobeAddedIntoChatGroupId + '" }',
-                                        showThrobber: true,
-                                        throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
-                                        success: function (data, msg) {
-                                            responseData = data.Results;
-                                            responseData = _.filter(responseData, function (item) {
-                                                return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
-                                            });
-                                            callback.call(this, responseData);
-                                        }
-                                    });
-                                }
-                            });
-                            // Load User's list on right panel
-                            loadChatUsers(this);
-                        }
-                    }
-                });
+                InitiateChat(this, $(this).attr('uid'));
+                //ajaxExt({
+                //    url: '/WebServices/JGWebService.asmx/InitiateChat',
+                //    type: 'POST',
+                //    data: '{ userID: ' + $(this).attr('uid') + ' }',
+                //    showThrobber: true,
+                //    throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
+                //    success: function (data, msg) {
+                //        var id = data.Object.split('`')[0];
+                //        var name = data.Object.split('`')[1];
+                //        //$('.chat-container').show();
+                //        if($('#'+id).length <= 0){
+                //            $('.telecom-dashboard-popup').show();
+                //            $('.overlay').show();
+                //            window.scrollTo(0, 0);                            
+                //            var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
+                //                                '<div class="header"><span class="group-name">' + name +
+                //                                    '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
+                //                                    '<span class="minimize" onclick="minimize(this)"><i class="fa fa-minus" aria-hidden="true"></i></span></div>' +
+                //                                '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
+                //                                '<div class="chats"></div>' +
+                //                                '<div class="chat-text">' +
+                //                                    '<input type="text" class="mention" id="chattext" onkeyup="sendChat(event, this);"  />' +
+                //                                    //'<input type="button" value="Send" id="sendChat" />' +
+                //                                '</div>' +
+                //                           '</div>';
+                //            $('.all-chats').append(strChat);
+                //            // reset existing @mention and add new @mention support 
+                //            $('input.mention').parent().find('.mentions').remove();
+                //            $('input.mention').parent().find('.mentions-autocomplete-list').remove();
+                //            $('input.mention').mentionsInput({
+                //                onDataRequest: function (mode, query, callback) {
+                //                    ajaxExt({
+                //                        url: '/WebServices/JGWebService.asmx/GetUsers',
+                //                        type: 'POST',
+                //                        data: '{ keyword: "' + query + '", chatGroupId:"' + userTobeAddedIntoChatGroupId + '" }',
+                //                        showThrobber: true,
+                //                        throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
+                //                        success: function (data, msg) {
+                //                            responseData = data.Results;
+                //                            responseData = _.filter(responseData, function (item) {
+                //                                return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
+                //                            });
+                //                            callback.call(this, responseData);
+                //                        }
+                //                    });
+                //                }
+                //            });
+                //            // Load User's list on right panel
+                //            loadChatUsers(this);
+                //        }
+                //    }
+                //});
             }
         });
 

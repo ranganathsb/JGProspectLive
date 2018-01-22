@@ -197,7 +197,7 @@ min-width: 235px;
 }
 
 .chat-box .chats {
-height: 285px;
+height: 275px;
 overflow-x: hidden;
 overflow-y: auto;
 }
@@ -279,8 +279,8 @@ width: 100%;
 }
 
 .chat-box .chat-text input[type=text] {
-width: 99%;
-position:relative;
+width: 98.3%;
+position:relative;padding:5px;
 }
 
 .chat-box .chat-text input[type=button] {
@@ -377,6 +377,7 @@ min-height: 15px;
     right: 0;
     top: 0;
     color: #fff;
+    display:none;
 }.telecom-dashboard-popup .chat-box .header .close:hover{background:#333;}
 .overlay {
     position: fixed;
@@ -409,7 +410,12 @@ float: left;
 position: relative;
 width: 40px;
 height: 40px;
+border: 1px solid #ddd;
 }
+.telecom-dashboard-popup .chat-users-section .user-row .name{width: 195px;
+float: left;white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;padding: 5px 0;} 
 
 .telecom-dashboard-popup .chat-users-section .user-row .profile img {
 height: 40px;
@@ -420,3 +426,15 @@ top: 0;
 font-size: 4px;
 }
 .telecom-dashboard-popup .chat-users-section .user-row .profile .name{}
+
+.telecom-dashboard-popup.fullscreen-chat{}
+.telecom-dashboard-popup.fullscreen-chat .chat-box{}
+.telecom-dashboard-popup.fullscreen-chat .chat-container{position:absolute;}
+.telecom-dashboard-popup.fullscreen-chat .column1{display:none;}
+.telecom-dashboard-popup.fullscreen-chat .column2{display:block;width:100%;padding: 2px 8px;}
+.telecom-dashboard-popup.fullscreen-chat .column3{display:none;}
+.telecom-dashboard-popup.fullscreen-chat .column2 .email-section{display:none;}
+.telecom-dashboard-popup.fullscreen-chat .chat-box .chats{height:495px;}
+.telecom-dashboard-popup.fullscreen-chat .chat-box .chats .chat-row .message{width: 1100px;}
+.telecom-dashboard-popup.fullscreen-chat .chat-box .chats .chat-row .profile{width:40px;height:40px;}
+.telecom-dashboard-popup.fullscreen-chat .chat-box .chats .chat-row .profile img{width:40px;height:40px;}

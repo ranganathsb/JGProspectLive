@@ -2293,10 +2293,40 @@ namespace JG_Prospect.WebServices
                         ChatMessages = new List<ChatMessage>()
                     });
                 }
+
+                // Update ActiveUsers in SingletonUserChatGroups
+                if (!SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == sender.UserId).Any())
+                    SingletonUserChatGroups.Instance.ActiveUsers.Add(new ActiveUser
+                    {                       
+                        UserId = sender.UserId
+                    });
+                else
+                    SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == sender.UserId)
+                                                    .FirstOrDefault()
+                                                    .LastActivityAt = DateTime.UtcNow;
             }
-            return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+            // fetching ChatUsers and updating list in UI
+            //string baseUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" +
+            //                    System.Web.HttpContext.Current.Request.Url.Authority +
+            //                    System.Web.HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
+            //string existingUsers = JGSession.UserId.ToString();
+            List<ChatMentionUser> users = new List<ChatMentionUser>();
+            ActionOutput<ChatUser> op = ChatBLL.Instance.GetChatUsers();
+            if (op != null && op.Status == ActionStatus.Successfull)
             {
-                Object = ChatGroupId + "`" + ChatGroupName,
+                users = op.Results.Select(m => new ChatMentionUser
+                {
+                    id = m.UserId,
+                    name = m.FirstName + "(" + m.Email + ")",
+                    type = "contact",
+                    avatar = "UploadeProfile/" + (string.IsNullOrEmpty(m.ProfilePic) ? "default.jpg"
+                                : m.ProfilePic.Replace("~/UploadeProfile/", ""))
+                }).ToList();
+            }
+            return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMentionUser>
+            {
+                Results= users,
+                Message = ChatGroupId + "`" + ChatGroupName,
                 Status = ActionStatus.Successfull
             });
         }
@@ -2334,34 +2364,34 @@ namespace JG_Prospect.WebServices
             });
         }
 
-        [WebMethod(EnableSession = true)]
-        public string GetChatUsers()
-        {
-            string baseUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" +
-                                System.Web.HttpContext.Current.Request.Url.Authority +
-                                System.Web.HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
-            string existingUsers = JGSession.UserId.ToString();
-            List<ChatMentionUser> users = new List<ChatMentionUser>();
-            ActionOutput<ChatUser> op = ChatBLL.Instance.GetChatUsers();
-            if (op != null && op.Status == ActionStatus.Successfull)
-            {
-                users = op.Results.Select(m => new ChatMentionUser
-                {
-                    id = m.UserId,
-                    name = m.FirstName + "(" + m.Email + ")",
-                    type = "contact",
-                    avatar = baseUrl + "UploadeProfile/" + (string.IsNullOrEmpty(m.ProfilePic) ? "default.jpg"
-                                : m.ProfilePic.Replace("~/UploadeProfile/", ""))
-                }).ToList();
-                // Remove logged in user
-                users.RemoveAll(m => m.id == JGSession.UserId);
-            }
-            return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMentionUser>
-            {
-                Status = ActionStatus.Successfull,
-                Results = users
-            });
-        }
+        //[WebMethod(EnableSession = true)]
+        //public string GetChatUsers()
+        //{
+        //    string baseUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" +
+        //                        System.Web.HttpContext.Current.Request.Url.Authority +
+        //                        System.Web.HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
+        //    string existingUsers = JGSession.UserId.ToString();
+        //    List<ChatMentionUser> users = new List<ChatMentionUser>();
+        //    ActionOutput<ChatUser> op = ChatBLL.Instance.GetChatUsers();
+        //    if (op != null && op.Status == ActionStatus.Successfull)
+        //    {
+        //        users = op.Results.Select(m => new ChatMentionUser
+        //        {
+        //            id = m.UserId,
+        //            name = m.FirstName + "(" + m.Email + ")",
+        //            type = "contact",
+        //            avatar = baseUrl + "UploadeProfile/" + (string.IsNullOrEmpty(m.ProfilePic) ? "default.jpg"
+        //                        : m.ProfilePic.Replace("~/UploadeProfile/", ""))
+        //        }).ToList();
+        //        // Remove logged in user
+        //        users.RemoveAll(m => m.id == JGSession.UserId);
+        //    }
+        //    return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMentionUser>
+        //    {
+        //        Status = ActionStatus.Successfull,
+        //        Results = users
+        //    });
+        //}
         #endregion
     }
 }
