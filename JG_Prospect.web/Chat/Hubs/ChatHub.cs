@@ -29,7 +29,7 @@ namespace JG_Prospect.Chat.Hubs
                 int UserId = 0; // App_Code.CommonFunction.GetUserIdCookie();
                 HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
                 if (auth_cookie != null)
-                    UserId = Convert.ToInt32(auth_cookie.Value);               
+                    UserId = Convert.ToInt32(auth_cookie.Value);
                 //add logger
                 ChatBLL.Instance.ChatLogger(chatGroupId, message, chatSourceId, UserId, httpContext.Request.UserHostAddress);
                 DataRow sender = InstallUserBLL.Instance.getuserdetails(UserId).Tables[0].Rows[0];
@@ -227,6 +227,40 @@ namespace JG_Prospect.Chat.Hubs
         public ActionOutput<ChatUser> GetChatUsers()
         {
             return ChatBLL.Instance.GetChatUsers();
+        }
+
+        public void getOnlineChatUsers()
+        {
+            System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
+            int UserId = 0; // App_Code.CommonFunction.GetUserIdCookie();
+            HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
+            if (auth_cookie != null)
+                UserId = Convert.ToInt32(auth_cookie.Value);
+
+            string baseUrl = httpContext.Request.Url.Scheme + "://" +
+                                httpContext.Request.Url.Authority +
+                                httpContext.Request.ApplicationPath.TrimEnd('/') + "/";
+            string existingUsers = UserId.ToString();
+            List<ChatMentionUser> users = new List<ChatMentionUser>();
+            ActionOutput<ChatUser> op = ChatBLL.Instance.GetChatUsers();
+            if (op != null && op.Status == ActionStatus.Successfull)
+            {
+                users = op.Results.Select(m => new ChatMentionUser
+                {
+                    id = m.UserId,
+                    name = m.FirstName + "(" + m.Email + ")",
+                    type = "contact",
+                    avatar = baseUrl + "UploadeProfile/" + (string.IsNullOrEmpty(m.ProfilePic) ? "default.jpg"
+                                : m.ProfilePic.Replace("~/UploadeProfile/", ""))
+                }).ToList();
+                // Remove logged in user
+                users.RemoveAll(m => m.id == UserId);
+            }
+            Clients.All.getOnlineChatUsersCallback(new ActionOutput<ChatMentionUser>
+            {
+                Status = ActionStatus.Successfull,
+                Results = users
+            });
         }
     }
 

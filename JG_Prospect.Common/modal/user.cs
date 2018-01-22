@@ -279,6 +279,7 @@ namespace JG_Prospect.Common.modal
         public string OnlineAtFormatted { get; set; }
 
         public bool ChatClosed { get; set; }
+        public string ProfilePic { get; set; }
     }
 
     public class ChatMessage

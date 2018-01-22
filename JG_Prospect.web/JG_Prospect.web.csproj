@@ -1925,9 +1925,11 @@
     <Content Include="img\chosen-sprite%402x.png" />
     <Content Include="img\chosen-sprite.png" />
     <Content Include="img\close.png" />
+    <Content Include="img\compose.PNG" />
     <Content Include="img\ContractFooter.png" />
     <Content Include="img\ContractHeader.jpg" />
     <Content Include="img\controls.png" />
+    <Content Include="img\dialer.PNG" />
     <Content Include="img\Email art header.png" />
     <Content Include="img\Email footer.png" />
     <Content Include="img\excel-icon.png" />
@@ -1943,6 +1945,7 @@
     <Content Include="img\icon_jg.PNG" />
     <Content Include="img\icon_share.JPG" />
     <Content Include="img\image-icon.png" />
+    <Content Include="img\inbox.PNG" />
     <Content Include="img\indent_left.jpg" />
     <Content Include="img\indent_right.jpg" />
     <Content Include="img\jg-construction.jpg" />
@@ -1965,6 +1968,7 @@
     <Content Include="img\starred.png" />
     <Content Include="img\twitter.jpg" />
     <Content Include="img\ui-anim_basic_16x16.png" />
+    <Content Include="img\user-list.PNG" />
     <Content Include="img\video-icon.png" />
     <Content Include="img\whitetick.png" />
     <Content Include="img\word-icon.png" />

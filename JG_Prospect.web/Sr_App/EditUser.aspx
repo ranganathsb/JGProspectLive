@@ -723,6 +723,9 @@
                         var name = data.Object.split('`')[1];
                         //$('.chat-container').show();
                         if($('#'+id).length <= 0){
+                            $('.telecom-dashboard-popup').show();
+                            $('.overlay').show();
+                            window.scrollTo(0, 0);                            
                             var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
                                                 '<div class="header"><span class="group-name">' + name +
                                                     '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
@@ -756,6 +759,8 @@
                                     });
                                 }
                             });
+                            // Load User's list on right panel
+                            loadChatUsers(this);
                         }
                     }
                 });
