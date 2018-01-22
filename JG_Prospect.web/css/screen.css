@@ -2704,6 +2704,7 @@ ul.auto-complete-users {
     /* -webkit-border-radius: 12px; */
     -moz-border-radius: 8px;
     border-radius: 8px;
+    overflow: auto;
 }
 
 ul.auto-complete-users {
@@ -2875,7 +2876,7 @@ ul.auto-complete-users {
 .header-msg .row .caller .phone{margin-right: 2px;color: #e55456;}
 .header-msg .row .caller .email{margin-right: 2px;color: #000;}
 .header-msg .row .caller .video{color:#e55456;}
-.chat-container {position: fixed;bottom: 0;right: 0;z-index: 1;}
+/*.chat-container {position: fixed;bottom: 0;right: 0;z-index: 1;}*/
 .chat-container iframe {height: 300px;width: 1000px;}
 
 .designation-container {

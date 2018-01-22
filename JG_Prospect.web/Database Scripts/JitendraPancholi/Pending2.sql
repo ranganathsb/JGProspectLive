@@ -83,14 +83,14 @@ BEGIN
 	IF @UserIds IS NULL OR @UserIds = ''
 		Begin
 			Select C.UserId, C.ConnectionId, U.FristName As FirstName,
-			U.LastName, U.Email, C.OnlineAt From ChatUser C Join tblInstallUsers U On C.UserId = U.Id
+			U.LastName, U.Email, C.OnlineAt, U.Picture From ChatUser C Join tblInstallUsers U On C.UserId = U.Id
 		End
 	Else
 		Begin
 			IF OBJECT_ID('tempdb..#TempIds') IS NOT NULL DROP TABLE #TempIds Create Table #TempIds(Id int)
 			Insert Into #TempIds SELECT * FROM [dbo].[CSVtoTable](@UserIds,',')
 			Select C.UserId, C.ConnectionId, U.FristName As FirstName,
-			U.LastName, U.Email, C.OnlineAt From ChatUser C Join tblInstallUsers U On C.UserId = U.Id
+			U.LastName, U.Email, C.OnlineAt, U.Picture From ChatUser C Join tblInstallUsers U On C.UserId = U.Id
 			Where C.UserId in (Select Id From #TempIds)
 		End
 END

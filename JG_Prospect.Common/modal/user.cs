@@ -264,21 +264,31 @@ namespace JG_Prospect.Common.modal
         public string type { get; set; }
     }
 
-    public class ChatUser
+    public class ActiveUser
+    {
+        public ActiveUser()
+        {
+            LastActivityAt = DateTime.UtcNow;
+        }
+        public int UserId { get; set; }
+        public DateTime LastActivityAt { get; set; }
+    }
+
+    public class ChatUser: ActiveUser
     {
         public ChatUser()
         {
             ConnectionIds = new List<string>();
         }
-        public int UserId { get; set; }
+        
         public List<string> ConnectionIds { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
         public DateTime? OnlineAt { get; set; }
         public string OnlineAtFormatted { get; set; }
-
         public bool ChatClosed { get; set; }
+        public string ProfilePic { get; set; }        
     }
 
     public class ChatMessage
@@ -294,6 +304,7 @@ namespace JG_Prospect.Common.modal
         public int ChatSourceId { get; set; }
 
     }
+    
     public class ChatGroup
     {
         public ChatGroup()
@@ -322,11 +333,13 @@ namespace JG_Prospect.Common.modal
         SingletonUserChatGroups()
         {
             ChatGroups = new List<ChatGroup>();
+            ActiveUsers = new List<ActiveUser>();
         }
 
         private static readonly object padlock = new object();
         private static SingletonUserChatGroups instance = null;
         public List<ChatGroup> ChatGroups { get; set; }
+        public List<ActiveUser> ActiveUsers { get; set; }
         public static SingletonUserChatGroups Instance
         {
             get

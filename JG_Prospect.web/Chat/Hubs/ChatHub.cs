@@ -29,7 +29,7 @@ namespace JG_Prospect.Chat.Hubs
                 int UserId = 0; // App_Code.CommonFunction.GetUserIdCookie();
                 HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
                 if (auth_cookie != null)
-                    UserId = Convert.ToInt32(auth_cookie.Value);               
+                    UserId = Convert.ToInt32(auth_cookie.Value);
                 //add logger
                 ChatBLL.Instance.ChatLogger(chatGroupId, message, chatSourceId, UserId, httpContext.Request.UserHostAddress);
                 DataRow sender = InstallUserBLL.Instance.getuserdetails(UserId).Tables[0].Rows[0];
@@ -51,6 +51,8 @@ namespace JG_Prospect.Chat.Hubs
 
                 // Finding correct chat group in which message suppose to be posted.
                 ChatGroup chatGroup = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
+                if (chatGroup != null && chatGroup.ChatMessages == null)
+                    chatGroup.ChatMessages = new List<ChatMessage>();
                 // Adding chat message into chatGroup
                 // Remove old Messages from list and newly one.
                 chatGroup.ChatMessages.RemoveRange(0, chatGroup.ChatMessages.Count()); // May require to comment in future.
@@ -87,7 +89,17 @@ namespace JG_Prospect.Chat.Hubs
                 string ReceiverId = string.Join(",", chatGroup.ChatUsers.Where(m => m.UserId != UserId).Select(m => m.UserId).ToList());
                 ChatBLL.Instance.SaveChatMessage(chatMessage, chatGroupId, ReceiverId);
 
-                //ActionOutput<ChatUser> user = ChatBLL.Instance.GetChatUser(UserId);
+                // Update ActiveUsers in SingletonUserChatGroups
+                if (!SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == UserId).Any())
+                    SingletonUserChatGroups.Instance.ActiveUsers.Add(new ChatUser
+                    {
+                        UserId = UserId
+                    });
+                else
+                    SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == UserId)
+                                                    .FirstOrDefault()
+                                                    .LastActivityAt = DateTime.UtcNow;
+
                 Clients.Group(chatGroupId).updateClient(new ActionOutput<ChatMessage>
                 {
                     Status = ActionStatus.Successfull,
@@ -147,46 +159,61 @@ namespace JG_Prospect.Chat.Hubs
             int UserId = App_Code.CommonFunction.GetUserIdCookie();
             // Finding correct chat group in which message suppose to be posted.
             ChatGroup chatGroup = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
-            chatGroup.ChatUsers.Where(m => m.UserId == UserId).FirstOrDefault().ChatClosed = true;
-            if (chatGroup.ChatUsers.Where(m => m.ChatClosed).Count() == chatGroup.ChatUsers.Count())
+            if (chatGroup != null)
             {
-                // Remove group from list because all users has closed the chat.
-                SingletonUserChatGroups.Instance.ChatGroups.Remove(chatGroup);
+                chatGroup.ChatUsers.Where(m => m.UserId == UserId).FirstOrDefault().ChatClosed = true;
+                if (chatGroup.ChatUsers.Where(m => m.ChatClosed).Count() == chatGroup.ChatUsers.Count())
+                {
+                    // Remove group from list because all users has closed the chat.
+                    SingletonUserChatGroups.Instance.ChatGroups.Remove(chatGroup);
+                    Clients.Group(chatGroupId).closeChatCallback(new ActionOutput<bool>
+                    {
+                        Status = ActionStatus.Successfull,
+                        Object = true
+                    });
+                }
                 Clients.Group(chatGroupId).closeChatCallback(new ActionOutput<bool>
                 {
                     Status = ActionStatus.Successfull,
-                    Object = true
+                    Object = false,
+                    Message = chatGroupId
                 });
             }
-            Clients.Group(chatGroupId).closeChatCallback(new ActionOutput<bool>
-            {
-                Status = ActionStatus.Successfull,
-                Object = false,
-                Message = chatGroupId
-            });
         }
 
         public override System.Threading.Tasks.Task OnConnected()
         {
+            System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
             int UserId = App_Code.CommonFunction.GetUserIdCookie();
             //string username = Context.QueryString["username"].ToString();
-            string clientId = Context.ConnectionId;
-            ChatBLL.Instance.AddChatUser(UserId, clientId);
-            string data = clientId;
-            string count = "";
-            try
-            {
-                count = GetCount().ToString();
-            }
-            catch (Exception d)
-            {
-                count = d.Message;
-            }
+            //string clientId = Context.ConnectionId;
+            ChatBLL.Instance.AddChatUser(UserId, Context.ConnectionId);
+
             DataSet ds = InstallUserBLL.Instance.getuserdetails(UserId);
-            Clients.Caller.receiveMessage(new ActionOutput
+
+            // fetching ChatUsers and updating list in UI
+            //string baseUrl = httpContext.Request.Url.Scheme + "://" +
+            //                    httpContext.Request.Url.Authority +
+            //                    httpContext.Request.ApplicationPath.TrimEnd('/') + "/";
+            //string existingUsers = JGSession.UserId.ToString();
+            List<ChatMentionUser> users = new List<ChatMentionUser>();
+            ActionOutput<ChatUser> op = ChatBLL.Instance.GetChatUsers();
+            if (op != null && op.Status == ActionStatus.Successfull)
+            {
+                users = op.Results.Select(m => new ChatMentionUser
+                {
+                    id = m.UserId,
+                    name = m.FirstName + "(" + m.Email + ")",
+                    type = "contact",
+                    avatar = "UploadeProfile/" + (string.IsNullOrEmpty(m.ProfilePic) ? "default.jpg"
+                                : m.ProfilePic.Replace("~/UploadeProfile/", ""))
+                }).ToList();
+            }
+            Clients.All.onConnectedCallback(new ActionOutput<ChatMentionUser>
             {
                 Status = ActionStatus.Successfull,
-                Message = ds.Tables[0].Rows[0]["FristName"] + " " + ds.Tables[0].Rows[0]["Lastname"] + " is connected..."
+                Message = ds.Tables[0].Rows[0]["FristName"] + " " + ds.Tables[0].Rows[0]["Lastname"] + " is connected...",
+                Results = users
             });
             return base.OnConnected();
         }
@@ -198,23 +225,36 @@ namespace JG_Prospect.Chat.Hubs
 
         public override System.Threading.Tasks.Task OnDisconnected(bool stopCalled)
         {
-            string count = "";
-            string msg = "";
-
+            System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
             string clientId = Context.ConnectionId;
             ChatBLL.Instance.DeleteChatUser(clientId);
 
-            try
+            // fetching ChatUsers and updating list in UI
+            //string baseUrl = httpContext.Request.Url.Scheme + "://" +
+            //                    httpContext.Request.Url.Authority +
+            //                    httpContext.Request.ApplicationPath.TrimEnd('/') + "/";
+            //string existingUsers = JGSession.UserId.ToString();
+            List<ChatMentionUser> users = new List<ChatMentionUser>();
+            ActionOutput<ChatUser> op = ChatBLL.Instance.GetChatUsers();
+            if (op != null && op.Status == ActionStatus.Successfull)
             {
-                count = GetCount().ToString();
+                users = op.Results.Select(m => new ChatMentionUser
+                {
+                    id = m.UserId,
+                    name = m.FirstName + "(" + m.Email + ")",
+                    type = "contact",
+                    avatar = "UploadeProfile/" + (string.IsNullOrEmpty(m.ProfilePic) ? "default.jpg"
+                                : m.ProfilePic.Replace("~/UploadeProfile/", ""))
+                }).ToList();
             }
-            catch (Exception d)
-            {
-                msg = "DB Error " + d.Message;
-            }
+
             string[] Exceptional = new string[1];
             Exceptional[0] = clientId;
-            Clients.AllExcept(Exceptional).receiveMessage("NewConnection", clientId + " leave", count);
+            Clients.AllExcept(Exceptional).onDisconnectedCallback(new ActionOutput<ChatMentionUser>
+            {
+                Status = ActionStatus.Successfull,
+                Results = users
+            });
 
             return base.OnDisconnected(stopCalled);
         }
@@ -227,6 +267,40 @@ namespace JG_Prospect.Chat.Hubs
         public ActionOutput<ChatUser> GetChatUsers()
         {
             return ChatBLL.Instance.GetChatUsers();
+        }
+
+        public void getOnlineChatUsers()
+        {
+            System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
+            int UserId = 0; // App_Code.CommonFunction.GetUserIdCookie();
+            HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
+            if (auth_cookie != null)
+                UserId = Convert.ToInt32(auth_cookie.Value);
+
+            //string baseUrl = httpContext.Request.Url.Scheme + "://" +
+            //                    httpContext.Request.Url.Authority +
+            //                    httpContext.Request.ApplicationPath.TrimEnd('/') + "/";
+            string existingUsers = UserId.ToString();
+            List<ChatMentionUser> users = new List<ChatMentionUser>();
+            ActionOutput<ChatUser> op = ChatBLL.Instance.GetChatUsers();
+            if (op != null && op.Status == ActionStatus.Successfull)
+            {
+                users = op.Results.Select(m => new ChatMentionUser
+                {
+                    id = m.UserId,
+                    name = m.FirstName + "(" + m.Email + ")",
+                    type = "contact",
+                    avatar = "UploadeProfile/" + (string.IsNullOrEmpty(m.ProfilePic) ? "default.jpg"
+                                : m.ProfilePic.Replace("~/UploadeProfile/", ""))
+                }).ToList();
+                // Remove logged in user
+                users.RemoveAll(m => m.id == UserId);
+            }
+            Clients.All.getOnlineChatUsersCallback(new ActionOutput<ChatMentionUser>
+            {
+                Status = ActionStatus.Successfull,
+                Results = users
+            });
         }
     }
 

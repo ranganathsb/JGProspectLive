@@ -65,6 +65,7 @@ namespace JG_Prospect.DAL
                                 FirstName = item["FirstName"].ToString(),
                                 LastName = item["LastName"].ToString(),
                                 Email = item["Email"].ToString(),
+                                ProfilePic = item["Picture"].ToString(),
                                 OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()),
                                 OnlineAtFormatted = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString()
                             };
@@ -77,7 +78,8 @@ namespace JG_Prospect.DAL
                                     user.ConnectionIds.Add(connectionRow["ConnectionId"].ToString());
                                 }
                             }
-                            users.Add(user);
+                            if (!users.Select(m => m.UserId).ToList().Contains(user.UserId))
+                                users.Add(user);
                         }
                     }
                     return new ActionOutput<ChatUser>
