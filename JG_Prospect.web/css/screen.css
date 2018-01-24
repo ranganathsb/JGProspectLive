@@ -2833,7 +2833,10 @@ ul.auto-complete-users {
     top: 2px;
     right: 2px;
     border-radius: 5px;
-}.header-msg .row .user-image .installid {
+}
+ .header-msg .row .user-image .status-icon.active{background: #02a800;}
+ .header-msg .row .user-image .status-icon.idle{background: #f27e00;}
+ .header-msg .row .user-image .installid {
     position: absolute;
     bottom: 3px;
     background: #ddd;

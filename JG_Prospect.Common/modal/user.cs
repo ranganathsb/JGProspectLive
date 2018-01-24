@@ -268,27 +268,34 @@ namespace JG_Prospect.Common.modal
     {
         public ActiveUser()
         {
-            LastActivityAt = DateTime.UtcNow;
+            //LastActivityAt = DateTime.UtcNow;
+            Status = 1;
         }
         public int UserId { get; set; }
-        public DateTime LastActivityAt { get; set; }
-    }
-
-    public class ChatUser: ActiveUser
-    {
-        public ChatUser()
-        {
-            ConnectionIds = new List<string>();
-        }
-        
-        public List<string> ConnectionIds { get; set; }
+        public string UserInstallId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
         public DateTime? OnlineAt { get; set; }
         public string OnlineAtFormatted { get; set; }
+        public string ProfilePic { get; set; }
+        //public DateTime LastActivityAt { get; set; }
+
+        public string LastMessage { get; set; }
+        public DateTime? LastMessageAt { get; set; }
+        public string LastMessageAtFormatted { get; set; }
+        public bool IsRead { get; set; }
+        public int Status { get; set; }
+    }
+
+    public class ChatUser : ActiveUser
+    {
+        public ChatUser()
+        {
+            ConnectionIds = new List<string>();
+        }
+        public List<string> ConnectionIds { get; set; }
         public bool ChatClosed { get; set; }
-        public string ProfilePic { get; set; }        
     }
 
     public class ChatMessage
@@ -304,7 +311,7 @@ namespace JG_Prospect.Common.modal
         public int ChatSourceId { get; set; }
 
     }
-    
+
     public class ChatGroup
     {
         public ChatGroup()
@@ -359,5 +366,32 @@ namespace JG_Prospect.Common.modal
         }
     }
 
+    public sealed class SingletonGlobal
+    {
+        SingletonGlobal()
+        {
+            RandomGUID = JGConstant.RandomGUID;
+        }
 
+        private static readonly object padlock = new object();
+        private static SingletonGlobal instance = null;
+        public string RandomGUID { get; set; }
+        public static SingletonGlobal Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (padlock)
+                    {
+                        if (instance == null)
+                        {
+                            instance = new SingletonGlobal();
+                        }
+                    }
+                }
+                return instance;
+            }
+        }
+    }
 }

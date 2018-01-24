@@ -38,6 +38,16 @@ namespace JG_Prospect.BLL
             return ChatDAL.Instance.GetChatUser(UserId);
         }
 
+        public ActionOutput<ChatUser> GetChatUser(string ConnectionId)
+        {
+            return ChatDAL.Instance.GetChatUser(ConnectionId);
+        }
+
+        public ActionOutput<ActiveUser> GetOnlineUsers(int LoggedInUserId)
+        {
+            return ChatDAL.Instance.GetOnlineUsers(LoggedInUserId);
+        }
+
         public int GetChatUserCount()
         {
             return ChatDAL.Instance.GetChatUserCount();
