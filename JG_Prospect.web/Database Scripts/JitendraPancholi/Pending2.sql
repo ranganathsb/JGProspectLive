@@ -35,6 +35,17 @@ BEGIN
 END
 
 Go
+IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ChatMessageReadStatus]') AND type in (N'U'))
+BEGIN
+	CREATE TABLE [dbo].[ChatMessageReadStatus](
+	   Id int Primary Key Identity(1,1),
+	   ChatMessageId int Foreign Key References ChatMessage(Id),
+	   ReceiverId Int,
+	   IsRead bit not null default(0)
+	) 
+END
+
+Go
 IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ChatLog]') AND type in (N'U'))
 BEGIN
 	CREATE TABLE [dbo].[ChatLog](
@@ -82,14 +93,14 @@ AS
 BEGIN
 	IF @UserIds IS NULL OR @UserIds = ''
 		Begin
-			Select C.UserId, C.ConnectionId, U.FristName As FirstName,
+			Select C.UserId, C.ConnectionId, U.FristName As FirstName, U.UserInstallId,
 			U.LastName, U.Email, C.OnlineAt, U.Picture From ChatUser C Join tblInstallUsers U On C.UserId = U.Id
 		End
 	Else
 		Begin
 			IF OBJECT_ID('tempdb..#TempIds') IS NOT NULL DROP TABLE #TempIds Create Table #TempIds(Id int)
 			Insert Into #TempIds SELECT * FROM [dbo].[CSVtoTable](@UserIds,',')
-			Select C.UserId, C.ConnectionId, U.FristName As FirstName,
+			Select C.UserId, C.ConnectionId, U.FristName As FirstName, U.UserInstallId,
 			U.LastName, U.Email, C.OnlineAt, U.Picture From ChatUser C Join tblInstallUsers U On C.UserId = U.Id
 			Where C.UserId in (Select Id From #TempIds)
 		End
@@ -179,9 +190,34 @@ CREATE PROCEDURE [dbo].[GetChatUser]
 	@UserId int
 AS    
 BEGIN
-	Select C.UserId, C.ConnectionId, U.FristName As FirstName,
-	U.LastName, U.Email, C.OnlineAt From ChatUser C Join tblInstallUsers U On C.UserId = U.Id
+	Select C.UserId, C.ConnectionId, U.FristName As FirstName, U.LastName, 
+			U.Email, C.OnlineAt, U.Picture, U.UserInstallId
+	From ChatUser C Join tblInstallUsers U On C.UserId = U.Id
 	Where C.UserId = @UserId
+END
+
+GO
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'GetChatUserByConnectionId' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE GetChatUserByConnectionId
+  END
+Go
+ -- =============================================      
+-- Author:  Jitendra Pancholi      
+-- Create date: 9 Jan 2017   
+-- Description: Add offline user to chatuser table
+-- =============================================    
+/*
+	GetChatUserByConnectionId '6eac4b34-a5fb-4f7a-8039-eec3fab3b4a2'
+*/
+CREATE PROCEDURE [dbo].GetChatUserByConnectionId
+	@ConnectionId varchar(100)
+AS    
+BEGIN
+	Select C.UserId, C.ConnectionId, U.FristName As FirstName, U.LastName, 
+			U.Email, C.OnlineAt, U.Picture, U.UserInstallId
+	From ChatUser C Join tblInstallUsers U On C.UserId = U.Id
+	Where C.ConnectionId = @ConnectionId
 END
 
 GO
@@ -207,8 +243,12 @@ CREATE PROCEDURE [dbo].[SaveChatMessage]
 	@ReceiverIds varchar(800)
 AS    
 BEGIN
+	Declare @MessageId int
 	Insert Into ChatMessage(ChatSourceId, SenderId, ChatGroupId, TextMessage, ChatFileId, ReceiverIds) Values
 		(@ChatSourceId, @SenderId, @ChatGroupId, @TextMessage, @ChatFileId, @ReceiverIds)
+	Set @MessageId = IDENT_CURRENT('ChatMessage')
+	Insert Into ChatMessageReadStatus (ChatMessageId, ReceiverId) 
+		Select @MessageId, RESULT from dbo.CSVtoTable(@ReceiverIds,',') Where RESULT > 0
 END
 
 GO
@@ -310,4 +350,65 @@ Create PROCEDURE SaveApplicationError
 AS    
 BEGIN
 	Insert Into ApplicationErrors (Type, Message, StackTrace, PageUrl) Values (@Type, @Message, @StackTrace, @PageUrl)
+END
+
+
+GO
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'GetOnlineUsers' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE GetOnlineUsers
+  END
+Go
+ -- =============================================        
+-- Author:  Jitendra Pancholi        
+-- Create date: 27 Nov 2017     
+-- Description: Get a list of top 5 users by starts with name, email   
+-- =============================================      
+/*  
+	GetOnlineUsers 3797  
+*/  
+Create PROCEDURE GetOnlineUsers  
+	@LoggedInUserId int  
+AS      
+BEGIN  
+	IF OBJECT_ID('tempdb..#OnlineUsers') IS NOT NULL DROP TABLE #OnlineUsers  
+	Create Table #OnlineUsers(Id int Primary Key Identity(1,1), UserId int, OnlineAt DateTime,   
+	MessageId int, LastMessage NVarchar(max), MessageAt DateTime, LastMessageByUserId int, IsRead Bit Not Null Default(0))  
+   
+	Insert Into #OnlineUsers(UserId, OnlineAt)  
+		Select U.UserId, Max(U.OnlineAt) As OnlineAt From ChatUser U With(NoLock)   
+			Group By UserId  
+			Order by UserId, OnlineAt Desc  
+   
+	Declare @Min int = 1, @Max int = 1, @UserId Int, @LastMessage NVarchar(Max),   
+			@MessageId Int, @MessageAt DateTime, @IsRead Bit  
+   
+	Select @Min = Min(Id), @Max = Max(Id) from #OnlineUsers  
+  
+	While @Min <= @Max  
+	Begin  
+		Select @UserId = UserId From #OnlineUsers Where Id = @Min  
+     
+		Select top 1 @LastMessage = M.TextMessage, @MessageId = M.Id, @MessageAt = M.CreatedOn, @IsRead = S.IsRead  
+		From ChatMessage M With(NoLock)   
+				Join ChatMessageReadStatus S With(NoLock) On M.Id = S.ChatMessageId  
+				Where (M.SenderId = @UserId And S.ReceiverId = @LoggedInUserId)  
+					Or (M.SenderId = @LoggedInUserId And S.ReceiverId = @UserId)
+				Order By M.CreatedOn Desc   
+		Print @UserId
+		Print @LastMessage
+		Print @Min
+		Update #OnlineUsers Set LastMessage = @LastMessage, MessageId = @MessageId,   
+								MessageAt = @MessageAt, IsRead = IsNull(@IsRead,0)  
+				Where Id = @Min  
+		Set @LastMessage = NULL
+		Set @MessageId = NULL
+		Set @MessageAt = NULL
+		Set @IsRead = 0
+		Set @Min = @Min + 1  
+	End  
+  
+	Select O.Id, O.UserId, O.OnlineAt, O.MessageId, O.LastMessage, O.MessageAt,  
+			O.IsRead, U.FristName as FirstName, U.LastName, U.Email, U.UserInstallId, U.Picture  
+	From #OnlineUsers O Join tblInstallUsers U With(NoLock)  On O.UserId = U.Id  
 END

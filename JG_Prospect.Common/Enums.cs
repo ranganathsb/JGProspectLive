@@ -25,4 +25,10 @@
         UserChat = 1,
         TaskChat = 2
     }
+
+    public enum ChatUserStatus
+    {
+        Active = 1,
+        Idle = 2
+    }
 }

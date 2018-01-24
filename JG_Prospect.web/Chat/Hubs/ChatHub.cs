@@ -26,7 +26,7 @@ namespace JG_Prospect.Chat.Hubs
                 System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
                 // Getting Logged In UserID from cookie. 
                 // FYI: Sessions are not allowed in SignalR, so have to user some other way to pass information
-                int UserId = 0; // App_Code.CommonFunction.GetUserIdCookie();
+                int UserId = 0; 
                 HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
                 if (auth_cookie != null)
                     UserId = Convert.ToInt32(auth_cookie.Value);
@@ -89,17 +89,6 @@ namespace JG_Prospect.Chat.Hubs
                 string ReceiverId = string.Join(",", chatGroup.ChatUsers.Where(m => m.UserId != UserId).Select(m => m.UserId).ToList());
                 ChatBLL.Instance.SaveChatMessage(chatMessage, chatGroupId, ReceiverId);
 
-                // Update ActiveUsers in SingletonUserChatGroups
-                if (!SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == UserId).Any())
-                    SingletonUserChatGroups.Instance.ActiveUsers.Add(new ChatUser
-                    {
-                        UserId = UserId
-                    });
-                else
-                    SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == UserId)
-                                                    .FirstOrDefault()
-                                                    .LastActivityAt = DateTime.UtcNow;
-
                 Clients.Group(chatGroupId).updateClient(new ActionOutput<ChatMessage>
                 {
                     Status = ActionStatus.Successfull,
@@ -156,7 +145,11 @@ namespace JG_Prospect.Chat.Hubs
 
         public void CloseChat(string chatGroupId)
         {
-            int UserId = App_Code.CommonFunction.GetUserIdCookie();
+            System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
+            int UserId = 0;
+            HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
+            if (auth_cookie != null)
+                UserId = Convert.ToInt32(auth_cookie.Value);
             // Finding correct chat group in which message suppose to be posted.
             ChatGroup chatGroup = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
             if (chatGroup != null)
@@ -184,36 +177,22 @@ namespace JG_Prospect.Chat.Hubs
         public override System.Threading.Tasks.Task OnConnected()
         {
             System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
-            int UserId = App_Code.CommonFunction.GetUserIdCookie();
-            //string username = Context.QueryString["username"].ToString();
-            //string clientId = Context.ConnectionId;
+            int UserId = 0;
+            HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
+            if (auth_cookie != null)
+                UserId = Convert.ToInt32(auth_cookie.Value);
             ChatBLL.Instance.AddChatUser(UserId, Context.ConnectionId);
 
-            DataSet ds = InstallUserBLL.Instance.getuserdetails(UserId);
+            ChatUser user = ChatBLL.Instance.GetChatUser(UserId).Object;
 
-            // fetching ChatUsers and updating list in UI
-            //string baseUrl = httpContext.Request.Url.Scheme + "://" +
-            //                    httpContext.Request.Url.Authority +
-            //                    httpContext.Request.ApplicationPath.TrimEnd('/') + "/";
-            //string existingUsers = JGSession.UserId.ToString();
-            List<ChatMentionUser> users = new List<ChatMentionUser>();
-            ActionOutput<ChatUser> op = ChatBLL.Instance.GetChatUsers();
-            if (op != null && op.Status == ActionStatus.Successfull)
-            {
-                users = op.Results.Select(m => new ChatMentionUser
-                {
-                    id = m.UserId,
-                    name = m.FirstName + "(" + m.Email + ")",
-                    type = "contact",
-                    avatar = "UploadeProfile/" + (string.IsNullOrEmpty(m.ProfilePic) ? "default.jpg"
-                                : m.ProfilePic.Replace("~/UploadeProfile/", ""))
-                }).ToList();
-            }
-            Clients.All.onConnectedCallback(new ActionOutput<ChatMentionUser>
+            // Update ActiveUsers in SingletonUserChatGroups
+            SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(UserId).Results;
+
+            Clients.All.onConnectedCallback(new ActionOutput<ActiveUser>
             {
                 Status = ActionStatus.Successfull,
-                Message = ds.Tables[0].Rows[0]["FristName"] + " " + ds.Tables[0].Rows[0]["Lastname"] + " is connected...",
-                Results = users
+                Message = user.FirstName + " " + user.LastName + " is connected...",
+                Results = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList()
             });
             return base.OnConnected();
         }
@@ -227,33 +206,28 @@ namespace JG_Prospect.Chat.Hubs
         {
             System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
             string clientId = Context.ConnectionId;
+            ChatUser user = ChatBLL.Instance.GetChatUser(clientId).Object;
             ChatBLL.Instance.DeleteChatUser(clientId);
 
-            // fetching ChatUsers and updating list in UI
-            //string baseUrl = httpContext.Request.Url.Scheme + "://" +
-            //                    httpContext.Request.Url.Authority +
-            //                    httpContext.Request.ApplicationPath.TrimEnd('/') + "/";
-            //string existingUsers = JGSession.UserId.ToString();
-            List<ChatMentionUser> users = new List<ChatMentionUser>();
-            ActionOutput<ChatUser> op = ChatBLL.Instance.GetChatUsers();
-            if (op != null && op.Status == ActionStatus.Successfull)
+            // Update ActiveUsers in SingletonUserChatGroups
+            if (user.OnlineAt.HasValue)
             {
-                users = op.Results.Select(m => new ChatMentionUser
-                {
-                    id = m.UserId,
-                    name = m.FirstName + "(" + m.Email + ")",
-                    type = "contact",
-                    avatar = "UploadeProfile/" + (string.IsNullOrEmpty(m.ProfilePic) ? "default.jpg"
-                                : m.ProfilePic.Replace("~/UploadeProfile/", ""))
-                }).ToList();
+                // User is still online in some other browser or tab
+                // So remove the connection Id only which is already taken care in SendChatMessage method above
+                // So no need to do it again
+            }
+            else
+            {
+                // User is offline
+                SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(user.UserId).Results;
             }
 
             string[] Exceptional = new string[1];
             Exceptional[0] = clientId;
-            Clients.AllExcept(Exceptional).onDisconnectedCallback(new ActionOutput<ChatMentionUser>
+            Clients.AllExcept(Exceptional).onDisconnectedCallback(new ActionOutput<ActiveUser>
             {
                 Status = ActionStatus.Successfull,
-                Results = users
+                Results = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList()
             });
 
             return base.OnDisconnected(stopCalled);
@@ -272,7 +246,7 @@ namespace JG_Prospect.Chat.Hubs
         public void getOnlineChatUsers()
         {
             System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
-            int UserId = 0; // App_Code.CommonFunction.GetUserIdCookie();
+            int UserId = 0; 
             HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
             if (auth_cookie != null)
                 UserId = Convert.ToInt32(auth_cookie.Value);
@@ -300,6 +274,25 @@ namespace JG_Prospect.Chat.Hubs
             {
                 Status = ActionStatus.Successfull,
                 Results = users
+            });
+        }
+
+        public void SetChatUserStatusToIdle(int status)
+        {
+            System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
+            int UserId = 0;
+            HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
+            if (auth_cookie != null)
+                UserId = Convert.ToInt32(auth_cookie.Value);
+            SingletonUserChatGroups.Instance.ActiveUsers
+                                            .Where(m => m.UserId == UserId)
+                                            .FirstOrDefault()
+                                            .Status = status;
+
+            Clients.All.SetChatUserStatusToIdleCallback(new ActionOutput<ActiveUser>
+            {
+                Status = ActionStatus.Successfull,
+                Results = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList()
             });
         }
     }

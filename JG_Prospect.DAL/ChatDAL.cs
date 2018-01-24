@@ -58,6 +58,8 @@ namespace JG_Prospect.DAL
                         foreach (DataRow item in returndata.Tables[0].Rows)
                         {
                             int userId = Convert.ToInt32(item["UserId"].ToString());
+                            string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                             ChatUser user = new ChatUser
                             {
                                 UserId = userId,
@@ -65,7 +67,8 @@ namespace JG_Prospect.DAL
                                 FirstName = item["FirstName"].ToString(),
                                 LastName = item["LastName"].ToString(),
                                 Email = item["Email"].ToString(),
-                                ProfilePic = item["Picture"].ToString(),
+                                ProfilePic = pic,
+                                UserInstallId = item["UserInstallId"].ToString(),
                                 OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()),
                                 OnlineAtFormatted = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString()
                             };
@@ -94,7 +97,7 @@ namespace JG_Prospect.DAL
                 return new ActionOutput<ChatUser>
                 {
                     Message = ex.Message,
-                    Status = ActionStatus.Successfull
+                    Status = ActionStatus.Error
                 };
             }
         }
@@ -138,13 +141,16 @@ namespace JG_Prospect.DAL
                         foreach (DataRow item in returndata.Tables[0].Rows)
                         {
                             int userId = Convert.ToInt32(item["UserId"].ToString());
+                            string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                             ChatUser user = new ChatUser
                             {
                                 UserId = userId,
-                                //ConnectionId = item["ConnectionId"].ToString(),
                                 FirstName = item["FirstName"].ToString(),
                                 LastName = item["LastName"].ToString(),
                                 Email = item["Email"].ToString(),
+                                ProfilePic = pic,
+                                UserInstallId = item["UserInstallId"].ToString(),
                                 OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()),
                                 OnlineAtFormatted = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString()
                             };
@@ -172,7 +178,7 @@ namespace JG_Prospect.DAL
                 return new ActionOutput<ChatUser>
                 {
                     Message = ex.Message,
-                    Status = ActionStatus.Successfull
+                    Status = ActionStatus.Error
                 };
             }
         }
@@ -193,6 +199,8 @@ namespace JG_Prospect.DAL
                     if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
                     {
                         DataRow item = returndata.Tables[0].Rows[0];
+                        string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                         user = new ChatUser
                         {
                             UserId = Convert.ToInt32(item["UserId"].ToString()),
@@ -200,7 +208,9 @@ namespace JG_Prospect.DAL
                             FirstName = item["FirstName"].ToString(),
                             LastName = item["LastName"].ToString(),
                             Email = item["Email"].ToString(),
-                            OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()),
+                            ProfilePic = pic,
+                            UserInstallId = item["UserInstallId"].ToString(),
+                            OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST(),
                             OnlineAtFormatted = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString()
                         };
                         // Same user can open chat in multiple browsers/tabs at the same time.
@@ -214,12 +224,16 @@ namespace JG_Prospect.DAL
                     {
                         // User if Offline
                         var usr = InstallUserDAL.Instance.getuserdetails(UserId).Tables[0].Rows[0];
+                        string pic = "UploadeProfile/" + (string.IsNullOrEmpty(usr["Picture"].ToString()) ? "default.jpg"
+                                                : usr["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                         user = new ChatUser
                         {
                             UserId = UserId,
                             FirstName = usr["FristName"].ToString(),
                             LastName = usr["LastName"].ToString(),
                             Email = usr["Email"].ToString(),
+                            ProfilePic = pic,
+                            UserInstallId = usr["UserInstallId"].ToString(),
                             OnlineAt = null,
                             OnlineAtFormatted = null
                         };
@@ -237,6 +251,126 @@ namespace JG_Prospect.DAL
                 {
                     Message = ex.Message,
                     Status = ActionStatus.Successfull
+                };
+            }
+        }
+
+        public ActionOutput<ChatUser> GetChatUser(string ConnectionId)
+        {
+            try
+            {
+                ChatUser user = null;
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetChatUserByConnectionId");
+                    database.AddInParameter(command, "@ConnectionId", DbType.String, ConnectionId);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        DataRow item = returndata.Tables[0].Rows[0];
+                        string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
+                        user = new ChatUser
+                        {
+                            UserId = Convert.ToInt32(item["UserId"].ToString()),
+                            //ConnectionId = item["ConnectionId"].ToString(),
+                            FirstName = item["FirstName"].ToString(),
+                            LastName = item["LastName"].ToString(),
+                            Email = item["Email"].ToString(),
+                            ProfilePic = pic,
+                            UserInstallId = item["UserInstallId"].ToString(),
+                            OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST(),
+                            OnlineAtFormatted = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString()
+                        };
+                        // Same user can open chat in multiple browsers/tabs at the same time.
+                        // Adding all ConnectionIds with chat user
+                        foreach (DataRow connectionRow in returndata.Tables[0].Rows)
+                        {
+                            user.ConnectionIds.Add(connectionRow["ConnectionId"].ToString());
+                        }
+                    }
+                    else
+                    {
+                        // User if Offline
+                        user = new ChatUser
+                        {
+                            OnlineAt = null,
+                            OnlineAtFormatted = null
+                        };
+                    }
+                    return new ActionOutput<ChatUser>
+                    {
+                        Object = user,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<ChatUser>
+                {
+                    Message = ex.Message,
+                    Status = ActionStatus.Successfull
+                };
+            }
+        }
+
+        public ActionOutput<ActiveUser> GetOnlineUsers(int LoggedInUserId)
+        {
+            try
+            {
+                List<ActiveUser> users = new List<ActiveUser>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetOnlineUsers");
+                    database.AddInParameter(command, "@LoggedInUserId", DbType.Int32, LoggedInUserId);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            // DataRow item = returndata.Tables[0].Rows[0];
+                            string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                    : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
+                            users.Add(new ActiveUser
+                            {
+                                UserId = Convert.ToInt32(item["UserId"].ToString()),
+                                //ConnectionId = item["ConnectionId"].ToString(),
+                                FirstName = item["FirstName"].ToString(),
+                                LastName = item["LastName"].ToString(),
+                                Email = item["Email"].ToString(),
+                                ProfilePic = pic,
+                                UserInstallId = item["UserInstallId"].ToString(),
+                                OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST(),
+                                OnlineAtFormatted = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString(),
+                                LastMessage = item["LastMessage"].ToString(),
+                                LastMessageAt = !string.IsNullOrEmpty(item["MessageAt"].ToString()) ?
+                                                    (DateTime?)Convert.ToDateTime(item["MessageAt"].ToString()).ToEST() : null,
+                                LastMessageAtFormatted = !string.IsNullOrEmpty(item["MessageAt"].ToString()) ?
+                                                    Convert.ToDateTime(item["MessageAt"].ToString()).ToEST().ToString() : null,
+                                IsRead = Convert.ToBoolean(item["IsRead"].ToString())
+                            });
+                        }
+                    }
+                    return new ActionOutput<ActiveUser>
+                    {
+                        Results = users,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<ActiveUser>
+                {
+                    Message = ex.Message,
+                    Status = ActionStatus.Error
                 };
             }
         }

@@ -366,6 +366,7 @@
     <Content Include="calendar\dot.gif" />
     <Content Include="calendar\Srcalendar.aspx" />
     <Content Include="changepassword.aspx" />
+    <Content Include="Chat\chat-notification.mp3" />
     <Content Include="Chat\chat.css" />
     <Content Include="Chat\chatwindow.html" />
     <Content Include="Chat\initialize.html" />
@@ -1539,6 +1540,7 @@
     <Content Include="css\font-awesome-4.7.0\scss\_screen-reader.scss" />
     <Content Include="css\font-awesome-4.7.0\scss\_stacked.scss" />
     <Content Include="css\font-awesome-4.7.0\scss\_variables.scss" />
+    <Content Include="Chat\chat-notification.ogg" />
     <None Include="Database Scripts\executed\yogesh\scripts dec v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN043_I_f_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN047_I_b_v0.1.sql" />

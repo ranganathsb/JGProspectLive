@@ -10,17 +10,18 @@
     string baseUrl = HttpContext.Current.Request.Url.Scheme +
                         "://" + HttpContext.Current.Request.Url.Authority +
                         HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
+
 %>
 <!DOCTYPE html>
 <html data-ng-app="JGApp">
 <head id="Head1" runat="server">
     <title>JG Sales</title>
 
-    <link href="../css/screen.css" rel="stylesheet" media="screen" type="text/css" />
+    <link href="../css/screen.css?v=<%#RandomGUID %>" rel="stylesheet" media="screen" type="text/css" />
     <link href="../css/jquery.ui.theme.css" rel="stylesheet" media="screen" type="text/css" />
     <link rel="stylesheet" type="text/css" href="//twitter.github.com/bootstrap/assets/css/bootstrap.css">
     <link href="../css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../js/mention/recommended-styles.css" rel="stylesheet" />
+    <link href="../js/mention/recommended-styles.css?v=<%#RandomGUID %>" rel="stylesheet" />
     <%--<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/redmond/jquery-ui.css" />--%>
 
     <%--<link href="../datetime/js/jquery.ptDayOnlySelect.css" rel="stylesheet" type="text/css" />
@@ -29,7 +30,7 @@
 
     <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />--%>
     <link href="../css/jquery-ui.css" rel="stylesheet" />
-    <link href="../Content/paging.css" rel="stylesheet" />
+    <link href="../Content/paging.css?v=<%#RandomGUID %>" rel="stylesheet" />
 
     <script src="../Scripts/jquery-2.2.4.min.js"></script>
 
@@ -38,14 +39,14 @@
 
     <script type="text/javascript" src="../js/ddaccordion.js"></script>
 
-    <script type="text/javascript" src="../js/jg-common.js"></script>
+    <script type="text/javascript" src="../js/jg-common.js?v=<%#RandomGUID %>"></script>
 
     <link href="../js/tribute/tribute.css" rel="stylesheet" />
     <script src="../js/tribute/tribute.min.js"></script>
 
     <script type="text/javascript" src="../js/jquery.form.js"></script>
-    <script type="text/javascript" src="../js/common-js.js"></script>
-    <script type="text/javascript" src="../js/paging.js"></script>
+    <script type="text/javascript" src="../js/common-js.js?v=<%#RandomGUID %>"></script>
+    <script type="text/javascript" src="../js/paging.js?v=<%#RandomGUID %>"></script>
 
 
     <script src="../Scripts/angular.min.js"></script>
@@ -652,14 +653,18 @@
             <div class="chat-users-section">
                 <div class="header">Contacts</div>
                 <div class="list">
-                   Loading Online Users...
+                    Loading Online Users...
                 </div>
             </div>
         </div>
     </div>
     <div class="overlay">
     </div>
-    <link href="../Chat/chat.css" rel="stylesheet" />
+    <audio controls="controls" class="chat-notification-sound">
+        <source src="../Chat/chat-notification.mp3" />
+        <source src="../Chat/chat-notification.ogg" />
+    </audio>
+    <link href="../Chat/chat.css?v=<%#RandomGUID %>" rel="stylesheet" />
     <script src="/Scripts/jquery.signalR-2.2.2.min.js"></script>
     <script src="/signalr/hubs"></script>
     <script type="text/javascript">
@@ -667,6 +672,8 @@
         // Reference the auto-generated proxy for the hub.
         var chat = $.connection.chatHub;
         var userTobeAddedIntoChatGroupId = 0;
+        var userChatStatus = '<%= (int)JG_Prospect.Common.ChatUserStatus.Active %>';
+        var pageTitle = $('head').find('title').html();
         sendChat = function (e, sender) {
             var charCode = (typeof e.which === "number") ? e.which : e.keyCode;
             var chatGrpId = $(sender).parents('.chat-box').find('#ChatGroupId').val();
@@ -726,9 +733,10 @@
                                             //'<input type="button" value="Send" id="sendChat" />' +
                                         '</div>' +
                                    '</div>';
-            if ($('.all-chats').find('#' + id).length <= 0) {
-                $('.all-chats').html(strChat);
-            }
+            if ($('.all-chats').find('#' + id) != undefined)
+                if ($('.all-chats').find('#' + id).length <= 0)
+                    $('.all-chats').html(strChat);
+
             // Show chat popup
             $('.telecom-dashboard-popup').show();
             $('.overlay').show();
@@ -781,6 +789,11 @@
                     //});
                 }
             });
+            $('audio.chat-notification-sound').remove();
+            if (loggedInUserId != data.Object.UserId) {
+                $('body').append('<audio autoplay class="chat-notification-sound"><source src="../Chat/chat-notification.mp3"><source src="../Chat/chat-notification.ogg"></audio>');
+                PageTitleNotification.On('New Message!!!', 1000);
+            }
         };
         chat.client.addUserIntoChatGroupCallback = function (data) {
             // Add the message to the page.
@@ -800,6 +813,27 @@
         chat.client.onDisconnectedCallback = function (data) {
             bindChatUsers(data);
         }
+        chat.client.setChatUserStatusToIdleCallback = function (data) {
+            bindChatUsers(data);
+        }
+
+        var timer = null;
+        $(document).on('mousemove', function () {
+            if (userChatStatus == '<%= (int)JG_Prospect.Common.ChatUserStatus.Idle %>') {
+                chat.server.setChatUserStatusToIdle('<%= (int)JG_Prospect.Common.ChatUserStatus.Active %>');
+                userChatStatus = '<%= (int)JG_Prospect.Common.ChatUserStatus.Active %>';
+            } else {
+                // Reset Timeout
+                if (timer) {
+                    clearTimeout(timer); //cancel the previous timer.
+                    timer = null;
+                }
+                timer = setTimeout(function () {
+                    chat.server.setChatUserStatusToIdle('<%= (int)JG_Prospect.Common.ChatUserStatus.Idle %>');
+                    userChatStatus = '<%= (int)JG_Prospect.Common.ChatUserStatus.Idle %>';
+                }, 10000);
+            }
+        });
     </script>
     <script src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js' type='text/javascript'></script>
     <link href="../js/Jquery-mention/jquery.mentionsInput.css" rel="stylesheet" />
@@ -817,8 +851,7 @@
                 success: function (data, msg) {
                     // Close Previous Chat
                     var chat = $('.chat-container .chat-box').find('span.close');
-                    closechat(chat);
-
+                    closechat(chat);;
                     var id = data.Message.split('`')[0];
                     var name = data.Message.split('`')[1];
                     //$('.chat-container').show();
@@ -840,7 +873,7 @@
                                             '<div class="chats"></div>' +
                                             '<div class="chat-text">' +
                                                 '<input type="text" class="mention" placeholder="Say Something..." id="chattext" onkeyup="sendChat(event, this);"  />' +
-                                                //'<input type="button" value="Send" id="sendChat" />' +
+                                            //'<input type="button" value="Send" id="sendChat" />' +
                                             '</div>' +
                                        '</div>';
                         $('.all-chats').append(strChat);
@@ -866,23 +899,12 @@
                             }
                         });
                         // Load User's list on right panel
-                        bindChatUsers(data.Results);
+                        bindChatUsers(data);
                     }
                 }
             });
         }
-        //function loadChatUsers(sender) {
-        //    ajaxExt({
-        //        url: '/WebServices/JGWebService.asmx/GetChatUsers',
-        //        type: 'POST',
-        //        data: '{  }',
-        //        showThrobber: false,
-        //        //throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
-        //        success: function (data, msg) {
-        //            bindChatUsers(data);
-        //        }
-        //    });
-        //}
+
         function bindChatUsers(data) {
             if (data.Results.length > 0) {
                 // Get this(logged in user) from Cookie
@@ -890,16 +912,58 @@
                 var str = '';
                 $.each(data.Results, function (i) {
                     // remove this(loggedin) user from lits
-                    if (loggedInUserId != data.Results[i].id) {
-                        str += '<div class="user-row" uid="' + data.Results[i].id + '" onclick="InitiateChat(this, ' + data.Results[i].id + ')">' +
-                                '<div class="profile">' +
-                                    '<img src="<%=baseUrl %>' + data.Results[i].avatar + '" title="">' +
-                                    '<div class="status-icon"></div>' +
-                                '</div>' +
-                                '<div class="name">' + data.Results[i].name + '</div></div>';
+                    if (loggedInUserId != data.Results[i].UserId) {
+                        var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
+                        var chatStatus = data.Results[i].Status == '1' ? 'active' : 'idle';
+                        str += '<div title="' + data.Results[i].Email + '" class="user-row" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, ' + data.Results[i].UserId + ')">' +
+                                    '<div class="profile">' +
+                                        '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '" title="">' +
+                                        '<div class="status-icon ' + chatStatus + '"></div>' +
+                                        '<div class="installid"><a href="#">' + data.Results[i].UserInstallId + '</a></div>' +
+                                    '</div>' +
+                                    '<div class="contents" online-at="' + data.Results[i].OnlineAtFormatted + '">' +
+                                        '<div class="top"><div class="name">' + data.Results[i].FirstName + ' ' + data.Results[i].LastName + '</div><div class="time">' + (data.Results[i].LastMessageAtFormatted == null ? '' : data.Results[i].LastMessageAtFormatted.split(' ')[0]) + '</div></div>' +
+                                        '<div class="msg-container">' +
+                                            (data.Results[i].LastMessageAtFormatted == null ? '' :
+                                            '<div class="tick"><img src="../img/' + clr + '-tick.png"></div>') +
+                                            '<div class="msg">' + data.Results[i].LastMessage + '</div>' +
+                                        '</div>' +
+                                    '</div></div>';
                     }
                 });
                 $('.chat-users-section .list').html(str);
+                // Bind Top Right Corner user list
+                str = '';
+                $.each(data.Results, function (i) {
+                    // remove this(loggedin) user from lits
+                    if (loggedInUserId != data.Results[i].UserId) {
+                        var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
+                        var chatStatus = data.Results[i].Status == '1' ? 'active' : 'idle';
+                        str += '<div class="row">' +
+	                            '<div class="user-image">' +
+		                            '<div class="img">' +
+			                            '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '"></div>' +
+		                            '<div class="status-icon ' + chatStatus + '"></div>' +
+		                            '<div class="installid"><a href="#">' + data.Results[i].UserInstallId + '</a></div>' +
+                                '</div>' +
+	                            '<div class="contents">' +
+		                            '<div class="top"><div class="name">' + data.Results[i].FirstName + ' ' + data.Results[i].LastName + '</div><div class="time">' + (data.Results[i].LastMessageAtFormatted == null ? '' : data.Results[i].LastMessageAtFormatted.split(' ')[0]) + '</div></div>' +
+		                            '<div class="msg-container">' +
+                                        (data.Results[i].LastMessageAtFormatted == null ? '' :
+			                            '<div class="tick"><img src="../img/' + clr + '-tick.png"></div>') +
+                                    '<div class="msg">' + data.Results[i].LastMessage + '</div>' +
+			                            '<div class="counter">3</div>' +
+		                            '</div>' +
+	                            '</div>' +
+	                            '<div class="caller">' +
+		                            '<div class="phone"><i class="fa fa-phone" aria-hidden="true"></i></div>' +
+		                            '<div class="email"><i class="fa fa-envelope" aria-hidden="true"></i></div>' +
+		                            '<div class="video"><i class="fa fa-video-camera" aria-hidden="true"></i></div>' +
+	                            '</div>' +
+                            '</div>';
+                    }
+                });
+                $('.header-msg').html(str);
             } else {
                 $('.chat-users-section .list').html('<div class="no-user">No one is online!!!<div>');
             }
