@@ -595,7 +595,7 @@ form.inline {
         list-style-type: none;
         margin: 10px 0 0 0;
         padding: 0;
-        float: left;
+        float: right;
         font-size: 12px;
     }
 
@@ -2852,8 +2852,12 @@ ul.auto-complete-users {
     float: left;
     width: 135px;
     padding: 2px 0;color: #000;
-    font-weight: bold;
+    font-weight: bold;overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
+  .header-msg .no-user{text-align: center;
+    padding: 10px;}
  .header-msg .row .contents .top .time{
     float: right;
     width:50px;
@@ -2885,4 +2889,4 @@ ul.auto-complete-users {
 .designation-container {
     margin-left: 61px;
     display:none;
-}
+}.red{color:red !important;}

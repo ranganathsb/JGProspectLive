@@ -625,8 +625,8 @@
     <div id="MainThrobberImage" style="position: absolute; z-index: 99999999999999; display: none;">
         <img alt="throbber" src="../img/ajax-loader.gif" />
     </div>
-    <div class="telecom-dashboard-popup">
-        <div class="header">Phone dashboard<span class="close" onclick="closeTelecomPopup(this)"><i class="fa fa-times-circle" aria-hidden="true"></i></span></div>
+    <div class="telecom-dashboard-popup fullscreen-chat">
+        <div class="header"><span class="popup-title">ALL-Telecom Dashboard</span><span class="close" onclick="closeTelecomPopup(this)"><i class="fa fa-times-circle" aria-hidden="true"></i></span></div>
         <div class="column1">
             <div class="dialer-section">
                 <img src="../img/dialer.PNG" />
@@ -688,8 +688,10 @@
         minimize = function (sender) {
             if ($(sender).parents('.telecom-dashboard-popup').hasClass('fullscreen-chat')) {
                 $(sender).parents('.telecom-dashboard-popup').removeClass('fullscreen-chat');
+                $('.popup-title').html('ALL-Telecom Dashboard');
             } else {
                 $(sender).parents('.telecom-dashboard-popup').addClass('fullscreen-chat');
+                $('.popup-title').html('Chat Dashboard');
             }
         }
         closechat = function (sender) {
@@ -725,9 +727,9 @@
             var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
                                         '<div class="header"><span class="group-name">' + name +
                                             '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
-                                            '<span class="minimize" onclick="minimize(this)"><i class="fa fa-minus" aria-hidden="true"></i></span></div>' +
+                                            '<span class="minimize" onclick="minimize(this)"><img src="../img/min-max.jpg" /></span></div>' +
                                         '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
-                                        '<div class="chats"></div>' +
+                                        '<div class="chats watermark-logo"></div>' +
                                         '<div class="chat-text">' +
                                             '<input type="text" class="mention" placeholder="Say Something..." id="chattext" onkeyup="sendChat(event, this);" />' +
                                             //'<input type="button" value="Send" id="sendChat" />' +
@@ -750,7 +752,7 @@
             // Identify sender/receiver
             var loggedInUserId = getCookie('<%=JG_Prospect.Common.Cookies.UserId%>');
             var senderReceiver = loggedInUserId == data.Object.UserId ? 'sender' : 'receiver';
-            var str = '<div class="chat-row ' + senderReceiver + '"><div class="profile">' +
+            var str = '<div class="chat-row ' + senderReceiver + '" userid="' + data.Object.UserId + '"><div class="profile">' +
                             '<img src="<%=baseUrl %>' + data.Object.UserProfilePic + '" title="' + data.Object.UserFullname + '" />' +
                             '<div class="status-icon"></div><div class="installid">' +
                                 '<a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Object.UserId + '">' + data.Object.UserInstallId + '</a></div>' +
@@ -792,6 +794,7 @@
             $('audio.chat-notification-sound').remove();
             if (loggedInUserId != data.Object.UserId) {
                 $('body').append('<audio autoplay class="chat-notification-sound"><source src="../Chat/chat-notification.mp3"><source src="../Chat/chat-notification.ogg"></audio>');
+                PageTitleNotification.Off();
                 PageTitleNotification.On('New Message!!!', 1000);
             }
         };
@@ -816,6 +819,9 @@
         chat.client.setChatUserStatusToIdleCallback = function (data) {
             bindChatUsers(data);
         }
+        chat.client.setChatMessageReadCallback = function (data) {
+            SetChatMessageRead(data);
+        }
 
         var timer = null;
         $(document).on('mousemove', function () {
@@ -832,6 +838,16 @@
                     chat.server.setChatUserStatusToIdle('<%= (int)JG_Prospect.Common.ChatUserStatus.Idle %>');
                     userChatStatus = '<%= (int)JG_Prospect.Common.ChatUserStatus.Idle %>';
                 }, 10000);
+            }
+            // Set Message Read Status
+            if ($('#chattext').is(':focus')) {
+                var rows = $('.chat-box .chats').find('.chat-row').length;
+                var read = $('.chat-box .chats .chat-row').find('.tick.read').length;
+                if (rows != read) {
+                    console.log('Set Message Read Status');
+                    var chatGrpId = $('#chattext').parents('.chat-box').find('#ChatGroupId').val();
+                    chat.server.setChatMessageRead(chatGrpId);
+                }
             }
         });
     </script>
@@ -868,9 +884,9 @@
                         var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
                                             '<div class="header"><span class="group-name">' + name +
                                                 '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
-                                                '<span class="minimize" onclick="minimize(this)"><i class="fa fa-minus" aria-hidden="true"></i></span></div>' +
+                                                '<span class="minimize" onclick="minimize(this)"><img src="../img/min-max.jpg" /></span></div>' +
                                             '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
-                                            '<div class="chats"></div>' +
+                                            '<div class="chats watermark-logo"></div>' +
                                             '<div class="chat-text">' +
                                                 '<input type="text" class="mention" placeholder="Say Something..." id="chattext" onkeyup="sendChat(event, this);"  />' +
                                             //'<input type="button" value="Send" id="sendChat" />' +
@@ -906,7 +922,7 @@
         }
 
         function bindChatUsers(data) {
-            if (data.Results.length > 0) {
+            if (data.Results.length > 1) {
                 // Get this(logged in user) from Cookie
                 var loggedInUserId = getCookie('<%=JG_Prospect.Common.Cookies.UserId%>');
                 var str = '';
@@ -965,8 +981,18 @@
                 });
                 $('.header-msg').html(str);
             } else {
-                $('.chat-users-section .list').html('<div class="no-user">No one is online!!!<div>');
+                $('.chat-users-section .list').html('<div class="no-user">No one is online!!!</div>');
+                $('.header-msg').html('<div class="no-user">No one is online!!!</div>');
             }
+        }
+
+        function SetChatMessageRead(data) {
+            var chatGroupId = data.Object;
+            var users = data.Message.split(',');
+            $(users).each(function (i) {
+                $('#' + chatGroupId).find('.chat-row[userid="' + users[i] + '"]').find('.tick img').attr('src', '../img/blue-tick.png');
+                $('#' + chatGroupId).find('.chat-row[userid="' + users[i] + '"]').find('.tick').addClass('read');
+            });
         }
     </script>
 </body>

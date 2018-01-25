@@ -412,3 +412,51 @@ BEGIN
 			O.IsRead, U.FristName as FirstName, U.LastName, U.Email, U.UserInstallId, U.Picture  
 	From #OnlineUsers O Join tblInstallUsers U With(NoLock)  On O.UserId = U.Id  
 END
+
+GO
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'SetChatMessageRead' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE SetChatMessageRead
+  END
+Go
+ -- =============================================        
+-- Author:  Jitendra Pancholi        
+-- Create date: 27 Nov 2017     
+-- Description: Get a list of top 5 users by starts with name, email   
+-- =============================================      
+/*  
+	SetChatMessageRead 31, 3797  
+*/  
+Create PROCEDURE SetChatMessageRead  
+	@ChatMessageId int  ,
+	@ReceiverId int
+AS      
+BEGIN
+	Update ChatMessageReadStatus Set IsRead = 1
+		Where ChatMessageId = @ChatMessageId And ReceiverId = @ReceiverId
+End
+
+GO
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'SetChatMessageReadByChatGroupId' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE SetChatMessageReadByChatGroupId
+  END
+Go
+ -- =============================================        
+-- Author:  Jitendra Pancholi        
+-- Create date: 27 Nov 2017     
+-- Description: Get a list of top 5 users by starts with name, email   
+-- =============================================      
+/*  
+	SetChatMessageReadByChatGroupId 31, 3797  
+*/  
+Create PROCEDURE SetChatMessageReadByChatGroupId  
+	@ChatGroupId Varchar(100)  ,
+	@ReceiverId int
+AS      
+BEGIN
+	UPDATE S Set IsRead = 1
+	From ChatMessageReadStatus S
+		Join ChatMessage M On S.ChatMessageId = M.Id 
+		Where M.ChatGroupId = @ChatGroupId  And S.ReceiverId = @ReceiverId
+End

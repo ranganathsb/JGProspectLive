@@ -375,6 +375,48 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public ActionOutput SetChatMessageRead(int ChatMessageId, int ReceiverId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("SetChatMessageRead");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@ChatMessageId", DbType.Int32, ChatMessageId);
+                    database.AddInParameter(command, "@ReceiverId", DbType.Int32, ReceiverId);
+                    database.ExecuteScalar(command);
+                    return new ActionOutput { Status = ActionStatus.Successfull };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput { Status = ActionStatus.Error, Message = ex.Message };
+            }
+        }
+
+        public ActionOutput SetChatMessageRead(string ChatGroupId, int ReceiverId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("SetChatMessageReadByChatGroupId");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@ChatGroupId", DbType.String, ChatGroupId);
+                    database.AddInParameter(command, "@ReceiverId", DbType.Int32, ReceiverId);
+                    database.ExecuteScalar(command);
+                    return new ActionOutput { Status = ActionStatus.Successfull };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput { Status = ActionStatus.Error, Message = ex.Message };
+            }
+        }
+
         public int GetChatUserCount()
         {
             try

@@ -1,4 +1,5 @@
-﻿using JG_Prospect.BLL;
+﻿using Humanizer;
+using JG_Prospect.BLL;
 using JG_Prospect.Common;
 using JG_Prospect.Common.modal;
 using Microsoft.AspNet.SignalR;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Web;
 
 namespace JG_Prospect.Chat.Hubs
@@ -15,8 +17,7 @@ namespace JG_Prospect.Chat.Hubs
     public class ChatHub : Hub
     {
         #region---Data Members---
-        static List<UserDetail> ConnectedUsers = new List<UserDetail>();
-        static List<MessageDetail> CurrentMessage = new List<MessageDetail>();
+        private Timer _timer;
         #endregion
 
         public void SendChatMessage(string chatGroupId, string message, int chatSourceId)
@@ -26,7 +27,7 @@ namespace JG_Prospect.Chat.Hubs
                 System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
                 // Getting Logged In UserID from cookie. 
                 // FYI: Sessions are not allowed in SignalR, so have to user some other way to pass information
-                int UserId = 0; 
+                int UserId = 0;
                 HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
                 if (auth_cookie != null)
                     UserId = Convert.ToInt32(auth_cookie.Value);
@@ -209,18 +210,8 @@ namespace JG_Prospect.Chat.Hubs
             ChatUser user = ChatBLL.Instance.GetChatUser(clientId).Object;
             ChatBLL.Instance.DeleteChatUser(clientId);
 
-            // Update ActiveUsers in SingletonUserChatGroups
-            if (user.OnlineAt.HasValue)
-            {
-                // User is still online in some other browser or tab
-                // So remove the connection Id only which is already taken care in SendChatMessage method above
-                // So no need to do it again
-            }
-            else
-            {
-                // User is offline
-                SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(user.UserId).Results;
-            }
+            // User is offline
+            SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(user.UserId).Results;
 
             string[] Exceptional = new string[1];
             Exceptional[0] = clientId;
@@ -246,7 +237,7 @@ namespace JG_Prospect.Chat.Hubs
         public void getOnlineChatUsers()
         {
             System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
-            int UserId = 0; 
+            int UserId = 0;
             HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
             if (auth_cookie != null)
                 UserId = Convert.ToInt32(auth_cookie.Value);
@@ -293,6 +284,29 @@ namespace JG_Prospect.Chat.Hubs
             {
                 Status = ActionStatus.Successfull,
                 Results = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList()
+            });
+        }
+
+        public void SetChatMessageRead(string ChatGroupId)
+        {
+            System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
+            int UserId = 0;
+            HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
+            if (auth_cookie != null)
+                UserId = Convert.ToInt32(auth_cookie.Value);
+            ChatBLL.Instance.SetChatMessageRead(ChatGroupId, UserId);
+            List<int> userIds = SingletonUserChatGroups.Instance.ChatGroups
+                                                                .Where(m => m.ChatGroupId == ChatGroupId)
+                                                                .FirstOrDefault()
+                                                                .ChatUsers
+                                                                .Where(m => m.UserId != UserId)
+                                                                .Select(m => m.UserId)
+                                                                .ToList();
+            Clients.Group(ChatGroupId).SetChatMessageReadCallback(new ActionOutput<string>
+            {
+                Status = ActionStatus.Successfull,
+                Object = ChatGroupId,
+                Message = string.Join(",", userIds)
             });
         }
     }

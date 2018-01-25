@@ -48,6 +48,16 @@ namespace JG_Prospect.BLL
             return ChatDAL.Instance.GetOnlineUsers(LoggedInUserId);
         }
 
+        public ActionOutput SetChatMessageRead(int ChatMessageId, int ReceiverId)
+        {
+            return ChatDAL.Instance.SetChatMessageRead(ChatMessageId, ReceiverId);
+        }
+
+        public ActionOutput SetChatMessageRead(string ChatGroupId, int ReceiverId)
+        {
+            return ChatDAL.Instance.SetChatMessageRead(ChatGroupId, ReceiverId);
+        }
+
         public int GetChatUserCount()
         {
             return ChatDAL.Instance.GetChatUserCount();
