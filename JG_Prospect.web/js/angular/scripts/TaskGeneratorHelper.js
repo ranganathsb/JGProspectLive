@@ -13,6 +13,7 @@
 function LoadSubTasks() {
 
     //Set Params
+    sequenceScopeTG.getAssignUser();
     sequenceScopeTG.UserSelectedDesigIds = "";
 
     //Get Page Size
@@ -140,7 +141,46 @@ function updateMultiLevelChild(tid, desc, autosave) {
         });
     }
 }
+function OnSaveSubTaskPopup(taskid, desc) {
 
+    var installID = $('#listId' + taskid).attr('data-listid');
+    var TaskLvl = $('#nestLevel' + taskid).val();
+    var Class = $('#listId' + taskid).attr('data-label');
+
+    if (desc != undefined && desc.trim() != '') {
+
+        ShowAjaxLoader();
+        if (TaskLvl == '') TaskLvl = 1;
+
+        var postData = {
+            ParentTaskId: taskid,
+            InstallId: installID,
+            Description: desc,
+            IndentLevel: TaskLvl,
+            Class: Class
+        };
+
+        CallJGWebService('SaveTaskMultiLevelChild', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
+
+        function OnAddNewSubTaskSuccess(data) {
+            if (data.d == true) {
+                HideAjaxLoader();
+                PreventScroll = 1;
+
+                SetupChildInfo(taskid);
+                //alert('Task saved successfully.');
+            }            
+        }
+
+        function OnAddNewSubTaskError(err) {
+            alert('Task cannot be saved. Please try again.');
+        }
+
+        
+    }
+    return false;
+
+}
 function OnSaveSubTask(taskid, desc) {
 
     var installID = $('#listId' + taskid).attr('data-listid');

@@ -1248,6 +1248,39 @@ namespace JG_Prospect.DAL
 
         }
 
+        public bool DeleteSubTaskChild(int Id)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_DeleteSubTaskChild");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", SqlDbType.BigInt, Id);
+
+                    int result = database.ExecuteNonQuery(command);
+
+
+
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
         public bool SaveOrDeleteTaskUserFiles(TaskUser objTaskUser)
         {
             try
@@ -1412,6 +1445,31 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@StartDate", DbType.Date, StartDate);
                     database.AddInParameter(command, "@EndDate", DbType.Date, EndDate);
                     database.AddInParameter(command, "@userid", DbType.String, userid);
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetTaskMultilevelChildInfo(int TaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("usp_GetTaskMultilevelChildInfo");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+
+
                     returndata = database.ExecuteDataSet(command);
 
                     return returndata;
