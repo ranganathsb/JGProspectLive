@@ -486,6 +486,19 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public bool DeleteTaskUserFile(int AttachmentId)
+        {
+            bool blSuccess = false;
+
+            if (TaskGeneratorBLL.Instance.DeleteTaskUserFile(AttachmentId))
+            {
+                blSuccess = true;
+            }
+
+            return blSuccess;
+        }
+
+        [WebMethod(EnableSession = true)]
         public int UpdateTaskWorkSpecificationStatusById(Int64 intId, string strPassword)
         {
             if (strPassword.Equals(Convert.ToString(Session["loginpassword"])))
@@ -578,7 +591,30 @@ namespace JG_Prospect.WebServices
                 dtResult.Tables[0].TableName = "File";
                 System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
                 doc.LoadXml(dtResult.GetXml());
-                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+                strMessage = JsonConvert.SerializeXmlNode(doc);//.Replace("null", "\"\"").Replace("'", "\'");
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public String GetTaskMultilevelChildInfo(int ParentTaskId)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = null;
+
+            dtResult = TaskGeneratorBLL.Instance.GetTaskMultilevelChildInfo(ParentTaskId);
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                dtResult.DataSetName = "ChildInfoDS";
+                dtResult.Tables[0].TableName = "Info";
+                System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                doc.LoadXml(dtResult.GetXml());
+                strMessage = JsonConvert.SerializeXmlNode(doc);//.Replace("null", "\"\"").Replace("'", "\'");
             }
             else
             {
@@ -654,9 +690,9 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public object AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl, bool blTechTask, Int64? Sequence)
+        public object AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, int[] TaskAssignedUsers ,string TaskLvl, bool blTechTask, Int64? Sequence)
         {
-            return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations, TaskLvl, blTechTask, Sequence);
+            return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations, TaskAssignedUsers, TaskLvl, blTechTask, Sequence);
         }
 
         [WebMethod(EnableSession = true)]
@@ -704,7 +740,7 @@ namespace JG_Prospect.WebServices
             else
             {
 
-                string[] roman4 = { "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii" };
+                string[] roman4 = { "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix", "x", "xi", "xii", "xiii", "xiv", "xv", "xvi", "xvii", "xviii", "xix", "xx" };
                 DataSet result = new DataSet();
                 result = TaskGeneratorBLL.Instance.GetTaskByMaxId(TaskLvlandInstallId[2], short.Parse(hdTaskLvl));
                 string vNextInstallId = "";
@@ -894,7 +930,7 @@ namespace JG_Prospect.WebServices
                 dtResult.Tables[1].TableName = "RecordCount";
                 System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
                 doc.LoadXml(dtResult.GetXml());
-                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+                strMessage = JsonConvert.SerializeXmlNode(doc);//.Replace("null", "\"\"").Replace("'", "\'");
             }
             else
             {
@@ -917,7 +953,7 @@ namespace JG_Prospect.WebServices
                 dtResult.Tables[0].TableName = "Children";
                 System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
                 doc.LoadXml(dtResult.GetXml());
-                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+                strMessage = JsonConvert.SerializeXmlNode(doc);//.Replace("null", "\"\"").Replace("'", "\'");
             }
             else
             {
@@ -997,10 +1033,17 @@ namespace JG_Prospect.WebServices
             if (dtResult != null && dtResult.Tables.Count > 0)
             {
                 #region Get Next Install ID
-                string[] subtaskListIDSuggestion = CommonFunction.getSubtaskSequencing(dtResult.Tables[4].Rows[0][0].ToString());
-                if (subtaskListIDSuggestion.Length > 0)
+                if (dtResult.Tables[4].Rows.Count > 0)
                 {
-                    dtResult.Tables[4].Rows[0][0] = subtaskListIDSuggestion[0];
+                    string[] subtaskListIDSuggestion = CommonFunction.getSubtaskSequencing(dtResult.Tables[4].Rows[0][0].ToString());
+                    if (subtaskListIDSuggestion.Length > 0)
+                    {
+                        dtResult.Tables[4].Rows[0][0] = subtaskListIDSuggestion[0];
+                    }
+                }
+                else
+                {
+                    //dtResult.Tables[4].Rows[0][0] = "I";
                 }
                 #endregion
 
@@ -1012,7 +1055,7 @@ namespace JG_Prospect.WebServices
 
                 System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
                 doc.LoadXml(dtResult.GetXml());
-                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+                strMessage = JsonConvert.SerializeXmlNode(doc);//.Replace("null", "\"\"").Replace("'", "\'");
             }
 
             return strMessage;
@@ -1147,7 +1190,7 @@ namespace JG_Prospect.WebServices
 
                 System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
                 doc.LoadXml(dtResult.GetXml());
-                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+                strMessage = JsonConvert.SerializeXmlNode(doc);//.Replace("null", "\"\"").Replace("'", "\'");
 
 
                 //strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
@@ -1189,7 +1232,7 @@ namespace JG_Prospect.WebServices
 
                 System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
                 doc.LoadXml(dtResult.GetXml());
-                strMessage = JsonConvert.SerializeXmlNode(doc).Replace("null", "\"\"").Replace("'", "\'");
+                strMessage = JsonConvert.SerializeXmlNode(doc);//.Replace("null", "\"\"").Replace("'", "\'");
 
 
                 //strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
@@ -1415,7 +1458,18 @@ namespace JG_Prospect.WebServices
             return ReturnSequence;
         }
 
-        private object SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, string TaskLvl, bool blTechTask, Int64? Sequence)
+        [WebMethod]
+        public object DeleteSubTaskChild(int ChildId)
+        {
+            var result = new
+            {
+                Success = TaskGeneratorBLL.Instance.DeleteSubTaskChild(ChildId)
+            };
+
+            return result;
+        }
+
+        private object SaveSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, int[] TaskAssignedUsers, string TaskLvl, bool blTechTask, Int64? Sequence)
         {
             bool blnReturnVal = false;
             Task objTask = null;
@@ -1466,10 +1520,14 @@ namespace JG_Prospect.WebServices
             {
                 // save assgined designation.
                 SaveTaskDesignations(TaskId, InstallID.Trim(), TaskDesignations);
-
+                SaveAssignedTaskUsers(int.Parse(TaskId.ToString()), 1/*OpenStatus*/, TaskAssignedUsers, null);
                 // save attached file by user to database.
                 UploadUserAttachements(Convert.ToInt64(TaskId), Attachments, JGConstant.TaskFileDestination.SubTask);
 
+                blnReturnVal = true;
+            }
+            if (TaskId > 0)
+            {
                 blnReturnVal = true;
             }
             var result = new

@@ -1325,7 +1325,6 @@ namespace JG_Prospect.App_Code
             {
                 ProfileUpdateRequired = false;
             }
-
             return ProfileUpdateRequired;
         }
 

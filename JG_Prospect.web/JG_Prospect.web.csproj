@@ -1567,6 +1567,7 @@
     <Content Include="Database Scripts\Kapil\Executed_3.sql" />
     <Content Include="Database Scripts\Kapil\Executed_4.sql" />
     <Content Include="Database Scripts\Kapil\Latest.sql" />
+    <Content Include="Database Scripts\Kapil\Executed_5.sql" />
     <Content Include="Database Scripts\Kapil\Executed_2.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\Database Script.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\03-04-2017.sql" />
@@ -1936,6 +1937,7 @@
     <Content Include="img\ContractHeader.jpg" />
     <Content Include="img\controls.png" />
     <Content Include="img\dialer.PNG" />
+    <Content Include="img\delete.jpg" />
     <Content Include="img\Email art header.png" />
     <Content Include="img\Email footer.png" />
     <Content Include="img\excel-icon.png" />
@@ -2056,6 +2058,7 @@
     <Content Include="js\angular\scripts\edituser-angular.js" />
     <Content Include="js\angular\scripts\TaskGenerator.js" />
     <Content Include="js\angular\scripts\TaskGeneratorHelper.js" />
+    <Content Include="js\angular\scripts\TaskPopupHelper.js" />
     <Content Include="js\angular\scripts\TaskSequence-UiGrid.js" />
     <Content Include="js\angular\templates\sequence-header-template.html" />
     <Content Include="js\angular\templates\pager-template.html" />

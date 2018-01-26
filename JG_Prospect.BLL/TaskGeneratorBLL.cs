@@ -101,6 +101,11 @@ namespace JG_Prospect.BLL
         }
 
         #endregion
+        public bool DeleteSubTaskChild(int Id)
+        {
+            return TaskGeneratorDAL.Instance.DeleteSubTaskChild(Id);
+        }
+
         public Int64 SaveOrDeleteTask(Task objTask, int TaskLevel, int maintaskid)
         {
             return TaskGeneratorDAL.Instance.SaveOrDeleteTask(objTask, TaskLevel, maintaskid);
@@ -201,6 +206,11 @@ namespace JG_Prospect.BLL
         public DataSet GetTaskUserFileByFileName(string FileName)
         {
             return TaskGeneratorDAL.Instance.GetTaskUserFileByFileName(FileName);
+        }
+
+        public DataSet GetTaskMultilevelChildInfo(int TaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskMultilevelChildInfo(TaskId);
         }
 
         public DataSet GetCalendarTasksByDate(string StartDate, string EndDate, string userid)
