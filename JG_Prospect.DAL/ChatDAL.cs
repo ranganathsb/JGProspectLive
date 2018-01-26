@@ -477,5 +477,55 @@ namespace JG_Prospect.DAL
             {
             }
         }
+
+        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId)
+        {
+            try
+            {
+                List<ChatMessage> messages = new List<ChatMessage>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetChatMessages");
+                    database.AddInParameter(command, "@ChatGroupId", DbType.String, ChatGroupId);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            // DataRow item = returndata.Tables[0].Rows[0];
+                            string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                    : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
+                            messages.Add(new ChatMessage
+                            {
+                                UserId = Convert.ToInt32(item["SenderId"].ToString()),
+                                Message = item["TextMessage"].ToString(),
+                                ChatSourceId = Convert.ToInt32(item["ChatSourceId"].ToString()),
+                                UserProfilePic = pic,
+                                UserInstallId = item["UserInstallId"].ToString(),
+                                UserFullname = item["Fullname"].ToString(),
+                                MessageAt = Convert.ToDateTime(item["CreatedOn"].ToString()),
+                                MessageAtFormatted = Convert.ToDateTime(item["CreatedOn"].ToString()).ToString()
+                            });
+                        }
+                    }
+                    return new ActionOutput<ChatMessage>
+                    {
+                        Results = messages,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<ChatMessage>
+                {
+                    Message = ex.Message,
+                    Status = ActionStatus.Error
+                };
+            }
+        }
     }
 }

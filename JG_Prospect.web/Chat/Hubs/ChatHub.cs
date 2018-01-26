@@ -25,6 +25,9 @@ namespace JG_Prospect.Chat.Hubs
             try
             {
                 System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
+                string baseurl = httpContext.Request.Url.Scheme + "://" +
+                                    httpContext.Request.Url.Authority +
+                                    httpContext.Request.ApplicationPath.TrimEnd('/') + "/";
                 // Getting Logged In UserID from cookie. 
                 // FYI: Sessions are not allowed in SignalR, so have to user some other way to pass information
                 int UserId = 0;
@@ -84,6 +87,8 @@ namespace JG_Prospect.Chat.Hubs
                 foreach (var item in chatGroup.ChatUsers.Where(m => !m.OnlineAt.HasValue))
                 {
                     // Send Chat Notification Email
+                    ChatBLL.Instance.SendOfflineChatEmail(UserId, item.UserId, sender["UserInstallID"].ToString(),
+                                                            chatMessage.Message, chatSourceId, baseurl, chatGroupId);
                 }
 
                 // Saving chat into database
@@ -295,13 +300,17 @@ namespace JG_Prospect.Chat.Hubs
             if (auth_cookie != null)
                 UserId = Convert.ToInt32(auth_cookie.Value);
             ChatBLL.Instance.SetChatMessageRead(ChatGroupId, UserId);
-            List<int> userIds = SingletonUserChatGroups.Instance.ChatGroups
-                                                                .Where(m => m.ChatGroupId == ChatGroupId)
-                                                                .FirstOrDefault()
-                                                                .ChatUsers
-                                                                .Where(m => m.UserId != UserId)
-                                                                .Select(m => m.UserId)
-                                                                .ToList();
+            List<int> userIds = new List<int>();
+            if (SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == ChatGroupId).Any())
+            {
+                userIds = SingletonUserChatGroups.Instance.ChatGroups
+                                                                    .Where(m => m.ChatGroupId == ChatGroupId)
+                                                                    .FirstOrDefault()
+                                                                    .ChatUsers
+                                                                    .Where(m => m.UserId != UserId)
+                                                                    .Select(m => m.UserId)
+                                                                    .ToList();
+            }
             Clients.Group(ChatGroupId).SetChatMessageReadCallback(new ActionOutput<string>
             {
                 Status = ActionStatus.Successfull,

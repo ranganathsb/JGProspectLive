@@ -626,7 +626,7 @@
         <img alt="throbber" src="../img/ajax-loader.gif" />
     </div>
     <div class="telecom-dashboard-popup fullscreen-chat">
-        <div class="header"><span class="popup-title">ALL-Telecom Dashboard</span><span class="close" onclick="closeTelecomPopup(this)"><i class="fa fa-times-circle" aria-hidden="true"></i></span></div>
+        <div class="header"><span class="popup-title">Chat Dashboard</span><span class="close" onclick="closeTelecomPopup(this)"><i class="fa fa-times-circle" aria-hidden="true"></i></span></div>
         <div class="column1">
             <div class="dialer-section">
                 <img src="../img/dialer.PNG" />
@@ -837,7 +837,7 @@
                 timer = setTimeout(function () {
                     chat.server.setChatUserStatusToIdle('<%= (int)JG_Prospect.Common.ChatUserStatus.Idle %>');
                     userChatStatus = '<%= (int)JG_Prospect.Common.ChatUserStatus.Idle %>';
-                }, 10000);
+                }, 900000);
             }
             // Set Message Read Status
             if ($('#chattext').is(':focus')) {
@@ -921,6 +921,97 @@
             });
         }
 
+        function InitiateOldChat(sender, userId, ChatGroupId) {
+            ajaxExt({
+                url: '/WebServices/JGWebService.asmx/InitiateOldChat',
+                type: 'POST',
+                data: '{ userID: ' + userId + ', ChatGroupId:"' + ChatGroupId + '" }',
+                showThrobber: true,
+                throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                success: function (data, msg) {
+                    debugger;
+                    // Close Previous Chat
+                    var chat = $('.chat-container .chat-box').find('span.close');
+                    closechat(chat);;
+                    var id = data.Object.ChatGroupId;
+                    var name = data.Object.ChatGroupName;
+                    //$('.chat-container').show();
+                    if ($('#' + id).length <= 0) {
+                        $('.telecom-dashboard-popup').show();
+                        $('.overlay').show();
+                        // Calculate Center
+                        var sW = $(window).width();
+                        var pW = $('.telecom-dashboard-popup').width();
+                        var sH = $(window).height();
+                        var pH = $('.telecom-dashboard-popup').height();
+                        $('.telecom-dashboard-popup').css({ 'left': ((sW / 2) - (pW / 2)) + 'px', 'top': ((sH / 2) - (pH / 2)) + 'px' });
+                        window.scrollTo(0, 0);
+                        var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
+                                            '<div class="header"><span class="group-name">' + name +
+                                                '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
+                                                '<span class="minimize" onclick="minimize(this)"><img src="../img/min-max.jpg" /></span></div>' +
+                                            '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
+                                            '<div class="chats watermark-logo"></div>' +
+                                            '<div class="chat-text">' +
+                                                '<input type="text" class="mention" placeholder="Say Something..." id="chattext" onkeyup="sendChat(event, this);"  />' +
+                                            //'<input type="button" value="Send" id="sendChat" />' +
+                                            '</div>' +
+                                       '</div>';
+                        $('.all-chats').append(strChat);
+                        // Append Old chats
+                        // Identify sender/receiver
+                        var loggedInUserId = getCookie('<%=JG_Prospect.Common.Cookies.UserId%>');
+                        var str = '';
+                        $(data.Object.ChatMessages).each(function (i) {
+                            var senderReceiver = loggedInUserId == data.Object.ChatMessages[i].UserId ? 'sender' : 'receiver';
+                            str += '<div class="chat-row ' + senderReceiver + '" userid="' + data.Object.ChatMessages[i].UserId + '"><div class="profile">' +
+                                            '<img src="<%=baseUrl %>' + data.Object.ChatMessages[i].UserProfilePic + '" title="' + data.Object.ChatMessages[i].UserFullname + '" />' +
+                                        '<div class="status-icon"></div><div class="installid">' +
+                                            '<a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Object.ChatMessages[i].UserId + '">' + data.Object.ChatMessages[i].UserInstallId + '</a></div>' +
+                                    '</div>' +
+                                    '<div class="message"><div class="msg">' + data.Object.ChatMessages[i].Message + '</div>' +
+                                    '<div class="time-container"><div class="tick">' +
+                                        '<img src="../img/grey-tick.png" /> </div>' +
+                                        '<div class="time">' + data.Object.ChatMessages[i].MessageAtFormatted + '</div>' +
+                                        '<div class="est">(EST)</div> </div>' +
+                                    '</div></div>';
+                        });
+                        $('.chat-box#' + id + ' .chats').append(str);
+                        //$('.chat-box .chats').scrollTop(d.prop("scrollHeight"));
+                        $('.chat-box#' + id + ' .chats').animate({ scrollTop: $('.chat-box#' + id + ' .chats').prop("scrollHeight") }, 500);
+
+
+                        // reset existing @mention and add new @mention support 
+                        $('input.mention').parent().find('.mentions').remove();
+                        $('input.mention').parent().find('.mentions-autocomplete-list').remove();
+                        $('input.mention').mentionsInput({
+                            onDataRequest: function (mode, query, callback) {
+                                ajaxExt({
+                                    url: '/WebServices/JGWebService.asmx/GetUsers',
+                                    type: 'POST',
+                                    data: '{ keyword: "' + query + '", chatGroupId:"' + userTobeAddedIntoChatGroupId + '" }',
+                                    showThrobber: true,
+                                    throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
+                                    success: function (data, msg) {
+                                        responseData = data.Results;
+                                        responseData = _.filter(responseData, function (item) {
+                                            return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
+                                        });
+                                        callback.call(this, responseData);
+                                    }
+                                });
+                            }
+                        });
+                        // Load User's list on right panel
+                        var userObj = {
+                            Results: data.Object.ActiveUsers
+                        }
+                        bindChatUsers(userObj);
+                    }
+                }
+            });
+        }
+
         function bindChatUsers(data) {
             if (data.Results.length > 1) {
                 // Get this(logged in user) from Cookie
@@ -945,20 +1036,20 @@
                                             '<div class="msg">' + data.Results[i].LastMessage + '</div>' +
                                         '</div>' +
                                     '</div></div>';
-                    }
-                });
-                $('.chat-users-section .list').html(str);
+                }
+            });
+            $('.chat-users-section .list').html(str);
                 // Bind Top Right Corner user list
-                str = '';
-                $.each(data.Results, function (i) {
-                    // remove this(loggedin) user from lits
-                    if (loggedInUserId != data.Results[i].UserId) {
-                        var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
-                        var chatStatus = data.Results[i].Status == '1' ? 'active' : 'idle';
-                        str += '<div class="row">' +
-	                            '<div class="user-image">' +
-		                            '<div class="img">' +
-			                            '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '"></div>' +
+            str = '';
+            $.each(data.Results, function (i) {
+                // remove this(loggedin) user from lits
+                if (loggedInUserId != data.Results[i].UserId) {
+                    var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
+                    var chatStatus = data.Results[i].Status == '1' ? 'active' : 'idle';
+                    str += '<div class="row" onclick="InitiateChat(this, ' + data.Results[i].UserId + ')">' +
+                            '<div class="user-image">' +
+                                '<div class="img">' +
+                                    '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '"></div>' +
 		                            '<div class="status-icon ' + chatStatus + '"></div>' +
 		                            '<div class="installid"><a href="#">' + data.Results[i].UserInstallId + '</a></div>' +
                                 '</div>' +

@@ -89,7 +89,7 @@
             <li><input type="text" placeholder="Search" class="search-box"/></li>
         </ul>
         <ul style="margin-top: 14px;">
-            <li><a href="#" class="red">All</a></li>
+            <li><a href="#" class="red-text">All</a></li>
             <li>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
             <!--Email with # of unread msgs and new font-->
             <li id="test"><a id="hypEmail" runat="server" style="color: white;" target="_blank">Emails<label id="lblNewCounter" class="badge badge-error">0</label><label id="lblUnRead" class="badge badge-error hide"></label></a></li>

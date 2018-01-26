@@ -312,6 +312,19 @@ namespace JG_Prospect.Common.modal
 
     }
 
+    public class ChatMessageActiveUser
+    {
+        public ChatMessageActiveUser()
+        {
+            ActiveUsers = new List<modal.ActiveUser>();
+            ChatMessages = new List<modal.ChatMessage>();
+        }
+        public string ChatGroupId { get; set; }
+        public string ChatGroupName { get; set; }
+        public List<ActiveUser> ActiveUsers { get; set; }
+        public List<ChatMessage> ChatMessages { get; set; }
+    }
+
     public class ChatGroup
     {
         public ChatGroup()

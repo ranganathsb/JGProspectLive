@@ -2817,7 +2817,7 @@ ul.auto-complete-users {
 }
 .header-msg .row {
     display: inline-block;
-    width: 100%;    border-bottom: 2px solid #ccc;
+    width: 100%;    border-bottom: 2px solid #ccc;cursor:pointer;
 }.header-msg .row .user-image img {
     width: 45px;
     height: 45px;
@@ -2860,7 +2860,7 @@ ul.auto-complete-users {
     padding: 10px;}
  .header-msg .row .contents .top .time{
     float: right;
-    width:50px;
+    width:55px;
     padding: 2px 0;color: #666;
 }.header-msg .row .contents .msg-container{
     width: 100%;
@@ -2879,7 +2879,7 @@ ul.auto-complete-users {
 .header-msg .row .caller{float: left;margin-left:3px;
     /*font-size: 12px;
     width: 88px;*/}
-.header-msg .row .caller div{float: left;font-size: 26px;}
+.header-msg .row .caller div{float: left;font-size: 20px;}
 .header-msg .row .caller .phone{margin-right: 2px;color: #e55456;}
 .header-msg .row .caller .email{margin-right: 2px;color: #000;}
 .header-msg .row .caller .video{color:#e55456;}
@@ -2889,4 +2889,4 @@ ul.auto-complete-users {
 .designation-container {
     margin-left: 61px;
     display:none;
-}.red{color:red !important;}
+}.red-text{color:red !important;}
