@@ -129,6 +129,7 @@ function SetCKEditorForPageContent(Id, AutosavebuttonId) {
 function SetCKEditorForChildren(Id) {
 
     var $target = $('#' + Id);
+    var taskid = $('#' + Id).attr('data-taskid');
 
     // The inline editor should be enabled on an element with "contenteditable" attribute set to "true".
     // Otherwise CKEditor will start in read-only mode.
@@ -183,7 +184,7 @@ function SetCKEditorForChildren(Id) {
         };
         CurrentFileName = jsonarray.fileName;
         CurrentEditor = CKEDITOR.instances[Id];
-        SaveAttchmentToDB();
+        SaveChildAttchmentToDB(taskid);
     });
     //Save when leaves editing
     CKEDITOR.instances[Id].on('blur', function () {
@@ -197,7 +198,7 @@ function SetCKEditorForChildren(Id) {
     CKEDITOR.instances[Id].updateElement();
 
     arrCKEditor.push(editor);
-    var taskid = $('#' + Id).attr('data-taskid');
+    
 
     function ckeditorKeyPress(event) {
         switch (event.data.keyCode) {

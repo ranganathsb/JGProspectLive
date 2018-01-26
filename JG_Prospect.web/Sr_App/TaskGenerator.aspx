@@ -797,7 +797,13 @@
         });
        <%if (IsAdminMode) { %>
         function fillUsers(selector, fillDDL, loader) {
-            var did = $(selector).val().join();
+            var did = $(selector).val();
+            if (did != undefined && did != null) {
+                did = did.join();
+            }
+            else {
+                did = '';
+            }
             var options = $(fillDDL);
             var selectedUsersString = '<%=hdnSelectedUsers.Value%>';
 

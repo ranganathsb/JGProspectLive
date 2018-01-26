@@ -103,6 +103,11 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         else
             HighLightedTaskId = 0;
 
+        if (TaskId != 0)
+            TaskId = TaskId.replace('#', '');
+        if (HighLightedTaskId != 0)
+            HighLightedTaskId = HighLightedTaskId.replace('#', '');
+
         if (page == undefined)
             page = $scope.page;
         else
@@ -111,6 +116,8 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         if (skey == undefined)
             skey = '';
 
+        ParentTaskId = TaskId;
+        TaskLvl = 1;
         callWebServiceMethod($http, "GetSubTasks", { TaskId: TaskId, strSortExpression: "CreatedOn DESC", vsearch: skey, intPageIndex: page != undefined ? page : 0, intPageSize: sequenceScopeTG.pageSize, intHighlightTaskId: HighLightedTaskId }).then(function (data) {
             var resultArray = JSON.parse(data.data.d);
             var result = resultArray.TaskData;
@@ -120,12 +127,11 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
             $scope.pagesCount = Math.ceil(result.RecordCount.TotalRecords / sequenceScopeTG.pageSize);
             $scope.TaskFiles = $scope.correctDataforAngular(result.TaskFiles);
             $scope.SubTasks = $scope.correctDataforAngular(result.Tasks);
-            $scope.NextInstallId = result.Table4.LastSubTaskInstallId;
-            var NextInstallId = result.Table4.LastSubTaskInstallId;
+            $scope.NextInstallId = result.Table4 != undefined ? result.Table4.LastSubTaskInstallId : 'I';
+            var NextInstallId = $scope.NextInstallId;
             $('#hdnNextInstallId').val(NextInstallId);
             $('#ContentPlaceHolder1_objucSubTasks_Admin_txtTaskListID').val(NextInstallId);
             HideAjaxLoader();
-            //PreventScroll = 0;            
         });
     }
 

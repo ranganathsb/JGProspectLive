@@ -947,7 +947,7 @@
                                                                     <h5>
                                                                         <span class="sub-task-user" id="ltlCreatedUser">{{File.FirstName}}</span></h5>
                                                                     <div>
-                                                                        <a class="sub-task-link" id="lbtnDelete" href="#">Delete</a>
+                                                                        <a class="sub-task-link" id="lbtnDelete" data-aid="{{File.Id}}" onclick="OnDeleteAttachment(this);" href="#">Delete</a>
                                                                     </div>
                                                                     <br />
                                                                     <a class="image-link" href="/TaskAttachments/{{File.attachment.split('@')[0]}}">
@@ -3371,7 +3371,33 @@
                 });
         }
         });
-}
+    }
+    function SaveChildAttchmentToDB(taskid) {
+        if (IsAdminMode == 'True') {
+            var data = {
+                TaskId: taskid, attachments: $('#<%=hdnGridAttachment.ClientID%>').val()
+            };
+            $.ajax({
+                type: "POST",
+                url: url + "SaveUserAttachements",
+                data: data,
+                success: function (result) {
+                    //alert("Success");
+                    $('#<%=hdnGridAttachment.ClientID%>').val('');
+                    $('#<%=hdDropZoneTaskId.ClientID%>').val('');
+                    if (RefreshData)
+                        LoadSubTasks();
+                    else {
+                        sequenceScopeTG.getFileData(CurrentFileName, CurrentEditor);
+                    }
+                },
+                error: function (errorThrown) {
+                    console.log(errorThrown);
+                    alert("Failed!!!");
+                }
+            });
+        }
+    }
     function SaveAttchmentToDB() {
         if (IsAdminMode == 'True') {
             var data = {

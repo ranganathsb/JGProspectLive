@@ -10,6 +10,20 @@
     sequenceScopeTG.getUserByDesignation();
 }
 
+function OnDeleteAttachment(sender) {
+    if (confirm('Are you sure?') == true) {
+        var aid = $(sender).attr('data-aid');
+        CallJGWebService('DeleteTaskUserFile', { AttachmentId: aid }, OnDeleteSuccess, OnDeleteFailure);
+        function OnDeleteSuccess(data) {
+            if (data.d == true)
+                LoadSubTasks();
+        }
+        function OnDeleteFailure(err) {
+            alert('Can not delete attachment.');
+        }
+    }
+}
+
 function LoadSubTasks() {
 
     //Set Params

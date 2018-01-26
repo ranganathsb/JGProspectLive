@@ -484,6 +484,19 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public bool DeleteTaskUserFile(int AttachmentId)
+        {
+            bool blSuccess = false;
+
+            if (TaskGeneratorBLL.Instance.DeleteTaskUserFile(AttachmentId))
+            {
+                blSuccess = true;
+            }
+
+            return blSuccess;
+        }
+
+        [WebMethod(EnableSession = true)]
         public int UpdateTaskWorkSpecificationStatusById(Int64 intId, string strPassword)
         {
             if (strPassword.Equals(Convert.ToString(Session["loginpassword"])))
@@ -1018,10 +1031,17 @@ namespace JG_Prospect.WebServices
             if (dtResult != null && dtResult.Tables.Count > 0)
             {
                 #region Get Next Install ID
-                string[] subtaskListIDSuggestion = CommonFunction.getSubtaskSequencing(dtResult.Tables[4].Rows[0][0].ToString());
-                if (subtaskListIDSuggestion.Length > 0)
+                if (dtResult.Tables[4].Rows.Count > 0)
                 {
-                    dtResult.Tables[4].Rows[0][0] = subtaskListIDSuggestion[0];
+                    string[] subtaskListIDSuggestion = CommonFunction.getSubtaskSequencing(dtResult.Tables[4].Rows[0][0].ToString());
+                    if (subtaskListIDSuggestion.Length > 0)
+                    {
+                        dtResult.Tables[4].Rows[0][0] = subtaskListIDSuggestion[0];
+                    }
+                }
+                else
+                {
+                    //dtResult.Tables[4].Rows[0][0] = "I";
                 }
                 #endregion
 
