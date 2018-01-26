@@ -131,6 +131,10 @@
     <Reference Include="GoogleMaps.LocationServices">
       <HintPath>..\packages\GoogleMaps.LocationServices.0.9.8.5\lib\net40\GoogleMaps.LocationServices.dll</HintPath>
     </Reference>
+    <Reference Include="Humanizer, Version=2.2.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Humanizer.Core.2.2.0\lib\netstandard1.0\Humanizer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\Ionic.Zip.dll</HintPath>
@@ -1959,6 +1963,8 @@
     <Content Include="img\LogoJG_PDF.png" />
     <Content Include="img\Logo_BG.png" />
     <Content Include="img\microsoftlogin.png" />
+    <Content Include="img\min-max.jpg" />
+    <Content Include="img\min-max.png" />
     <Content Include="img\movies-icon.png" />
     <Content Include="img\pdf-icon.png" />
     <Content Include="img\pdf.jpg" />
