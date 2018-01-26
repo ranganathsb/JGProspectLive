@@ -263,13 +263,13 @@ Go
 -- Description: Add offline user to chatuser table
 -- =============================================    
 /*
-	GetChatMessages 3797
+	GetChatMessages '94f7e245-4208-4047-88d3-24feadc0498b'
 */
 CREATE PROCEDURE [dbo].[GetChatMessages]
 	@ChatGroupId varchar(100)
 AS    
 BEGIN
-	Select S.Id, S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn From SaveChatMessage S With(NoLock) 
+	Select S.Id, S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn From ChatMessage S With(NoLock) 
 		Where S.ChatGroupId = @ChatGroupId
 END
 

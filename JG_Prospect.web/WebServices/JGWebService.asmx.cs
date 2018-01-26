@@ -2340,7 +2340,94 @@ namespace JG_Prospect.WebServices
                 Results = users
             });
         }
-        
+
+        [WebMethod(EnableSession = true)]
+        public string InitiateOldChat(int userID, string ChatGroupId)
+        {
+            #region Chat Messages
+            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(ChatGroupId).Results;
+            #endregion
+
+            string ChatGroupName = string.Empty;
+            var sender = ChatBLL.Instance.GetChatUser(JGSession.UserId).Object;
+            var receiver = ChatBLL.Instance.GetChatUser(userID).Object;
+            if (receiver != null)
+            {
+                List<ChatUser> chatUsers = new List<ChatUser>();
+                #region Chat Users
+                chatUsers.Add(new ChatUser // Set Sender
+                {
+                    ConnectionIds = sender.ConnectionIds,
+                    Email = sender.Email,
+                    FirstName = sender.FirstName,
+                    LastName = sender.LastName,
+                    ProfilePic = sender.ProfilePic,
+                    OnlineAt = sender.OnlineAt,
+                    UserId = sender.UserId,
+                    OnlineAtFormatted = sender.OnlineAtFormatted,
+                    ChatClosed = false
+                });
+                chatUsers.Add(new ChatUser // Set Receiver
+                {
+                    ConnectionIds = receiver.ConnectionIds,
+                    Email = receiver.Email,
+                    FirstName = receiver.FirstName,
+                    LastName = receiver.LastName,
+                    ProfilePic = receiver.ProfilePic,
+                    OnlineAt = receiver.OnlineAt,
+                    UserId = receiver.UserId,
+                    OnlineAtFormatted = receiver.OnlineAtFormatted,
+                    ChatClosed = false
+                });
+                #endregion
+                
+                ChatGroupName = string.Join("-", chatUsers.Select(m => m.FirstName).ToList());
+
+                // If both users does not have any personal chat then add it
+                var existing = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatUsers.Count() == 2)
+                                                           //.Select(m => m.ChatUsers)
+                                                           //.ToList()
+                                                           .Where(m => m.ChatUsers.Where(x => x.UserId == userID).Any())
+                                                           .FirstOrDefault();
+                if (existing != null)
+                {
+                    ChatGroupId = existing.ChatGroupId;
+                    ChatGroupName = existing.ChatGroupName;
+
+                    existing.ChatUsers.Where(m => m.UserId == userID).ToList().ForEach(m => m.ChatClosed = false);
+                    SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatUsers.Count() == 2)
+                                                           .Where(m => m.ChatUsers.Where(x => x.UserId == userID).Any())
+                                                           .Select(m => m.ChatUsers)
+                                                           .FirstOrDefault()
+                                                           .ForEach(m => m.ChatClosed = false);
+                }
+                else
+                {
+                    SingletonUserChatGroups.Instance.ChatGroups.Add(new ChatGroup
+                    {
+                        SenderId = JGSession.UserId,
+                        ChatGroupId = ChatGroupId,
+                        ChatGroupName = ChatGroupName,
+                        ChatUsers = chatUsers,
+                        ChatMessages = new List<ChatMessage>()
+                    });
+                }
+
+                // Update ActiveUsers in SingletonUserChatGroups
+                SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(sender.UserId).Results;
+            }
+            ChatMessageActiveUser obj = new ChatMessageActiveUser();
+            obj.ChatGroupId = ChatGroupId;
+            obj.ChatGroupName = ChatGroupName;
+            obj.ChatMessages = messages;
+            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers;
+            
+            return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMessageActiveUser>
+            {
+                Object= obj,
+                Status = ActionStatus.Successfull
+            });
+        }
         #endregion
     }
 }
