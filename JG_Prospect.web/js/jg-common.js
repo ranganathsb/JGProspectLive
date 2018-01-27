@@ -287,7 +287,7 @@ function SetCKEditorForSubTask(Id) {
 
         setTimeout(function () {
             sequenceScopeTG.getFileData(jsonarray.fileName, CKEDITOR.instances[Id]);
-        }, 1);
+        }, 1000);
 
     });
 
