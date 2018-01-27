@@ -3287,5 +3287,25 @@ namespace JG_Prospect.DAL
             }
             return returndata;
         }
+
+        public int UpdateUsersLastLoginTime(int loginUserID,  DateTime LogInTime)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpdateUserLoginTimeStamp");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", DbType.Int32, loginUserID);                    
+                    database.AddInParameter(command, "@LastLoginTimeStamp", DbType.DateTime, LogInTime);
+                    int retrunVal = database.ExecuteNonQuery(command);
+                    return retrunVal;
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
     }
 }

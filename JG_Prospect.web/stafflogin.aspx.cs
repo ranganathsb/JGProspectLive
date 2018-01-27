@@ -772,12 +772,17 @@ namespace JG_Prospect
                             {
                                 HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
 
+                                
+
                                 JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
                                 JGSession.LastName = ds.Tables[0].Rows[0]["LastName"].ToString().Trim();
                                 JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
                                 JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
                                 JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
                                 JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
+
+                                UpdateUsersLastLoginTimeStamp(JGSession.LoginUserID,DateTime.UtcNow);
+
                                 JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
                                 if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
                                 {
@@ -982,6 +987,7 @@ namespace JG_Prospect
             }
         }
 
+        
         private void SetOAuthCredentials()
         {
             //facebook login
@@ -1028,6 +1034,9 @@ namespace JG_Prospect
                             JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
                             JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
                             JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
+
+                            UpdateUsersLastLoginTimeStamp(JGSession.LoginUserID, DateTime.UtcNow);
+
                             if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
                             {
                                 JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
@@ -1487,6 +1496,12 @@ namespace JG_Prospect
             cookie.Expires = DateTime.Now.AddDays(30);
             HttpContext.Current.Response.Cookies.Add(cookie);
         }
+
+        private void UpdateUsersLastLoginTimeStamp(string loginUserID, DateTime utcNow)
+        {
+            InstallUserBLL.Instance.UpdateUsersLastLoginTime(Convert.ToInt32(loginUserID),utcNow);
+        }
+
 
         #endregion
 

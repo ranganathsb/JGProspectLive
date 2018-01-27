@@ -843,5 +843,10 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetEmployeeInterviewDetails(UserID);
 
         }
+
+        public int UpdateUsersLastLoginTime(int loginUserID, DateTime LogInTime)
+        {
+            return InstallUserDAL.Instance.UpdateUsersLastLoginTime(loginUserID,LogInTime);
+        }
     }
 }
