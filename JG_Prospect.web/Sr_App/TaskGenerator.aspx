@@ -21,6 +21,9 @@
         .div-table-col input{
             margin-top:0px;
         }
+        .div-table-col a {
+            text-decoration: none;
+        }
         .div-col-middle input{
             margin-top:0px;
         }
@@ -217,8 +220,9 @@
                         <input type="text" id="txtTitle" class="smart-text" style="width: 448px;">
                     </div>
                      <div class="div-table-col div-col-middle url">URL <span style="color: red;">*</span></div>
-                    <div class="div-table-col">
-                        <input type="text" id="txtURL" class="smart-text" style="width: 484px;">
+                    <div class="div-table-col" id="divURL">
+                        <input type="text" id="txtURL" class="smart-text taskURL" style="width: 484px;">
+                        <a href="#" onclick="OnURLAdd(this)">+</a>
                     </div>                    
                 </div>
                 <div class="row">

@@ -181,6 +181,46 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         SetChosenAssignedUsers();
     }
 
+    $scope.onURLEnd = function () {
+        //For Url
+        $(".UrlEdit").each(function (index) {
+            // This section is available to admin only.
+
+            $(this).bind("click", function () {
+                if (!isadded) {
+                    var tid = $(this).attr("data-taskid");
+                    var titledetail = $(this).html();
+                    var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
+                    $(this).html(fName);
+                    $('#txtedittitle').focus();
+
+                    isadded = true;
+                }
+                return false;
+            }).bind('focusout', function () {
+                var tid = $(this).attr("data-taskid");
+                var tdetail = $('#txtedittitle').val();
+                if (tdetail != undefined) {
+                    var url = "";
+                    $("#TaskContainer" + tid + " .UrlEdit").each(function () {
+                        if ($(this).children().is('input:text')) {
+                            url += $(this).children('input:text').val() + ";";
+                        }
+                        else {
+                            url += $(this).html() + ";";
+                        }
+                    });
+                    url = url.slice(0, -1);
+
+                    $(this).html(tdetail);
+                    EditUrl(tid, url);
+                    isadded = false;
+                }
+                return false;
+            });
+        });
+    }
+
     $scope.onAttachmentEnd = function (object) {
         LoadImageGallery('#lightSlider_' + object);
     }
@@ -432,33 +472,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                     EditTask(tid, tdetail)
                     isadded = false;
                 });
-            });
-
-            //For Url
-            $(".UrlEdit").each(function (index) {
-                // This section is available to admin only.
-
-                $(this).bind("click", function () {
-                    if (!isadded) {
-                        var tid = $(this).attr("data-taskid");
-                        var titledetail = $(this).html();
-                        var fName = $("<input id=\"txtedittitle\" type=\"text\" value=\"" + titledetail + "\" class=\"editedTitle\" />");
-                        $(this).html(fName);
-                        $('#txtedittitle').focus();
-
-                        isadded = true;
-                    }
-                    return false;
-                }).bind('focusout', function () {
-                    var tid = $(this).attr("data-taskid");
-                    var tdetail = $('#txtedittitle').val();
-
-                    $(this).html(tdetail);
-                    EditUrl(tid, tdetail);
-                    isadded = false;
-                    return false;
-                });
-            });
+            });            
             
             $(".DescEdit").each(function (index) {
                 // This section is available to admin only.            

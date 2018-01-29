@@ -721,7 +721,7 @@
                                                         <span>{{ SubTask.CreatedOn | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ SubTask.CreatedOn | date:'shortTime' }}</span>&nbsp;<span>(EST)</span>
                                                     </div>
                                                     <strong>Title: <span data-taskid="{{SubTask.TaskId}}" class="TitleEdit">{{SubTask.Title}}</span></strong><br>
-                                                    <strong>URL: <span data-taskid="{{SubTask.TaskId}}" style="color: blue; cursor: pointer;" class="UrlEdit">{{SubTask.Url}}</span></strong><br>
+                                                    <strong ng-repeat="url in (SubTask.Url | semiColSplit)" repeat-end="onURLEnd()">URL: <span data-taskid="{{SubTask.TaskId}}" style="color: blue; cursor: pointer;" class="UrlEdit">{{ url }}</span><br /></strong>
                                                     <strong>Description: </strong>
                                                     <br>
                                                     <span data-taskid="{{SubTask.TaskId}}" class="DescEdit">

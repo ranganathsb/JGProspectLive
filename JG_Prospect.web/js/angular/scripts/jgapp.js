@@ -150,7 +150,14 @@ angular.GetInstallIDPrefixFromDesignationIDinJS = function (DesignID) {
 
     angular
         .module('JGApp')
-        .filter('utcToLocal', Filter);
+        .filter('utcToLocal', Filter)
+        .filter('semiColSplit', function () {
+            return function (input) {
+                console.log(input);
+                var ar = input.split(';'); // this will make string an array 
+                return ar;
+            };
+        });
 
     function Filter($filter) {
         return function (utcDateString, format) {

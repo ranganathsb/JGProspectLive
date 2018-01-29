@@ -28,9 +28,16 @@ function AddNewTaskPopup() {
     showAddNewTaskPopup();    
 }
 
-function SaveSubTask(Silent) {        
+function SaveSubTask(Silent) {       
+    //get URLs
+    var url = "";
+    $("#divURL :text").each(function () {
+        url += $(this).val() + ";";
+    });
+    url = url.slice(0, -1);
+
     var title = $('#txtTitle').val();
-    var url = $('#txtURL').val();
+    //var url = $('#txtURL').val();
     var desc = GetCKEditorContent('txtTaskDescription');
     var status = '1';
     var Priority = '1';
@@ -179,6 +186,15 @@ function DeleteChild(sender, forPopup) {
 
         }
     }
+}
+
+function OnURLAdd(sender) {
+    var container = $(sender).parent();
+    $(container).append('<div><br/><input type="text" class="smart-text taskURL" style="width: 484px;margin-right: 5px;"><a href="#" onClick="OnURLRemove(this)">-</a></div>');
+}
+
+function OnURLRemove(sender) {
+    $(sender).parent().remove();
 }
 
 //Helper Functions
