@@ -9,6 +9,7 @@ using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Web;
+using System.Web.Hosting;
 
 namespace JG_Prospect.Chat.Hubs
 {
@@ -16,10 +17,6 @@ namespace JG_Prospect.Chat.Hubs
     // [Authorize]
     public class ChatHub : Hub
     {
-        #region---Data Members---
-        private Timer _timer;
-        #endregion
-
         public void SendChatMessage(string chatGroupId, string message, int chatSourceId)
         {
             try
@@ -187,13 +184,18 @@ namespace JG_Prospect.Chat.Hubs
             HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
             if (auth_cookie != null)
                 UserId = Convert.ToInt32(auth_cookie.Value);
+
             ChatBLL.Instance.AddChatUser(UserId, Context.ConnectionId);
 
             ChatUser user = ChatBLL.Instance.GetChatUser(UserId).Object;
 
             // Update ActiveUsers in SingletonUserChatGroups
             SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(UserId).Results;
-
+            if (ChatProcessor.Instance == null)
+            {
+                // Do nothing
+                // It was called to instantiate the ChatProcessor 
+            }
             Clients.All.onConnectedCallback(new ActionOutput<ActiveUser>
             {
                 Status = ActionStatus.Successfull,
@@ -214,6 +216,7 @@ namespace JG_Prospect.Chat.Hubs
             string clientId = Context.ConnectionId;
             ChatUser user = ChatBLL.Instance.GetChatUser(clientId).Object;
             ChatBLL.Instance.DeleteChatUser(clientId);
+            SingletonGlobal.Instance.ConnectedClients.Remove(Context.ConnectionId);
 
             // User is offline
             SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(user.UserId).Results;
@@ -280,10 +283,20 @@ namespace JG_Prospect.Chat.Hubs
             HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
             if (auth_cookie != null)
                 UserId = Convert.ToInt32(auth_cookie.Value);
-            SingletonUserChatGroups.Instance.ActiveUsers
+            if (SingletonUserChatGroups.Instance.ActiveUsers
                                             .Where(m => m.UserId == UserId)
-                                            .FirstOrDefault()
-                                            .Status = status;
+                                            .Any())
+            {
+                SingletonUserChatGroups.Instance.ActiveUsers
+                                                .Where(m => m.UserId == UserId)
+                                                .FirstOrDefault()
+                                                .Status = status;
+                if (status == (int)ChatUserStatus.Active)
+                    SingletonUserChatGroups.Instance.ActiveUsers
+                                                    .Where(m => m.UserId == UserId)
+                                                    .FirstOrDefault()
+                                                    .LastActivityAt = DateTime.UtcNow;
+            }
 
             Clients.All.SetChatUserStatusToIdleCallback(new ActionOutput<ActiveUser>
             {
