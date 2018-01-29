@@ -12,6 +12,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
     $scope.UsersByDesignation = [];
     $scope.UserSelectedDesigIds = [];
     $scope.DesignationAssignUsers = [];
+    $scope.Users = [];
     $scope.SelectedUserId = 0;
     $scope.SubTasks = [];
     $scope.TaskFiles = [];
@@ -171,6 +172,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         getDesignationAssignUsers($http, "GetAssignUsers", { TaskDesignations: $scope.UserSelectedDesigIds != "" ? $scope.UserSelectedDesigIds.join():"" }).then(function (data) {
             var AssignedUsers = JSON.parse(data.data.d);
             $scope.DesignationAssignUsers = AssignedUsers;
+            $scope.Users = AssignedUsers;
         });
     };
 
