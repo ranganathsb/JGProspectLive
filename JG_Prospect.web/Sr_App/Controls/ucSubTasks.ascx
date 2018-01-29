@@ -870,7 +870,7 @@
                                                 data-chosen="1" data-placeholder="Select Users" onchange="EditAssignedSubTaskUsers(this);" data-taskid="{{SubTask.TaskId}}" 
                                                 data-taskstatus="{{SubTask.Status}}" class="chosen-input">
                                                 <option
-                                                    ng-repeat="item in DesignationAssignUsers"
+                                                    ng-repeat="item in Users"
                                                     value="{{item.Id}}"
                                                     label="{{item.FristName}}"
                                                     class="{{item.CssClass}}"
