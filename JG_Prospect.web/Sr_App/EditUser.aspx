@@ -617,7 +617,7 @@
     <script type="text/javascript">
 
         function addNotes(sender, uid, txtUid){
-            var note = $(sender).parent().find('.note-text').val();
+            var note = $(sender).parents('.notes-inputs').find('.note-text').val();
             if(note!='')
                 ajaxExt({
                     url: '/Sr_App/edituser.aspx/AddNotes',
@@ -1621,7 +1621,7 @@
                                         </div>
                                         <div class="notes-inputs">
                                             <div class="first-col">
-                                                <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this, '<%# Eval("Id") %>    ','<%#Eval("UserInstallId")%>    ')" />
+                                                <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this, '<%# Eval("Id") %>','<%#Eval("UserInstallId")%>')" />
                                             </div>
                                             <div class="second-col">
                                                 <textarea class="note-text textbox" id="txt-<%# Eval("Id") %>"></textarea>
