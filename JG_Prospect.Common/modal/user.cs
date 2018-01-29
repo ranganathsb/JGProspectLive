@@ -279,7 +279,7 @@ namespace JG_Prospect.Common.modal
         public DateTime? OnlineAt { get; set; }
         public string OnlineAtFormatted { get; set; }
         public string ProfilePic { get; set; }
-        //public DateTime LastActivityAt { get; set; }
+        public DateTime LastActivityAt { get; set; }
 
         public string LastMessage { get; set; }
         public DateTime? LastMessageAt { get; set; }
@@ -339,15 +339,6 @@ namespace JG_Prospect.Common.modal
         public int SenderId { get; set; }
     }
 
-    //public static class UserChatGroups
-    //{
-    //    static UserChatGroups()
-    //    {
-    //        ChatGroups = new List<ChatGroup>();
-    //    }
-    //    public static List<ChatGroup> ChatGroups { get; set; }
-    //}
-
     public sealed class SingletonUserChatGroups
     {
         SingletonUserChatGroups()
@@ -384,11 +375,13 @@ namespace JG_Prospect.Common.modal
         SingletonGlobal()
         {
             RandomGUID = JGConstant.RandomGUID;
+            ConnectedClients = new List<string>();
         }
 
         private static readonly object padlock = new object();
         private static SingletonGlobal instance = null;
         public string RandomGUID { get; set; }
+        public List<string> ConnectedClients { get; set; }
         public static SingletonGlobal Instance
         {
             get
