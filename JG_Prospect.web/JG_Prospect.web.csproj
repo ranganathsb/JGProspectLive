@@ -2141,7 +2141,6 @@
     <Content Include="Location_img\Jellyfish.jpg" />
     <Content Include="Location_img\Lighthouse.jpg" />
     <Content Include="Location_img\Tulips.jpg" />
-    <Content Include="Log\Log.txt" />
     <Content Include="MCQTest\ExamSummary.aspx" />
     <Content Include="MCQTest\McqTestPage.aspx" />
     <Content Include="MCQTest\ObjectiveExamSummary.aspx" />
@@ -3568,6 +3567,7 @@
     <Folder Include="fileman\Uploads\FLV\" />
     <Folder Include="fileman\Uploads\Images\" />
     <Folder Include="InvoicePdf\" />
+    <Folder Include="Log\" />
     <Folder Include="Resources\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />
     <Folder Include="Sr_App\UploadedFile\" />
