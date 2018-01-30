@@ -601,7 +601,7 @@ form.inline {
 
         .user_panel ul li {
             float: left;
-            margin: 0 0 0 2px;
+            margin: 0 0 0 1px;
             padding: 0;
             position:relative;
         }
@@ -2890,3 +2890,10 @@ ul.auto-complete-users {
     margin-left: 61px;
     display:none;
 }.red-text{color:red !important;}
+ #Header1_lbluser {
+    width: 105px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
