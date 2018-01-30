@@ -718,7 +718,8 @@
                                                 
                                                     <div class="right">
                                                         <a href="/sr_app/CreateSalesUser.aspx?id={{SubTask.TaskId}}" style="color: Blue;">{{SubTask.CreatedBy}}# {{SubTask.TaskCreatorFirstName}} {{SubTask.TaskCreatorLastName}}</a><br>
-                                                        <span>{{ SubTask.CreatedOn | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ SubTask.CreatedOn | date:'shortTime' }}</span>&nbsp;<span>(EST)</span>
+                                                        <span>{{ SubTask.CreatedOn | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ SubTask.CreatedOn | date:'shortTime' }}</span>&nbsp;<span>(EST)</span><br />
+                                                        <span>Updated On: {{ SubTask.UpdatedOn | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ SubTask.UpdatedOn | date:'shortTime' }}</span>&nbsp;<span>(EST)</span>
                                                     </div>
                                                     <strong>Title: <span data-taskid="{{SubTask.TaskId}}" class="TitleEdit">{{SubTask.Title}}</span></strong><br>
                                                     <strong ng-repeat="url in (SubTask.Url | semiColSplit)" repeat-end="onURLEnd()">URL: <span data-taskid="{{SubTask.TaskId}}" style="color: blue; cursor: pointer;" class="UrlEdit">{{ url }}</span><br /></strong>
@@ -773,10 +774,6 @@
                                         </div>
                                         
                                         <div class="clr" style="height: 1px;"></div>
-                                        <input type="submit" name="btnshowdivsub1" value="+" onclick="return false;" id="btnshowdivsub1" class="showsubtaskDIV" data-parent-taskid="{{SubTask.TaskId}}" 
-                                            style="text-decoration: underline; cursor: pointer; background: none;" data-val-commandname="{{SubTask.NestLevel}}#{{SubTask.InstallId}}#{{SubTask.TaskId}}#1" data-val-tasklvl="{{SubTask.NestLevel}}" 
-                                            data-installid="{{SubTask.InstallId}}" data-val-commandargument="{{SubTask.TaskId}}">
-                                        &nbsp;
                                                                     
                                         <a href="javascript:void(0);" data-id="hypViewInitialComments" data-taskid="{{SubTask.TaskId}}" class="hide" 
                                             data-parent-commentid="0" data-startindex="0" data-pagesize="2"
