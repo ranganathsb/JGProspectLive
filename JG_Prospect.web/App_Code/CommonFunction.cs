@@ -191,7 +191,7 @@ namespace JG_Prospect.App_Code
 
                             JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
                             JGSession.LastName = ds.Tables[0].Rows[0]["LastName"].ToString().Trim();
-                            JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
+                            JGSession.UserProfileImg =  String.Concat("~/Employee/ProfilePictures/", ds.Tables[0].Rows[0]["Picture"].ToString());
                             JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
                             JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
                             JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
