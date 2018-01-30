@@ -848,5 +848,10 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.UpdateUsersLastLoginTime(loginUserID,LogInTime);
         }
+
+        public int QuickSaveInstallUser(user objInstallUser)
+        {
+            return InstallUserDAL.Instance.QuickSaveInstallUser(objInstallUser);
+        }
     }
 }

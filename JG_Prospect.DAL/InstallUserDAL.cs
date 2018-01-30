@@ -3307,5 +3307,53 @@ namespace JG_Prospect.DAL
                 return 0;
             }
         }
+
+        public Int32 QuickSaveInstallUser(user objuser)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_QuickSaveInstallUser");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@FirstName", DbType.String, objuser.fristname);
+                    database.AddInParameter(command, "@NameMiddleInitial", DbType.String, objuser.NameMiddleInitial);
+                    database.AddInParameter(command, "@LastName", DbType.String, objuser.lastname);
+                    database.AddInParameter(command, "@Email", DbType.String, objuser.email);
+                    database.AddInParameter(command, "@Phone", DbType.String, objuser.phone);
+                    database.AddInParameter(command, "@Zip", DbType.String, objuser.zip);
+                    database.AddInParameter(command, "@DesignationText", DbType.String, objuser.designation);
+                    database.AddInParameter(command, "@DesignationID", DbType.String, objuser.DesignationID);
+                    database.AddInParameter(command, "@Status", DbType.String, objuser.status);
+                    database.AddInParameter(command, "@SourceText", DbType.String, objuser.Source);
+                    database.AddInParameter(command, "@EmpType", DbType.String, objuser.EmpType);
+                    database.AddInParameter(command, "@StartDate", DbType.String, objuser.StartDate);
+                    database.AddInParameter(command, "@SalaryReq", DbType.String, objuser.SalaryReq);
+                    database.AddInParameter(command, "@SourceUserId", DbType.String, objuser.SourceUser);
+                    database.AddInParameter(command, "@PositionAppliedForDesignationId", DbType.String, objuser.PositionAppliedFor);
+                    database.AddInParameter(command, "@SourceID", DbType.Int32, objuser.SourceId == 0 ? DBNull.Value : (object)objuser.SourceId);
+                    database.AddInParameter(command, "@AddedByUserId", DbType.Int32, objuser.AddedBy);
+                    database.AddInParameter(command, "@IsEmailContactPreference", DbType.Boolean, objuser.IsEmailContactPreference);
+                    database.AddInParameter(command, "@IsCallContactPreference", DbType.Boolean, objuser.IsCallContactPreference);
+                    database.AddInParameter(command, "@IsTextContactPreference", DbType.Boolean, objuser.IsTextContactPreference);
+                    database.AddInParameter(command, "@IsMailContactPreference", DbType.Boolean, objuser.IsMailContactPreference);
+
+                    database.AddOutParameter(command, "@Id", DbType.Int32, 1);
+
+                    database.ExecuteScalar(command);
+
+                    int UserId = Convert.ToInt32(database.GetParameterValue(command, "@Id"));
+
+                    return UserId;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return 0;
+
+            }
+        }
     }
 }
