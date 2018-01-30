@@ -247,6 +247,10 @@ namespace JG_Prospect.App_Code
             {
                 switch (JGSession.Designation.ToUpper())
                 {
+                    //To add/edit Tasks
+                    case "IT - SR .NET DEVELOPER":
+                    case "IT - SR. PHP DEVELOPER":
+
                     case "ADMIN": // admin
                     case "ADMIN-SALES":
                     case "ADMIN RECRUITER":

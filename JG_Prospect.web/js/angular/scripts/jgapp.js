@@ -154,8 +154,13 @@ angular.GetInstallIDPrefixFromDesignationIDinJS = function (DesignID) {
         .filter('semiColSplit', function () {
             return function (input) {
                 console.log(input);
-                var ar = input.split(';'); // this will make string an array 
-                return ar;
+                if (input != null && input != undefined) {
+                    var ar = input.split(';'); // this will make string an array 
+                    return ar;
+                }
+                else {
+                    return null
+                }
             };
         });
 

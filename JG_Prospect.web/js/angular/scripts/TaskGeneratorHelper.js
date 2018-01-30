@@ -219,8 +219,10 @@ function OnSaveSubTask(taskid, desc) {
         function OnAddNewSubTaskSuccess(data) {
             if (data.d == true) {
                 PreventScroll = 1;
-                alert('Task saved successfully.');
+                //alert('Task saved successfully.');
+                //sequenceScopeTG.LoadFeedbackPoints();
                 LoadSubTasks();
+                $('#subtaskDesc' + taskid).focus();
             }
             else {
                 alert('Task cannot be saved. Please try again.');
