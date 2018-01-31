@@ -3355,5 +3355,101 @@ namespace JG_Prospect.DAL
 
             }
         }
+
+        public Boolean UpdateUserProfile(user objuser)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpdateInstallUserDetailsById");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objuser.id);
+                    database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
+                    database.AddInParameter(command, "@SourceID", DbType.Int32, objuser.SourceId);
+                    database.AddInParameter(command, "@Source", DbType.String, objuser.Source);
+                    database.AddInParameter(command, "@FirstName", DbType.String, objuser.fristname);
+                    database.AddInParameter(command, "@NameMiddleInitial", DbType.String, objuser.NameMiddleInitial);
+                    database.AddInParameter(command, "@LastName", DbType.String, objuser.lastname);
+                    database.AddInParameter(command, "@CountryCode", DbType.String, objuser.CountryCode);
+                    database.AddInParameter(command, "@Zip", DbType.String, objuser.zip);
+                    database.AddInParameter(command, "@City", DbType.String, objuser.city);
+                    database.AddInParameter(command, "@State", DbType.String, objuser.state);
+                    database.AddInParameter(command, "@Address", DbType.String, objuser.address);
+                    database.AddInParameter(command, "@LeavingReason", DbType.String, objuser.LeavingReason);
+                    database.AddInParameter(command, "@Phone", DbType.String, objuser.phone);
+                    database.AddInParameter(command, "@Email", DbType.String, objuser.email);
+                    database.AddInParameter(command, "@IsEmailContactPreference", DbType.Boolean, objuser.IsEmailContactPreference);
+                    database.AddInParameter(command, "@IsCallContactPreference", DbType.Boolean, objuser.IsCallContactPreference);
+                    database.AddInParameter(command, "@IsTextContactPreference", DbType.Boolean, objuser.IsTextContactPreference);
+                    database.AddInParameter(command, "@IsMailContactPreference", DbType.Boolean, objuser.IsMailContactPreference);
+                    database.AddInParameter(command, "@Start_Date", DbType.String, objuser.StartDate);
+                    database.AddInParameter(command, "@EmpType", DbType.String, objuser.EmpType);
+                    database.AddInParameter(command, "@SalaryReq", DbType.String, objuser.SalaryReq);
+                    database.AddInParameter(command, "@CruntEmployement", DbType.Boolean, Convert.ToBoolean(objuser.CruntEmployement));
+                    database.AddInParameter(command, "@DrugTest", DbType.Boolean, Convert.ToBoolean(objuser.DrugTest));
+                    database.AddInParameter(command, "@FELONY", DbType.Boolean, Convert.ToBoolean(objuser.FELONY));
+                    database.AddInParameter(command, "@PrevApply", DbType.Boolean, Convert.ToBoolean(objuser.PrevApply));
+                    database.AddInParameter(command, "@Notes", DbType.String, objuser.Notes);
+                    database.AddInParameter(command, "@Picture", DbType.String, objuser.picture);
+                    database.AddInParameter(command, "@ResumePath", DbType.String, objuser.picture);
+
+
+                    database.ExecuteScalar(command);
+
+                    return true;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+
+            }
+        }
+
+        public DataSet getInstallUserDetailsById(Int32 UserId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("usp_GetInstallUserDetailsById");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserId", DbType.Int32, UserId);
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+
+            }
+        }
+
+        public DataSet BulkIntsallUserDuplicateCheck(String xmlDoc)
+        {
+            DataSet dsTemp = new DataSet();
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UDP_BulkInstallUserDuplicateCheck");
+                    database.AddInParameter(command, "@XMLDOC2", SqlDbType.Xml, xmlDoc);
+                    dsTemp = database.ExecuteDataSet(command);
+                    return dsTemp;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return dsTemp;
+        }
     }
 }

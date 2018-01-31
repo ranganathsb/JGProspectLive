@@ -1847,6 +1847,211 @@
     </div>
     <%--Modal Popup Ends--%>
     <%--Popup Stars--%>
+     <div id="bulkUpload" class="modal hide">
+        <asp:UpdatePanel ID="upnlBulkUploadStatus" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <div id="div1" runat="server" title="Information" data-width="900px">
+
+                    <div>
+                        <h2>Incomplete users</h2>
+                        <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+
+                            <asp:Repeater ID="rptIncorrectRecords" runat="server">
+                                <HeaderTemplate>
+                                    <thead>
+                                        <tr class="trHeader ">
+                                            <th scope="col" style="width: 75px;">FirstName*</th>
+                                            <th scope="col" style="width: 75px;">LastName*</th>
+                                            <th scope="col" style="width: 90px;">Email*</th>
+                                            <th scope="col" style="width: 75px;">Designation*</th>
+                                            <th scope="col" style="width: 50px;">Status*</th>
+                                            <th scope="col" style="width: 60px;">Source*</th>
+                                            <th scope="col" style="width: 90px;">Primary Contact Phone*</th>
+                                            <th scope="col" style="width: 60px;">Phone Type*</th>
+                                            <th scope="col" style="width: 50px;">Zip*</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                </HeaderTemplate>
+                                <ItemTemplate>
+                                    <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
+                                        <td style="width: 10%;"><%#Eval("FirstName") %>
+                                        </td>
+                                        <td style="width: 10%;"><%#Eval("LastName") %>
+                                        </td>
+                                        <td style="width: 15%;"><%#Eval("Email") %>
+                                        </td>
+                                        <td style="width: 10%;"><%#Eval("Designation") %>
+                                        </td>
+                                        <td style="width: 10%;"><%#Eval("Status") %>
+                                        </td>
+                                        <td style="width: 10%;"><%#Eval("Source") %></td>
+                                        <td style="width: 15%;"><%#Eval("Phone1") %>
+                                        </td>
+                                        <td style="width: 10%;"><%#Eval("Phone1Type") %></td>
+                                        <td style="width: 5%;"><%#Eval("Zip") %></td>
+                                    </tr>
+                                </ItemTemplate>
+                                <FooterTemplate>
+                                    </tbody>
+                                </FooterTemplate>
+                            </asp:Repeater>
+
+                        </table>
+
+                    </div>
+
+                    <div style="margin-top: 10px;">
+                        <h2>Duplicate users</h2>
+                        <div>
+                            <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                <asp:Repeater ID="rptDuplicateRecords" runat="server">
+                                    <HeaderTemplate>
+                                        <thead>
+                                            <tr class="trHeader ">
+                                                <th scope="col" style="width: 75px;">FirstName*</th>
+                                                <th scope="col" style="width: 75px;">LastName*</th>
+                                                <th scope="col" style="width: 90px;">Email*</th>
+                                                <th scope="col" style="width: 75px;">Designation*</th>
+                                                <th scope="col" style="width: 50px;">Status*</th>
+                                                <th scope="col" style="width: 60px;">Source*</th>
+                                                <th scope="col" style="width: 90px;">Primary Contact Phone*</th>
+                                                <th scope="col" style="width: 60px;">Phone Type*</th>
+                                                <th scope="col" style="width: 50px;">Zip*</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
+                                            <td style="width: 10%;"><%#Eval("FirstName") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("LastName") %>
+                                            </td>
+                                            <td style="width: 15%;"><%#Eval("Email") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Designation") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Status") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Source") %></td>
+                                            <td style="width: 15%;"><%#Eval("phone") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("phonetype") %></td>
+                                            <td style="width: 5%;"><%#Eval("Zip") %></td>
+                                        </tr>
+                                    </ItemTemplate>
+                                    <FooterTemplate>
+                                        </tbody>
+                                    </FooterTemplate>
+                                </asp:Repeater>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 10px;">
+                        <h2>Users to be Added</h2>
+                        <div>
+                            <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                <asp:Repeater ID="rptUserstoBeAdded" runat="server">
+                                    <HeaderTemplate>
+                                        <thead>
+                                            <tr class="trHeader ">
+                                                <th scope="col" style="width: 75px;">FirstName*</th>
+                                                <th scope="col" style="width: 75px;">LastName*</th>
+                                                <th scope="col" style="width: 90px;">Email*</th>
+                                                <th scope="col" style="width: 75px;">Designation*</th>
+                                                <th scope="col" style="width: 50px;">Status*</th>
+                                                <th scope="col" style="width: 60px;">Source*</th>
+                                                <th scope="col" style="width: 90px;">Primary Contact Phone*</th>
+                                                <th scope="col" style="width: 60px;">Phone Type*</th>
+                                                <th scope="col" style="width: 50px;">Zip*</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
+                                            <td style="width: 10%;"><%#Eval("FirstName") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("LastName") %>
+                                            </td>
+                                            <td style="width: 15%;"><%#Eval("Email") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Designation") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Status") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Source") %></td>
+                                            <td style="width: 15%;"><%#Eval("Phone1") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Phone1Type") %></td>
+                                            <td style="width: 5%;"><%#Eval("Zip") %></td>
+                                        </tr>
+                                    </ItemTemplate>
+                                    <FooterTemplate>
+                                        </tbody>
+                                    </FooterTemplate>
+                                </asp:Repeater>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 10px;">
+                        <h2>Successfully entered users</h2>
+                        <div>
+                            <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                <asp:Repeater ID="rptSuccessFullyEntered" runat="server">
+                                    <HeaderTemplate>
+                                        <thead>
+                                            <tr class="trHeader ">
+                                                <th scope="col" style="width: 75px;">FirstName*</th>
+                                                <th scope="col" style="width: 75px;">LastName*</th>
+                                                <th scope="col" style="width: 90px;">Email*</th>
+                                                <th scope="col" style="width: 75px;">Designation*</th>
+                                                <th scope="col" style="width: 50px;">Status*</th>
+                                                <th scope="col" style="width: 60px;">Source*</th>
+                                                <th scope="col" style="width: 90px;">Primary Contact Phone*</th>
+                                                <th scope="col" style="width: 60px;">Phone Type*</th>
+                                                <th scope="col" style="width: 50px;">Zip*</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
+                                            <td style="width: 10%;"><%#Eval("FirstName") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("LastName") %>
+                                            </td>
+                                            <td style="width: 15%;"><%#Eval("Email") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Designation") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Status") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Source") %></td>
+                                            <td style="width: 15%;"><%#Eval("Phone1") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Phone1Type") %></td>
+                                            <td style="width: 5%;"><%#Eval("Zip") %></td>
+                                        </tr>
+                                    </ItemTemplate>
+                                    <FooterTemplate>
+                                        </tbody>
+                                    </FooterTemplate>
+                                </asp:Repeater>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </ContentTemplate>
+            <Triggers>
+                <asp:AsyncPostBackTrigger ControlID="btnUploadNew" EventName="Click" />
+            </Triggers>
+        </asp:UpdatePanel>
+    </div>
     <div class="hide">
         <div id="divBulkUploadUserErrors" runat="server" title="Information" data-width="900px">
             <div style="padding: 5px 10px;">
@@ -2554,6 +2759,25 @@
             });
         }
         //============== End DP ==============
+       
+        function showBulkUploadProgressPopup() {
+
+            $('#bulkUpload').removeClass('hide');               
+
+            $('#bulkUpload').dialog({
+                modal: false,
+                height: 700,
+                width: 1000,
+                title: "Bulk upload progress...",
+                    
+            }).parent().appendTo($("form:first"));
+
+            $('#bulkUpload').show();
+                
+                
+                
+            return true;
+        }
 
     </script>
 </asp:Content>
