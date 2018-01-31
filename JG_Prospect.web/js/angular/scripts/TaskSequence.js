@@ -356,6 +356,46 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
         });
     };
 
+    $scope.getTechTasks = function (page) {
+
+        if (sequenceScope.UserStatus == undefined)
+            sequenceScope.UserStatus = 0;
+        if (sequenceScope.StartDate == undefined)
+            sequenceScope.StartDate = "";
+        if (sequenceScope.EndDate == undefined)
+            sequenceScope.EndDate = "";
+
+        if ($scope.IsTechTask) {
+            //console.log("Tech Task called....");
+            $scope.loader.loading = true;
+            $scope.Techpage = page || 0
+
+            // make it blank so StaffTask grid don't bind.
+            $scope.Tasks = [];
+
+
+            //get all Customers
+            getTasksWithSearchandPagingM($http, "GetAllTasksWithPaging", { page: $scope.Techpage, pageSize: 20, DesignationIDs: $scope.UserSelectedDesigIds != '' ? $scope.UserSelectedDesigIds.join() : '', IsTechTask: true, HighlightedTaskID: $scope.HighLightTaskId, UserId: $scope.UserId, ForDashboard: $scope.ForDashboard, TaskUserStatus: $scope.UserStatus, StartDate: $scope.StartDate, EndDate: $scope.EndDate, ForInProgress: $scope.ForInProgress }).then(function (data) {
+                $scope.loader.loading = false;
+                $scope.IsTechTask = true;
+                $scope.DesignationSelectModel = [];
+                var resultArray = JSON.parse(data.data.d);
+                var results = resultArray.TasksData;
+                //console.log("type of tasks is");
+                //console.log(typeof results.Tasks);
+                //console.log(results.Tasks);
+                $scope.Techpage = results.RecordCount.PageIndex;
+                $scope.TechTotalRecords = results.RecordCount.TotalRecords;
+                $scope.TechpagesCount = results.RecordCount.TotalPages;
+                $scope.TechTasks = $scope.correctDataforAngular(results.Tasks);
+                //console.log($scope.TechTasks);
+                //$scope.TaskSelected = $scope.TechTasks[0];
+
+            });
+
+        }
+    };
+
     $scope.toRoman = function (num) {
 
         if (!+num)
