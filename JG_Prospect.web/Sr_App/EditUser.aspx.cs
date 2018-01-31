@@ -2654,8 +2654,9 @@ namespace JG_Prospect
         protected void DownloadFile(object sender, EventArgs e)
         {
             string filePath = (sender as LinkButton).CommandArgument;
+            string PhysicalMappedPath = Server.MapPath(filePath);
             Response.ContentType = ContentType;
-            Response.AppendHeader("Content-Disposition", "attachment; filename=" + Path.GetFileName(filePath));
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + Path.GetFileName(PhysicalMappedPath));
             Response.WriteFile(filePath);
             Response.End();
         }
@@ -4904,6 +4905,10 @@ namespace JG_Prospect
         [WebMethod]
         public static string AddNotes(int id, string note, int touchPointSource)
         {
+            if (string.IsNullOrEmpty(note))
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+            }
             string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
             int userID = Convert.ToInt32(JGSession.LoginUserID);
             InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, "Note : " + note, "", touchPointSource);

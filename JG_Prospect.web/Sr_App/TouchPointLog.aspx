@@ -34,7 +34,7 @@
             </div>
         </div>
     </div>
-    
+
     <%--<div class="chats">
         <div class="chat-row"></div>
     </div>
@@ -142,6 +142,10 @@
         var pageSize = 20;
         $(document).ready(function () {
             Paging($(this));
+            var RcvrID = getUrlVars()["RcvrID"];
+            var chatGroupId = getUrlVars()["CGID"];
+            if (RcvrID != undefined && chatGroupId != undefined)
+                InitiateOldChat($(this), RcvrID, chatGroupId);
         });
     </script>
 </asp:Content>

@@ -10,9 +10,24 @@
     sequenceScopeTG.getUserByDesignation();
 }
 
+function OnDeleteAttachment(sender) {
+    if (confirm('Are you sure?') == true) {
+        var aid = $(sender).attr('data-aid');
+        CallJGWebService('DeleteTaskUserFile', { AttachmentId: aid }, OnDeleteSuccess, OnDeleteFailure);
+        function OnDeleteSuccess(data) {
+            if (data.d == true)
+                LoadSubTasks();
+        }
+        function OnDeleteFailure(err) {
+            alert('Can not delete attachment.');
+        }
+    }
+}
+
 function LoadSubTasks() {
 
     //Set Params
+    sequenceScopeTG.getAssignUser();
     sequenceScopeTG.UserSelectedDesigIds = "";
 
     //Get Page Size
@@ -140,7 +155,46 @@ function updateMultiLevelChild(tid, desc, autosave) {
         });
     }
 }
+function OnSaveSubTaskPopup(taskid, desc) {
 
+    var installID = $('#listId' + taskid).attr('data-listid');
+    var TaskLvl = $('#nestLevel' + taskid).val();
+    var Class = $('#listId' + taskid).attr('data-label');
+
+    if (desc != undefined && desc.trim() != '') {
+
+        ShowAjaxLoader();
+        if (TaskLvl == '') TaskLvl = 1;
+
+        var postData = {
+            ParentTaskId: taskid,
+            InstallId: installID,
+            Description: desc,
+            IndentLevel: TaskLvl,
+            Class: Class
+        };
+
+        CallJGWebService('SaveTaskMultiLevelChild', postData, OnAddNewSubTaskSuccess, OnAddNewSubTaskError);
+
+        function OnAddNewSubTaskSuccess(data) {
+            if (data.d == true) {
+                HideAjaxLoader();
+                PreventScroll = 1;
+
+                SetupChildInfo(taskid);
+                //alert('Task saved successfully.');
+            }            
+        }
+
+        function OnAddNewSubTaskError(err) {
+            alert('Task cannot be saved. Please try again.');
+        }
+
+        
+    }
+    return false;
+
+}
 function OnSaveSubTask(taskid, desc) {
 
     var installID = $('#listId' + taskid).attr('data-listid');
@@ -165,8 +219,10 @@ function OnSaveSubTask(taskid, desc) {
         function OnAddNewSubTaskSuccess(data) {
             if (data.d == true) {
                 PreventScroll = 1;
-                alert('Task saved successfully.');
+                //alert('Task saved successfully.');
+                //sequenceScopeTG.LoadFeedbackPoints();
                 LoadSubTasks();
+                $('#subtaskDesc' + taskid).focus();
             }
             else {
                 alert('Task cannot be saved. Please try again.');

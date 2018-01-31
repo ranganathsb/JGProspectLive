@@ -131,6 +131,10 @@
     <Reference Include="GoogleMaps.LocationServices">
       <HintPath>..\packages\GoogleMaps.LocationServices.0.9.8.5\lib\net40\GoogleMaps.LocationServices.dll</HintPath>
     </Reference>
+    <Reference Include="Humanizer, Version=2.2.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Humanizer.Core.2.2.0\lib\netstandard1.0\Humanizer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\Ionic.Zip.dll</HintPath>
@@ -366,6 +370,7 @@
     <Content Include="calendar\dot.gif" />
     <Content Include="calendar\Srcalendar.aspx" />
     <Content Include="changepassword.aspx" />
+    <Content Include="Chat\chat-notification.mp3" />
     <Content Include="Chat\chat.css" />
     <Content Include="Chat\chatwindow.html" />
     <Content Include="Chat\initialize.html" />
@@ -1539,6 +1544,7 @@
     <Content Include="css\font-awesome-4.7.0\scss\_screen-reader.scss" />
     <Content Include="css\font-awesome-4.7.0\scss\_stacked.scss" />
     <Content Include="css\font-awesome-4.7.0\scss\_variables.scss" />
+    <Content Include="Chat\chat-notification.ogg" />
     <None Include="Database Scripts\executed\yogesh\scripts dec v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN043_I_f_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN047_I_b_v0.1.sql" />
@@ -1561,6 +1567,7 @@
     <Content Include="Database Scripts\Kapil\Executed_3.sql" />
     <Content Include="Database Scripts\Kapil\Executed_4.sql" />
     <Content Include="Database Scripts\Kapil\Latest.sql" />
+    <Content Include="Database Scripts\Kapil\Executed_5.sql" />
     <Content Include="Database Scripts\Kapil\Executed_2.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\Database Script.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\03-04-2017.sql" />
@@ -1925,9 +1932,12 @@
     <Content Include="img\chosen-sprite%402x.png" />
     <Content Include="img\chosen-sprite.png" />
     <Content Include="img\close.png" />
+    <Content Include="img\compose.PNG" />
     <Content Include="img\ContractFooter.png" />
     <Content Include="img\ContractHeader.jpg" />
     <Content Include="img\controls.png" />
+    <Content Include="img\dialer.PNG" />
+    <Content Include="img\delete.jpg" />
     <Content Include="img\Email art header.png" />
     <Content Include="img\Email footer.png" />
     <Content Include="img\excel-icon.png" />
@@ -1943,6 +1953,7 @@
     <Content Include="img\icon_jg.PNG" />
     <Content Include="img\icon_share.JPG" />
     <Content Include="img\image-icon.png" />
+    <Content Include="img\inbox.PNG" />
     <Content Include="img\indent_left.jpg" />
     <Content Include="img\indent_right.jpg" />
     <Content Include="img\jg-construction.jpg" />
@@ -1954,6 +1965,8 @@
     <Content Include="img\LogoJG_PDF.png" />
     <Content Include="img\Logo_BG.png" />
     <Content Include="img\microsoftlogin.png" />
+    <Content Include="img\min-max.jpg" />
+    <Content Include="img\min-max.png" />
     <Content Include="img\movies-icon.png" />
     <Content Include="img\pdf-icon.png" />
     <Content Include="img\pdf.jpg" />
@@ -1965,6 +1978,7 @@
     <Content Include="img\starred.png" />
     <Content Include="img\twitter.jpg" />
     <Content Include="img\ui-anim_basic_16x16.png" />
+    <Content Include="img\user-list.PNG" />
     <Content Include="img\video-icon.png" />
     <Content Include="img\whitetick.png" />
     <Content Include="img\word-icon.png" />
@@ -2044,6 +2058,7 @@
     <Content Include="js\angular\scripts\edituser-angular.js" />
     <Content Include="js\angular\scripts\TaskGenerator.js" />
     <Content Include="js\angular\scripts\TaskGeneratorHelper.js" />
+    <Content Include="js\angular\scripts\TaskPopupHelper.js" />
     <Content Include="js\angular\scripts\TaskSequence-UiGrid.js" />
     <Content Include="js\angular\templates\sequence-header-template.html" />
     <Content Include="js\angular\templates\pager-template.html" />
@@ -2168,6 +2183,8 @@
     <Content Include="js\ice\src\ice.js" />
     <Content Include="js\intTel\intlTelInput.js" />
     <Content Include="js\jquery-2.2.4.min.js" />
+    <Content Include="js\Jquery-mention\jquery.mentionsInput.css" />
+    <Content Include="js\Jquery-mention\jquery.mentionsInput.js" />
     <Content Include="js\jquery.magnific-popup.min.js" />
     <Content Include="js\JCarousel.js" />
     <Content Include="js\jg-common.js" />
@@ -2190,6 +2207,8 @@
     <Content Include="js\jquery.ui.core.js" />
     <Content Include="js\jquery.ui.core.old.js" />
     <Content Include="js\jquery.ui.position.min.js" />
+    <Content Include="js\Jquery-mention\lib\jquery.elastic.js" />
+    <Content Include="js\Jquery-mention\lib\jquery.events.input.js" />
     <Content Include="js\lightslider.js" />
     <Content Include="js\angular\scripts\TaskSequence.js" />
     <Content Include="js\mention\bootstrap-typeahead.js" />
@@ -2212,15 +2231,21 @@
     <Content Include="MCQTest\ViewResults.aspx" />
     <Content Include="postdata.html" />
     <Content Include="Properties\PublishProfiles\DeveloperProfile.pubxml.user" />
+    <Content Include="screening-intermediate.aspx" />
+    <Content Include="screening-popup.aspx" />
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
+    <Content Include="js\Jquery-mention\data.json" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
     <Content Include="Scripts\jquery-2.2.4.min.js" />
+    <Content Include="Scripts\jquery-ui.js" />
     <Content Include="Scripts\jquery.magnific-popup.min.js" />
+    <Content Include="Scripts\jquery.maskedinput.min.js" />
     <Content Include="Scripts\jquery.MultiFile.js" />
+    <Content Include="Scripts\jquery.signalR-2.2.0.min.js" />
     <Content Include="Scripts\jquery.signalR-2.2.2.js" />
     <Content Include="Scripts\jquery.signalR-2.2.2.min.js" />
     <Content Include="Scripts\ui-grid.js" />
@@ -2597,6 +2622,20 @@
     </Compile>
     <Compile Include="MCQTest\ViewResults.aspx.designer.cs">
       <DependentUpon>ViewResults.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="screening-intermediate.aspx.cs">
+      <DependentUpon>screening-intermediate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="screening-intermediate.aspx.designer.cs">
+      <DependentUpon>screening-intermediate.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="screening-popup.aspx.cs">
+      <DependentUpon>screening-popup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="screening-popup.aspx.designer.cs">
+      <DependentUpon>screening-popup.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\add-edit-aptitude-test.aspx.cs">
       <DependentUpon>add-edit-aptitude-test.aspx</DependentUpon>

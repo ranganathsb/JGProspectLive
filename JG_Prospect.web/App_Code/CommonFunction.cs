@@ -263,6 +263,10 @@ namespace JG_Prospect.App_Code
             {
                 switch (JGSession.Designation.ToUpper())
                 {
+                    //To add/edit Tasks
+                    case "IT - SR .NET DEVELOPER":
+                    case "IT - SR. PHP DEVELOPER":
+
                     case "ADMIN": // admin
                     case "ADMIN-SALES":
                     case "ADMIN RECRUITER":
@@ -423,18 +427,6 @@ namespace JG_Prospect.App_Code
                     sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
 
                     sc.Send(Msg);
-                    //try
-                    //{
-                    //    lockerEmailLogs.AcquireWriterLock(int.MaxValue);
-                    //    using (var tw = new StreamWriter(HostingEnvironment.MapPath("~/EmailStatistics/EmailLogs.txt"), true))
-                    //    {
-                    //        tw.WriteLine(strToAddress + "  - " + DateTime.Now + " - " + strSubject);
-                    //        tw.Close();
-                    //    }
-                    //}finally
-                    //{
-                    //    lockerEmailLogs.ReleaseWriterLock();
-                    //}
                     retValue = true;
 
                     Msg = null;
@@ -1337,7 +1329,6 @@ namespace JG_Prospect.App_Code
             {
                 ProfileUpdateRequired = false;
             }
-
             return ProfileUpdateRequired;
         }
 
@@ -1378,34 +1369,37 @@ namespace JG_Prospect.App_Code
 
         public static void UpdateLog(string LogText)
         {
-            string logDirectoryPath = HttpContext.Current.Server.MapPath(@"~\Log");
-
-            if (!Directory.Exists(logDirectoryPath))
+            try
             {
-                Directory.CreateDirectory(logDirectoryPath);
-            }
+                lockerEmailLogs.AcquireWriterLock(int.MaxValue);
 
-            string path = String.Concat(logDirectoryPath, "\\Log.txt");
-
-            if (!File.Exists(path))
-            {
-
-                using (TextWriter tw = File.CreateText(path))
+                string logDirectoryPath = HostingEnvironment.MapPath(@"~\Log");
+                if (!Directory.Exists(logDirectoryPath))
                 {
-                    tw.WriteLine(LogText + "  - " + DateTime.Now);
-                    tw.Close();
+                    Directory.CreateDirectory(logDirectoryPath);
                 }
-
-
-            }
-            else if (File.Exists(path))
-            {
-                using (var tw = new StreamWriter(path, true))
+                string path = String.Concat(logDirectoryPath, "\\Log.txt");
+                if (!File.Exists(path))
                 {
-                    tw.WriteLine(LogText + "  - " + DateTime.Now);
-                    tw.Close();
+                    using (TextWriter tw = File.CreateText(path))
+                    {
+                        tw.WriteLine(LogText + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
+                }
+                else if (File.Exists(path))
+                {
+                    using (var tw = new StreamWriter(path, true))
+                    {
+                        tw.WriteLine(LogText + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
                 }
             }
+            finally
+            {
+                lockerEmailLogs.ReleaseWriterLock();
+            }            
         }
 
         internal static DataSet GetDesignations()

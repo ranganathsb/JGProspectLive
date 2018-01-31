@@ -89,6 +89,8 @@
             <li><input type="text" placeholder="Search" class="search-box"/></li>
         </ul>
         <ul style="margin-top: 14px;">
+            <li><a href="#" class="red-text">All</a></li>
+            <li>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
             <!--Email with # of unread msgs and new font-->
             <li id="test"><a id="hypEmail" runat="server" style="color: white;" target="_blank">Emails<label id="lblNewCounter" class="badge badge-error">0</label><label id="lblUnRead" class="badge badge-error hide"></label></a></li>
             <li>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
@@ -98,75 +100,7 @@
         </ul>
     </div>
     <div class="header-msg">
-        <div class="row">
-            <div class="user-image">
-                <div class="img">
-                    <img src="http://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/201712181154322015-01-15%2019.43.23.jpg" /></div>
-                <div class="status-icon"></div>
-                <div class="installid"><a href="#">ITSTE-A0002 </a></div>
-            </div>
-            <div class="contents">
-                <div class="top"><div class="name">Abhishek Girwalkar</div><div class="time">12/25/17</div></div>                
-                <div class="msg-container">
-                    <div class="tick">
-                        <img src="../img/blue-tick.png" />
-                    </div>
-                    <div class="msg">Lorem Ipsum is simply dummy text</div>
-                    <div class="counter">3</div>
-                </div>
-            </div>
-            <div class="caller">
-                <div class="phone"><i class="fa fa-phone" aria-hidden="true"></i></div>
-                <div class="email"><i class="fa fa-envelope" aria-hidden="true"></i></div>
-                <div class="video"><i class="fa fa-video-camera" aria-hidden="true"></i></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="user-image">
-                <div class="img">
-                    <img src="http://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/201711110441571119837_519951461410702_1811777035_o.jpg" /></div>
-                <div class="status-icon"></div>
-                <div class="installid"><a href="#">ADM-A0064 </a></div>
-            </div>
-            <div class="contents">
-                <div class="top"><div class="name">Johanna C</div><div class="time">12/25/17</div></div>                
-                <div class="msg-container">
-                    <div class="tick">
-                        <img src="../img/blue-tick.png" />
-                    </div>
-                    <div class="msg">Lorem Ipsum is simply dummy text</div>
-                    <div class="counter">3</div>
-                </div>
-            </div>
-            <div class="caller">
-                <div class="phone"><i class="fa fa-phone" aria-hidden="true"></i></div>
-                <div class="email"><i class="fa fa-envelope" aria-hidden="true"></i></div>
-                <div class="video"><i class="fa fa-video-camera" aria-hidden="true"></i></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="user-image">
-                <div class="img">
-                    <img src="http://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/20171109173026IMG-20151119-WA0000%201.jpg" /></div>
-                <div class="status-icon"></div>
-                <div class="installid"><a href="#">AREC-A0059</a></div>
-            </div>
-            <div class="contents">
-                <div class="top"><div class="name">SARU KAUSHISH</div><div class="time">12/25/17</div></div>                
-                <div class="msg-container">
-                    <div class="tick">
-                        <img src="../img/blue-tick.png" />
-                    </div>
-                    <div class="msg">Lorem Ipsum is simply dummy text</div>
-                    <div class="counter">3</div>
-                </div>
-            </div>
-            <div class="caller">
-                <div class="phone"><i class="fa fa-phone" aria-hidden="true"></i></div>
-                <div class="email"><i class="fa fa-envelope" aria-hidden="true"></i></div>
-                <div class="video"><i class="fa fa-video-camera" aria-hidden="true"></i></div>
-            </div>
-        </div>
+        <div class="no-user">Loading Online Users...</div>
     </div>
 </div>
 <!--nav section-->

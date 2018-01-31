@@ -595,14 +595,15 @@ form.inline {
         list-style-type: none;
         margin: 10px 0 0 0;
         padding: 0;
-        float: left;
+        float: right;
         font-size: 12px;
     }
 
         .user_panel ul li {
             float: left;
-            margin: 0 0 0 2px;
+            margin: 0 0 0 1px;
             padding: 0;
+            position:relative;
         }
 
     .user_panel .badge {
@@ -2491,7 +2492,7 @@ input[type='checkbox']:checked.largecheckbox {
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    z-index: 9999; /* Sit on top */
     padding-top: 100px; /* Location of the box */
     left: 0;
     top: 0;
@@ -2703,6 +2704,7 @@ ul.auto-complete-users {
     /* -webkit-border-radius: 12px; */
     -moz-border-radius: 8px;
     border-radius: 8px;
+    overflow: auto;
 }
 
 ul.auto-complete-users {
@@ -2815,7 +2817,7 @@ ul.auto-complete-users {
 }
 .header-msg .row {
     display: inline-block;
-    width: 100%;    border-bottom: 2px solid #ccc;
+    width: 100%;    border-bottom: 2px solid #ccc;cursor:pointer;
 }.header-msg .row .user-image img {
     width: 45px;
     height: 45px;
@@ -2831,7 +2833,10 @@ ul.auto-complete-users {
     top: 2px;
     right: 2px;
     border-radius: 5px;
-}.header-msg .row .user-image .installid {
+}
+ .header-msg .row .user-image .status-icon.active{background: #02a800;}
+ .header-msg .row .user-image .status-icon.idle{background: #f27e00;}
+ .header-msg .row .user-image .installid {
     position: absolute;
     bottom: 3px;
     background: #ddd;
@@ -2840,18 +2845,22 @@ ul.auto-complete-users {
     width: 100%;
 }.header-msg .row .contents {
         display: inline-block;
-    width: 197px;
+    width: 197px;border-radius: 0px;
     padding: 2px 0;position:relative;height: 40px;border-right: 2px solid #ccc;float:left;
 }.header-msg .row .contents .top{width:100%;float: left;}
  .header-msg .row .contents .top .name{
     float: left;
     width: 135px;
     padding: 2px 0;color: #000;
-    font-weight: bold;
+    font-weight: bold;overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
+  .header-msg .no-user{text-align: center;
+    padding: 10px;}
  .header-msg .row .contents .top .time{
     float: right;
-    width:50px;
+    width:55px;
     padding: 2px 0;color: #666;
 }.header-msg .row .contents .msg-container{
     width: 100%;
@@ -2870,14 +2879,21 @@ ul.auto-complete-users {
 .header-msg .row .caller{float: left;margin-left:3px;
     /*font-size: 12px;
     width: 88px;*/}
-.header-msg .row .caller div{float: left;font-size: 26px;}
+.header-msg .row .caller div{float: left;font-size: 20px;}
 .header-msg .row .caller .phone{margin-right: 2px;color: #e55456;}
 .header-msg .row .caller .email{margin-right: 2px;color: #000;}
 .header-msg .row .caller .video{color:#e55456;}
-.chat-container {position: fixed;bottom: 0;right: 0;z-index: 1;}
+/*.chat-container {position: fixed;bottom: 0;right: 0;z-index: 1;}*/
 .chat-container iframe {height: 300px;width: 1000px;}
 
 .designation-container {
     margin-left: 61px;
     display:none;
+}.red-text{color:red !important;}
+ #Header1_lbluser {
+    width: 105px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

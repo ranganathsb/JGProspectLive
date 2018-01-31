@@ -58,6 +58,8 @@ namespace JG_Prospect.DAL
                         foreach (DataRow item in returndata.Tables[0].Rows)
                         {
                             int userId = Convert.ToInt32(item["UserId"].ToString());
+                            string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                             ChatUser user = new ChatUser
                             {
                                 UserId = userId,
@@ -65,6 +67,8 @@ namespace JG_Prospect.DAL
                                 FirstName = item["FirstName"].ToString(),
                                 LastName = item["LastName"].ToString(),
                                 Email = item["Email"].ToString(),
+                                ProfilePic = pic,
+                                UserInstallId = item["UserInstallId"].ToString(),
                                 OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()),
                                 OnlineAtFormatted = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString()
                             };
@@ -77,7 +81,8 @@ namespace JG_Prospect.DAL
                                     user.ConnectionIds.Add(connectionRow["ConnectionId"].ToString());
                                 }
                             }
-                            users.Add(user);
+                            if (!users.Select(m => m.UserId).ToList().Contains(user.UserId))
+                                users.Add(user);
                         }
                     }
                     return new ActionOutput<ChatUser>
@@ -92,9 +97,29 @@ namespace JG_Prospect.DAL
                 return new ActionOutput<ChatUser>
                 {
                     Message = ex.Message,
-                    Status = ActionStatus.Successfull
+                    Status = ActionStatus.Error
                 };
             }
+        }
+
+        public void ChatLogger(string chatGroupId, string message, int chatSourceId, int UserId, string IP)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("SaveChatLog");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@ChatGroupId", DbType.String, chatGroupId);
+                    database.AddInParameter(command, "@Message", DbType.String, message);
+                    database.AddInParameter(command, "@ChatSourceId", DbType.String, chatSourceId);
+                    database.AddInParameter(command, "@UserId", DbType.Int32, UserId);
+                    database.AddInParameter(command, "@IP", DbType.String, IP);
+                    database.ExecuteNonQuery(command);
+                }
+            }
+            catch (Exception ex)
+            { Console.Write(ex.Message); }
         }
 
         public ActionOutput<ChatUser> GetChatUsers(List<int> userIds)
@@ -116,13 +141,16 @@ namespace JG_Prospect.DAL
                         foreach (DataRow item in returndata.Tables[0].Rows)
                         {
                             int userId = Convert.ToInt32(item["UserId"].ToString());
+                            string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                             ChatUser user = new ChatUser
                             {
                                 UserId = userId,
-                                //ConnectionId = item["ConnectionId"].ToString(),
                                 FirstName = item["FirstName"].ToString(),
                                 LastName = item["LastName"].ToString(),
                                 Email = item["Email"].ToString(),
+                                ProfilePic = pic,
+                                UserInstallId = item["UserInstallId"].ToString(),
                                 OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()),
                                 OnlineAtFormatted = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString()
                             };
@@ -150,7 +178,7 @@ namespace JG_Prospect.DAL
                 return new ActionOutput<ChatUser>
                 {
                     Message = ex.Message,
-                    Status = ActionStatus.Successfull
+                    Status = ActionStatus.Error
                 };
             }
         }
@@ -171,6 +199,8 @@ namespace JG_Prospect.DAL
                     if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
                     {
                         DataRow item = returndata.Tables[0].Rows[0];
+                        string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                         user = new ChatUser
                         {
                             UserId = Convert.ToInt32(item["UserId"].ToString()),
@@ -178,7 +208,9 @@ namespace JG_Prospect.DAL
                             FirstName = item["FirstName"].ToString(),
                             LastName = item["LastName"].ToString(),
                             Email = item["Email"].ToString(),
-                            OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()),
+                            ProfilePic = pic,
+                            UserInstallId = item["UserInstallId"].ToString(),
+                            OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST(),
                             OnlineAtFormatted = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString()
                         };
                         // Same user can open chat in multiple browsers/tabs at the same time.
@@ -192,12 +224,16 @@ namespace JG_Prospect.DAL
                     {
                         // User if Offline
                         var usr = InstallUserDAL.Instance.getuserdetails(UserId).Tables[0].Rows[0];
+                        string pic = "UploadeProfile/" + (string.IsNullOrEmpty(usr["Picture"].ToString()) ? "default.jpg"
+                                                : usr["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                         user = new ChatUser
                         {
                             UserId = UserId,
-                            FirstName = usr["FirstName"].ToString(),
+                            FirstName = usr["FristName"].ToString(),
                             LastName = usr["LastName"].ToString(),
                             Email = usr["Email"].ToString(),
+                            ProfilePic = pic,
+                            UserInstallId = usr["UserInstallId"].ToString(),
                             OnlineAt = null,
                             OnlineAtFormatted = null
                         };
@@ -216,6 +252,168 @@ namespace JG_Prospect.DAL
                     Message = ex.Message,
                     Status = ActionStatus.Successfull
                 };
+            }
+        }
+
+        public ActionOutput<ChatUser> GetChatUser(string ConnectionId)
+        {
+            try
+            {
+                ChatUser user = null;
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetChatUserByConnectionId");
+                    database.AddInParameter(command, "@ConnectionId", DbType.String, ConnectionId);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        DataRow item = returndata.Tables[0].Rows[0];
+                        string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
+                        user = new ChatUser
+                        {
+                            UserId = Convert.ToInt32(item["UserId"].ToString()),
+                            //ConnectionId = item["ConnectionId"].ToString(),
+                            FirstName = item["FirstName"].ToString(),
+                            LastName = item["LastName"].ToString(),
+                            Email = item["Email"].ToString(),
+                            ProfilePic = pic,
+                            UserInstallId = item["UserInstallId"].ToString(),
+                            OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST(),
+                            OnlineAtFormatted = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString()
+                        };
+                        // Same user can open chat in multiple browsers/tabs at the same time.
+                        // Adding all ConnectionIds with chat user
+                        foreach (DataRow connectionRow in returndata.Tables[0].Rows)
+                        {
+                            user.ConnectionIds.Add(connectionRow["ConnectionId"].ToString());
+                        }
+                    }
+                    else
+                    {
+                        // User if Offline
+                        user = new ChatUser
+                        {
+                            OnlineAt = null,
+                            OnlineAtFormatted = null
+                        };
+                    }
+                    return new ActionOutput<ChatUser>
+                    {
+                        Object = user,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<ChatUser>
+                {
+                    Message = ex.Message,
+                    Status = ActionStatus.Successfull
+                };
+            }
+        }
+
+        public ActionOutput<ActiveUser> GetOnlineUsers(int LoggedInUserId)
+        {
+            try
+            {
+                List<ActiveUser> users = new List<ActiveUser>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetOnlineUsers");
+                    database.AddInParameter(command, "@LoggedInUserId", DbType.Int32, LoggedInUserId);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            // DataRow item = returndata.Tables[0].Rows[0];
+                            string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                    : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
+                            users.Add(new ActiveUser
+                            {
+                                UserId = Convert.ToInt32(item["UserId"].ToString()),
+                                //ConnectionId = item["ConnectionId"].ToString(),
+                                FirstName = item["FirstName"].ToString(),
+                                LastName = item["LastName"].ToString(),
+                                Email = item["Email"].ToString(),
+                                ProfilePic = pic,
+                                UserInstallId = item["UserInstallId"].ToString(),
+                                OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST(),
+                                OnlineAtFormatted = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString(),
+                                LastMessage = item["LastMessage"].ToString(),
+                                LastMessageAt = !string.IsNullOrEmpty(item["MessageAt"].ToString()) ?
+                                                    (DateTime?)Convert.ToDateTime(item["MessageAt"].ToString()).ToEST() : null,
+                                LastMessageAtFormatted = !string.IsNullOrEmpty(item["MessageAt"].ToString()) ?
+                                                    Convert.ToDateTime(item["MessageAt"].ToString()).ToEST().ToString() : null,
+                                IsRead = Convert.ToBoolean(item["IsRead"].ToString())
+                            });
+                        }
+                    }
+                    return new ActionOutput<ActiveUser>
+                    {
+                        Results = users,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<ActiveUser>
+                {
+                    Message = ex.Message,
+                    Status = ActionStatus.Error
+                };
+            }
+        }
+
+        public ActionOutput SetChatMessageRead(int ChatMessageId, int ReceiverId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("SetChatMessageRead");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@ChatMessageId", DbType.Int32, ChatMessageId);
+                    database.AddInParameter(command, "@ReceiverId", DbType.Int32, ReceiverId);
+                    database.ExecuteScalar(command);
+                    return new ActionOutput { Status = ActionStatus.Successfull };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput { Status = ActionStatus.Error, Message = ex.Message };
+            }
+        }
+
+        public ActionOutput SetChatMessageRead(string ChatGroupId, int ReceiverId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("SetChatMessageReadByChatGroupId");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@ChatGroupId", DbType.String, ChatGroupId);
+                    database.AddInParameter(command, "@ReceiverId", DbType.Int32, ReceiverId);
+                    database.ExecuteScalar(command);
+                    return new ActionOutput { Status = ActionStatus.Successfull };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput { Status = ActionStatus.Error, Message = ex.Message };
             }
         }
 
@@ -277,6 +475,56 @@ namespace JG_Prospect.DAL
             }
             catch (Exception ex)
             {
+            }
+        }
+
+        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId)
+        {
+            try
+            {
+                List<ChatMessage> messages = new List<ChatMessage>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetChatMessages");
+                    database.AddInParameter(command, "@ChatGroupId", DbType.String, ChatGroupId);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            // DataRow item = returndata.Tables[0].Rows[0];
+                            string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                    : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
+                            messages.Add(new ChatMessage
+                            {
+                                UserId = Convert.ToInt32(item["SenderId"].ToString()),
+                                Message = item["TextMessage"].ToString(),
+                                ChatSourceId = Convert.ToInt32(item["ChatSourceId"].ToString()),
+                                UserProfilePic = pic,
+                                UserInstallId = item["UserInstallId"].ToString(),
+                                UserFullname = item["Fullname"].ToString(),
+                                MessageAt = Convert.ToDateTime(item["CreatedOn"].ToString()),
+                                MessageAtFormatted = Convert.ToDateTime(item["CreatedOn"].ToString()).ToString()
+                            });
+                        }
+                    }
+                    return new ActionOutput<ChatMessage>
+                    {
+                        Results = messages,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<ChatMessage>
+                {
+                    Message = ex.Message,
+                    Status = ActionStatus.Error
+                };
             }
         }
     }
