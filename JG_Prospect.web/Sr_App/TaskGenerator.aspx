@@ -95,6 +95,11 @@
             height:17px;
             cursor:pointer;
         }
+        .left{
+            float:left;
+            color:red !important;
+            text-decoration:underline;
+        }
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -130,6 +135,10 @@
                 <input type="text" id="txtSearchUser" class="smart-text" />
             </div>
             <div class="modal-footer">
+                <%if (IsAdminMode)
+                    { %>
+                <button id="btnDelete" onclick="return false;" class="mui-btn mui-btn--small mui-btn--primary mui-btn--flat left">Delete</button>
+                <%} %>
                 <span class="search-label" style="color: red;">Search: Email</span>
                 <button id="btnShare" onclick="return false;" class="mui-btn mui-btn--small mui-btn--primary mui-btn--flat">Share</button>
                 <button id="btnCopy" class="mui-btn mui-btn--small mui-btn--primary mui-btn--flat">Copy</button>

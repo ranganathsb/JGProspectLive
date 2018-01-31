@@ -3148,6 +3148,7 @@
             var uid = '';
             var SearchTargetEmail = true;
             var urltoCopy = '';
+            var TIdToDel = '';
 
             function ApplySubtaskLinkContextMenu() {
 
@@ -3158,7 +3159,8 @@
             }
 
             function sharePopup(obj) {
-                urltoCopy = updateQueryStringParameterTP(window.location.href, "hstid", $(obj).attr('data-highlighter'));
+                TIdToDel = $(obj).attr('data-highlighter');
+                urltoCopy = updateQueryStringParameterTP(window.location.href, "hstid", TIdToDel);
                 var taskfid = $(obj).attr('data-taskfid');
                 var tasktitle = $(obj).attr('data-tasktitle');
                 var AssignedUserId = $(obj).attr('data-AssignedUserId');
@@ -3206,6 +3208,21 @@
                 else {
                     var note = 'Shared: ' + $('#txtTaskLink').val();
                     addNote(this, uid, note);
+                }
+                return false;
+            });
+            $('#btnDelete').on('click', function () {
+                if (confirm('It will delete this task and all its child tasks. Are you sure?')) {
+                    CallJGWebService('HardDeleteTask', { TaskId: parseInt(TIdToDel) },
+                        function (data) {
+                            if (data) {
+                                LoadSubTasks();
+                                alert('Task deleted successfully.');
+                            }
+                        },
+                        function (err) {
+                            alert('Error deleting task.');
+                        });
                 }
                 return false;
             });
