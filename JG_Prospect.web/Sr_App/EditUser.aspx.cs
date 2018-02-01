@@ -2003,11 +2003,25 @@ namespace JG_Prospect
                         rptIncorrectRecords.DataSource = dtInvalid;
                         rptIncorrectRecords.DataBind();
 
+                        if (dtInvalid != null)
+                        {
+                            ltlTotalInvalidUser.Text = dtInvalid.Rows.Count.ToString(); 
+                        }
+
                         rptDuplicateRecords.DataSource = dsDuplicateCheckResult;
                         rptDuplicateRecords.DataBind();
+                        if (dsDuplicateCheckResult != null && dsDuplicateCheckResult.Tables.Count > 0)
+                        {
+                            ltlTotalDuplicateUsers.Text = dsDuplicateCheckResult.Tables[0].Rows.Count.ToString(); 
+                        }
 
                         rptUserstoBeAdded.DataSource = dtUniqueRecords;
                         rptUserstoBeAdded.DataBind();
+
+                        if (dtUniqueRecords != null)
+                        {
+                            ltlTotalUserstobeAdded.Text = dtUniqueRecords.Rows.Count.ToString(); 
+                        }
 
                         upnlBulkUploadStatus.Update();
 
@@ -2111,6 +2125,12 @@ namespace JG_Prospect
                 dtUniqueRecord.AcceptChanges();
                 rptSuccessFullyEntered.DataSource = dtUniqueRecord;
                 rptSuccessFullyEntered.DataBind();
+
+                if (dtUniqueRecord != null)
+                {
+                    ltlTotalSuccessfulUsersInserted.Text = dtUniqueRecord.Rows.Count.ToString(); 
+                }
+
                 upnlBulkUploadStatus.Update();
 
             }
@@ -4818,7 +4838,9 @@ namespace JG_Prospect
 
         private DataTable GetInvalidRecordsFromUpload(DataTable dtAllRecords)
         {
-            DataTable dtInvalidRecords = dtAllRecords.AsEnumerable().Where(r => String.IsNullOrEmpty(r.Field<string>("Designation")) == true ||
+            DataTable dtInvalidRecords = null;
+
+            var Invalidrows = dtAllRecords.AsEnumerable().Where(r => String.IsNullOrEmpty(r.Field<string>("Designation")) == true ||
             String.IsNullOrEmpty(r.Field<string>("Status")) == true ||
             String.IsNullOrEmpty(r.Field<string>("Source")) == true ||
             String.IsNullOrEmpty(r.Field<string>("FirstName")) == true ||
@@ -4827,7 +4849,12 @@ namespace JG_Prospect
             String.IsNullOrEmpty(r.Field<string>("Phone1")) == true ||
             String.IsNullOrEmpty(r.Field<string>("Phone1Type")) == true ||
             String.IsNullOrEmpty(r.Field<string>("Zip")) == true
-            ).CopyToDataTable();
+            );
+
+            if (Invalidrows.Any())
+            {
+                dtInvalidRecords = Invalidrows.CopyToDataTable();
+           
 
             //Remove invalid records from old table
             IEnumerable<DataRow> rows = dtAllRecords.Rows.Cast<DataRow>().Where(r => String.IsNullOrEmpty(r.Field<string>("Designation")) == true ||
@@ -4843,6 +4870,8 @@ namespace JG_Prospect
 
             rows.ToList().ForEach(r => r.Delete());
             dtAllRecords.AcceptChanges();
+
+            }
 
             return dtInvalidRecords;
         }

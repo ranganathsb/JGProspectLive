@@ -1853,7 +1853,7 @@
                 <div id="div1" runat="server" title="Information" data-width="900px">
 
                     <div>
-                        <h2>Incomplete users</h2>
+                        <h2>Incomplete users: <small>Total: <asp:Literal ID="ltlTotalInvalidUser" runat="server"></asp:Literal></small></h2>
                         <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
 
                             <asp:Repeater ID="rptIncorrectRecords" runat="server">
@@ -1902,7 +1902,7 @@
                     </div>
 
                     <div style="margin-top: 10px;">
-                        <h2>Duplicate users</h2>
+                        <h2>Duplicate users: <small>Total: <asp:Literal ID="ltlTotalDuplicateUsers" runat="server"></asp:Literal></small></h2>
                         <div>
                             <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
                                 <asp:Repeater ID="rptDuplicateRecords" runat="server">
@@ -1950,7 +1950,7 @@
                     </div>
 
                     <div style="margin-top: 10px;">
-                        <h2>Users to be Added</h2>
+                        <h2>Users to be Added: <small>Total: <asp:Literal ID="ltlTotalUserstobeAdded" runat="server"></asp:Literal></small></h2>
                         <div>
                             <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
                                 <asp:Repeater ID="rptUserstoBeAdded" runat="server">
@@ -1998,7 +1998,7 @@
                     </div>
 
                     <div style="margin-top: 10px;">
-                        <h2>Successfully entered users</h2>
+                        <h2>Successfully entered users: <small>Total: <asp:Literal ID="ltlTotalSuccessfulUsersInserted" runat="server"></asp:Literal></small></h2>
                         <div>
                             <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
                                 <asp:Repeater ID="rptSuccessFullyEntered" runat="server">

@@ -1219,6 +1219,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl div1;
         
         /// <summary>
+        /// ltlTotalInvalidUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltlTotalInvalidUser;
+        
+        /// <summary>
         /// rptIncorrectRecords control.
         /// </summary>
         /// <remarks>
@@ -1226,6 +1235,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptIncorrectRecords;
+        
+        /// <summary>
+        /// ltlTotalDuplicateUsers control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltlTotalDuplicateUsers;
         
         /// <summary>
         /// rptDuplicateRecords control.
@@ -1237,6 +1255,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.Repeater rptDuplicateRecords;
         
         /// <summary>
+        /// ltlTotalUserstobeAdded control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltlTotalUserstobeAdded;
+        
+        /// <summary>
         /// rptUserstoBeAdded control.
         /// </summary>
         /// <remarks>
@@ -1244,6 +1271,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Repeater rptUserstoBeAdded;
+        
+        /// <summary>
+        /// ltlTotalSuccessfulUsersInserted control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltlTotalSuccessfulUsersInserted;
         
         /// <summary>
         /// rptSuccessFullyEntered control.

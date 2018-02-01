@@ -3369,7 +3369,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
                     database.AddInParameter(command, "@SourceID", DbType.Int32, objuser.SourceId);
                     database.AddInParameter(command, "@Source", DbType.String, objuser.Source);
-                    database.AddInParameter(command, "@FirstName", DbType.String, objuser.fristname);
+                    database.AddInParameter(command, "@FristName", DbType.String, objuser.fristname);
                     database.AddInParameter(command, "@NameMiddleInitial", DbType.String, objuser.NameMiddleInitial);
                     database.AddInParameter(command, "@LastName", DbType.String, objuser.lastname);
                     database.AddInParameter(command, "@CountryCode", DbType.String, objuser.CountryCode);
