@@ -2007,12 +2007,19 @@ namespace JG_Prospect
                         {
                             ltlTotalInvalidUser.Text = dtInvalid.Rows.Count.ToString(); 
                         }
-
+                        else
+                        {
+                            ltlTotalInvalidUser.Text = "0";
+                        }
                         rptDuplicateRecords.DataSource = dsDuplicateCheckResult;
                         rptDuplicateRecords.DataBind();
                         if (dsDuplicateCheckResult != null && dsDuplicateCheckResult.Tables.Count > 0)
                         {
                             ltlTotalDuplicateUsers.Text = dsDuplicateCheckResult.Tables[0].Rows.Count.ToString(); 
+                        }
+                        else
+                        {
+                            ltlTotalDuplicateUsers.Text = "0";
                         }
 
                         rptUserstoBeAdded.DataSource = dtUniqueRecords;
@@ -2021,6 +2028,10 @@ namespace JG_Prospect
                         if (dtUniqueRecords != null)
                         {
                             ltlTotalUserstobeAdded.Text = dtUniqueRecords.Rows.Count.ToString(); 
+                        }
+                        else
+                        {
+                            ltlTotalUserstobeAdded.Text = "0";
                         }
 
                         upnlBulkUploadStatus.Update();
@@ -2129,6 +2140,10 @@ namespace JG_Prospect
                 if (dtUniqueRecord != null)
                 {
                     ltlTotalSuccessfulUsersInserted.Text = dtUniqueRecord.Rows.Count.ToString(); 
+                }
+                else
+                {
+                    ltlTotalSuccessfulUsersInserted.Text = "0";
                 }
 
                 upnlBulkUploadStatus.Update();
