@@ -1410,6 +1410,7 @@
     <Content Include="Communication\webphone\sound\rtc_ringtone_orig.wav" />
     <Content Include="Communication\webphone\webphone_api.js" />
     <Content Include="Content\emoji-picker\lib\css\emoji.css" />
+    <Content Include="Content\emoji-picker\lib\css\emoji.css.map" />
     <Content Include="Content\emoji-picker\lib\img\blank.gif" />
     <Content Include="Content\emoji-picker\lib\img\emoji_spritesheet_0.png" />
     <Content Include="Content\emoji-picker\lib\img\emoji_spritesheet_1.png" />
@@ -1421,7 +1422,9 @@
     <Content Include="Content\emoji-picker\lib\img\IconsetW.png" />
     <Content Include="Content\emoji-picker\lib\img\IconsetW_1x.png" />
     <Content Include="Content\emoji-picker\lib\js\config.js" />
+    <Content Include="Content\emoji-picker\lib\js\emoji-picker.coffee" />
     <Content Include="Content\emoji-picker\lib\js\emoji-picker.js" />
+    <Content Include="Content\emoji-picker\lib\js\emoji-picker.js.map" />
     <Content Include="Content\emoji-picker\lib\js\jquery.emojiarea.js" />
     <Content Include="Content\emoji-picker\lib\js\util.js" />
     <Content Include="Content\paging.css" />
@@ -1561,9 +1564,6 @@
     <Content Include="css\font-awesome-4.7.0\scss\_stacked.scss" />
     <Content Include="css\font-awesome-4.7.0\scss\_variables.scss" />
     <Content Include="Chat\chat-notification.ogg" />
-    <Content Include="Content\emoji-picker\lib\css\emoji.css.map" />
-    <Content Include="Content\emoji-picker\lib\js\emoji-picker.coffee" />
-    <Content Include="Content\emoji-picker\lib\js\emoji-picker.js.map" />
     <None Include="Database Scripts\executed\yogesh\scripts dec v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN043_I_f_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN047_I_b_v0.1.sql" />
