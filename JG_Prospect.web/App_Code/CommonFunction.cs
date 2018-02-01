@@ -54,6 +54,14 @@ namespace JG_Prospect.App_Code
             }
         }
 
+        public static int GetUserIdCookie()
+        {
+            HttpCookie auth_cookie = HttpContext.Current.Request.Cookies[Cookies.UserId];
+            if (auth_cookie != null)
+                return Convert.ToInt32(auth_cookie.Value);
+            return 0;
+        }
+
         /// <summary>
         /// Add a GitHub user as Collaborator in repo        
         /// </summary>
@@ -172,6 +180,13 @@ namespace JG_Prospect.App_Code
             return formateddatetime;
         }
 
+        public static void SetUserIdCookie(string UserId)
+        {
+            HttpCookie auth = new HttpCookie(Cookies.UserId, UserId);
+            auth.Expires = DateTime.Now.AddMonths(20);
+            HttpContext.Current.Response.Cookies.Add(auth);
+        }
+
         public static void AuthenticateUser()
         {
             if (!JGSession.IsActive)
@@ -196,6 +211,7 @@ namespace JG_Prospect.App_Code
                             JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
                             JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
                             JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
+                            SetUserIdCookie(ds.Tables[0].Rows[0]["Id"].ToString());
                             if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
                             {
                                 JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
@@ -1192,9 +1208,9 @@ namespace JG_Prospect.App_Code
                 switch (Userstatus)
                 {
                     case JGConstant.InstallUserStatus.Active:
+                    case JGConstant.InstallUserStatus.OfferMade:
                         row["CssClass"] = "activeUser";
                         break;
-                    case JGConstant.InstallUserStatus.OfferMade:                        
                     case JGConstant.InstallUserStatus.InterviewDate:
                         row["CssClass"] = "IOUser";
                         break;
@@ -1651,6 +1667,38 @@ namespace JG_Prospect.App_Code
             return newTaskLinkTitle;
         }
 
+        /// <summary>
+        /// Upload file on server to given relative path from given file upload control.
+        /// </summary>
+        /// <param name="fupControl"></param>
+        /// <param name="RelativePath">Relative path on server, ex. ~/Employee/</param>
+        /// <returns>Saved file name -> guid-originalfilename</returns>
+        public static string UploadFile(FileUpload fupControl, String RelativePath)
+        {
+            String fileName = string.Empty;
+
+            if (fupControl.HasFile)
+            {
+                DirectoryInfo originalDirectory = new DirectoryInfo(HttpContext.Current.Server.MapPath(RelativePath));
+
+                string originalName = Path.GetFileName(fupControl.FileName);
+                string NewFileName = Guid.NewGuid() + "-" + originalName;
+
+                string pathString = System.IO.Path.Combine(originalDirectory.ToString(), NewFileName);
+
+                bool isExists = System.IO.Directory.Exists(originalDirectory.ToString());
+
+                if (!isExists)
+                    System.IO.Directory.CreateDirectory(originalDirectory.ToString());
+
+                fupControl.SaveAs(pathString);
+
+                fileName = NewFileName;
+            }
+
+            return fileName;
+        }
+
     }
 }
 
@@ -1840,6 +1888,20 @@ namespace JG_Prospect
             set
             {
                 HttpContext.Current.Session["LoginUserID"] = value;
+            }
+        }
+
+        public static string LoggedinUserEmail
+        {
+            get
+            {
+                if (HttpContext.Current.Session["LUE"] == null)
+                    return null;
+                return Convert.ToString(HttpContext.Current.Session["LUE"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["LUE"] = value;
             }
         }
 

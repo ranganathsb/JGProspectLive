@@ -233,21 +233,46 @@
         .right_panel {
             margin: 0 0 0 0 !important;
         }
-        .first-col{    width: 20%;float: left;}
-        .second-col{float:left;width:78%}
-        .second-col textarea.note-text{width:99%;}
+
+        .first-col {
+            width: 20%;
+            float: left;
+        }
+
+        .second-col {
+            float: left;
+            width: 78%;
+        }
+
+            .second-col textarea.note-text {
+                width: 99%;
+            }
+
         .notes-container {
             display: block;
             /*height: 66px;*/
             overflow-x: hidden;
             overflow-y: auto;
-           position: absolute;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
         }
-        .pos-rel{position:relative;}
-        .notes-inputs{text-align: left;height:30px;padding: 2px;position: absolute;left: 0;bottom: 0;width: 100%;}
+
+        .pos-rel {
+            position: relative;
+        }
+
+        .notes-inputs {
+            text-align: left;
+            height: 30px;
+            padding: 2px;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
         .notes-table {
             height: auto;
             width: 100%;
@@ -280,11 +305,14 @@
                 color: #000;
             }
             /*.notes-table tr a{font-size:10px;}*/
-            .notes-table tr:nth-child(even) a, .notes-popup tr:nth-child(even) a{color:#fff;}
+            .notes-table tr:nth-child(even) a, .notes-popup tr:nth-child(even) a {
+                color: #fff;
+            }
+
             .notes-table tr th:nth-child(1), .notes-table tr td:nth-child(1) {
                 width: 5%;
             }
-            
+
             .notes-table tr th:nth-child(2), .notes-table tr td:nth-child(2) {
                 width: 27%;
             }
@@ -415,20 +443,22 @@
                 height: 50px !important;
                 padding: 5px !important;
             }
-            .notes-container .note-desc {
-                width: 230px;
-                height: 29px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-            .notes-popup .notes-container .note-desc {
-                width: 194px;
-                height: 29px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
+
+        .notes-container .note-desc {
+            width: 230px;
+            height: 29px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .notes-popup .notes-container .note-desc {
+            width: 194px;
+            height: 29px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
     </style>
     <style type="text/css">
         #hint {
@@ -495,8 +525,93 @@
             height: 22px;
             vertical-align: middle;
             padding: 2px !important;
-            width: 255px;            
+            width: 255px;
             margin: 0px;
+        }
+
+        .content .row {
+            display: inline-block;
+            width: 100%;
+        }
+
+            .content .row.sender .user-image {
+                float: right;
+                margin-left: 5px;
+            }
+
+            .content .row.receiver .user-image {
+                float: left;
+                margin-right: 5px;
+            }
+
+            .content .row .user-image {
+                position: relative;
+                width: 80px;
+            }
+
+                .content .row .user-image .img img {
+                    width: 80px;
+                }
+
+                .content .row .user-image .installid {
+                    position: absolute;
+                    bottom: 0px;
+                    width: 100%;
+                    text-align: center;
+                    background: #ddd;
+                }
+
+                .content .row .user-image .status-icon {
+                    position: absolute;
+                    right: 2px;
+                    top: 2px;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 8px;
+                    background: green;
+                }
+
+                .content .row .user-image .installid a {
+                }
+
+        .time-container {
+            float: right;
+        }
+
+        .row .contents {
+            width: 600px;
+            border-radius: 10px;
+            padding: 30px;
+        }
+
+        .row.sender .contents {
+            float: right;
+            background: #333;
+            color: #ccc;
+            border-radius: 30px 30px 0;
+        }
+
+        .row.receiver .contents .est {
+            color: #000;
+        }
+
+        .row.receiver .contents {
+            float: left;
+            background: #A33E3F;
+            border-radius: 30px 30px 30px 0;
+            color: #ccc;
+        }
+
+        .row .contents .tick, .row .contents .time, .row .contents .est {
+            display: inline-block;
+        }
+
+        .row .contents .est {
+            color: #A33E3F;
+        }
+
+        .tick img {
+            width: 16px;
         }
     </style>
     <script type="text/javascript">
@@ -589,12 +704,67 @@
 
         $(document).on('click','.notes-table tr', function(e){
             if(!$(e.target).is('a') ) {
-                $('.notes-popup').css({ left: ($(window).width() / 2) - 400 });
-                $('#popupNoteUserId').val($(this).attr('uid'));
-                $('#popupNoteTxtUserId').val($(this).attr('iuid'));
-                $('.notes-popup').show();
-                $('.notes-popup-background').show();
-                Paging($(this));
+                //$('.notes-popup').css({ left: ($(window).width() / 2) - 400 });
+                //$('#popupNoteUserId').val($(this).attr('uid'));
+                //$('#popupNoteTxtUserId').val($(this).attr('iuid'));
+                //$('.notes-popup').show();
+                //$('.notes-popup-background').show();
+                //Paging($(this));
+                
+                // Open Chat Window
+                InitiateChat(this, $(this).attr('uid'));
+                //ajaxExt({
+                //    url: '/WebServices/JGWebService.asmx/InitiateChat',
+                //    type: 'POST',
+                //    data: '{ userID: ' + $(this).attr('uid') + ' }',
+                //    showThrobber: true,
+                //    throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
+                //    success: function (data, msg) {
+                //        var id = data.Object.split('`')[0];
+                //        var name = data.Object.split('`')[1];
+                //        //$('.chat-container').show();
+                //        if($('#'+id).length <= 0){
+                //            $('.telecom-dashboard-popup').show();
+                //            $('.overlay').show();
+                //            window.scrollTo(0, 0);                            
+                //            var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
+                //                                '<div class="header"><span class="group-name">' + name +
+                //                                    '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
+                //                                    '<span class="minimize" onclick="minimize(this)"><i class="fa fa-minus" aria-hidden="true"></i></span></div>' +
+                //                                '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
+                //                                '<div class="chats"></div>' +
+                //                                '<div class="chat-text">' +
+                //                                    '<input type="text" class="mention" id="chattext" onkeyup="sendChat(event, this);"  />' +
+                //                                    //'<input type="button" value="Send" id="sendChat" />' +
+                //                                '</div>' +
+                //                           '</div>';
+                //            $('.all-chats').append(strChat);
+                //            // reset existing @mention and add new @mention support 
+                //            $('input.mention').parent().find('.mentions').remove();
+                //            $('input.mention').parent().find('.mentions-autocomplete-list').remove();
+                //            $('input.mention').mentionsInput({
+                //                onDataRequest: function (mode, query, callback) {
+                //                    ajaxExt({
+                //                        url: '/WebServices/JGWebService.asmx/GetUsers',
+                //                        type: 'POST',
+                //                        data: '{ keyword: "' + query + '", chatGroupId:"' + userTobeAddedIntoChatGroupId + '" }',
+                //                        showThrobber: true,
+                //                        throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
+                //                        success: function (data, msg) {
+                //                            responseData = data.Results;
+                //                            responseData = _.filter(responseData, function (item) {
+                //                                return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
+                //                            });
+                //                            callback.call(this, responseData);
+                //                        }
+                //                    });
+                //                }
+                //            });
+                //            // Load User's list on right panel
+                //            loadChatUsers(this);
+                //        }
+                //    }
+                //});
             }
         });
 
@@ -1439,7 +1609,8 @@
                                         Notes
                                         <table class="table gridtbl notes-table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
                                             <tr class="trHeader " style="color: White;">
-                                                <th>User ID<br />Date&nbsp;&&nbsp;Time</th>
+                                                <th>User ID<br />
+                                                    Date&nbsp;&&nbsp;Time</th>
                                                 <th>Note/Status</th>
                                             </tr>
                                         </table>
@@ -1448,10 +1619,14 @@
                                         <div class="notes-container" uid="<%#Eval("UserInstallId")%>" id="user-<%#Eval("Id")%>">
                                             Loading Notes...
                                         </div>
-                                        <div class="notes-inputs">                                            
-                                            <div class="first-col"><input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this, '<%# Eval("Id") %>','<%#Eval("UserInstallId")%>')" /></div>
-                                            <div class="second-col"><textarea class="note-text textbox" id="txt-<%# Eval("Id") %>"></textarea></div>
-                                         </div>
+                                        <div class="notes-inputs">
+                                            <div class="first-col">
+                                                <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this, '<%# Eval("Id") %>    ','<%#Eval("UserInstallId")%>    ')" />
+                                            </div>
+                                            <div class="second-col">
+                                                <textarea class="note-text textbox" id="txt-<%# Eval("Id") %>"></textarea>
+                                            </div>
+                                        </div>
                                     </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
@@ -2211,7 +2386,82 @@
             <input type="hidden" id="PageIndex" value="0" />
         </div>
         <div class="content">
-            Loading Notes...
+            <div class="row sender">
+                <div class="user-image">
+                    <div class="img">
+                        <img src="http://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/201712181154322015-01-15%2019.43.23.jpg" />
+                    </div>
+                    <div class="status-icon"></div>
+                    <div class="installid"><a href="#">ITSTE-A0002 </a></div>
+                </div>
+                <div class="contents">
+                    <div class="msg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </div>
+                    <div class="time-container">
+                        <div class="tick">
+                            <img src="../img/blue-tick.png" />
+                        </div>
+                        <div class="time">Abhishek Girwalkar, 12/25/2017 11:21 AM</div>
+                        <div class="est">(EST)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row sender">
+                <div class="user-image">
+                    <div class="img">
+                        <img src="http://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/201712181154322015-01-15%2019.43.23.jpg" />
+                    </div>
+                    <div class="status-icon"></div>
+                    <div class="installid"><a href="#">ITSTE-A0002 </a></div>
+                </div>
+                <div class="contents">
+                    <div class="msg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </div>
+                    <div class="time-container">
+                        <div class="tick">
+                            <img src="../img/grey-tick.png" />
+                        </div>
+                        <div class="time">Abhishek Girwalkar, 12/25/2017 11:21 AM</div>
+                        <div class="est">(EST)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row receiver">
+                <div class="user-image">
+                    <div class="img">
+                        <img src="http://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/20171121092039IMG-20171018-WA0052.jpg" />
+                    </div>
+                    <div class="status-icon"></div>
+                    <div class="installid"><a href="#">JPM-A0008</a></div>
+                </div>
+                <div class="contents">
+                    <div class="msg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </div>
+                    <div class="time-container">
+                        <div class="tick">
+                            <img src="../img/grey-tick.png" />
+                        </div>
+                        <div class="time">Karishma Arora, 12/25/2017 11:21 AM</div>
+                        <div class="est">(EST)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row receiver">
+                <div class="user-image">
+                    <div class="img">
+                        <img src="http://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/20171121092039IMG-20171018-WA0052.jpg" />
+                    </div>
+                    <div class="status-icon"></div>
+                    <div class="installid"><a href="#">JPM-A0008</a></div>
+                </div>
+                <div class="contents">
+                    <div class="msg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </div>
+                    <div class="time-container">
+                        <div class="tick">
+                            <img src="../img/blue-tick.png" />
+                        </div>
+                        <div class="time">Karishma Arora, 12/25/2017 11:21 AM</div>
+                        <div class="est">(EST)</div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="pagingWrapper">
             <div class="total-results">Total <span class="total-results-count"></span>Results</div>
@@ -2546,14 +2796,14 @@
             ReLoadNotes();
         });
 
-        function ReLoadNotes() {
-            $('.notes-container').each(function (i) {
-                var id = $(this).attr('id').split('-')[1];
-                var installUserId = $(this).attr('uid');
-                LoadNotes($('#user' + id), installUserId, id);
-            });
-        }
-        //============== End DP ==============
+            function ReLoadNotes() {
+                $('.notes-container').each(function (i) {
+                    var id = $(this).attr('id').split('-')[1];
+                    var installUserId = $(this).attr('uid');
+                    LoadNotes($('#user' + id), installUserId, id);
+                });
+            }
+            //============== End DP ==============
 
     </script>
 </asp:Content>

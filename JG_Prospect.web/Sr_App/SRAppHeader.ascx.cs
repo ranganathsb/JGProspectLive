@@ -10,6 +10,7 @@ using JG_Prospect.App_Code;
 using JG_Prospect.Common.RestServiceJSONParser;
 using JG_Prospect.Utilits;
 using Newtonsoft.Json;
+using JG_Prospect.Chat.Hubs;
 
 namespace JG_Prospect.Sr_App
 {
@@ -54,6 +55,16 @@ namespace JG_Prospect.Sr_App
 
         protected void btnlogout_Click(object sender, EventArgs e)
         {
+            // Remove user from ChatUser
+            //ChatHub chatHub = new Chat.Hubs.ChatHub();
+            
+            HttpCookie auth_cookie = Request.Cookies[Cookies.UserId];
+            if (auth_cookie != null)
+            {
+                auth_cookie.Expires = DateTime.Now.AddDays(-2);
+                Response.Cookies.Add(auth_cookie);
+            }
+
             UpdateAudiTrailForLogout();
             Session.Clear();
             Session["LogOut"] = 1;
