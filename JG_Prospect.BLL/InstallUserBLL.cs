@@ -687,7 +687,7 @@ namespace JG_Prospect.BLL
             var sender = getuserdetails(LoginUserID).Tables[0].Rows[0];
             string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? "default.jpg"
                                 : sender["Picture"].ToString().Replace("~/UploadeProfile/", "");
-            pic = baseUrl + "UploadeProfile/" + pic;
+            pic = baseUrl + "Employee/ProfilePictures/" + pic;
             html.Body = html.Body.Replace("{ImageUrl}", pic);
             html.Body = html.Body.Replace("{Name}", sender["FristName"].ToString() + " " + sender["LastName"].ToString());
             html.Body = html.Body.Replace("{Designation}", sender["Designation"].ToString());

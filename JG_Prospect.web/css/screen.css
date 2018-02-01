@@ -2798,7 +2798,7 @@ ul.auto-complete-users {
 }
 .designation-container{margin-left: 61px;}
 
-.header-msg:hover{height: 159px;}
+.header-msg:hover{height: 159px;overflow-y:auto;}
 .header-msg {
     width: 340px;
     position: absolute;

@@ -297,12 +297,13 @@ Create PROCEDURE GetUsersByKeyword
   @ExceptUserIds varchar(100) = null
 AS    
 BEGIN
-	Select top 5 U.Id, U.FristName, U.LastName, U.Email, U.Phone, ISNULL(U.Picture,'') As Picture, U.UserInstallId
+	Select top 5 U.Id, U.FristName as FirstName, U.LastName, U.Email, U.Phone, ISNULL(U.Picture,'') As Picture, U.UserInstallId
 	From tblInstallUsers U With(NoLock)
 	Where (FristName like @Keyword + '%' OR LastName like @Keyword + '%' OR Email like @Keyword + '%' OR
-	(FristName+LastName) Like  @Keyword + '%'
+	(FristName + ' ' + LastName) Like  @Keyword + '%'
 	) --order by @keyword
 	And U.Id not in (Select * From [dbo].[CSVtoTable](@ExceptUserIds,','))
+	And U.[Status] in (1,6,5,2,10) -- Active, OfferMade,InterviewDate,Applicant,RefferalApplicant 
 END   
 
 GO
@@ -376,45 +377,121 @@ Create PROCEDURE GetOnlineUsers
 AS      
 BEGIN  
 	IF OBJECT_ID('tempdb..#OnlineUsers') IS NOT NULL DROP TABLE #OnlineUsers  
-	Create Table #OnlineUsers(Id int Primary Key Identity(1,1), UserId int, OnlineAt DateTime,   
-	MessageId int, LastMessage NVarchar(max), MessageAt DateTime, LastMessageByUserId int, IsRead Bit Not Null Default(0))  
-   
+	Create Table #OnlineUsers(Id int Primary Key Identity(1,1), UserId int, 
+			ChatGroupId varchar(100), ReceiverIds varchar(800), OnlineAt DateTime,   
+			MessageId int, LastMessage NVarchar(max), MessageAt DateTime, LastMessageByUserId int, 
+			IsRead Bit Not Null Default(0))
+
+   IF OBJECT_ID('tempdb..#OnlineUsersOrGroups') IS NOT NULL DROP TABLE #OnlineUsersOrGroups  
+	Create Table #OnlineUsersOrGroups(Id int Primary Key Identity(1,1), UserId int, 
+			ChatGroupId varchar(100), ReceiverIds varchar(800), OnlineAt DateTime,   
+			MessageId int, LastMessage NVarchar(max), MessageAt DateTime, LastMessageByUserId int, 
+			IsRead Bit Not Null Default(0), GroupOrUsername Varchar(800), Picture Varchar(800),
+			UserInstallId Varchar(100))
+	
+	IF OBJECT_ID('tempdb..#OnlineGroups') IS NOT NULL DROP TABLE #OnlineGroups  
+		Create Table #OnlineGroups(Id int identity(1,1), ChatGroupId varchar(100), ChatUserIds varchar(800), ChatUserCount int,LastMessage NVarchar(max),
+				MessageId int, MessageAt DateTime, Picture Varchar(800))
+
+	IF OBJECT_ID('tempdb..#OnlineTempGroups') IS NOT NULL DROP TABLE #OnlineTempGroups  
+		Create Table #OnlineTempGroups(Id int identity(1,1), ChatGroupId varchar(100), ChatUserIds varchar(800), ChatUserCount int,LastMessage NVarchar(max),
+				MessageId int, MessageAt DateTime, Picture Varchar(800))
+
+	IF OBJECT_ID('tempdb..#UserIds') IS NOT NULL DROP TABLE #UserIds
+		Create Table #UserIds(Id int)
+
 	Insert Into #OnlineUsers(UserId, OnlineAt)  
 		Select U.UserId, Max(U.OnlineAt) As OnlineAt From ChatUser U With(NoLock)   
 			Group By UserId  
-			Order by UserId, OnlineAt Desc  
+			Order by OnlineAt Desc  
    
-	Declare @Min int = 1, @Max int = 1, @UserId Int, @LastMessage NVarchar(Max),   
-			@MessageId Int, @MessageAt DateTime, @IsRead Bit  
+	Declare @Min int = 1, @Max int = 1, @UserId Int, @LastMessage NVarchar(Max),   @ChatUserIds Varchar(800),
+			@MessageId Int, @MessageAt DateTime, @IsRead Bit, @ChatGroupId varchar(100) 
    
 	Select @Min = Min(Id), @Max = Max(Id) from #OnlineUsers  
-  
+	
 	While @Min <= @Max  
 	Begin  
 		Select @UserId = UserId From #OnlineUsers Where Id = @Min  
      
-		Select top 1 @LastMessage = M.TextMessage, @MessageId = M.Id, @MessageAt = M.CreatedOn, @IsRead = S.IsRead  
+		Select top 1 @LastMessage = M.TextMessage, @MessageId = M.Id, @MessageAt = M.CreatedOn, 
+					@IsRead = S.IsRead , @ChatGroupId = M.ChatGroupId
 		From ChatMessage M With(NoLock)   
 				Join ChatMessageReadStatus S With(NoLock) On M.Id = S.ChatMessageId  
 				Where (M.SenderId = @UserId And S.ReceiverId = @LoggedInUserId)  
 					Or (M.SenderId = @LoggedInUserId And S.ReceiverId = @UserId)
 				Order By M.CreatedOn Desc   
-		Print @UserId
-		Print @LastMessage
-		Print @Min
 		Update #OnlineUsers Set LastMessage = @LastMessage, MessageId = @MessageId,   
-								MessageAt = @MessageAt, IsRead = IsNull(@IsRead,0)  
+								MessageAt = @MessageAt, IsRead = IsNull(@IsRead,0),
+								ChatGroupId = @ChatGroupId,
+								ReceiverIds = @UserId
 				Where Id = @Min  
 		Set @LastMessage = NULL
 		Set @MessageId = NULL
 		Set @MessageAt = NULL
 		Set @IsRead = 0
 		Set @Min = @Min + 1  
-	End  
-  
-	Select O.Id, O.UserId, O.OnlineAt, O.MessageId, O.LastMessage, O.MessageAt,  
-			O.IsRead, U.FristName as FirstName, U.LastName, U.Email, U.UserInstallId, U.Picture  
-	From #OnlineUsers O Join tblInstallUsers U With(NoLock)  On O.UserId = U.Id  
+	End
+
+	Insert Into #OnlineUsersOrGroups (UserId, OnlineAt, MessageId, LastMessage, MessageAt,  
+										IsRead, GroupOrUsername, UserInstallId, Picture, ChatGroupId, ReceiverIds)
+	Select O.UserId, O.OnlineAt, O.MessageId, O.LastMessage, O.MessageAt,  
+			O.IsRead, U.FristName + ' ' + U.LastName, U.UserInstallId, U.Picture,
+			O.ChatGroupId, O.ReceiverIds
+	From #OnlineUsers O Join tblInstallUsers U With(NoLock)  On O.UserId = U.Id
+	
+	Insert Into #OnlineTempGroups(ChatGroupId,ChatUserIds,ChatUserCount,LastMessage,MessageId,MessageAt,Picture)
+		Select Distinct M.ChatGroupId, (Convert(Varchar(20),SenderId)+','+ M.ReceiverIds) As ChatUserIds, 
+			(Len((Convert(Varchar(20),SenderId)+','+ M.ReceiverIds)) - Len(Replace((Convert(Varchar(20),SenderId)+','+ M.ReceiverIds),',','')) + 1),
+			(Select top 1 TextMessage From ChatMessage IM With(NoLock) Where IM.ChatGroupId = M.ChatGroupId Order By IM.CreatedOn Desc) As LastMessage,
+			(Select top 1 Id From ChatMessage IM With(NoLock) Where IM.ChatGroupId = M.ChatGroupId Order By IM.CreatedOn Desc) As MessageId,
+			(Select top 1 CreatedOn From ChatMessage IM With(NoLock) Where IM.ChatGroupId = M.ChatGroupId Order By IM.CreatedOn Desc) As MessageAt,
+			'chat-group.png'
+		From ChatMessage M With(NoLock) 
+		Where (Convert(Varchar(20),SenderId)+','+ M.ReceiverIds) Like '%' + Convert(Varchar(12),@LoggedInUserId) + '%'
+		Order By MessageAt Desc
+
+		Insert Into #OnlineGroups
+		Select Distinct OG.ChatGroupId,OG.ChatUserIds,OG.ChatUserCount,OG.LastMessage,OG.MessageId,OG.MessageAt,OG.Picture 
+			From #OnlineTempGroups OG 
+				Where ChatUserCount = (Select Max(ChatUserCount) From #OnlineTempGroups iOG Group By iOG.ChatGroupId Having iOG.ChatGroupId = OG.ChatGroupId)
+			Order By MessageId Desc
+
+		Select @Min = Min(Id), @Max = Max(Id) from #OnlineGroups  
+
+		While @Min <= @Max  
+			Begin  
+				Select @ChatUserIds = ChatUserIds From #OnlineGroups Where Id = @Min 
+				--print @ChatUserIds
+				Truncate Table #UserIds
+				Insert Into #UserIds
+					Select Convert(int, Result) From dbo.CSVtoTable(@ChatUserIds,',') Order By Convert(int, Result)
+
+				Update #OnlineGroups Set ChatUserIds = SUBSTRING(
+					(SELECT ',' + Convert(Varchar(20),s.Id)
+					FROM #UserIds s
+					ORDER BY s.Id
+					FOR XML PATH('')),2,800) Where Id = @Min
+
+				Set @Min = @Min + 1  
+			End
+
+	--Select * from #OnlineGroups Where ChatUserIds like '%' + Convert(Varchar(20),@LoggedInUserId) + '%'
+
+		Insert Into #OnlineUsersOrGroups (ChatGroupId,ReceiverIds,LastMessage,MessageId,MessageAt,OnlineAt,Picture)
+			Select Distinct ChatGroupId,ChatUserIds,LastMessage,MessageId,MessageAt,MessageAt,Picture
+				From #OnlineGroups --Where ChatUserIds like '%' + Convert(Varchar(12),@LoggedInUserId) + '%'
+		
+		Update #OnlineUsersOrGroups Set GroupOrUsername = SUBSTRING(
+			(SELECT ' - ' + s.Fullname
+			FROM (select (U.FristName + ' ' + U.LastName) as Fullname From tblInstallUsers U 
+			Where U.Id in (Select Result From dbo.CSVtoTable(ReceiverIds,','))) s
+			ORDER BY s.Fullname
+			FOR XML PATH('')),4,800)
+		Where UserId IS NULL
+
+		Select * from #OnlineUsersOrGroups Order By MessageAt Desc
+		--Order By Max(M.CreatedOn) Desc
 END
 
 GO
@@ -463,4 +540,33 @@ BEGIN
 	From ChatMessageReadStatus S
 		Join ChatMessage M On S.ChatMessageId = M.Id 
 		Where M.ChatGroupId = @ChatGroupId  And S.ReceiverId = @ReceiverId
+End
+
+GO
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'GetUsersByIds' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE GetUsersByIds
+  END
+Go
+ -- =============================================        
+-- Author:  Jitendra Pancholi        
+-- Create date: 27 Nov 2017     
+-- Description: Get a list of top 5 users by starts with name, email   
+-- =============================================      
+/*  
+	GetUsersByIds '3797,901'
+	GetUsersByIds ''
+*/  
+Create PROCEDURE GetUsersByIds  
+	@UserIds Varchar(800) = ''
+AS      
+BEGIN
+	If @UserIds = ''
+		Begin
+			Select * From tblInstallUsers U With(NoLock)
+		End
+	Else
+		Begin
+			Select * From tblInstallUsers U With(NoLock) Where U.Id in (Select Result From dbo.CSVtoTable(@UserIds,','))
+		End
 End

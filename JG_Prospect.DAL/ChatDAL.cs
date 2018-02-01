@@ -58,15 +58,14 @@ namespace JG_Prospect.DAL
                         foreach (DataRow item in returndata.Tables[0].Rows)
                         {
                             int userId = Convert.ToInt32(item["UserId"].ToString());
-                            string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                            string pic = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
                                                 : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                             ChatUser user = new ChatUser
                             {
                                 UserId = userId,
                                 //ConnectionId = item["ConnectionId"].ToString(),
-                                FirstName = item["FirstName"].ToString(),
-                                LastName = item["LastName"].ToString(),
-                                Email = item["Email"].ToString(),
+                                GroupOrUsername = item["FirstName"].ToString() + " " + item["LastName"].ToString(),
+                                //Email = item["Email"].ToString(),
                                 ProfilePic = pic,
                                 UserInstallId = item["UserInstallId"].ToString(),
                                 OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()),
@@ -83,6 +82,29 @@ namespace JG_Prospect.DAL
                             }
                             if (!users.Select(m => m.UserId).ToList().Contains(user.UserId))
                                 users.Add(user);
+                        }
+                    }
+                    else
+                    {
+                        // User if Offline
+                        var usrs = InstallUserDAL.Instance.GetUsersByIds();
+                        if (usrs != null && usrs.Tables[0].Rows.Count > 0)
+                        {
+                            foreach (DataRow usr in usrs.Tables[0].Rows)
+                            {
+                                string pic = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(usr["Picture"].ToString()) ? "default.jpg"
+                                               : usr["Picture"].ToString().Replace("~/UploadeProfile/", ""));
+                                users.Add(new ChatUser
+                                {
+                                    UserId = Convert.ToInt32(usr["Id"].ToString()),
+                                    GroupOrUsername = usr["FristName"].ToString() + " " + usr["LastName"].ToString(),
+                                    //Email = usr["Email"].ToString(),
+                                    ProfilePic = pic,
+                                    UserInstallId = usr["UserInstallId"].ToString(),
+                                    OnlineAt = null,
+                                    OnlineAtFormatted = null
+                                });
+                            }
                         }
                     }
                     return new ActionOutput<ChatUser>
@@ -141,14 +163,13 @@ namespace JG_Prospect.DAL
                         foreach (DataRow item in returndata.Tables[0].Rows)
                         {
                             int userId = Convert.ToInt32(item["UserId"].ToString());
-                            string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                            string pic = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
                                                 : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                             ChatUser user = new ChatUser
                             {
                                 UserId = userId,
-                                FirstName = item["FirstName"].ToString(),
-                                LastName = item["LastName"].ToString(),
-                                Email = item["Email"].ToString(),
+                                GroupOrUsername = item["FirstName"].ToString() + " " + item["LastName"].ToString(),
+                                //Email = item["Email"].ToString(),
                                 ProfilePic = pic,
                                 UserInstallId = item["UserInstallId"].ToString(),
                                 OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()),
@@ -164,6 +185,29 @@ namespace JG_Prospect.DAL
                                 }
                             }
                             users.Add(user);
+                        }
+                    }
+                    else
+                    {
+                        // User if Offline
+                        var usrs = InstallUserDAL.Instance.GetUsersByIds(userIds);
+                        if (usrs != null && usrs.Tables[0].Rows.Count > 0)
+                        {
+                            foreach (DataRow usr in usrs.Tables[0].Rows)
+                            {
+                                string pic = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(usr["Picture"].ToString()) ? "default.jpg"
+                                               : usr["Picture"].ToString().Replace("~/UploadeProfile/", ""));
+                                users.Add(new ChatUser
+                                {
+                                    UserId = Convert.ToInt32(usr["Id"].ToString()),
+                                    GroupOrUsername = usr["FristName"].ToString() + " " + usr["LastName"].ToString(),
+                                    //Email = usr["Email"].ToString(),
+                                    ProfilePic = pic,
+                                    UserInstallId = usr["UserInstallId"].ToString(),
+                                    OnlineAt = null,
+                                    OnlineAtFormatted = null
+                                });
+                            }
                         }
                     }
                     return new ActionOutput<ChatUser>
@@ -199,15 +243,14 @@ namespace JG_Prospect.DAL
                     if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
                     {
                         DataRow item = returndata.Tables[0].Rows[0];
-                        string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                        string pic = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
                                                 : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                         user = new ChatUser
                         {
                             UserId = Convert.ToInt32(item["UserId"].ToString()),
                             //ConnectionId = item["ConnectionId"].ToString(),
-                            FirstName = item["FirstName"].ToString(),
-                            LastName = item["LastName"].ToString(),
-                            Email = item["Email"].ToString(),
+                            GroupOrUsername = item["FirstName"].ToString() + " " + item["LastName"].ToString(),
+                            //Email = item["Email"].ToString(),
                             ProfilePic = pic,
                             UserInstallId = item["UserInstallId"].ToString(),
                             OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST(),
@@ -224,14 +267,13 @@ namespace JG_Prospect.DAL
                     {
                         // User if Offline
                         var usr = InstallUserDAL.Instance.getuserdetails(UserId).Tables[0].Rows[0];
-                        string pic = "UploadeProfile/" + (string.IsNullOrEmpty(usr["Picture"].ToString()) ? "default.jpg"
+                        string pic = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(usr["Picture"].ToString()) ? "default.jpg"
                                                 : usr["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                         user = new ChatUser
                         {
                             UserId = UserId,
-                            FirstName = usr["FristName"].ToString(),
-                            LastName = usr["LastName"].ToString(),
-                            Email = usr["Email"].ToString(),
+                            GroupOrUsername = usr["FristName"].ToString() + " " + usr["LastName"].ToString(),
+                            //Email = usr["Email"].ToString(),
                             ProfilePic = pic,
                             UserInstallId = usr["UserInstallId"].ToString(),
                             OnlineAt = null,
@@ -271,15 +313,14 @@ namespace JG_Prospect.DAL
                     if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
                     {
                         DataRow item = returndata.Tables[0].Rows[0];
-                        string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                        string pic = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
                                                 : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                         user = new ChatUser
                         {
                             UserId = Convert.ToInt32(item["UserId"].ToString()),
                             //ConnectionId = item["ConnectionId"].ToString(),
-                            FirstName = item["FirstName"].ToString(),
-                            LastName = item["LastName"].ToString(),
-                            Email = item["Email"].ToString(),
+                            GroupOrUsername = item["FirstName"].ToString() + " " + item["LastName"].ToString(),
+                            //Email = item["Email"].ToString(),
                             ProfilePic = pic,
                             UserInstallId = item["UserInstallId"].ToString(),
                             OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST(),
@@ -336,15 +377,14 @@ namespace JG_Prospect.DAL
                         foreach (DataRow item in returndata.Tables[0].Rows)
                         {
                             // DataRow item = returndata.Tables[0].Rows[0];
-                            string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                            string pic = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
                                                     : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                             users.Add(new ActiveUser
                             {
-                                UserId = Convert.ToInt32(item["UserId"].ToString()),
+                                UserId = string.IsNullOrEmpty(item["UserId"].ToString()) ? null : (int?)Convert.ToInt32(item["UserId"].ToString()),
                                 //ConnectionId = item["ConnectionId"].ToString(),
-                                FirstName = item["FirstName"].ToString(),
-                                LastName = item["LastName"].ToString(),
-                                Email = item["Email"].ToString(),
+                                GroupOrUsername = item["GroupOrUsername"].ToString(),
+                                //Email = item["Email"].ToString(),
                                 ProfilePic = pic,
                                 UserInstallId = item["UserInstallId"].ToString(),
                                 OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST(),
@@ -354,7 +394,9 @@ namespace JG_Prospect.DAL
                                                     (DateTime?)Convert.ToDateTime(item["MessageAt"].ToString()).ToEST() : null,
                                 LastMessageAtFormatted = !string.IsNullOrEmpty(item["MessageAt"].ToString()) ?
                                                     Convert.ToDateTime(item["MessageAt"].ToString()).ToEST().ToString() : null,
-                                IsRead = Convert.ToBoolean(item["IsRead"].ToString())
+                                IsRead = Convert.ToBoolean(item["IsRead"].ToString()),
+                                ChatGroupId = item["ChatGroupId"].ToString(),
+                                ReceiverIds = item["ReceiverIds"].ToString(),
                             });
                         }
                     }
@@ -496,7 +538,7 @@ namespace JG_Prospect.DAL
                         foreach (DataRow item in returndata.Tables[0].Rows)
                         {
                             // DataRow item = returndata.Tables[0].Rows[0];
-                            string pic = "UploadeProfile/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                            string pic = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
                                                     : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                             messages.Add(new ChatMessage
                             {

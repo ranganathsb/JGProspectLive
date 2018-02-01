@@ -271,11 +271,11 @@ namespace JG_Prospect.Common.modal
             //LastActivityAt = DateTime.UtcNow;
             Status = 1;
         }
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public string UserInstallId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
+      //  public string FirstName { get; set; }
+       // public string LastName { get; set; }
+       // public string Email { get; set; }
         public DateTime? OnlineAt { get; set; }
         public string OnlineAtFormatted { get; set; }
         public string ProfilePic { get; set; }
@@ -286,6 +286,11 @@ namespace JG_Prospect.Common.modal
         public string LastMessageAtFormatted { get; set; }
         public bool IsRead { get; set; }
         public int Status { get; set; }
+
+        public string ChatGroupId { get; set; }
+        public string ReceiverIds { get; set; }
+
+        public string GroupOrUsername { get; set; }
     }
 
     public class ChatUser : ActiveUser
