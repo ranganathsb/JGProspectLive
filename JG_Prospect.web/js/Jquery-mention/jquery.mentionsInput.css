@@ -100,7 +100,7 @@
   padding: 9px;
   color: #fff;
   overflow: hidden;
-
+  z-index:-1;
   white-space: pre-wrap;
   word-wrap: break-word;
 }

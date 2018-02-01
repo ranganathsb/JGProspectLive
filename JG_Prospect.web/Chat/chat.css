@@ -198,7 +198,7 @@ body {
     }
 
     .chat-box .chats {
-        height: 268px;
+        height: 265px;
         overflow-x: hidden;
         overflow-y: auto;
     }
@@ -281,12 +281,15 @@ body {
         position: relative;
         bottom: 0px;
         width: 100%;
+        display:inline-block;
     }
 
         .chat-box .chat-text input[type=text] {
-            width: 98.3%;
+            width: 86.3%;
             position: relative;
             padding: 5px;
+            display:block !important;
+                float: left;    
         }
 
         .chat-box .chat-text input[type=button] {
@@ -542,7 +545,7 @@ body {
     }
 
     .telecom-dashboard-popup.fullscreen-chat .chat-box .chats {
-        height: 475px;
+        height: 470px;
     }
 
         .telecom-dashboard-popup.fullscreen-chat .chat-box .chats .chat-row .message {
@@ -566,14 +569,14 @@ body {
 }
 
 .telecom-dashboard-popup.fullscreen-chat .chat-box .chat-text input[type=text] {
-    padding: 10px;
-    width: 97.9%;
-    font-size: 14px;
+    padding: 10px 30px 10px 10px;
+    width: 87.5%;
+    font-size: 14px;    
 }
 
 .chat-users-section .contents {
     display: inline-block;
-    width: 195px;
+    width: 179px;
     border-radius: 0px;
     padding: 2px 0;
     position: relative;
@@ -678,3 +681,34 @@ body {
     background-position: center;
     background-size: 100% 100%;
 }
+button.text-send {
+    float: left;
+    margin: 0 5px;
+    padding: 6px;
+    background: #A33E3F;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 3px;
+}
+button.record-send {
+    float: left;
+    margin: 0;
+    padding: 6px;
+    background: #A33E3F;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 3px;
+}
+.telecom-dashboard-popup .emoji-picker-icon{right: 76px;top:3px;}
+.telecom-dashboard-popup.fullscreen-chat .emoji-picker-icon{right: 75px;font-size: 28px;}
+.telecom-dashboard-popup.fullscreen-chat .emoji-picker-icon{right: 87px;font-size: 28px;}
+.telecom-dashboard-popup.fullscreen-chat .text-send {padding: 12px 8px;}
+.telecom-dashboard-popup.fullscreen-chat .record-send {font-size: 22px;}
+.telecom-dashboard-popup.fullscreen-chat .emoji-menu{right: 81px;}
+.telecom-dashboard-popup .chat-users-section .list {
+    display: inline-block;
+    height: 302px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.telecom-dashboard-popup.fullscreen-chat .chat-users-section .list{height:522px;}

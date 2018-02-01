@@ -1409,6 +1409,21 @@
     <Content Include="Communication\webphone\sound\rtc_ringtone.wav" />
     <Content Include="Communication\webphone\sound\rtc_ringtone_orig.wav" />
     <Content Include="Communication\webphone\webphone_api.js" />
+    <Content Include="Content\emoji-picker\lib\css\emoji.css" />
+    <Content Include="Content\emoji-picker\lib\img\blank.gif" />
+    <Content Include="Content\emoji-picker\lib\img\emoji_spritesheet_0.png" />
+    <Content Include="Content\emoji-picker\lib\img\emoji_spritesheet_1.png" />
+    <Content Include="Content\emoji-picker\lib\img\emoji_spritesheet_2.png" />
+    <Content Include="Content\emoji-picker\lib\img\emoji_spritesheet_3.png" />
+    <Content Include="Content\emoji-picker\lib\img\emoji_spritesheet_4.png" />
+    <Content Include="Content\emoji-picker\lib\img\IconsetSmiles.png" />
+    <Content Include="Content\emoji-picker\lib\img\IconsetSmiles_1x.png" />
+    <Content Include="Content\emoji-picker\lib\img\IconsetW.png" />
+    <Content Include="Content\emoji-picker\lib\img\IconsetW_1x.png" />
+    <Content Include="Content\emoji-picker\lib\js\config.js" />
+    <Content Include="Content\emoji-picker\lib\js\emoji-picker.js" />
+    <Content Include="Content\emoji-picker\lib\js\jquery.emojiarea.js" />
+    <Content Include="Content\emoji-picker\lib\js\util.js" />
     <Content Include="Content\paging.css" />
     <Content Include="Content\touchPointlogs.css" />
     <Content Include="Content\ui-grid.css" />
@@ -1428,6 +1443,7 @@
     <Content Include="css\dropzone\images\spritemap.png" />
     <Content Include="css\dropzone\images\upload.png" />
     <Content Include="css\dropzone\images\uploadJg.png" />
+    <Content Include="css\emoji.css" />
     <Content Include="css\flags24.css" />
     <Content Include="css\flipclock.css" />
     <Content Include="css\flipclock_old.css" />
@@ -1545,6 +1561,9 @@
     <Content Include="css\font-awesome-4.7.0\scss\_stacked.scss" />
     <Content Include="css\font-awesome-4.7.0\scss\_variables.scss" />
     <Content Include="Chat\chat-notification.ogg" />
+    <Content Include="Content\emoji-picker\lib\css\emoji.css.map" />
+    <Content Include="Content\emoji-picker\lib\js\emoji-picker.coffee" />
+    <Content Include="Content\emoji-picker\lib\js\emoji-picker.js.map" />
     <None Include="Database Scripts\executed\yogesh\scripts dec v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN043_I_f_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Dec_2016_ITSN047_I_b_v0.1.sql" />
@@ -1592,6 +1611,7 @@
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
     <Content Include="datetime\jq\jquery.ui.timepicker.js" />
     <Content Include="EmailStatistics\statistics.txt" />
+    <Content Include="Employee\ProfilePictures\chat-group.png" />
     <Content Include="Employment_Redirect.aspx" />
     <Content Include="External Dependencies\AjaxControlToolkit.dll" />
     <Content Include="External Dependencies\aspsnippets.facebookapi.dll" />
@@ -3679,7 +3699,6 @@
     <Folder Include="Database Scripts\Dipavali\" />
     <Folder Include="Database Scripts\Jaylem\" />
     <Folder Include="Database Scripts\Shekhar\" />
-    <Folder Include="Employee\ProfilePictures\" />
     <Folder Include="Employee\Resume\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
     <Folder Include="fileman\aspnet_client\system_web\4_0_30319\" />
