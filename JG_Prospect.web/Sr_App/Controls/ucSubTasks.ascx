@@ -370,6 +370,10 @@
         background-color: white;
         height: 34px;
     }
+    .ChildEdit{
+        float: left;
+        width: 95%;
+    }
 </style>
 
 <fieldset class="tasklistfieldset">
@@ -3218,6 +3222,7 @@
                             if (data) {
                                 LoadSubTasks();
                                 alert('Task deleted successfully.');
+                                $('#myModal').css('display', 'none');
                             }
                         },
                         function (err) {
@@ -3515,7 +3520,22 @@ function setSelectedUsersLink() {
                     }
                 });
         }
-
+        function addNote(sender, uid, note) {
+            if (note != '') {
+                $('.search-label').html('Please Wait...');
+                ajaxExt({
+                    url: '/Sr_App/edituser.aspx/AddNotes',
+                    type: 'POST',
+                    data: '{ id: ' + uid + ', note: "' + note + '", touchPointSource: ' + <%=(int)JG_Prospect.Common.TouchPointSource.TaskGenerator %> + ' }',
+                    showThrobber: true,
+                    throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                    success: function (data, msg) {
+                        $('#txtSearchUser').val('');
+                        $('.search-label').html('Note Sent.');
+                    }
+                });
+            }
+        }
 
 
 

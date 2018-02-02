@@ -637,7 +637,7 @@ namespace JG_Prospect.DAL
                             users.Add(new LoginUser
                             {
                                 ID = Convert.ToInt32(item["Id"].ToString()),
-                                FirstName = item["FristName"].ToString(),
+                                FirstName = item["FirstName"].ToString(),
                                 LastName = item["LastName"].ToString(),
                                 Email = item["Email"].ToString(),
                                 Phone = item["Phone"].ToString(),
