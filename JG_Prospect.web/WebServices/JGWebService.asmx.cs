@@ -696,6 +696,58 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public object GetSubTaskListId(string CommandArgument, string CommandName)
+        {
+            char[] delimiterChars = { '#' };
+            string[] TaskLvlandInstallId = CommandName.Split(delimiterChars);
+
+            string listIDOpt = string.Empty;
+            string txtInstallId = string.Empty;
+            string hdTaskLvl = TaskLvlandInstallId[0];
+            string hdParentTaskId = TaskLvlandInstallId[2];
+            string hdnCurrentEditingRow = TaskLvlandInstallId[3];
+
+
+            Task objTask = new Task();
+            DataSet result = new DataSet();
+            string vInstallId = TaskLvlandInstallId[1];
+            result = TaskGeneratorBLL.Instance.GetTaskByMaxId(TaskLvlandInstallId[2], 1);
+            if (result.Tables[0].Rows.Count > 0)
+            {
+                vInstallId = result.Tables[0].Rows[0]["InstallId"].ToString();
+            }
+            string[] subtaskListIDSuggestion = getSUBSubtaskSequencing(vInstallId);
+            if (subtaskListIDSuggestion.Length > 0)
+            {
+                if (subtaskListIDSuggestion.Length > 1)
+                {
+                    if (String.IsNullOrEmpty(subtaskListIDSuggestion[1]))
+                    {
+                        txtInstallId = subtaskListIDSuggestion[0];
+                    }
+                    else
+                    {
+                        txtInstallId = subtaskListIDSuggestion[1];
+                    }
+                }
+                else
+                {
+                    txtInstallId = subtaskListIDSuggestion[0];
+                }
+            }
+
+
+            var obj = new
+            {
+                hdTaskLvl = hdTaskLvl,
+                hdParentTaskId = hdParentTaskId,
+                txtInstallId = txtInstallId
+            };
+
+            return obj;
+        }
+
+        [WebMethod(EnableSession = true)]
         public object GetSubTaskId(string CommandArgument, string CommandName)
         {
             char[] delimiterChars = { '#' };

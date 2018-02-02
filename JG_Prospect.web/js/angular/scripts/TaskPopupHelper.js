@@ -206,7 +206,7 @@ function SetupNewTaskData(cmdArg, cName, TaskLevel, strInstallId) {
     };
 
     $.ajax({
-        url: url + 'GetSubTaskId',
+        url: url + 'GetSubTaskListId',
         contentType: 'application/json; charset=utf-8;',
         type: 'POST',
         dataType: 'json',
