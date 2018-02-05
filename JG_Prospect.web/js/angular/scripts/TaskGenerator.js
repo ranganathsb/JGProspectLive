@@ -361,8 +361,9 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         $('#btnSave').bind("click", function () {
                             isBtnSave = true;
                             clearInterval(TimerId);
-                            console.log('interval removed: ' + TimerId);
+                            console.log('interval removed: ' + TimerId);                            
                             updateDesc(GetCKEditorContent('txtedittitle'), false);
+                            CKEDITOR.instances['txtedittitle'].destroy();
                         });
 
                         //Start timer for auto save
@@ -453,6 +454,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                                             data: JSON.stringify(postData),
                                             asynch: false,
                                             success: function (data) {
+                                                CKEDITOR.instances['txteditChild'].destroy();
                                                 alert('Child saved successfully.');
                                                 HideAjaxLoader();
                                                 $('#ChildEdit' + tid).html(htmldata);
