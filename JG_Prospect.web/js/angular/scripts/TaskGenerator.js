@@ -133,7 +133,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
             var NextInstallId = $scope.NextInstallId;
             $('#hdnNextInstallId').val(NextInstallId);
             $('#ContentPlaceHolder1_objucSubTasks_Admin_txtTaskListID').val(NextInstallId);
-            HideAjaxLoader();
+            HideAjaxLoader();            
         });
     }
 
@@ -512,6 +512,10 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         $('.popover__content').fadeOut(200);
                     });
 
+                    if (NewTaskSaved) {
+                        SetCKEditorForChildren('subtaskDesc' + CurrentTaskId);
+                        NewTaskSaved = false;
+                    }
                 }, 1);
             }
         });
@@ -614,6 +618,8 @@ var isBtnSave = false;
 var UploadUserName = '', UploadFileName = '', UploadTime = '';
 var RefreshData = false;
 var FileData;
+var NewTaskSaved = false;
+var CurrentTaskId;
 
 function showMedSizePopup() {
     alert('hi');

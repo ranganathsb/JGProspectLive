@@ -372,7 +372,7 @@
     }
     .ChildEdit{
         float: left;
-        width: 95%;
+        width: 92%;
     }
 </style>
 

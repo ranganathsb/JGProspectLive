@@ -222,9 +222,12 @@ function OnSaveSubTask(taskid, desc) {
                 //alert('Task saved successfully.');
                 //sequenceScopeTG.LoadFeedbackPoints();
                 LoadSubTasks();
-                $('#subtaskDesc' + taskid).focus();
+                //$('#subtaskDesc' + taskid).focus();
+                NewTaskSaved = true;
+                CurrentTaskId = taskid;
             }
             else {
+                NewTaskSaved = false;
                 alert('Task cannot be saved. Please try again.');
             }
         }
