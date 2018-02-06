@@ -24,12 +24,10 @@ namespace JG_Prospect.BLL
             private set {; }
         }
 
-        public ActionOutput<LoginUser> GetUsers(string keyword, string exceptUserIds = null)
+        public ActionOutput<LoginUser> GetUsers(string keyword)
         {
-            return InstallUserDAL.Instance.GetUsers(keyword, exceptUserIds);
+            return InstallUserDAL.Instance.GetUsers(keyword);
         }
-
-        
 
         public void AddUserNotes(string Notes, int UserID, int AddedByID)
         {
@@ -671,7 +669,7 @@ namespace JG_Prospect.BLL
         public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType, int UserID, string PhoneExtNo, string PhoneISDCode, bool ClearDataBeforInsert)
         {
             return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone, phoneText, phoneType, UserID, PhoneExtNo, PhoneISDCode, ClearDataBeforInsert);
-        }
+        }        
 
         public int AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog, string strGUID, int touchPointSource)
         {
@@ -704,7 +702,7 @@ namespace JG_Prospect.BLL
             {
                 // send email to recruiter
                 toEmail = "hr@jmgroveconstruction.com";
-                messageUrl = baseUrl + "Sr_App/edituser.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID + "&auth=" + loginCode;
+                messageUrl = baseUrl + "Sr_App/edituser.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID+"&auth="+ loginCode;
             }
             else if (LastUserTouchPoint != null && LoginUserID == UserID) // send email to receiver
             {
@@ -846,6 +844,16 @@ namespace JG_Prospect.BLL
 
         }
 
+        public int UpdateUsersLastLoginTime(int loginUserID, DateTime LogInTime)
+        {
+            return InstallUserDAL.Instance.UpdateUsersLastLoginTime(loginUserID,LogInTime);
+        }
+
+        public int QuickSaveInstallUser(user objInstallUser)
+        {
+            return InstallUserDAL.Instance.QuickSaveInstallUser(objInstallUser);
+        }
+
         public DataSet BulkIntsallUserDuplicateCheck(string xmlDoc)
         {
             return InstallUserDAL.Instance.BulkIntsallUserDuplicateCheck(xmlDoc);
@@ -862,9 +870,5 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.getInstallUserDetailsById(UserId);
         }
 
-        public int QuickSaveInstallUser(user objInstallUser)
-        {
-            return InstallUserDAL.Instance.QuickSaveInstallUser(objInstallUser);
-        }
     }
 }

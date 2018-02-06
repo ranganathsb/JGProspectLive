@@ -48,3 +48,5 @@ JG_Prospect.web/Employee/
 /EmailSchedular/obj/Release
 /.vs/JG_Prospect/v15/Server/sqlite3
 /JobScheduler/obj/Release
+EmailSchedular/bin/
+JobScheduler/bin/

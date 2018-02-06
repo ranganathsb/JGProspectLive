@@ -1586,7 +1586,10 @@
     <Content Include="Database Scripts\executed\yogesh\Script July v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script August v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script October v0.1.sql" />
+    <Content Include="Database Scripts\yogesh\CountryMaster.sql" />
     <Content Include="Database Scripts\yogesh\FreeProjectQuote.sql" />
+    <Content Include="Database Scripts\yogesh\Script February v0.1.sql" />
+    <Content Include="Database Scripts\yogesh\Script December v0.1.sql" />
     <Content Include="Database Scripts\yogesh\Script November v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
@@ -2223,7 +2226,6 @@
     <Content Include="Location_img\Jellyfish.jpg" />
     <Content Include="Location_img\Lighthouse.jpg" />
     <Content Include="Location_img\Tulips.jpg" />
-    <Content Include="Log\Log.txt" />
     <Content Include="MCQTest\ExamSummary.aspx" />
     <Content Include="MCQTest\McqTestPage.aspx" />
     <Content Include="MCQTest\ObjectiveExamSummary.aspx" />
@@ -3688,6 +3690,7 @@
     <Folder Include="fileman\Uploads\FLV\" />
     <Folder Include="fileman\Uploads\Images\" />
     <Folder Include="InvoicePdf\" />
+    <Folder Include="Log\" />
     <Folder Include="Resources\" />
     <Folder Include="signalr\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />

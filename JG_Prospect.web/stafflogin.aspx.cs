@@ -773,14 +773,18 @@ namespace JG_Prospect
                             {
                                 HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
 
+                                
+
                                 JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
                                 JGSession.LastName = ds.Tables[0].Rows[0]["LastName"].ToString().Trim();
-                                JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
+                                JGSession.UserProfileImg = String.Concat("~/Employee/ProfilePictures/", ds.Tables[0].Rows[0]["Picture"].ToString());
                                 JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
                                 JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
                                 JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
+
+                                UpdateUsersLastLoginTimeStamp(JGSession.LoginUserID,DateTime.UtcNow);
+
                                 JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
-                                App_Code.CommonFunction.SetUserIdCookie(ds.Tables[0].Rows[0]["Id"].ToString());
                                 if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
                                 {
                                     JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
@@ -920,6 +924,7 @@ namespace JG_Prospect
 
                                     else if (Convert.ToString(JGSession.Designation).Contains("IT") || Convert.ToString(JGSession.Designation).ToLower().Contains("developer"))
                                     {
+
                                         // commented by - yogesh kerliya to implement screening popup.
                                         //strRedirectUrl = "~/Sr_App/ITDashboard.aspx";
 
@@ -933,7 +938,6 @@ namespace JG_Prospect
                                         }
 
                                         Response.Redirect(strRedirectUrl);
-
                                     }
 
                                     else if (Convert.ToString(JGSession.Designation).StartsWith("Installer") && JGSession.IsFirstTime == false)
@@ -956,7 +960,6 @@ namespace JG_Prospect
                                     {
                                         // Response.Redirect("~/Installer/InstallerHome.aspx");//
                                     }
-
                                 }
                                 // redirects user to the last accessed page.
                                 if (!string.IsNullOrEmpty(strRedirectUrl))
@@ -980,8 +983,6 @@ namespace JG_Prospect
                                     //    finalRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=", strRedirectUrl.Replace("~", String.Empty)); 
 
                                     Response.Redirect(finalRedirectUrl);
-
-
                                 }
                                 #endregion
                             }
@@ -1042,6 +1043,7 @@ namespace JG_Prospect
             }
         }
 
+        
         private void SetOAuthCredentials()
         {
             //facebook login
@@ -1075,20 +1077,25 @@ namespace JG_Prospect
                     ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
                     if (ds.Tables[0].Rows.Count > 0)
                     {
+                        bool isProfileUpdateRequired = CommonFunction.IsProfileUpdateRequired(ds.Tables[0].Rows[0]["LastProfileUpdated"].ToString());
+
                         #region 'Active User Found'
 
                         if (ds.Tables[0].Rows.Count > 0)
                         {
+                          
                             Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
 
                             JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
                             JGSession.LastName = ds.Tables[0].Rows[0]["LastName"].ToString().Trim();
-                            JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
+                            JGSession.UserProfileImg = String.Concat("~/Employee/ProfilePictures/", ds.Tables[0].Rows[0]["Picture"].ToString());
                             JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
                             JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
                             JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
                             JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
-                            App_Code.CommonFunction.SetUserIdCookie(ds.Tables[0].Rows[0]["Id"].ToString());
+
+                            UpdateUsersLastLoginTimeStamp(JGSession.LoginUserID, DateTime.UtcNow);
+
                             if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
                             {
                                 JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
@@ -1115,7 +1122,6 @@ namespace JG_Prospect
                             JGSession.UserType = "Installer";
 
                             RememberMe();
-                            bool isProfileUpdateRequired = CommonFunction.IsProfileUpdateRequired(ds.Tables[0].Rows[0]["LastProfileUpdated"].ToString());
                             // Check for Touch Point Log Url
                             if (!string.IsNullOrEmpty(Request.QueryString["returnurl"]) && Request.QueryString["returnurl"].ToLower().Contains("touchpointlog.aspx"))
                             {
@@ -1129,7 +1135,6 @@ namespace JG_Prospect
                                     strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/ViewApplicantUser.aspx?Id=", JGSession.LoginUserID);
                                 else
                                     strRedirectUrl = "~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID;
-
                             }
                             else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDateExpired)
                             {
@@ -1140,14 +1145,38 @@ namespace JG_Prospect
                             }
                             // if user has passed exam and didn't assigned sequence he should be redirect to view applicant page for auto sequence assignment.
                             else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDate && ds.Tables[0].Rows[0]["AssignedSequence"].ToString() == "0")
-                            {
-                                Response.Redirect("~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&IE=1");
+                            { 
+                                // commented by - yogesh kerliya to implement screening popup.
+                                //Response.Redirect("~/ViewApplicantUser.aspx?Id=" + JGSession.LoginUserID + "&IE=1");
+
+                                if (isProfileUpdateRequired)
+                                {
+                                    strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/ViewApplicantUser.aspx?Id=", JGSession.LoginUserID, "&IE=1");
+                                }
+                                else
+                                {
+                                    strRedirectUrl = String.Concat("~/ViewApplicantUser.aspx?Id=", JGSession.LoginUserID, "&IE=1");
+                                }
+
+                                Response.Redirect(strRedirectUrl);
                             }
 
                             //If user has interview date status it should always see interview instruction with them.
                             else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.InterviewDate)
                             {
-                                Response.Redirect("~/Sr_App/ITDashboard.aspx?PWT=1");
+                                // commented by - yogesh kerliya to implement screening popup.
+                                //Response.Redirect("~/Sr_App/ITDashboard.aspx?PWT=1");
+
+                                if (isProfileUpdateRequired)
+                                {
+                                    strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/Sr_App/ITDashboard.aspx?PWT=1");
+                                }
+                                else
+                                {
+                                    strRedirectUrl = "~/Sr_App/ITDashboard.aspx?PWT=1";
+                                }
+
+                                Response.Redirect(strRedirectUrl);
                             }
                             else
                             {
@@ -1206,7 +1235,19 @@ namespace JG_Prospect
 
                                 else if (Convert.ToString(JGSession.Designation).Contains("IT") || Convert.ToString(JGSession.Designation).ToLower().Contains("developer"))
                                 {
-                                    strRedirectUrl = "~/Sr_App/ITDashboard.aspx";
+                                    // commented by - yogesh kerliya to implement screening popup.
+                                    //strRedirectUrl = "~/Sr_App/ITDashboard.aspx";
+
+                                    if (isProfileUpdateRequired)
+                                    {
+                                        strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/Sr_App/ITDashboard.aspx");
+                                    }
+                                    else
+                                    {
+                                        strRedirectUrl = "~/Sr_App/ITDashboard.aspx";
+                                    }
+
+                                    Response.Redirect(strRedirectUrl);
                                 }
 
                                 else if (Convert.ToString(JGSession.Designation).StartsWith("Installer") && JGSession.IsFirstTime == false)
@@ -1272,7 +1313,14 @@ namespace JG_Prospect
                                 strRedirectUrl = HttpUtility.UrlDecode(Request.Url.Query.Replace("?returnurl=", ""));
                             }
                         }
-                        Response.Redirect(strRedirectUrl);
+                        //  Changed by yogesh keraliya to set flow to screening popup.
+                        String finalRedirectUrl = strRedirectUrl;
+
+
+                        //    finalRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=", strRedirectUrl.Replace("~", String.Empty)); 
+
+                        Response.Redirect(finalRedirectUrl);
+                        
                     }
                     else
                     {
@@ -1556,6 +1604,12 @@ namespace JG_Prospect
             cookie.Expires = DateTime.Now.AddDays(30);
             HttpContext.Current.Response.Cookies.Add(cookie);
         }
+
+        private void UpdateUsersLastLoginTimeStamp(string loginUserID, DateTime utcNow)
+        {
+            InstallUserBLL.Instance.UpdateUsersLastLoginTime(Convert.ToInt32(loginUserID),utcNow);
+        }
+
 
         #endregion
 
