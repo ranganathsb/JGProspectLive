@@ -315,6 +315,8 @@ namespace JG_Prospect.Common.modal
 
         public int ChatSourceId { get; set; }
 
+        public string ChatGroupId { get; set; }
+
     }
 
     public class ChatMessageActiveUser

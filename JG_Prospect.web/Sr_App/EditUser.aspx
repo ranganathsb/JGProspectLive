@@ -712,7 +712,7 @@
                 //Paging($(this));
                 
                 // Open Chat Window
-                InitiateChat(this, $(this).attr('uid'));
+                InitiateChat(this, $(this).attr('uid'), null);
                 //ajaxExt({
                 //    url: '/WebServices/JGWebService.asmx/InitiateChat',
                 //    type: 'POST',

@@ -263,18 +263,19 @@ Go
 -- Description: Add offline user to chatuser table
 -- =============================================    
 /*
-	GetChatMessages 'a56d4b73-ac2d-4d54-bed7-fb956bce6693'
+	GetChatMessages 'df5efc2d-8189-4763-9014-16c10bf3410c','901,1152,3697,3797,4848'
 */
 CREATE PROCEDURE [dbo].[GetChatMessages]
-	@ChatGroupId varchar(100)
+	@ChatGroupId varchar(100),
+	@ReceiverIds Varchar(800)
 AS    
 BEGIN
-	Select S.Id, S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
+	Select S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
 			U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
 			U.UserInstallId, U.Picture
 		From ChatMessage S With(NoLock) 
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
-		Where S.ChatGroupId = @ChatGroupId
+		Where S.ChatGroupId = @ChatGroupId And S.ReceiverIds = @ReceiverIds
 END
 
 
@@ -290,7 +291,7 @@ Go
 -- Description: Get a list of top 5 users by starts with name, email 
 -- =============================================    
 /*
-	GetUsersByKeyword 'kapilpancholi','3697,1015'
+	GetUsersByKeyword 'yoge',''
 */
 Create PROCEDURE GetUsersByKeyword
   @Keyword varchar(50),
@@ -413,7 +414,7 @@ BEGIN
 	While @Min <= @Max  
 	Begin  
 		Select @UserId = UserId From #OnlineUsers Where Id = @Min  
-     
+		/*
 		Select top 1 @LastMessage = M.TextMessage, @MessageId = M.Id, @MessageAt = M.CreatedOn, 
 					@IsRead = S.IsRead , @ChatGroupId = M.ChatGroupId
 		From ChatMessage M With(NoLock)   
@@ -421,6 +422,19 @@ BEGIN
 				Where (M.SenderId = @UserId And S.ReceiverId = @LoggedInUserId)  
 					Or (M.SenderId = @LoggedInUserId And S.ReceiverId = @UserId)
 				Order By M.CreatedOn Desc   
+		*/
+		Select Top 1 
+				@LastMessage = M.TextMessage, @MessageId = M.Id, @MessageAt = M.CreatedOn, 
+					@ChatGroupId = M.ChatGroupId,
+					@IsRead = (Case when (Select Count(1) From ChatMessageReadStatus S With(NoLock) Where S.ChatMessageId = M.Id) =
+							(Select Count(1) From ChatMessageReadStatus S With(NoLock) Where S.ChatMessageId = M.Id And IsRead = 1) Then '1'
+							Else '0' End)
+				From ChatMessage M With(NoLock)
+				Where (M.SenderId = @LoggedInUserId And M.ReceiverIds = Convert(Varchar(12), @UserId))
+						Or (M.SenderId = @UserId And M.ReceiverIds = Convert(Varchar(12), @LoggedInUserId))
+				Order By M.CreatedOn Desc   
+
+
 		Update #OnlineUsers Set LastMessage = @LastMessage, MessageId = @MessageId,   
 								MessageAt = @MessageAt, IsRead = IsNull(@IsRead,0),
 								ChatGroupId = @ChatGroupId,
@@ -442,8 +456,8 @@ BEGIN
 	
 	Insert Into #OnlineTempGroups(ChatGroupId,ChatUserIds,ChatUserCount,LastMessage,MessageId,MessageAt,Picture)
 		Select Distinct M.ChatGroupId, (Convert(Varchar(20),SenderId)+','+ M.ReceiverIds) As ChatUserIds, 
-			(Len((Convert(Varchar(20),SenderId)+','+ M.ReceiverIds)) - Len(Replace((Convert(Varchar(20),SenderId)+','+ M.ReceiverIds),',','')) + 1),
-			(Select top 1 TextMessage From ChatMessage IM With(NoLock) Where IM.ChatGroupId = M.ChatGroupId Order By IM.CreatedOn Desc) As LastMessage,
+			(Len((Convert(Varchar(20),SenderId)+','+ M.ReceiverIds)) - Len(Replace((Convert(Varchar(20),SenderId)+','+ M.ReceiverIds),',','')) + 1) As UserCount,
+			(Select top 1 TextMessage From ChatMessage IM With(NoLock) Where IM.ChatGroupId = M.ChatGroupId And IM.ReceiverIds = M.ReceiverIds Order By IM.CreatedOn Desc) As LastMessage,
 			(Select top 1 Id From ChatMessage IM With(NoLock) Where IM.ChatGroupId = M.ChatGroupId Order By IM.CreatedOn Desc) As MessageId,
 			(Select top 1 CreatedOn From ChatMessage IM With(NoLock) Where IM.ChatGroupId = M.ChatGroupId Order By IM.CreatedOn Desc) As MessageAt,
 			'chat-group.png'
@@ -455,6 +469,7 @@ BEGIN
 		Select Distinct OG.ChatGroupId,OG.ChatUserIds,OG.ChatUserCount,OG.LastMessage,OG.MessageId,OG.MessageAt,OG.Picture 
 			From #OnlineTempGroups OG 
 				Where ChatUserCount = (Select Max(ChatUserCount) From #OnlineTempGroups iOG Group By iOG.ChatGroupId Having iOG.ChatGroupId = OG.ChatGroupId)
+					And ChatUserCount > 2
 			Order By MessageId Desc
 
 		Select @Min = Min(Id), @Max = Max(Id) from #OnlineGroups  
@@ -569,4 +584,33 @@ BEGIN
 		Begin
 			Select * From tblInstallUsers U With(NoLock) Where U.Id in (Select Result From dbo.CSVtoTable(@UserIds,','))
 		End
+End
+
+GO
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'GetChatMessagesByUsers' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE GetChatMessagesByUsers
+  END
+Go
+ -- =============================================        
+-- Author:  Jitendra Pancholi        
+-- Create date: 27 Nov 2017     
+-- Description: Get a list of top 5 users by starts with name, email   
+-- =============================================      
+/*  
+	GetChatMessagesByUsers 3797,4848
+	GetChatMessagesByUsers 4848,3797
+*/  
+Create PROCEDURE GetChatMessagesByUsers  
+	@UserId int,
+	@ReceiverId int
+AS      
+BEGIN
+	Select S.Id, S.ChatGroupId, S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
+			U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
+			U.UserInstallId, U.Picture
+		From ChatMessage S With(NoLock) 
+			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
+		Where (S.SenderId = @UserId And S.ReceiverIds = Convert(Varchar(12), @ReceiverId))
+			Or (S.SenderId = @ReceiverId And S.ReceiverIds =  Convert(Varchar(12), @UserId))
 End
