@@ -1031,7 +1031,7 @@ namespace JG_Prospect.WebServices
 
             if (ForDashboard)
             {
-                if (!CommonFunction.CheckAdminAndItLeadMode() && UserId == "")
+                if (!CommonFunction.CheckAdminAndItLeadMode() && UserId=="")
                 {
                     UserId = JGSession.LoginUserID;
                     dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), Session["UserStatus"].Equals(JGConstant.InstallUserStatus.InterviewDate) ? true : false, UserId, false, StartDate, EndDate, ForInProgress);
@@ -1108,7 +1108,7 @@ namespace JG_Prospect.WebServices
                             TaskStatus += value.TrimStart("T".ToCharArray()) + ",";
                         }
                     }
-
+                    
                 }
             }
             TaskStatus = TaskStatus.TrimEnd(",".ToCharArray());
@@ -1369,6 +1369,47 @@ namespace JG_Prospect.WebServices
         #endregion
 
         #region '--Private Methods--'
+
+        [WebMethod(EnableSession = true)]
+        public string QuickSaveInstallUsers(String FirstName, String NameMiddleInitial, String LastName, String Email, String Phone, String Zip, String DesignationText, Int32 DesignationId,
+                                          String Status, String SourceText, String EmpType, String StartDate, String SalaryReq,
+                                          String SourceUserId, Int32 PositionAppliedForDesignationId, Int32 SourceID, Int32 AddedByUserId,
+                                          Boolean IsEmailContactPreference, Boolean IsCallContactPreference, Boolean IsTextContactPreference, Boolean IsMailContactPreference)
+        {
+            user objInstallUser = new user();
+
+            objInstallUser.fristname = FirstName;
+            objInstallUser.NameMiddleInitial = NameMiddleInitial;
+            objInstallUser.lastname = LastName;
+            objInstallUser.email = Email;
+            objInstallUser.phone = Phone;
+            objInstallUser.zip = Zip;
+            objInstallUser.designation = DesignationText;
+            objInstallUser.DesignationID = DesignationId;
+            objInstallUser.status = Status;
+            objInstallUser.Source = SourceText;
+            objInstallUser.EmpType = EmpType;
+            objInstallUser.StartDate = StartDate;
+            objInstallUser.SalaryReq = SalaryReq;
+            objInstallUser.SourceUser = SourceUserId;
+            objInstallUser.PositionAppliedFor = PositionAppliedForDesignationId.ToString();
+            objInstallUser.SourceId = SourceID;
+            objInstallUser.AddedBy = AddedByUserId;
+            objInstallUser.IsEmailContactPreference = IsEmailContactPreference;
+            objInstallUser.IsCallContactPreference = IsCallContactPreference;
+            objInstallUser.IsTextContactPreference = IsTextContactPreference;
+            objInstallUser.IsMailContactPreference = IsMailContactPreference;
+
+
+            Int32 Id = InstallUserBLL.Instance.QuickSaveInstallUser(objInstallUser);
+
+            //update user install id.
+            InstallUserBLL.Instance.SetUserDisplayID(Id, DesignationId.ToString(), "YES");
+
+
+            return Id.ToString();
+        }
+
 
         private string[] getSUBSubtaskSequencing(string sequence)
         {

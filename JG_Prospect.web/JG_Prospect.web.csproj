@@ -1469,7 +1469,6 @@
     <Content Include="css\msdropdown\dd_arrow.gif" />
     <Content Include="css\msdropdown\title-bg.gif" />
     <Content Include="css\pgwslideshow.min.css" />
-    <Content Include="css\popup.css" />
     <Content Include="css\TimeCircles.css" />
     <Content Include="Customer_Panel.aspx" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2.sql" />
@@ -1605,6 +1604,8 @@
     <Content Include="Database Scripts\executed\yogesh\Script August v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script October v0.1.sql" />
     <Content Include="Database Scripts\yogesh\FreeProjectQuote.sql" />
+    <Content Include="Database Scripts\yogesh\Script February v0.1.sql" />
+    <Content Include="Database Scripts\yogesh\Script December v0.1.sql" />
     <Content Include="Database Scripts\yogesh\Script November v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
@@ -1962,7 +1963,6 @@
     <Content Include="img\facebook.jpg" />
     <Content Include="img\fb_login.png" />
     <Content Include="img\File.png" />
-    <Content Include="img\flags24.png" />
     <Content Include="img\folder.png" />
     <Content Include="img\gplus.png" />
     <Content Include="img\grey-tick.png" />
@@ -3701,6 +3701,7 @@
     <Folder Include="fileman\Uploads\FLV\" />
     <Folder Include="fileman\Uploads\Images\" />
     <Folder Include="InvoicePdf\" />
+    <Folder Include="Log\" />
     <Folder Include="Resources\" />
     <Folder Include="signalr\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />

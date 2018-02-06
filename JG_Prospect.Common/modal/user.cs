@@ -241,6 +241,7 @@ namespace JG_Prospect.Common.modal
         public string SalesExperience;
         public string UserType;
         public string Password;
+        public Int64 Row_Num;
 
     }
 

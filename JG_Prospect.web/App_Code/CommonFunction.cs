@@ -206,7 +206,7 @@ namespace JG_Prospect.App_Code
 
                             JGSession.Username = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
                             JGSession.LastName = ds.Tables[0].Rows[0]["LastName"].ToString().Trim();
-                            JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
+                            JGSession.UserProfileImg =  String.Concat("~/Employee/ProfilePictures/", ds.Tables[0].Rows[0]["Picture"].ToString());
                             JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
                             JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
                             JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
@@ -1192,9 +1192,9 @@ namespace JG_Prospect.App_Code
                 switch (Userstatus)
                 {
                     case JGConstant.InstallUserStatus.Active:
-                    case JGConstant.InstallUserStatus.OfferMade:
                         row["CssClass"] = "activeUser";
                         break;
+                    case JGConstant.InstallUserStatus.OfferMade:                        
                     case JGConstant.InstallUserStatus.InterviewDate:
                         row["CssClass"] = "IOUser";
                         break;
@@ -1325,7 +1325,6 @@ namespace JG_Prospect.App_Code
             {
                 ProfileUpdateRequired = false;
             }
-
             return ProfileUpdateRequired;
         }
 
@@ -1655,6 +1654,7 @@ namespace JG_Prospect.App_Code
             return newTaskLinkTitle;
         }
 
+
         /// <summary>
         /// Upload file on server to given relative path from given file upload control.
         /// </summary>
@@ -1686,6 +1686,8 @@ namespace JG_Prospect.App_Code
 
             return fileName;
         }
+
+
 
     }
 }
@@ -1876,20 +1878,6 @@ namespace JG_Prospect
             set
             {
                 HttpContext.Current.Session["LoginUserID"] = value;
-            }
-        }
-
-        public static string LoggedinUserEmail
-        {
-            get
-            {
-                if (HttpContext.Current.Session["LUE"] == null)
-                    return null;
-                return Convert.ToString(HttpContext.Current.Session["LUE"]);
-            }
-            set
-            {
-                HttpContext.Current.Session["LUE"] = value;
             }
         }
 
