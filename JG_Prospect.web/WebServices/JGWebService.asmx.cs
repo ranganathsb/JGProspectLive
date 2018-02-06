@@ -1126,7 +1126,7 @@ namespace JG_Prospect.WebServices
 
             if (ForDashboard)
             {
-                if (!CommonFunction.CheckAdminAndItLeadMode() && UserId == "")
+                if (!CommonFunction.CheckAdminAndItLeadMode() && UserId=="")
                 {
                     UserId = JGSession.LoginUserID;
                     dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), Session["UserStatus"].Equals(JGConstant.InstallUserStatus.InterviewDate) ? true : false, UserId, false, StartDate, EndDate, ForInProgress);
@@ -1203,7 +1203,7 @@ namespace JG_Prospect.WebServices
                             TaskStatus += value.TrimStart("T".ToCharArray()) + ",";
                         }
                     }
-
+                    
                 }
             }
             TaskStatus = TaskStatus.TrimEnd(",".ToCharArray());
@@ -1464,6 +1464,47 @@ namespace JG_Prospect.WebServices
         #endregion
 
         #region '--Private Methods--'
+
+        [WebMethod(EnableSession = true)]
+        public string QuickSaveInstallUsers(String FirstName, String NameMiddleInitial, String LastName, String Email, String Phone, String Zip, String DesignationText, Int32 DesignationId,
+                                          String Status, String SourceText, String EmpType, String StartDate, String SalaryReq,
+                                          String SourceUserId, Int32 PositionAppliedForDesignationId, Int32 SourceID, Int32 AddedByUserId,
+                                          Boolean IsEmailContactPreference, Boolean IsCallContactPreference, Boolean IsTextContactPreference, Boolean IsMailContactPreference)
+        {
+            user objInstallUser = new user();
+
+            objInstallUser.fristname = FirstName;
+            objInstallUser.NameMiddleInitial = NameMiddleInitial;
+            objInstallUser.lastname = LastName;
+            objInstallUser.email = Email;
+            objInstallUser.phone = Phone;
+            objInstallUser.zip = Zip;
+            objInstallUser.designation = DesignationText;
+            objInstallUser.DesignationID = DesignationId;
+            objInstallUser.status = Status;
+            objInstallUser.Source = SourceText;
+            objInstallUser.EmpType = EmpType;
+            objInstallUser.StartDate = StartDate;
+            objInstallUser.SalaryReq = SalaryReq;
+            objInstallUser.SourceUser = SourceUserId;
+            objInstallUser.PositionAppliedFor = PositionAppliedForDesignationId.ToString();
+            objInstallUser.SourceId = SourceID;
+            objInstallUser.AddedBy = AddedByUserId;
+            objInstallUser.IsEmailContactPreference = IsEmailContactPreference;
+            objInstallUser.IsCallContactPreference = IsCallContactPreference;
+            objInstallUser.IsTextContactPreference = IsTextContactPreference;
+            objInstallUser.IsMailContactPreference = IsMailContactPreference;
+
+
+            Int32 Id = InstallUserBLL.Instance.QuickSaveInstallUser(objInstallUser);
+
+            //update user install id.
+            InstallUserBLL.Instance.SetUserDisplayID(Id, DesignationId.ToString(), "YES");
+
+
+            return Id.ToString();
+        }
+
 
         private string[] getSUBSubtaskSequencing(string sequence)
         {
@@ -2337,13 +2378,16 @@ namespace JG_Prospect.WebServices
         [WebMethod(EnableSession = true)]
         public string InitiateChat(string receiverIds, string chatGroupId)
         {
-            #region Chat Messages
-            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId).Results;
-            #endregion
-
+            if (chatGroupId.ToLower() == "undefind" || chatGroupId.ToLower() == "null")
+                chatGroupId = null;
+            
             List<int> userIds = receiverIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(m => Convert.ToInt32(m)).ToList();
             userIds.Remove(JGSession.UserId);
             List<ChatUser> receivers = ChatBLL.Instance.GetChatUsers(userIds).Results;
+
+            #region Chat Messages
+            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId, string.Join(",", userIds.OrderBy(m=>m).ToList())).Results;
+            #endregion
 
             string ChatGroupName = string.Empty;
             var sender = ChatBLL.Instance.GetChatUser(JGSession.UserId).Object;
@@ -2399,7 +2443,19 @@ namespace JG_Prospect.WebServices
                 else
                 {
                     if (string.IsNullOrEmpty(chatGroupId))
+                    {
+                        // ChatGroupId is null means, 1-1 chat
+                        // Check if sender/receiver has previous chat exists, if yes, then fetch existing ChatGroupId
+                        messages = ChatBLL.Instance.GetChatMessages(sender.UserId.Value, Convert.ToInt32(receiverIds)).Results;
+                        if (messages != null && messages.Count() > 0)
+                            chatGroupId = messages.FirstOrDefault().ChatGroupId;
+                    }
+                    // check if chatGroupId is still null, then create new chatGroupId (first time chatting)
+                    if (string.IsNullOrEmpty(chatGroupId))
+                    {
                         chatGroupId = Guid.NewGuid().ToString();
+                    }
+
                     SingletonUserChatGroups.Instance.ChatGroups.Add(new ChatGroup
                     {
                         SenderId = JGSession.UserId,
@@ -2414,12 +2470,21 @@ namespace JG_Prospect.WebServices
                 SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(sender.UserId.Value).Results;
             }
 
-            //return new JavaScriptSerializer().Serialize(new ActionOutput<ActiveUser>
-            //{
-            //    Results = SingletonUserChatGroups.Instance.ActiveUsers,
-            //    Message = chatGroupId + "`" + ChatGroupName,
-            //    Status = ActionStatus.Successfull
-            //});
+            #region Update ConnectionId
+            ChatGroup chatGroup = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
+            // Checking in database to fetch all connectionIds of browser of this chat group
+            // FYI: Everytime, we reload a web page, SignalR brower connectionId gets changed, So
+            // we have to always look database for correct connectionIds
+            var newConnections = ChatBLL.Instance.GetChatUsers(chatGroup.ChatUsers.Select(m => m.UserId.Value).ToList()).Results;
+            List<int> onlineUserIds = newConnections.Select(m => m.UserId.Value).ToList();
+            // Modify existing connectionIds into particular ChatGroup and save into static "UserChatGroups" object
+            foreach (var user in chatGroup.ChatUsers.Where(m => onlineUserIds.Contains(m.UserId.Value)))
+            {
+                user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
+                user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
+                user.OnlineAtFormatted = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt.Value).FirstOrDefault().ToEST().ToString();
+            }
+            #endregion
 
             ChatMessageActiveUser obj = new ChatMessageActiveUser();
             obj.ChatGroupId = chatGroupId;
@@ -2467,10 +2532,10 @@ namespace JG_Prospect.WebServices
             });
         }
 
-        [WebMethod(EnableSession =true)]
-        public string LoadPreviousChat(string chatGroupId)
+        [WebMethod(EnableSession = true)]
+        public string LoadPreviousChat(string chatGroupId, string receiverIds)
         {
-            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId).Results;
+            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId, receiverIds).Results;
             return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMessage>
             {
                 Results = messages,

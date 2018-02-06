@@ -17,7 +17,7 @@ namespace JG_Prospect.Chat.Hubs
     // [Authorize]
     public class ChatHub : Hub
     {
-        public void SendChatMessage(string chatGroupId, string message, int chatSourceId)
+        public void SendChatMessage(string chatGroupId, string message, int chatSourceId, string receiverIds)
         {
             try
             {
@@ -89,14 +89,15 @@ namespace JG_Prospect.Chat.Hubs
                 }
 
                 // Saving chat into database
-                string ReceiverId = string.Join(",", chatGroup.ChatUsers.Where(m => m.UserId != UserId).Select(m => m.UserId).ToList());
-                ChatBLL.Instance.SaveChatMessage(chatMessage, chatGroupId, ReceiverId);
+                //string ReceiverId = string.Join(",", chatGroup.ChatUsers.Where(m => m.UserId != UserId).Select(m => m.UserId).ToList());
+                //string ReceiverId = receiverIds;
+                ChatBLL.Instance.SaveChatMessage(chatMessage, chatGroupId, receiverIds);
 
                 Clients.Group(chatGroupId).updateClient(new ActionOutput<ChatMessage>
                 {
                     Status = ActionStatus.Successfull,
                     Object = chatMessage,
-                    Message = chatGroupId + "`" + chatGroup.ChatGroupName
+                    Message = chatGroupId + "`" + chatGroup.ChatGroupName + "`" + receiverIds
                 });
             }
             catch (Exception ex)
@@ -137,11 +138,36 @@ namespace JG_Prospect.Chat.Hubs
                                                  .Where(m => m.ChatGroupId == chatGroupId)
                                                  .FirstOrDefault()
                                                  .ChatGroupName;
+
+
+                #region Update ConnectionId
+                ChatGroup chatGroup = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
+                // Checking in database to fetch all connectionIds of browser of this chat group
+                // FYI: Everytime, we reload a web page, SignalR brower connectionId gets changed, So
+                // we have to always look database for correct connectionIds
+                var newConnections = ChatBLL.Instance.GetChatUsers(chatGroup.ChatUsers.Select(m => m.UserId.Value).ToList()).Results;
+                List<int> onlineUserIds = newConnections.Select(m => m.UserId.Value).ToList();
+                // Modify existing connectionIds into particular ChatGroup and save into static "UserChatGroups" object
+                foreach (var user in chatGroup.ChatUsers.Where(m => onlineUserIds.Contains(m.UserId.Value)))
+                {
+                    user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
+                    user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
+                    user.OnlineAtFormatted = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt.Value).FirstOrDefault().ToEST().ToString();
+                }
+                // Adding each connection into SignalR Group, so that we can send messages to all connected users.
+                foreach (var item in chatGroup.ChatUsers.Where(m => m.OnlineAt.HasValue))
+                {
+                    foreach (string connectionId in item.ConnectionIds)
+                    {
+                        Groups.Add(connectionId, chatGroupId);
+                    }
+                }
+                #endregion
             }
             Clients.Group(chatGroupId).addUserIntoChatGroupCallback(new ActionOutput<string>
             {
                 Status = ActionStatus.Successfull,
-                Object = chatGroupId + "`" + newChatGroupName,
+                Object = chatGroupId + "`" + newChatGroupName + "`" + userId,
                 Message = receiver.GroupOrUsername + " was added to chat"
             });
         }

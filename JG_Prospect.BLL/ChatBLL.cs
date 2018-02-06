@@ -49,9 +49,9 @@ namespace JG_Prospect.BLL
             return ChatDAL.Instance.GetOnlineUsers(LoggedInUserId);
         }
 
-        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId)
+        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId, string receiverIds)
         {
-            return ChatDAL.Instance.GetChatMessages(ChatGroupId);
+            return ChatDAL.Instance.GetChatMessages(ChatGroupId, receiverIds);
         }
 
         public ActionOutput SetChatMessageRead(int ChatMessageId, int ReceiverId)
@@ -113,6 +113,12 @@ namespace JG_Prospect.BLL
             
             body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
             EmailManager.SendEmail("New Message", toEmail, html.Subject, body, null);
+        }
+
+
+        public ActionOutput<ChatMessage> GetChatMessages(int userId, int receiverId)
+        {
+            return ChatDAL.Instance.GetChatMessages(userId, receiverId);
         }
     }
 }

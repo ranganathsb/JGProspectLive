@@ -501,6 +501,9 @@ namespace JG_Prospect.DAL
         {
             try
             {
+                // sort ReceiverIds into Asc
+                List<int> ids = ReceiverIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(m => Convert.ToInt32(m)).ToList();
+                ReceiverIds = string.Join(",", ids.OrderBy(m => m).ToList());
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     returndata = new DataSet();
@@ -520,7 +523,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId)
+        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId, string receiverIds)
         {
             try
             {
@@ -530,6 +533,7 @@ namespace JG_Prospect.DAL
                     returndata = new DataSet();
                     DbCommand command = database.GetStoredProcCommand("GetChatMessages");
                     database.AddInParameter(command, "@ChatGroupId", DbType.String, ChatGroupId);
+                    database.AddInParameter(command, "@ReceiverIds", DbType.String, receiverIds);
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
 
@@ -542,6 +546,60 @@ namespace JG_Prospect.DAL
                                                     : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                             messages.Add(new ChatMessage
                             {
+                                ChatGroupId = item["ChatGroupId"].ToString(),
+                                UserId = Convert.ToInt32(item["SenderId"].ToString()),
+                                Message = item["TextMessage"].ToString(),
+                                ChatSourceId = Convert.ToInt32(item["ChatSourceId"].ToString()),
+                                UserProfilePic = pic,
+                                UserInstallId = item["UserInstallId"].ToString(),
+                                UserFullname = item["Fullname"].ToString(),
+                                MessageAt = Convert.ToDateTime(item["CreatedOn"].ToString()),
+                                MessageAtFormatted = Convert.ToDateTime(item["CreatedOn"].ToString()).ToString()
+                            });
+                        }
+                    }
+                    return new ActionOutput<ChatMessage>
+                    {
+                        Results = messages,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<ChatMessage>
+                {
+                    Message = ex.Message,
+                    Status = ActionStatus.Error
+                };
+            }
+        }
+
+        public ActionOutput<ChatMessage> GetChatMessages(int userId, int receiverId)
+        {
+            try
+            {
+                List<ChatMessage> messages = new List<ChatMessage>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetChatMessagesByUsers");
+                    database.AddInParameter(command, "@UserId", DbType.Int32, userId);
+                    database.AddInParameter(command, "@ReceiverId", DbType.Int32, receiverId);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            // DataRow item = returndata.Tables[0].Rows[0];
+                            string pic = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                    : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
+                            messages.Add(new ChatMessage
+                            {
+                                ChatGroupId = item["ChatGroupId"].ToString(),
                                 UserId = Convert.ToInt32(item["SenderId"].ToString()),
                                 Message = item["TextMessage"].ToString(),
                                 ChatSourceId = Convert.ToInt32(item["ChatSourceId"].ToString()),

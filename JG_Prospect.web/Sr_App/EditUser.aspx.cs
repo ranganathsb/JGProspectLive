@@ -25,6 +25,7 @@ using Newtonsoft.Json;
 using System.Globalization;
 using System.Web.Services;
 using System.Web.Script.Serialization;
+using System.ComponentModel;
 //using System.Diagnostics;
 
 namespace JG_Prospect
@@ -625,7 +626,7 @@ namespace JG_Prospect
                         {
                             ddlStatus.SelectedIndex = ddlStatus.Items.IndexOf(StatusItem);
                         }
-                        
+
 
                         switch ((JGConstant.InstallUserStatus)Convert.ToByte(Status))
                         {
@@ -1970,31 +1971,288 @@ namespace JG_Prospect
                                 break;
                         }
 
-                        if (ValidateUploadedData(dtExcel))
+                        //Get Invalid records and remove it from master table.
+                        DataTable dtInvalid = GetInvalidRecordsFromUpload(dtExcel);
+
+                        //Get duplicate records from Mastertable and remove it.
+                        DataTable dtUniqueRecords = GetUniqueRecordsFromUpload(dtExcel);
+                        dtUniqueRecords.PrimaryKey = new DataColumn[] { dtUniqueRecords.Columns["RowNum"] };
+
+                        // Get XML document for from datatable to be imported.
+                        XmlDocument xmlDoc = GetIntsallUsersXmlDoc(dtUniqueRecords);
+
+                        // Check document against database for duplicate records.
+                        DataSet dsDuplicateCheckResult = InstallUserBLL.Instance.BulkIntsallUserDuplicateCheck(xmlDoc.InnerXml);
+
+                        // If duplicate records are found than remove it from current collection.
+                        if (dsDuplicateCheckResult != null && dsDuplicateCheckResult.Tables.Count > 0 && dsDuplicateCheckResult.Tables[0].Rows.Count > 0)
                         {
-                            ImportIntsallUsers(dtExcel);
-                            GetSalesUsersStaticticsAndData();
+                            foreach (DataRow duplicateRecordRow in dsDuplicateCheckResult.Tables[0].Rows)
+                            {
+                                Int64 _filterName_needed = Convert.ToInt64(duplicateRecordRow["RowNum"]);
+                                DataRow duplicateRow = dtUniqueRecords.Select("RowNum = " + _filterName_needed).FirstOrDefault();
+                                duplicateRow.Delete();
+
+                            }
+
+                            // Make changes into datatable
+                            dtUniqueRecords.AcceptChanges();
+                        }
+
+                        //Show duplicated and invalid records.
+                        rptIncorrectRecords.DataSource = dtInvalid;
+                        rptIncorrectRecords.DataBind();
+
+                        if (dtInvalid != null)
+                        {
+                            ltlTotalInvalidUser.Text = dtInvalid.Rows.Count.ToString(); 
                         }
                         else
                         {
-                            GetSalesUsersStaticticsAndData(); ;
-                            //UcStatusPopUp.changeText();
-                            //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);
+                            ltlTotalInvalidUser.Text = "0";
                         }
-                    }
-                    else
-                    {
-                        UcStatusPopUp.ucPopUpHeader = "";
-                        UcStatusPopUp.ucPopUpMsg = "Please Select xlsx or csv file.";
-                        UcStatusPopUp.changeText();
+                        rptDuplicateRecords.DataSource = dsDuplicateCheckResult;
+                        rptDuplicateRecords.DataBind();
+                        if (dsDuplicateCheckResult != null && dsDuplicateCheckResult.Tables.Count > 0)
+                        {
+                            ltlTotalDuplicateUsers.Text = dsDuplicateCheckResult.Tables[0].Rows.Count.ToString(); 
+                        }
+                        else
+                        {
+                            ltlTotalDuplicateUsers.Text = "0";
+                        }
+
+                        rptUserstoBeAdded.DataSource = dtUniqueRecords;
+                        rptUserstoBeAdded.DataBind();
+
+                        if (dtUniqueRecords != null)
+                        {
+                            ltlTotalUserstobeAdded.Text = dtUniqueRecords.Rows.Count.ToString(); 
+                        }
+                        else
+                        {
+                            ltlTotalUserstobeAdded.Text = "0";
+                        }
+
+                        upnlBulkUploadStatus.Update();
+
+                        // Now all data cleaning operations are done.  can start sending emails and insert into database.
+                        ShowStatisticsAndSendEmails(dtUniqueRecords);
+
+
+                        // Old code, Commented due to change in requirements.
+                        //if (ValidateUploadedData(dtExcel))
+                        //{
+                        //    ImportIntsallUsers(dtExcel);
+                        //    GetSalesUsersStaticticsAndData();
+                        //}
+                        //else
+                        //{
+                        //    GetSalesUsersStaticticsAndData(); ;
+                        //    //UcStatusPopUp.changeText();
+                        //    //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);
+                        //}
                     }
                 }
+                else
+                {
+                    UcStatusPopUp.ucPopUpHeader = "";
+                    UcStatusPopUp.ucPopUpMsg = "Please Select xlsx or csv file.";
+                    UcStatusPopUp.changeText();
+                }
+
             }
             catch (Exception ex)
             {
                 UtilityBAL.AddException("EditUser-btnUploadNew_Click", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
             }
         }
+
+        private void ShowStatisticsAndSendEmails(DataTable dtUniqueRecords)
+        {
+            DataTable dtSuccessFullyAdded = dtUniqueRecords.Clone();
+
+            Dictionary<int, string> dicDesignationTemplate = new Dictionary<int, string>();
+            Dictionary<int, string> dicDesignationSubjectString = new Dictionary<int, string>();
+
+            Int64 recordsToProcessed, recordsProcessed = 0;
+
+            // Set total number of emails to be sent.
+
+            recordsToProcessed = dtUniqueRecords.Rows.Count;
+
+            foreach (DataRow drUser in dtUniqueRecords.Rows)
+            {
+                String Email = drUser["Email"].ToString();
+                Int32 DesignationId = Convert.ToInt32(drUser["DesignationId"].ToString());
+                String HTMLTemlpate = String.Empty;
+                string strSubject = String.Empty;
+
+                // Set this, if both are same, no need to fetch designation email template details from database.
+                if (dicDesignationTemplate.ContainsKey(DesignationId))
+                {
+                    //Get HTML template from dictonary stored in memory   
+                    HTMLTemlpate = dicDesignationTemplate[DesignationId];
+                    strSubject = dicDesignationSubjectString[DesignationId];
+                }
+                else // Else load template from database.
+                {
+
+                    DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Applicant_Recontact_Auto_Email, DesignationId.ToString());
+                    HTMLTemlpate = objHTMLTemplate.Header + objHTMLTemplate.Body + objHTMLTemplate.Footer;
+
+                    // Store new template to access in loop later.
+                    dicDesignationTemplate.Add(DesignationId, HTMLTemlpate);
+                    dicDesignationSubjectString.Add(DesignationId, objHTMLTemplate.Subject);
+
+                    HTMLTemlpate = HTMLTemlpate.Replace("#name#", String.Concat(drUser["FirstName"].ToString(), " ", drUser["LastName"].ToString()));
+                    HTMLTemlpate = HTMLTemlpate.Replace("#Email#", drUser["Email"].ToString());
+                    HTMLTemlpate = HTMLTemlpate.Replace("#Phone number#", drUser["Phone1"].ToString());
+
+                    strSubject = objHTMLTemplate.Subject;
+                }
+
+                recordsProcessed++;
+
+                SendEmail(HTMLTemlpate, Email, strSubject, HTMLTemlpate, null, dtSuccessFullyAdded, drUser, recordsToProcessed, recordsProcessed, null);
+
+            }
+
+
+        }
+
+        private void SendCompletedCallback(object sender, AsyncCompletedEventArgs e, DataTable dtUniqueRecord, DataRow rowProcessed, Int64 recordsToProcess, Int64 recordsProcess)
+        {
+            // Get the unique identifier for this asynchronous operation.
+            String token = (string)e.UserState;
+
+            if (e.Error != null)
+            {
+
+            }
+            else
+            {
+                dtUniqueRecord.Rows.Add(rowProcessed.ItemArray);
+                dtUniqueRecord.AcceptChanges();
+                rptSuccessFullyEntered.DataSource = dtUniqueRecord;
+                rptSuccessFullyEntered.DataBind();
+
+                if (dtUniqueRecord != null)
+                {
+                    ltlTotalSuccessfulUsersInserted.Text = dtUniqueRecord.Rows.Count.ToString(); 
+                }
+                else
+                {
+                    ltlTotalSuccessfulUsersInserted.Text = "0";
+                }
+
+                upnlBulkUploadStatus.Update();
+
+            }
+
+            // If all emails are sent then process its bulk insert.
+            if (recordsToProcess == recordsProcess)
+            {
+                ImportIntsallUsers(dtUniqueRecord);
+                GetSalesUsersStaticticsAndData();
+            }
+
+        }
+
+        public bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, DataTable dtUniqueRecords, DataRow drProcessing, Int64 recordsToProcessed, Int64 recordsProcessed, List<AlternateView> lstAlternateView = null)
+        {
+            bool retValue = false;
+            if (!InstallUserBLL.Instance.CheckUnsubscribedEmail(strToAddress))
+            {
+                try
+                {
+                    /* Sample HTML Template
+                     * *****************************************************************************
+                     * Hi #lblFName#,
+                     * <br/>
+                     * <br/>
+                     * You are requested to appear for an interview on #lblDate# - #lblTime#.
+                     * <br/>
+                     * <br/>
+                     * Regards,
+                     * <br/>
+                    */
+
+                    string defaultEmailFrom = ConfigurationManager.AppSettings["defaultEmailFrom"].ToString();
+                    string userName = ConfigurationManager.AppSettings["smtpUName"].ToString();
+                    string password = ConfigurationManager.AppSettings["smtpPwd"].ToString();
+
+                    if (JGApplicationInfo.GetApplicationEnvironment() == "1" || JGApplicationInfo.GetApplicationEnvironment() == "2")
+                    {
+                        strBody = String.Concat(strBody, "<br/><br/><h1>Email is intended for Email Address: " + strToAddress + "</h1><br/><br/>");
+                        strToAddress = "error@kerconsultancy.com";
+
+                    }
+
+                    MailMessage Msg = new MailMessage();
+                    Msg.From = new MailAddress(defaultEmailFrom, "JGrove Construction");
+                    Msg.To.Add(strToAddress);
+                    Msg.Bcc.Add(JGApplicationInfo.GetDefaultBCCEmail());
+                    Msg.Subject = strSubject;// "JG Prospect Notification";
+                    Msg.Body = strBody.Replace("#UNSEMAIL#", HttpContext.Current.Server.UrlEncode(strToAddress));
+                    Msg.IsBodyHtml = true;
+
+                    //ds = AdminBLL.Instance.GetEmailTemplate('');
+                    //// your remote SMTP server IP.
+                    if (lstAttachments != null)
+                    {
+                        foreach (Attachment objAttachment in lstAttachments)
+                        {
+                            Msg.Attachments.Add(objAttachment);
+                        }
+                    }
+
+                    if (lstAlternateView != null)
+                    {
+                        foreach (AlternateView objAlternateView in lstAlternateView)
+                        {
+                            Msg.AlternateViews.Add(objAlternateView);
+                        }
+                    }
+
+                    SmtpClient sc = new SmtpClient(
+                                                    ConfigurationManager.AppSettings["smtpHost"].ToString(),
+                                                    Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
+                                                  );
+
+                    sc.SendCompleted += new SendCompletedEventHandler((s, e) => SendCompletedCallback(s, e, dtUniqueRecords, drProcessing, recordsToProcessed, recordsProcessed));
+
+                    NetworkCredential ntw = new NetworkCredential(userName, password);
+                    sc.UseDefaultCredentials = false;
+                    sc.Credentials = ntw;
+                    sc.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
+                    sc.SendAsync(Msg, "User Status");
+                    retValue = true;
+
+                    Msg = null;
+                    sc.Dispose();
+                    sc = null;
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+            return retValue;
+        }
+
+        private DataTable GetUniqueRecordsFromUpload(DataTable dtAllRecords)
+        {
+            //Remove Duplicate Email records from master table
+            DataTable dtUniqueEmailRecords = dtAllRecords.AsEnumerable().GroupBy(x => x.Field<string>("Email")).Select(g => g.First()).CopyToDataTable();
+
+            //Remove Duplicate Phone records from master table
+            DataTable UniquePhone = dtUniqueEmailRecords.AsEnumerable().GroupBy(x => x.Field<string>("Phone1")).Select(g => g.First()).CopyToDataTable();
+
+            return UniquePhone;
+        }
+
 
         protected void btnUpload_Click(object sender, EventArgs e)
         {
@@ -2752,6 +3010,14 @@ namespace JG_Prospect
             objDataTable.Columns.Add("Suit_Apt_Room", typeof(string));
             objDataTable.Columns.Add("Notes", typeof(string));
 
+            //SET RowNum auto increment
+            objDataTable.Columns.Add("RowNum", typeof(Int64));
+            objDataTable.Columns["RowNum"].AutoIncrement = true;
+            objDataTable.Columns["RowNum"].AutoIncrementSeed = 1;
+            objDataTable.Columns["RowNum"].AutoIncrementStep = 1;
+
+            objDataTable.Columns.Add("DesignationId", typeof(string));
+
             return objDataTable;
         }
 
@@ -2985,9 +3251,9 @@ namespace JG_Prospect
 
             if (!IsValid)
             {
-                grdBulkUploadUserErrors.DataSource = dtUserError;
-                grdBulkUploadUserErrors.DataBind();
-                upnlBUPError.Update();
+                //grdBulkUploadUserErrors.DataSource = dtUserError;
+                //grdBulkUploadUserErrors.DataBind();
+                //upnlBUPError.Update();
                 ScriptManager.RegisterStartupScript
                     (
                         this,
@@ -3043,6 +3309,11 @@ namespace JG_Prospect
                                                                                                       .ToUpper()
                                                                                                       .Trim()
                                                                               );
+
+                    dtExcel.Rows[i]["DesignationId"] = objDesignation.ID.ToString();
+
+                    objIntsallUser.Row_Num = Convert.ToInt64(dtExcel.Rows[i]["RowNum"].ToString().Trim());
+
                     if (objDesignation != null)
                     {
                         objIntsallUser.DesignationId = objDesignation.ID;
@@ -3333,77 +3604,77 @@ namespace JG_Prospect
                     dsImportResult = InstallUserBLL.Instance.BulkIntsallUser(xmlDoc.InnerXml);
                 }
 
-                pnlAddNewUser.Visible = false;
-                pnlDuplicate.Visible = false;
+                //pnlAddNewUser.Visible = false;
+                //pnlDuplicate.Visible = false;
 
-                #region '-- Process Import Result --'
+                //#region '-- Process Import Result --'
 
-                // duplicate users
-                if (dsImportResult != null && dsImportResult.Tables.Count > 0 && dsImportResult.Tables[0].Rows.Count > 0)
-                {
+                //// duplicate users
+                //if (dsImportResult != null && dsImportResult.Tables.Count > 0 && dsImportResult.Tables[0].Rows.Count > 0)
+                //{
 
-                    int RowCount = (from DataRow ReturnDr in dsImportResult.Tables[0].Rows
-                                    where (string)ReturnDr["ActionTaken"] != "I"
-                                    select (string)ReturnDr["Email"]).Count();
+                //    int RowCount = (from DataRow ReturnDr in dsImportResult.Tables[0].Rows
+                //                    where (string)ReturnDr["ActionTaken"] != "I"
+                //                    select (string)ReturnDr["Email"]).Count();
 
-                    if (RowCount > 0) // if found any row not Inserted than
-                    {
-                        DataTable DuplicateRecords = (from DataRow ReturnDr in dsImportResult.Tables[0].Rows
-                                                      where (string)ReturnDr["ActionTaken"] != "I"
-                                                      select ReturnDr).CopyToDataTable();
+                //    if (RowCount > 0) // if found any row not Inserted than
+                //    {
+                //        DataTable DuplicateRecords = (from DataRow ReturnDr in dsImportResult.Tables[0].Rows
+                //                                      where (string)ReturnDr["ActionTaken"] != "I"
+                //                                      select ReturnDr).CopyToDataTable();
 
-                        Session["DuplicateUsers"] = DuplicateRecords;
+                //        Session["DuplicateUsers"] = DuplicateRecords;
 
-                        listDuplicateUsers.DataSource = DuplicateRecords;
-                        listDuplicateUsers.DataBind();
+                //        listDuplicateUsers.DataSource = DuplicateRecords;
+                //        listDuplicateUsers.DataBind();
 
-                        lblDuplicateCount.Text = "<h1>Duplicate Records : (" + RowCount.ToString() + ")</h1>";
+                //        lblDuplicateCount.Text = "<h1>Duplicate Records : (" + RowCount.ToString() + ")</h1>";
 
-                        pnlDuplicate.Visible = true;
-                    }
+                //        pnlDuplicate.Visible = true;
+                //    }
 
-                    RowCount = (from DataRow ReturnDr in dsImportResult.Tables[0].Rows
-                                where (string)ReturnDr["ActionTaken"] == "I"
-                                select (string)ReturnDr["Email"]).Count();
+                //    RowCount = (from DataRow ReturnDr in dsImportResult.Tables[0].Rows
+                //                where (string)ReturnDr["ActionTaken"] == "I"
+                //                select (string)ReturnDr["Email"]).Count();
 
-                    if (RowCount > 0) // if row Inserted / Added
-                    {
-                        DataTable InsertedRecords = (from DataRow ReturnDr in dsImportResult.Tables[0].Rows
-                                                     where (string)ReturnDr["ActionTaken"] == "I"
-                                                     select ReturnDr).CopyToDataTable();
+                //    if (RowCount > 0) // if row Inserted / Added
+                //    {
+                //        DataTable InsertedRecords = (from DataRow ReturnDr in dsImportResult.Tables[0].Rows
+                //                                     where (string)ReturnDr["ActionTaken"] == "I"
+                //                                     select ReturnDr).CopyToDataTable();
 
-                        lstNewUserAdd.DataSource = InsertedRecords;
-                        lstNewUserAdd.DataBind();
+                //        lstNewUserAdd.DataSource = InsertedRecords;
+                //        lstNewUserAdd.DataBind();
 
-                        lblNewRecordAddedCount.Text = "<h1> New Record Added : (" + RowCount.ToString() + ")</h1>";
+                //        lblNewRecordAddedCount.Text = "<h1> New Record Added : (" + RowCount.ToString() + ")</h1>";
 
-                        pnlAddNewUser.Visible = true;
+                //        pnlAddNewUser.Visible = true;
 
-                        // Send all newly inserted user HR form fillup request.
-                        System.Threading.Tasks.Parallel.ForEach(InsertedRecords.AsEnumerable(), AddedInstallUser =>
-                        {
+                //        // Send all newly inserted user HR form fillup request.
+                //        System.Threading.Tasks.Parallel.ForEach(InsertedRecords.AsEnumerable(), AddedInstallUser =>
+                //        {
 
-                            //Send Request email to fill out HR form to Newly added client.
-                            CommonFunction.SendHRFormFillupRequestEmail(AddedInstallUser["Email"].ToString(), Convert.ToInt32(AddedInstallUser["DesignationId"].ToString()), AddedInstallUser["FirstName"].ToString());
+                //            //Send Request email to fill out HR form to Newly added client.
+                //            CommonFunction.SendHRFormFillupRequestEmail(AddedInstallUser["Email"].ToString(), Convert.ToInt32(AddedInstallUser["DesignationId"].ToString()), AddedInstallUser["FirstName"].ToString());
 
-                        });
+                //        });
 
-                        //Session["DuplicateUsers"] = ds.Tables[0];
-                        //listDuplicateUsers.DataSource = ds.Tables[0];
-                        //listDuplicateUsers.DataBind();
-                    }
+                //        //Session["DuplicateUsers"] = ds.Tables[0];
+                //        //listDuplicateUsers.DataSource = ds.Tables[0];
+                //        //listDuplicateUsers.DataBind();
+                //    }
 
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "OverlayPopupUploadBulk();", true);
-                }
-                else
-                {
-                    //ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "alert('All records has been added successfully!');window.location ='EditUser.aspx';", true);
-                    UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Data / File.";
-                    UcStatusPopUp.changeText();
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
-                }
+                //    ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "OverlayPopupUploadBulk();", true);
+                //}
+                //else
+                //{
+                //    //ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "alert('All records has been added successfully!');window.location ='EditUser.aspx';", true);
+                //    UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Data / File.";
+                //    UcStatusPopUp.changeText();
+                //    ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
+                //}
 
-                #endregion
+                //#endregion
             }
         }
 
@@ -4556,35 +4827,70 @@ namespace JG_Prospect
             }
         }
 
-        //private void fullTouchPointLog(string strValueToAdd, int id)
-        //{
-        //    string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
-        //    int userID = Convert.ToInt32(JGSession.LoginUserID);
-        //    InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, strValueToAdd, "", (int)TouchPointSource.EditUserPage);
-        //}
-        //public void LabelSet()
-        //{
-        //    if (grdUsers.PageCount == 0)
-        //    {
-        //        lblTo.Text = string.Empty;
-        //        lblFrom.Text = string.Empty;
-        //        Label5.Visible = false;
-        //        lblof.Visible = false;
-        //        lblCount.Visible = false;
-        //    }
-        //    else
-        //    {
-        //        int currentPage = grdUsers.PageIndex + 1;
-        //        int selValue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
-        //        int last = selValue * currentPage;
-        //        int first = (last - selValue) + 1;
-        //        lblTo.Text = last.ToString();
-        //        lblFrom.Text = first.ToString();
-        //        Label5.Visible = true;
-        //        lblof.Visible = true;
-        //        lblCount.Visible = true;
-        //    }
-        //}
+        public void LabelSet()
+        {
+            if (grdUsers.PageCount == 0)
+            {
+                lblTo.Text = string.Empty;
+                lblFrom.Text = string.Empty;
+                Label5.Visible = false;
+                lblof.Visible = false;
+                lblCount.Visible = false;
+            }
+            else
+            {
+                int currentPage = grdUsers.PageIndex + 1;
+                int selValue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
+                int last = selValue * currentPage;
+                int first = (last - selValue) + 1;
+                lblTo.Text = last.ToString();
+                lblFrom.Text = first.ToString();
+                Label5.Visible = true;
+                lblof.Visible = true;
+                lblCount.Visible = true;
+            }
+        }
+
+        private DataTable GetInvalidRecordsFromUpload(DataTable dtAllRecords)
+        {
+            DataTable dtInvalidRecords = null;
+
+            var Invalidrows = dtAllRecords.AsEnumerable().Where(r => String.IsNullOrEmpty(r.Field<string>("Designation")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("Status")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("Source")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("FirstName")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("LastName")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("Email")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("Phone1")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("Phone1Type")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("Zip")) == true
+            );
+
+            if (Invalidrows.Any())
+            {
+                dtInvalidRecords = Invalidrows.CopyToDataTable();
+           
+
+            //Remove invalid records from old table
+            IEnumerable<DataRow> rows = dtAllRecords.Rows.Cast<DataRow>().Where(r => String.IsNullOrEmpty(r.Field<string>("Designation")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("Status")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("Source")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("FirstName")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("LastName")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("Email")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("Phone1")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("Phone1Type")) == true ||
+            String.IsNullOrEmpty(r.Field<string>("Zip")) == true
+            );
+
+            rows.ToList().ForEach(r => r.Delete());
+            dtAllRecords.AcceptChanges();
+
+            }
+
+            return dtInvalidRecords;
+        }
+
 
         #region 'Assigned Task ToUser'
 
@@ -4757,29 +5063,6 @@ namespace JG_Prospect
             InstallUserBLL.Instance.UpdateEmpType(Convert.ToInt32(ID), ddlEmployeeType.SelectedValue);
         }
 
-        public void LabelSet()
-        {
-            if (grdUsers.PageCount == 0)
-            {
-                lblTo.Text = string.Empty;
-                lblFrom.Text = string.Empty;
-                Label5.Visible = false;
-                lblof.Visible = false;
-                lblCount.Visible = false;
-            }
-            else
-            {
-                int currentPage = grdUsers.PageIndex + 1;
-                int selValue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
-                int last = selValue * currentPage;
-                int first = (last - selValue) + 1;
-                lblTo.Text = last.ToString();
-                lblFrom.Text = first.ToString();
-                Label5.Visible = true;
-                lblof.Visible = true;
-                lblCount.Visible = true;
-            }
-        }
 
         protected void chkSelected_CheckedChanged(object sender, EventArgs e)
         {
