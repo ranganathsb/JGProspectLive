@@ -145,7 +145,7 @@
             var RcvrID = getUrlVars()["RcvrID"];
             var chatGroupId = getUrlVars()["CGID"];
             if (RcvrID != undefined && chatGroupId != undefined)
-                InitiateOldChat($(this), RcvrID, chatGroupId);
+                InitiateChat($(this), RcvrID, chatGroupId);
         });
     </script>
 </asp:Content>

@@ -857,7 +857,7 @@
                 timer = setTimeout(function () {
                     chat.server.setChatUserStatusToIdle('<%= (int)JG_Prospect.Common.ChatUserStatus.Idle %>');
                     userChatStatus = '<%= (int)JG_Prospect.Common.ChatUserStatus.Idle %>';
-                }, 10000);
+                }, 900000);
             }
             // Set Message Read Status
             if ($('#chattext').is(':focus')) {
