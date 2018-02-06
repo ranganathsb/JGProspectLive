@@ -615,7 +615,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public ActionOutput<LoginUser> GetUsers(string keyword)
+        public ActionOutput<LoginUser> GetUsers(string keyword, string exceptUserIds = null)
         {
             try
             {
@@ -625,6 +625,7 @@ namespace JG_Prospect.DAL
                     returndata = new DataSet();
                     DbCommand command = database.GetStoredProcCommand("GetUsersByKeyword");
                     database.AddInParameter(command, "@Keyword", DbType.String, keyword);
+                    database.AddInParameter(command, "@ExceptUserIds", DbType.String, exceptUserIds);
 
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
@@ -636,10 +637,11 @@ namespace JG_Prospect.DAL
                             users.Add(new LoginUser
                             {
                                 ID = Convert.ToInt32(item["Id"].ToString()),
-                                FirstName = item["FristName"].ToString(),
+                                FirstName = item["FirstName"].ToString(),
                                 LastName = item["LastName"].ToString(),
                                 Email = item["Email"].ToString(),
-                                Phone = item["Phone"].ToString()
+                                Phone = item["Phone"].ToString(),
+                                ProfilePic = item["Picture"].ToString()
                             });
                         }
                     }
