@@ -952,7 +952,7 @@
                                             '<input type="hidden" id="ReceiverIds" value="' + receiverIds + '" />' +
                                             '<div class="chats watermark-logo"></div>' +
                                             '<div class="chat-text">' +
-                                                '<input type="text" class="mention" placeholder="Say Something..." id="chattext" onkeyup="sendChat(event, this);"  />' +
+                                                '<input type="text" data-emojiable="true" data-emoji-input="unicode" class="mention" placeholder="Say Something..." id="chattext" onkeyup="sendChat(event, this);"  />' +
                                                 '<button class="text-send" onclick="sendChat(event, this)">Send</button>' +
                                                 '<button class="record-send"><i class="fa fa-microphone" aria-hidden="true"></i></button>' +
                                             '</div>' +
@@ -1090,6 +1090,7 @@
         }
 
         function InitializeEmoji() {
+            return false;
             // Initializes and creates emoji set from sprite sheet
             window.emojiPicker = new EmojiPicker({
                 emojiable_selector: '[data-emojiable=true]',
