@@ -5206,7 +5206,7 @@ namespace JG_Prospect
                 SourceUserInstallId = m.UserInstallId,
                 SourceUsername = m.UserFullname,
                 TouchPointSource = m.ChatSourceId
-            }).OrderByDescending(x => x.ChangeDateTime).ToList();
+            }).OrderByDescending(x => x.ChangeDateTime).OrderByDescending(x => x.ChangeDateTime).Take(5).ToList();
             //PagingResult<Notes> notes = InstallUserBLL.Instance.GetUserTouchPointLogs(pageNumber, pageSize, userId);
             return new JavaScriptSerializer().Serialize(notes);
         }

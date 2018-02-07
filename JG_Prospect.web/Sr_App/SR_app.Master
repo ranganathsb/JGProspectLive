@@ -708,6 +708,7 @@
         closechat = function (sender) {
             chat.server.closeChat($(sender).parents('.chat-box').attr('id'));
             $(sender).parents('.chat-box').remove();
+            ReLoadNotes();
         }
         closeTelecomPopup = function (sender) {
             chat.server.closeChat($(sender).parents('.telecom-dashboard-popup').find('.chat-box').attr('id'));
