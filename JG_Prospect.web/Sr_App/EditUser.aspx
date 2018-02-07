@@ -313,7 +313,7 @@
             .notes-table tr th:nth-child(1), .notes-table tr td:nth-child(1) {
                 width: 5%;
             }
-            
+
             .notes-table tr th:nth-child(2), .notes-table tr td:nth-child(2) {
                 width: 27%;
             }
@@ -526,7 +526,7 @@
             height: 22px;
             vertical-align: middle;
             padding: 2px !important;
-            width: 255px;            
+            width: 255px;
             margin: 0px;
         }
 
@@ -1613,7 +1613,8 @@
                                         Notes
                                         <table class="table gridtbl notes-table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
                                             <tr class="trHeader " style="color: White;">
-                                                <th>User ID<br />Date&nbsp;&&nbsp;Time</th>
+                                                <th>User ID<br />
+                                                    Date&nbsp;&&nbsp;Time</th>
                                                 <th>Note/Status</th>
                                             </tr>
                                         </table>
@@ -1665,7 +1666,7 @@
                                     </div>
                                 </div>
                                 <div class="btn_sec" style="float: left;">
-                                    <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" CssClass="ui-button" Style="padding: 0px 10px 0px 10px!important;" />
+                                    <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" OnClientClick="showBulkUploadProgressPopup();" CssClass="ui-button" Style="padding: 0px 10px 0px 10px!important;" />
                                 </div>
                                 <div class="hide">
                                     <input id="hdnBulkUploadFile" runat="server" type="hidden" />
@@ -1696,7 +1697,7 @@
                 </ContentTemplate>
                 <Triggers>
                     <asp:AsyncPostBackTrigger ControlID="btnUploadNew" EventName="Click" />
-                    <asp:PostBackTrigger ControlID="lnkDownload"   />
+                    <asp:PostBackTrigger ControlID="lnkDownload" />
                 </Triggers>
             </asp:UpdatePanel>
             <br />
@@ -2025,13 +2026,14 @@
     </div>
     <%--Modal Popup Ends--%>
     <%--Popup Stars--%>
-     <div id="bulkUpload" class="modal hide">
+    <div id="bulkUpload" class="modal hide">
         <asp:UpdatePanel ID="upnlBulkUploadStatus" runat="server" UpdateMode="Conditional">
             <ContentTemplate>
-                <div id="div1" runat="server" title="Information" data-width="900px">
+                <div id="divBulkUploadStatistics" runat="server" title="Information" data-width="900px">
 
                     <div>
-                        <h2>Incomplete users: <small>Total: <asp:Literal ID="ltlTotalInvalidUser" runat="server"></asp:Literal></small></h2>
+                        <h2>Incomplete users: <small>Total:
+                            <asp:Literal ID="ltlTotalInvalidUser" runat="server"></asp:Literal></small></h2>
                         <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
 
                             <asp:Repeater ID="rptIncorrectRecords" runat="server">
@@ -2080,7 +2082,8 @@
                     </div>
 
                     <div style="margin-top: 10px;">
-                        <h2>Duplicate users: <small>Total: <asp:Literal ID="ltlTotalDuplicateUsers" runat="server"></asp:Literal></small></h2>
+                        <h2>Duplicate users: <small>Total:
+                            <asp:Literal ID="ltlTotalDuplicateUsers" runat="server"></asp:Literal></small></h2>
                         <div>
                             <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
                                 <asp:Repeater ID="rptDuplicateRecords" runat="server">
@@ -2128,7 +2131,8 @@
                     </div>
 
                     <div style="margin-top: 10px;">
-                        <h2>Users to be Added: <small>Total: <asp:Literal ID="ltlTotalUserstobeAdded" runat="server"></asp:Literal></small></h2>
+                        <h2>Users to be Added: <small>Total:
+                            <asp:Literal ID="ltlTotalUserstobeAdded" runat="server"></asp:Literal></small></h2>
                         <div>
                             <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
                                 <asp:Repeater ID="rptUserstoBeAdded" runat="server">
@@ -2149,7 +2153,23 @@
                                         <tbody>
                                     </HeaderTemplate>
                                     <ItemTemplate>
-                                        <%#Eval("Phone1Type")%>
+                                        <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
+                                            <td style="width: 10%;"><%#Eval("FirstName") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("LastName") %>
+                                            </td>
+                                            <td style="width: 15%;"><%#Eval("Email") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Designation") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Status") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Source") %></td>
+                                            <td style="width: 15%;"><%#Eval("Phone1") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Phone1Type") %></td>
+                                            <td style="width: 5%;"><%#Eval("Zip") %></td>
+                                        </tr>
                                     </ItemTemplate>
                                     <FooterTemplate>
                                         </tbody>
@@ -2160,7 +2180,8 @@
                     </div>
 
                     <div style="margin-top: 10px;">
-                        <h2>Successfully entered users: <small>Total: <asp:Literal ID="ltlTotalSuccessfulUsersInserted" runat="server"></asp:Literal></small></h2>
+                        <h2>Successfully entered users: <small>Total:
+                            <asp:Literal ID="ltlTotalSuccessfulUsersInserted" runat="server"></asp:Literal></small></h2>
                         <div>
                             <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
                                 <asp:Repeater ID="rptSuccessFullyEntered" runat="server">
@@ -2208,6 +2229,8 @@
                     </div>
 
                 </div>
+             
+             
             </ContentTemplate>
             <Triggers>
                 <asp:AsyncPostBackTrigger ControlID="btnUploadNew" EventName="Click" />
@@ -2578,82 +2601,7 @@
             <input type="hidden" id="PageIndex" value="0" />
         </div>
         <div class="content">
-            <div class="row sender">
-                <div class="user-image">
-                    <div class="img">
-                        <img src="http://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/201712181154322015-01-15%2019.43.23.jpg" />
-                    </div>
-                    <div class="status-icon"></div>
-                    <div class="installid"><a href="#">ITSTE-A0002 </a></div>
-                </div>
-                <div class="contents">
-                    <div class="msg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </div>
-                    <div class="time-container">
-                        <div class="tick">
-                            <img src="../img/blue-tick.png" />
-                        </div>
-                        <div class="time">Abhishek Girwalkar, 12/25/2017 11:21 AM</div>
-                        <div class="est">(EST)</div>
-                    </div>
-                </div>
-            </div>
-            <div class="row sender">
-                <div class="user-image">
-                    <div class="img">
-                        <img src="http://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/201712181154322015-01-15%2019.43.23.jpg" />
-                    </div>
-                    <div class="status-icon"></div>
-                    <div class="installid"><a href="#">ITSTE-A0002 </a></div>
-                </div>
-                <div class="contents">
-                    <div class="msg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </div>
-                    <div class="time-container">
-                        <div class="tick">
-                            <img src="../img/grey-tick.png" />
-                        </div>
-                        <div class="time">Abhishek Girwalkar, 12/25/2017 11:21 AM</div>
-                        <div class="est">(EST)</div>
-                    </div>
-                </div>
-            </div>
-            <div class="row receiver">
-                <div class="user-image">
-                    <div class="img">
-                        <img src="http://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/20171121092039IMG-20171018-WA0052.jpg" />
-                    </div>
-                    <div class="status-icon"></div>
-                    <div class="installid"><a href="#">JPM-A0008</a></div>
-                </div>
-                <div class="contents">
-                    <div class="msg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </div>
-                    <div class="time-container">
-                        <div class="tick">
-                            <img src="../img/grey-tick.png" />
-                        </div>
-                        <div class="time">Karishma Arora, 12/25/2017 11:21 AM</div>
-                        <div class="est">(EST)</div>
-                    </div>
-                </div>
-            </div>
-            <div class="row receiver">
-                <div class="user-image">
-                    <div class="img">
-                        <img src="http://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/20171121092039IMG-20171018-WA0052.jpg" />
-                    </div>
-                    <div class="status-icon"></div>
-                    <div class="installid"><a href="#">JPM-A0008</a></div>
-                </div>
-                <div class="contents">
-                    <div class="msg">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. </div>
-                    <div class="time-container">
-                        <div class="tick">
-                            <img src="../img/blue-tick.png" />
-                        </div>
-                        <div class="time">Karishma Arora, 12/25/2017 11:21 AM</div>
-                        <div class="est">(EST)</div>
-                    </div>
-                </div>
-            </div>
+            Loading Notes...
         </div>
         <div class="pagingWrapper">
             <div class="total-results">Total <span class="total-results-count"></span>Results</div>
@@ -2988,33 +2936,33 @@
             ReLoadNotes();
         });
 
-        function ReLoadNotes() {
-            $('.notes-container').each(function (i) {
-                var id = $(this).attr('id').split('-')[1];
-                var installUserId = $(this).attr('uid');
-                LoadNotes($('#user' + id), installUserId, id);
-            });
-        }
-        //============== End DP ==============
+            function ReLoadNotes() {
+                $('.notes-container').each(function (i) {
+                    var id = $(this).attr('id').split('-')[1];
+                    var installUserId = $(this).attr('uid');
+                    LoadNotes($('#user' + id), installUserId, id);
+                });
+            }
+            //============== End DP ==============
        
-        function showBulkUploadProgressPopup() {
+            function showBulkUploadProgressPopup() {
 
-            $('#bulkUpload').removeClass('hide');               
+                $('#bulkUpload').removeClass('hide');               
 
-            $('#bulkUpload').dialog({
-                modal: false,
-                height: 700,
-                width: 1000,
-                title: "Bulk upload progress...",
+                $('#bulkUpload').dialog({
+                    modal: false,
+                    height: 700,
+                    width: 1000,
+                    title: "Bulk upload progress...",
                     
-            }).parent().appendTo($("form:first"));
+                }).parent().appendTo($("form:first"));
 
-            $('#bulkUpload').show();
+                $('#bulkUpload').show();
                 
                 
                 
-            return true;
-        }
+                return true;
+            }
 
     </script>
 </asp:Content>

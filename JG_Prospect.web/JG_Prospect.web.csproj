@@ -1469,6 +1469,7 @@
     <Content Include="css\msdropdown\dd_arrow.gif" />
     <Content Include="css\msdropdown\title-bg.gif" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="css\popup.css" />
     <Content Include="css\TimeCircles.css" />
     <Content Include="Customer_Panel.aspx" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2.sql" />
@@ -1965,6 +1966,7 @@
     <Content Include="img\facebook.jpg" />
     <Content Include="img\fb_login.png" />
     <Content Include="img\File.png" />
+    <Content Include="img\flags24.png" />
     <Content Include="img\folder.png" />
     <Content Include="img\gplus.png" />
     <Content Include="img\grey-tick.png" />
@@ -3699,6 +3701,7 @@
     <Folder Include="Database Scripts\Dipavali\" />
     <Folder Include="Database Scripts\Jaylem\" />
     <Folder Include="Database Scripts\Shekhar\" />
+    <Folder Include="Employee\ProfilePictures\" />
     <Folder Include="Employee\Resume\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
     <Folder Include="fileman\aspnet_client\system_web\4_0_30319\" />

@@ -708,7 +708,8 @@
         closechat = function (sender) {
             chat.server.closeChat($(sender).parents('.chat-box').attr('id'));
             $(sender).parents('.chat-box').remove();
-            ReLoadNotes();
+            if (window.location.href.toLowerCase().indexOf('edituser.aspx') > 1)
+                ReLoadNotes();
         }
         closeTelecomPopup = function (sender) {
             chat.server.closeChat($(sender).parents('.telecom-dashboard-popup').find('.chat-box').attr('id'));
@@ -976,57 +977,57 @@
                                         '<div class="time">' + data.Object.ChatMessages[i].MessageAtFormatted + '</div>' +
                                         '<div class="est">(EST)</div> </div>' +
                                     '</div></div>';
-                            });
-                            $('.chat-box#' + id + ' .chats').append(str);
+                        });
+                        $('.chat-box#' + id + ' .chats').append(str);
                         //$('.chat-box .chats').scrollTop(d.prop("scrollHeight"));
-                            $('.chat-box#' + id + ' .chats').animate({ scrollTop: $('.chat-box#' + id + ' .chats').prop("scrollHeight") }, 500);
+                        $('.chat-box#' + id + ' .chats').animate({ scrollTop: $('.chat-box#' + id + ' .chats').prop("scrollHeight") }, 500);
 
                         // reset existing @mention and add new @mention support 
-                            $('input.mention').parent().find('.mentions').remove();
-                            $('input.mention').parent().find('.mentions-autocomplete-list').remove();
-                            $('input.mention').mentionsInput({
-                                onDataRequest: function (mode, query, callback) {
-                                    ajaxExt({
-                                        url: '/WebServices/JGWebService.asmx/GetUsers',
-                                        type: 'POST',
-                                        data: '{ keyword: "' + query + '", chatGroupId:"' + userTobeAddedIntoChatGroupId + '" }',
-                                        showThrobber: true,
-                                        throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
-                                        success: function (data, msg) {
-                                            responseData = data.Results;
-                                            responseData = _.filter(responseData, function (item) {
-                                                return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
-                                            });
-                                            callback.call(this, responseData);
-                                        }
-                                    });
-                                }
-                            });
+                        $('input.mention').parent().find('.mentions').remove();
+                        $('input.mention').parent().find('.mentions-autocomplete-list').remove();
+                        $('input.mention').mentionsInput({
+                            onDataRequest: function (mode, query, callback) {
+                                ajaxExt({
+                                    url: '/WebServices/JGWebService.asmx/GetUsers',
+                                    type: 'POST',
+                                    data: '{ keyword: "' + query + '", chatGroupId:"' + userTobeAddedIntoChatGroupId + '" }',
+                                    showThrobber: true,
+                                    throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
+                                    success: function (data, msg) {
+                                        responseData = data.Results;
+                                        responseData = _.filter(responseData, function (item) {
+                                            return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
+                                        });
+                                        callback.call(this, responseData);
+                                    }
+                                });
+                            }
+                        });
                         // Load User's list on right panel
                         //var userObj = {
                         //    Results: data.Object.ActiveUsers
                         //}
-                            bindChatUsers(data);
-                            InitializeEmoji();
-                        }
+                        bindChatUsers(data);
+                        InitializeEmoji();
+                    }
                 }
             });
-            }
+        }
 
-            function bindChatUsers(data) {
-                data.Results = data.Object.ActiveUsers;
-                if (data.Results.length > 1) {
-                    // Get this(logged in user) from Cookie
-                    var loggedInUserId = getCookie('<%=JG_Prospect.Common.Cookies.UserId%>');
-                var str = '';
-                $.each(data.Results, function (i) {
-                    // remove this(loggedin) user from lits
-                    if (loggedInUserId != data.Results[i].UserId) {
-                        var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
-                        var chatStatus = data.Results[i].Status == '1' ? 'active' : 'idle';
-                        str += '<div title="' + data.Results[i].GroupOrUsername + '" class="user-row" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\')">' +
-                                    '<div class="profile">' +
-                                        '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '" title="">' +
+        function bindChatUsers(data) {
+            data.Results = data.Object.ActiveUsers;
+            if (data.Results.length > 1) {
+                // Get this(logged in user) from Cookie
+                var loggedInUserId = getCookie('<%=JG_Prospect.Common.Cookies.UserId%>');
+                    var str = '';
+                    $.each(data.Results, function (i) {
+                        // remove this(loggedin) user from lits
+                        if (loggedInUserId != data.Results[i].UserId) {
+                            var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
+                            var chatStatus = data.Results[i].Status == '1' ? 'active' : 'idle';
+                            str += '<div title="' + data.Results[i].GroupOrUsername + '" class="user-row" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\')">' +
+                                        '<div class="profile">' +
+                                            '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '" title="">' +
                                         (data.Results[i].UserId == null ? '' :
                                         '<div class="status-icon ' + chatStatus + '"></div>' +
                                         '<div class="installid"><a href="#">' + data.Results[i].UserInstallId + '</a></div>') +
@@ -1042,7 +1043,7 @@
                     }
                 });
                 $('.chat-users-section .list').html(str);
-                // Bind Top Right Corner user list
+                    // Bind Top Right Corner user list
                 str = '';
                 $.each(data.Results, function (i) {
                     // remove this(loggedin) user from lits

@@ -1691,8 +1691,25 @@ namespace JG_Prospect.App_Code
             return fileName;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="strFilePath">Send physically mapped path of file on server.</param>
+        internal static void RemoveFile(string strFilePath)
+        {
+            try
+            {
+                if (File.Exists(strFilePath))
+                {
+                    File.Delete(strFilePath);
+                }
+            }
+            catch (Exception)
+            {
 
-
+                
+            }
+        }
     }
 }
 
