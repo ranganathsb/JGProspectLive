@@ -224,7 +224,7 @@ namespace JG_Prospect.Chat.Hubs
             }
 
             ChatMessageActiveUser obj = new ChatMessageActiveUser();
-            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers;
+            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
 
             Clients.All.onConnectedCallback(new ActionOutput<ChatMessageActiveUser>
             {
@@ -255,7 +255,7 @@ namespace JG_Prospect.Chat.Hubs
             Exceptional[0] = clientId;
 
             ChatMessageActiveUser obj = new ChatMessageActiveUser();
-            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers;
+            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
 
             Clients.AllExcept(Exceptional).onDisconnectedCallback(new ActionOutput<ChatMessageActiveUser>
             {
@@ -333,7 +333,7 @@ namespace JG_Prospect.Chat.Hubs
             }
 
             ChatMessageActiveUser obj = new ChatMessageActiveUser();
-            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers;
+            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
 
             Clients.All.SetChatUserStatusToIdleCallback(new ActionOutput<ChatMessageActiveUser>
             {
