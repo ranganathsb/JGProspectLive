@@ -215,6 +215,9 @@ namespace JG_Prospect.Chat.Hubs
 
             ChatUser user = ChatBLL.Instance.GetChatUser(UserId).Object;
 
+            if (user == null)
+                return base.OnConnected();
+
             // Update ActiveUsers in SingletonUserChatGroups
             SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(UserId).Results;
             if (ChatProcessor.Instance == null)
@@ -246,6 +249,9 @@ namespace JG_Prospect.Chat.Hubs
             string clientId = Context.ConnectionId;
             ChatUser user = ChatBLL.Instance.GetChatUser(clientId).Object;
             ChatBLL.Instance.DeleteChatUser(clientId);
+            if (user == null)
+                return base.OnDisconnected(stopCalled);
+
             SingletonGlobal.Instance.ConnectedClients.Remove(Context.ConnectionId);
 
             // User is offline
