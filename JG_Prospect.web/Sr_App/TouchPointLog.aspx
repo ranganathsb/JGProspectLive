@@ -43,6 +43,14 @@
         <input type="button" value="Send" id="sendChat" />
     </div>--%>
 
+    <%--<div class="chats">
+        <div class="chat-row"></div>
+    </div>
+    <div>
+        <input type="text" id="chattext" />
+        <input type="button" value="Send" id="sendChat" />
+    </div>--%>
+
     <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
     <script src="../js/angular/scripts/jgapp.js"></script>
     <script src="../js/angular/scripts/TaskSequence.js"></script>
@@ -142,6 +150,10 @@
         var pageSize = 20;
         $(document).ready(function () {
             Paging($(this));
+            var RcvrID = getUrlVars()["RcvrID"];
+            var chatGroupId = getUrlVars()["CGID"];
+            if (RcvrID != undefined && chatGroupId != undefined)
+                InitiateChat($(this), RcvrID, chatGroupId);
         });
     </script>
 </asp:Content>

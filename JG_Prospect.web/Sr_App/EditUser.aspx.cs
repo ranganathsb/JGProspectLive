@@ -44,6 +44,7 @@ namespace JG_Prospect
     {
         #region '--Members--'
         public string notesUserEmail = "";
+        public int loggedInUserId = 0;
         #endregion
 
         #region '--Properties--'
@@ -151,7 +152,7 @@ namespace JG_Prospect
         protected void Page_Load(object sender, EventArgs e)
         {
             CommonFunction.AuthenticateUser();
-
+            loggedInUserId = JGSession.UserId;
             int x = 0;
 
             if (Convert.ToString(Session["usertype"]).Contains("Admin"))
@@ -5224,13 +5225,42 @@ namespace JG_Prospect
         [WebMethod]
         public static string GetUserTouchPointLogs(int pageNumber, int pageSize, int userId)
         {
-            PagingResult<Notes> notes = InstallUserBLL.Instance.GetUserTouchPointLogs(pageNumber, pageSize, userId);
+            List<ChatMessage> chatMessages = ChatBLL.Instance.GetChatMessages(JGSession.UserId, userId).Results;
+            PagingResult<Notes> notes = new PagingResult<Notes>();
+            notes.Status = ActionStatus.Successfull;
+            notes.TotalResults = chatMessages.Count();
+            notes.Data = chatMessages.Select(m => new Notes
+            {
+                UserTouchPointLogID = userId,
+                UserID = userId,
+                UpdatedByUserID = m.UserId,
+                UpdatedUserInstallID = m.UserInstallId,
+                ChangeDateTime = m.MessageAt,
+                LogDescription = m.Message,
+                UpdatedByFirstName = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0],
+                UpdatedByLastName = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() > 1 ? m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1] : "",
+                UpdatedByEmail = "",
+                FristName = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0],
+                LastName = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() > 1 ? m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1] : "",
+                Email = "",
+                Phone = "",
+                ChangeDateTimeFormatted = m.MessageAtFormatted,
+                SourceUser = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0],
+                SourceUserInstallId = m.UserInstallId,
+                SourceUsername = m.UserFullname,
+                TouchPointSource = m.ChatSourceId
+            }).OrderByDescending(x => x.ChangeDateTime).OrderByDescending(x => x.ChangeDateTime).Take(5).ToList();
+            //PagingResult<Notes> notes = InstallUserBLL.Instance.GetUserTouchPointLogs(pageNumber, pageSize, userId);
             return new JavaScriptSerializer().Serialize(notes);
         }
 
         [WebMethod]
         public static string AddNotes(int id, string note, int touchPointSource)
         {
+            if (string.IsNullOrEmpty(note))
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+            }
             string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
             int userID = Convert.ToInt32(JGSession.LoginUserID);
             InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, "Note : " + note, "", touchPointSource);

@@ -9,6 +9,7 @@ using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Web;
+using System.Web.Hosting;
 
 namespace JG_Prospect.Chat.Hubs
 {
@@ -16,33 +17,32 @@ namespace JG_Prospect.Chat.Hubs
     // [Authorize]
     public class ChatHub : Hub
     {
-        #region---Data Members---
-        private Timer _timer;
-        #endregion
-
-        public void SendChatMessage(string chatGroupId, string message, int chatSourceId)
+        public void SendChatMessage(string chatGroupId, string message, int chatSourceId, string receiverIds)
         {
             try
             {
                 System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
+                string baseurl = httpContext.Request.Url.Scheme + "://" +
+                                    httpContext.Request.Url.Authority +
+                                    httpContext.Request.ApplicationPath.TrimEnd('/') + "/";
                 // Getting Logged In UserID from cookie. 
                 // FYI: Sessions are not allowed in SignalR, so have to user some other way to pass information
-                int UserId = 0;
+                int SenderUserId = 0;
                 HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
                 if (auth_cookie != null)
-                    UserId = Convert.ToInt32(auth_cookie.Value);
+                    SenderUserId = Convert.ToInt32(auth_cookie.Value);
                 //add logger
-                ChatBLL.Instance.ChatLogger(chatGroupId, message, chatSourceId, UserId, httpContext.Request.UserHostAddress);
-                DataRow sender = InstallUserBLL.Instance.getuserdetails(UserId).Tables[0].Rows[0];
+                ChatBLL.Instance.ChatLogger(chatGroupId, message, chatSourceId, SenderUserId, httpContext.Request.UserHostAddress);
+                DataRow sender = InstallUserBLL.Instance.getuserdetails(SenderUserId).Tables[0].Rows[0];
                 string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? "default.jpg"
                                     : sender["Picture"].ToString().Replace("~/UploadeProfile/", "");
-                pic = /*baseUrl +*/ "UploadeProfile/" + pic;
+                pic = /*baseUrl +*/ "Employee/ProfilePictures/" + pic;
                 // Instatiate ChatMessage
                 ChatMessage chatMessage = new ChatMessage
                 {
                     Message = message,
                     ChatSourceId = chatSourceId,
-                    UserId = UserId,
+                    UserId = SenderUserId,
                     UserProfilePic = pic,
                     UserFullname = sender["FristName"].ToString() + " " + sender["Lastname"].ToString(),
                     UserInstallId = sender["UserInstallID"].ToString(),
@@ -62,10 +62,10 @@ namespace JG_Prospect.Chat.Hubs
                 // Checking in database to fetch all connectionIds of browser of this chat group
                 // FYI: Everytime, we reload a web page, SignalR brower connectionId gets changed, So
                 // we have to always look database for correct connectionIds
-                var newConnections = ChatBLL.Instance.GetChatUsers(chatGroup.ChatUsers.Select(m => m.UserId).ToList()).Results;
-                List<int> onlineUserIds = newConnections.Select(m => m.UserId).ToList();
+                var newConnections = ChatBLL.Instance.GetChatUsers(chatGroup.ChatUsers.Select(m => m.UserId.Value).ToList()).Results;
+                List<int> onlineUserIds = newConnections.Select(m => m.UserId.Value).ToList();
                 // Modify existing connectionIds into particular ChatGroup and save into static "UserChatGroups" object
-                foreach (var user in chatGroup.ChatUsers.Where(m => onlineUserIds.Contains(m.UserId)))
+                foreach (var user in chatGroup.ChatUsers.Where(m => onlineUserIds.Contains(m.UserId.Value)))
                 {
                     user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
                     user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
@@ -84,17 +84,20 @@ namespace JG_Prospect.Chat.Hubs
                 foreach (var item in chatGroup.ChatUsers.Where(m => !m.OnlineAt.HasValue))
                 {
                     // Send Chat Notification Email
+                    ChatBLL.Instance.SendOfflineChatEmail(SenderUserId, item.UserId.Value, sender["UserInstallID"].ToString(),
+                                                            chatMessage.Message, chatSourceId, baseurl, chatGroupId);
                 }
 
                 // Saving chat into database
-                string ReceiverId = string.Join(",", chatGroup.ChatUsers.Where(m => m.UserId != UserId).Select(m => m.UserId).ToList());
-                ChatBLL.Instance.SaveChatMessage(chatMessage, chatGroupId, ReceiverId);
+                //string ReceiverId = string.Join(",", chatGroup.ChatUsers.Where(m => m.UserId != UserId).Select(m => m.UserId).ToList());
+                //string ReceiverId = receiverIds;
+                ChatBLL.Instance.SaveChatMessage(chatMessage, chatGroupId, receiverIds, SenderUserId);
 
                 Clients.Group(chatGroupId).updateClient(new ActionOutput<ChatMessage>
                 {
                     Status = ActionStatus.Successfull,
                     Object = chatMessage,
-                    Message = chatGroupId + "`" + chatGroup.ChatGroupName
+                    Message = chatGroupId + "`" + chatGroup.ChatGroupName + "`" + receiverIds
                 });
             }
             catch (Exception ex)
@@ -129,18 +132,43 @@ namespace JG_Prospect.Chat.Hubs
                 SingletonUserChatGroups.Instance.ChatGroups
                                                  .Where(m => m.ChatGroupId == chatGroupId)
                                                  .FirstOrDefault()
-                                                 .ChatGroupName += "-" + receiver.FirstName;
+                                                 .ChatGroupName += "-" + receiver.GroupOrUsername;
 
                 newChatGroupName = SingletonUserChatGroups.Instance.ChatGroups
                                                  .Where(m => m.ChatGroupId == chatGroupId)
                                                  .FirstOrDefault()
                                                  .ChatGroupName;
+
+
+                #region Update ConnectionId
+                ChatGroup chatGroup = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
+                // Checking in database to fetch all connectionIds of browser of this chat group
+                // FYI: Everytime, we reload a web page, SignalR brower connectionId gets changed, So
+                // we have to always look database for correct connectionIds
+                var newConnections = ChatBLL.Instance.GetChatUsers(chatGroup.ChatUsers.Select(m => m.UserId.Value).ToList()).Results;
+                List<int> onlineUserIds = newConnections.Select(m => m.UserId.Value).ToList();
+                // Modify existing connectionIds into particular ChatGroup and save into static "UserChatGroups" object
+                foreach (var user in chatGroup.ChatUsers.Where(m => onlineUserIds.Contains(m.UserId.Value)))
+                {
+                    user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
+                    user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
+                    user.OnlineAtFormatted = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt.Value).FirstOrDefault().ToEST().ToString();
+                }
+                // Adding each connection into SignalR Group, so that we can send messages to all connected users.
+                foreach (var item in chatGroup.ChatUsers.Where(m => m.OnlineAt.HasValue))
+                {
+                    foreach (string connectionId in item.ConnectionIds)
+                    {
+                        Groups.Add(connectionId, chatGroupId);
+                    }
+                }
+                #endregion
             }
             Clients.Group(chatGroupId).addUserIntoChatGroupCallback(new ActionOutput<string>
             {
                 Status = ActionStatus.Successfull,
-                Object = chatGroupId + "`" + newChatGroupName,
-                Message = receiver.FirstName + " was added to chat"
+                Object = chatGroupId + "`" + newChatGroupName + "`" + userId,
+                Message = receiver.GroupOrUsername + " was added to chat"
             });
         }
 
@@ -182,18 +210,30 @@ namespace JG_Prospect.Chat.Hubs
             HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
             if (auth_cookie != null)
                 UserId = Convert.ToInt32(auth_cookie.Value);
+
             ChatBLL.Instance.AddChatUser(UserId, Context.ConnectionId);
 
             ChatUser user = ChatBLL.Instance.GetChatUser(UserId).Object;
 
+            if (user == null)
+                return base.OnConnected();
+
             // Update ActiveUsers in SingletonUserChatGroups
             SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(UserId).Results;
+            if (ChatProcessor.Instance == null)
+            {
+                // Do nothing
+                // It was called to instantiate the ChatProcessor 
+            }
 
-            Clients.All.onConnectedCallback(new ActionOutput<ActiveUser>
+            ChatMessageActiveUser obj = new ChatMessageActiveUser();
+            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
+
+            Clients.All.onConnectedCallback(new ActionOutput<ChatMessageActiveUser>
             {
                 Status = ActionStatus.Successfull,
-                Message = user.FirstName + " " + user.LastName + " is connected...",
-                Results = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList()
+                Message = user.GroupOrUsername + " is connected...",
+                Object = obj
             });
             return base.OnConnected();
         }
@@ -209,16 +249,24 @@ namespace JG_Prospect.Chat.Hubs
             string clientId = Context.ConnectionId;
             ChatUser user = ChatBLL.Instance.GetChatUser(clientId).Object;
             ChatBLL.Instance.DeleteChatUser(clientId);
+            if (user == null)
+                return base.OnDisconnected(stopCalled);
+
+            SingletonGlobal.Instance.ConnectedClients.Remove(Context.ConnectionId);
 
             // User is offline
-            SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(user.UserId).Results;
+            SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(user.UserId.Value).Results;
 
             string[] Exceptional = new string[1];
             Exceptional[0] = clientId;
-            Clients.AllExcept(Exceptional).onDisconnectedCallback(new ActionOutput<ActiveUser>
+
+            ChatMessageActiveUser obj = new ChatMessageActiveUser();
+            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
+
+            Clients.AllExcept(Exceptional).onDisconnectedCallback(new ActionOutput<ChatMessageActiveUser>
             {
                 Status = ActionStatus.Successfull,
-                Results = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList()
+                Object = obj
             });
 
             return base.OnDisconnected(stopCalled);
@@ -252,10 +300,10 @@ namespace JG_Prospect.Chat.Hubs
             {
                 users = op.Results.Select(m => new ChatMentionUser
                 {
-                    id = m.UserId,
-                    name = m.FirstName + "(" + m.Email + ")",
+                    id = m.UserId.Value,
+                    name = m.GroupOrUsername,
                     type = "contact",
-                    avatar = "UploadeProfile/" + (string.IsNullOrEmpty(m.ProfilePic) ? "default.jpg"
+                    avatar = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(m.ProfilePic) ? "default.jpg"
                                 : m.ProfilePic.Replace("~/UploadeProfile/", ""))
                 }).ToList();
                 // Remove logged in user
@@ -275,15 +323,28 @@ namespace JG_Prospect.Chat.Hubs
             HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
             if (auth_cookie != null)
                 UserId = Convert.ToInt32(auth_cookie.Value);
-            SingletonUserChatGroups.Instance.ActiveUsers
+            if (SingletonUserChatGroups.Instance.ActiveUsers
                                             .Where(m => m.UserId == UserId)
-                                            .FirstOrDefault()
-                                            .Status = status;
+                                            .Any())
+            {
+                SingletonUserChatGroups.Instance.ActiveUsers
+                                                .Where(m => m.UserId == UserId)
+                                                .FirstOrDefault()
+                                                .Status = status;
+                if (status == (int)ChatUserStatus.Active)
+                    SingletonUserChatGroups.Instance.ActiveUsers
+                                                    .Where(m => m.UserId == UserId)
+                                                    .FirstOrDefault()
+                                                    .LastActivityAt = DateTime.UtcNow;
+            }
 
-            Clients.All.SetChatUserStatusToIdleCallback(new ActionOutput<ActiveUser>
+            ChatMessageActiveUser obj = new ChatMessageActiveUser();
+            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
+
+            Clients.All.SetChatUserStatusToIdleCallback(new ActionOutput<ChatMessageActiveUser>
             {
                 Status = ActionStatus.Successfull,
-                Results = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList()
+                Object = obj
             });
         }
 
@@ -295,13 +356,17 @@ namespace JG_Prospect.Chat.Hubs
             if (auth_cookie != null)
                 UserId = Convert.ToInt32(auth_cookie.Value);
             ChatBLL.Instance.SetChatMessageRead(ChatGroupId, UserId);
-            List<int> userIds = SingletonUserChatGroups.Instance.ChatGroups
-                                                                .Where(m => m.ChatGroupId == ChatGroupId)
-                                                                .FirstOrDefault()
-                                                                .ChatUsers
-                                                                .Where(m => m.UserId != UserId)
-                                                                .Select(m => m.UserId)
-                                                                .ToList();
+            List<int> userIds = new List<int>();
+            if (SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == ChatGroupId).Any())
+            {
+                userIds = SingletonUserChatGroups.Instance.ChatGroups
+                                                            .Where(m => m.ChatGroupId == ChatGroupId)
+                                                            .FirstOrDefault()
+                                                            .ChatUsers
+                                                            .Where(m => m.UserId.Value != UserId)
+                                                            .Select(m => m.UserId.Value)
+                                                            .ToList();
+            }
             Clients.Group(ChatGroupId).SetChatMessageReadCallback(new ActionOutput<string>
             {
                 Status = ActionStatus.Successfull,

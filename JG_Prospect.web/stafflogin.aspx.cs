@@ -785,6 +785,7 @@ namespace JG_Prospect
                                 UpdateUsersLastLoginTimeStamp(JGSession.LoginUserID,DateTime.UtcNow);
 
                                 JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
+                                App_Code.CommonFunction.SetUserIdCookie(ds.Tables[0].Rows[0]["Id"].ToString());
                                 if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
                                 {
                                     JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
@@ -1096,6 +1097,7 @@ namespace JG_Prospect
 
                             UpdateUsersLastLoginTimeStamp(JGSession.LoginUserID, DateTime.UtcNow);
 
+                            App_Code.CommonFunction.SetUserIdCookie(ds.Tables[0].Rows[0]["Id"].ToString());
                             if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
                             {
                                 JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());

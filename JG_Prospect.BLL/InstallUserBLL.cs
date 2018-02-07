@@ -29,6 +29,8 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetUsers(keyword, exceptUserIds);
         }
 
+        
+
         public void AddUserNotes(string Notes, int UserID, int AddedByID)
         {
             InstallUserDAL.Instance.AddUserNotes(Notes, UserID, AddedByID);
@@ -685,7 +687,7 @@ namespace JG_Prospect.BLL
             var sender = getuserdetails(LoginUserID).Tables[0].Rows[0];
             string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? "default.jpg"
                                 : sender["Picture"].ToString().Replace("~/UploadeProfile/", "");
-            pic = baseUrl + "UploadeProfile/" + pic;
+            pic = baseUrl + "Employee/ProfilePictures/" + pic;
             html.Body = html.Body.Replace("{ImageUrl}", pic);
             html.Body = html.Body.Replace("{Name}", sender["FristName"].ToString() + " " + sender["LastName"].ToString());
             html.Body = html.Body.Replace("{Designation}", sender["Designation"].ToString());
@@ -702,7 +704,7 @@ namespace JG_Prospect.BLL
             {
                 // send email to recruiter
                 toEmail = "hr@jmgroveconstruction.com";
-                messageUrl = baseUrl + "Sr_App/edituser.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID+"&auth="+ loginCode;
+                messageUrl = baseUrl + "Sr_App/edituser.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID + "&auth=" + loginCode;
             }
             else if (LastUserTouchPoint != null && LoginUserID == UserID) // send email to receiver
             {

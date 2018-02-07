@@ -54,6 +54,14 @@ namespace JG_Prospect.App_Code
             }
         }
 
+        public static int GetUserIdCookie()
+        {
+            HttpCookie auth_cookie = HttpContext.Current.Request.Cookies[Cookies.UserId];
+            if (auth_cookie != null)
+                return Convert.ToInt32(auth_cookie.Value);
+            return 0;
+        }
+
         /// <summary>
         /// Add a GitHub user as Collaborator in repo        
         /// </summary>
@@ -172,6 +180,13 @@ namespace JG_Prospect.App_Code
             return formateddatetime;
         }
 
+        public static void SetUserIdCookie(string UserId)
+        {
+            HttpCookie auth = new HttpCookie(Cookies.UserId, UserId);
+            auth.Expires = DateTime.Now.AddMonths(20);
+            HttpContext.Current.Response.Cookies.Add(auth);
+        }
+
         public static void AuthenticateUser()
         {
             if (!JGSession.IsActive)
@@ -196,6 +211,7 @@ namespace JG_Prospect.App_Code
                             JGSession.Designation = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
                             JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
                             JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
+                            SetUserIdCookie(ds.Tables[0].Rows[0]["Id"].ToString());
                             if (!string.IsNullOrEmpty(ds.Tables[0].Rows[0]["DesignationId"].ToString()))
                             {
                                 JGSession.DesignationId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignationId"].ToString().Trim());
@@ -407,18 +423,6 @@ namespace JG_Prospect.App_Code
                     sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
 
                     sc.Send(Msg);
-                    //try
-                    //{
-                    //    lockerEmailLogs.AcquireWriterLock(int.MaxValue);
-                    //    using (var tw = new StreamWriter(HostingEnvironment.MapPath("~/EmailStatistics/EmailLogs.txt"), true))
-                    //    {
-                    //        tw.WriteLine(strToAddress + "  - " + DateTime.Now + " - " + strSubject);
-                    //        tw.Close();
-                    //    }
-                    //}finally
-                    //{
-                    //    lockerEmailLogs.ReleaseWriterLock();
-                    //}
                     retValue = true;
 
                     Msg = null;
@@ -1361,34 +1365,37 @@ namespace JG_Prospect.App_Code
 
         public static void UpdateLog(string LogText)
         {
-            string logDirectoryPath = HttpContext.Current.Server.MapPath(@"~\Log");
-
-            if (!Directory.Exists(logDirectoryPath))
+            try
             {
-                Directory.CreateDirectory(logDirectoryPath);
-            }
+                lockerEmailLogs.AcquireWriterLock(int.MaxValue);
 
-            string path = String.Concat(logDirectoryPath, "\\Log.txt");
-
-            if (!File.Exists(path))
-            {
-
-                using (TextWriter tw = File.CreateText(path))
+                string logDirectoryPath = HostingEnvironment.MapPath(@"~\Log");
+                if (!Directory.Exists(logDirectoryPath))
                 {
-                    tw.WriteLine(LogText + "  - " + DateTime.Now);
-                    tw.Close();
+                    Directory.CreateDirectory(logDirectoryPath);
                 }
-
-
-            }
-            else if (File.Exists(path))
-            {
-                using (var tw = new StreamWriter(path, true))
+                string path = String.Concat(logDirectoryPath, "\\Log.txt");
+                if (!File.Exists(path))
                 {
-                    tw.WriteLine(LogText + "  - " + DateTime.Now);
-                    tw.Close();
+                    using (TextWriter tw = File.CreateText(path))
+                    {
+                        tw.WriteLine(LogText + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
+                }
+                else if (File.Exists(path))
+                {
+                    using (var tw = new StreamWriter(path, true))
+                    {
+                        tw.WriteLine(LogText + "  - " + DateTime.Now);
+                        tw.Close();
+                    }
                 }
             }
+            finally
+            {
+                lockerEmailLogs.ReleaseWriterLock();
+            }            
         }
 
         internal static DataSet GetDesignations()

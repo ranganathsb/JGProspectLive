@@ -272,21 +272,26 @@ namespace JG_Prospect.Common.modal
             //LastActivityAt = DateTime.UtcNow;
             Status = 1;
         }
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         public string UserInstallId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
+      //  public string FirstName { get; set; }
+       // public string LastName { get; set; }
+       // public string Email { get; set; }
         public DateTime? OnlineAt { get; set; }
         public string OnlineAtFormatted { get; set; }
         public string ProfilePic { get; set; }
-        //public DateTime LastActivityAt { get; set; }
+        public DateTime LastActivityAt { get; set; }
 
         public string LastMessage { get; set; }
         public DateTime? LastMessageAt { get; set; }
         public string LastMessageAtFormatted { get; set; }
         public bool IsRead { get; set; }
         public int Status { get; set; }
+
+        public string ChatGroupId { get; set; }
+        public string ReceiverIds { get; set; }
+
+        public string GroupOrUsername { get; set; }
     }
 
     public class ChatUser : ActiveUser
@@ -311,6 +316,21 @@ namespace JG_Prospect.Common.modal
 
         public int ChatSourceId { get; set; }
 
+        public string ChatGroupId { get; set; }
+
+    }
+
+    public class ChatMessageActiveUser
+    {
+        public ChatMessageActiveUser()
+        {
+            ActiveUsers = new List<modal.ActiveUser>();
+            ChatMessages = new List<modal.ChatMessage>();
+        }
+        public string ChatGroupId { get; set; }
+        public string ChatGroupName { get; set; }
+        public List<ActiveUser> ActiveUsers { get; set; }
+        public List<ChatMessage> ChatMessages { get; set; }
     }
 
     public class ChatGroup
@@ -326,15 +346,6 @@ namespace JG_Prospect.Common.modal
         public List<ChatMessage> ChatMessages { get; set; }
         public int SenderId { get; set; }
     }
-
-    //public static class UserChatGroups
-    //{
-    //    static UserChatGroups()
-    //    {
-    //        ChatGroups = new List<ChatGroup>();
-    //    }
-    //    public static List<ChatGroup> ChatGroups { get; set; }
-    //}
 
     public sealed class SingletonUserChatGroups
     {
@@ -372,11 +383,13 @@ namespace JG_Prospect.Common.modal
         SingletonGlobal()
         {
             RandomGUID = JGConstant.RandomGUID;
+            ConnectedClients = new List<string>();
         }
 
         private static readonly object padlock = new object();
         private static SingletonGlobal instance = null;
         public string RandomGUID { get; set; }
+        public List<string> ConnectedClients { get; set; }
         public static SingletonGlobal Instance
         {
             get

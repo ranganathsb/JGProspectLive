@@ -658,6 +658,27 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetUsersByIds(List<int> userIds = null)
+        {
+            try
+            {
+                List<LoginUser> users = new List<LoginUser>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetUsersByIds");
+                    database.AddInParameter(command, "@UserIds", DbType.String, string.Join(",", userIds));
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public DataSet GetTouchPointLogDataByGUID(string strGUID)
         {
             try
