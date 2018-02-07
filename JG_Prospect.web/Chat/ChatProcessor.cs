@@ -62,11 +62,14 @@ namespace JG_Prospect.Chat
                                                    .ToList()
                                                    .ForEach(m => m.Status = (int)ChatUserStatus.Idle);
 
-            _chatHub.Clients.All.SetChatUserStatusToIdleCallback(new ActionOutput<ActiveUser>
+            ChatMessageActiveUser obj = new ChatMessageActiveUser();
+            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
+
+            _chatHub.Clients.All.SetChatUserStatusToIdleCallback(new ActionOutput<ChatMessageActiveUser>
             {
                 Message= "ChatUserStatusToIdleTimer: "+DateTime.UtcNow.ToString(),
                 Status = ActionStatus.Successfull,
-                Results = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList()
+                Object = obj
             });
         }
 
