@@ -44,6 +44,7 @@ namespace JG_Prospect
     {
         #region '--Members--'
         public string notesUserEmail = "";
+        public int loggedInUserId = 0;
         #endregion
 
         #region '--Properties--'
@@ -151,7 +152,7 @@ namespace JG_Prospect
         protected void Page_Load(object sender, EventArgs e)
         {
             CommonFunction.AuthenticateUser();
-
+            loggedInUserId = JGSession.UserId;
             int x = 0;
 
             if (Convert.ToString(Session["usertype"]).Contains("Admin"))
@@ -2005,7 +2006,7 @@ namespace JG_Prospect
 
                         if (dtInvalid != null)
                         {
-                            ltlTotalInvalidUser.Text = dtInvalid.Rows.Count.ToString(); 
+                            ltlTotalInvalidUser.Text = dtInvalid.Rows.Count.ToString();
                         }
                         else
                         {
@@ -2015,7 +2016,7 @@ namespace JG_Prospect
                         rptDuplicateRecords.DataBind();
                         if (dsDuplicateCheckResult != null && dsDuplicateCheckResult.Tables.Count > 0)
                         {
-                            ltlTotalDuplicateUsers.Text = dsDuplicateCheckResult.Tables[0].Rows.Count.ToString(); 
+                            ltlTotalDuplicateUsers.Text = dsDuplicateCheckResult.Tables[0].Rows.Count.ToString();
                         }
                         else
                         {
@@ -2027,7 +2028,7 @@ namespace JG_Prospect
 
                         if (dtUniqueRecords != null)
                         {
-                            ltlTotalUserstobeAdded.Text = dtUniqueRecords.Rows.Count.ToString(); 
+                            ltlTotalUserstobeAdded.Text = dtUniqueRecords.Rows.Count.ToString();
                         }
                         else
                         {
@@ -2139,7 +2140,7 @@ namespace JG_Prospect
 
                 if (dtUniqueRecord != null)
                 {
-                    ltlTotalSuccessfulUsersInserted.Text = dtUniqueRecord.Rows.Count.ToString(); 
+                    ltlTotalSuccessfulUsersInserted.Text = dtUniqueRecord.Rows.Count.ToString();
                 }
                 else
                 {
@@ -4869,22 +4870,22 @@ namespace JG_Prospect
             if (Invalidrows.Any())
             {
                 dtInvalidRecords = Invalidrows.CopyToDataTable();
-           
 
-            //Remove invalid records from old table
-            IEnumerable<DataRow> rows = dtAllRecords.Rows.Cast<DataRow>().Where(r => String.IsNullOrEmpty(r.Field<string>("Designation")) == true ||
-            String.IsNullOrEmpty(r.Field<string>("Status")) == true ||
-            String.IsNullOrEmpty(r.Field<string>("Source")) == true ||
-            String.IsNullOrEmpty(r.Field<string>("FirstName")) == true ||
-            String.IsNullOrEmpty(r.Field<string>("LastName")) == true ||
-            String.IsNullOrEmpty(r.Field<string>("Email")) == true ||
-            String.IsNullOrEmpty(r.Field<string>("Phone1")) == true ||
-            String.IsNullOrEmpty(r.Field<string>("Phone1Type")) == true ||
-            String.IsNullOrEmpty(r.Field<string>("Zip")) == true
-            );
 
-            rows.ToList().ForEach(r => r.Delete());
-            dtAllRecords.AcceptChanges();
+                //Remove invalid records from old table
+                IEnumerable<DataRow> rows = dtAllRecords.Rows.Cast<DataRow>().Where(r => String.IsNullOrEmpty(r.Field<string>("Designation")) == true ||
+                String.IsNullOrEmpty(r.Field<string>("Status")) == true ||
+                String.IsNullOrEmpty(r.Field<string>("Source")) == true ||
+                String.IsNullOrEmpty(r.Field<string>("FirstName")) == true ||
+                String.IsNullOrEmpty(r.Field<string>("LastName")) == true ||
+                String.IsNullOrEmpty(r.Field<string>("Email")) == true ||
+                String.IsNullOrEmpty(r.Field<string>("Phone1")) == true ||
+                String.IsNullOrEmpty(r.Field<string>("Phone1Type")) == true ||
+                String.IsNullOrEmpty(r.Field<string>("Zip")) == true
+                );
+
+                rows.ToList().ForEach(r => r.Delete());
+                dtAllRecords.AcceptChanges();
 
             }
 
@@ -4988,7 +4989,7 @@ namespace JG_Prospect
                                                                         )
                                             );
 
-                    
+
                     strBody = strBody.Replace("#TaskTitle#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], strTaskId));
 
                     strBody = strHeader + strBody + strFooter;
@@ -5181,7 +5182,32 @@ namespace JG_Prospect
         [WebMethod]
         public static string GetUserTouchPointLogs(int pageNumber, int pageSize, int userId)
         {
-            PagingResult<Notes> notes = InstallUserBLL.Instance.GetUserTouchPointLogs(pageNumber, pageSize, userId);
+            List<ChatMessage> chatMessages = ChatBLL.Instance.GetChatMessages(JGSession.UserId, userId).Results;
+            PagingResult<Notes> notes = new PagingResult<Notes>();
+            notes.Status = ActionStatus.Successfull;
+            notes.TotalResults = chatMessages.Count();
+            notes.Data = chatMessages.Select(m => new Notes
+            {
+                UserTouchPointLogID = userId,
+                UserID = userId,
+                UpdatedByUserID = m.UserId,
+                UpdatedUserInstallID = m.UserInstallId,
+                ChangeDateTime = m.MessageAt,
+                LogDescription = m.Message,
+                UpdatedByFirstName = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0],
+                UpdatedByLastName = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() > 1 ? m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1] : "",
+                UpdatedByEmail = "",
+                FristName = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0],
+                LastName = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() > 1 ? m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1] : "",
+                Email = "",
+                Phone = "",
+                ChangeDateTimeFormatted = m.MessageAtFormatted,
+                SourceUser = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0],
+                SourceUserInstallId = m.UserInstallId,
+                SourceUsername = m.UserFullname,
+                TouchPointSource = m.ChatSourceId
+            }).OrderByDescending(x => x.ChangeDateTime).ToList();
+            //PagingResult<Notes> notes = InstallUserBLL.Instance.GetUserTouchPointLogs(pageNumber, pageSize, userId);
             return new JavaScriptSerializer().Serialize(notes);
         }
 
