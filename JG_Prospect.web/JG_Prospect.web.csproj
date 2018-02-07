@@ -1469,6 +1469,7 @@
     <Content Include="css\msdropdown\dd_arrow.gif" />
     <Content Include="css\msdropdown\title-bg.gif" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="css\popup.css" />
     <Content Include="css\TimeCircles.css" />
     <Content Include="Customer_Panel.aspx" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2.sql" />
@@ -1585,6 +1586,7 @@
     <Content Include="Database Scripts\Kapil\Executed_3.sql" />
     <Content Include="Database Scripts\Kapil\Executed_4.sql" />
     <Content Include="Database Scripts\Kapil\Latest.sql" />
+    <Content Include="Database Scripts\Kapil\Executed_5.sql" />
     <Content Include="Database Scripts\Kapil\Executed_2.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\Database Script.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\03-04-2017.sql" />
@@ -1957,12 +1959,14 @@
     <Content Include="img\ContractHeader.jpg" />
     <Content Include="img\controls.png" />
     <Content Include="img\dialer.PNG" />
+    <Content Include="img\delete.jpg" />
     <Content Include="img\Email art header.png" />
     <Content Include="img\Email footer.png" />
     <Content Include="img\excel-icon.png" />
     <Content Include="img\facebook.jpg" />
     <Content Include="img\fb_login.png" />
     <Content Include="img\File.png" />
+    <Content Include="img\flags24.png" />
     <Content Include="img\folder.png" />
     <Content Include="img\gplus.png" />
     <Content Include="img\grey-tick.png" />
@@ -2076,6 +2080,7 @@
     <Content Include="js\angular\scripts\edituser-angular.js" />
     <Content Include="js\angular\scripts\TaskGenerator.js" />
     <Content Include="js\angular\scripts\TaskGeneratorHelper.js" />
+    <Content Include="js\angular\scripts\TaskPopupHelper.js" />
     <Content Include="js\angular\scripts\TaskSequence-UiGrid.js" />
     <Content Include="js\angular\templates\sequence-header-template.html" />
     <Content Include="js\angular\templates\pager-template.html" />
@@ -2258,7 +2263,9 @@
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
     <Content Include="Scripts\jquery-2.2.4.min.js" />
+    <Content Include="Scripts\jquery-ui.js" />
     <Content Include="Scripts\jquery.magnific-popup.min.js" />
+    <Content Include="Scripts\jquery.maskedinput.min.js" />
     <Content Include="Scripts\jquery.MultiFile.js" />
     <Content Include="Scripts\jquery.signalR-2.2.2.js" />
     <Content Include="Scripts\jquery.signalR-2.2.2.min.js" />
@@ -3693,6 +3700,7 @@
     <Folder Include="Database Scripts\Dipavali\" />
     <Folder Include="Database Scripts\Jaylem\" />
     <Folder Include="Database Scripts\Shekhar\" />
+    <Folder Include="Employee\ProfilePictures\" />
     <Folder Include="Employee\Resume\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
     <Folder Include="fileman\aspnet_client\system_web\4_0_30319\" />

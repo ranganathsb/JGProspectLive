@@ -370,6 +370,10 @@
         background-color: white;
         height: 34px;
     }
+    .ChildEdit{
+        float: left;
+        width: 92%;
+    }
 </style>
 
 <fieldset class="tasklistfieldset">
@@ -389,7 +393,8 @@
         <asp:HiddenField ID="hdndesignations" runat="server" Value="" />
         <asp:HiddenField ID="hdnLastSubTaskSequence" runat="server" Value="" />
         <asp:HiddenField ID="hdnTaskListId" runat="server" Value="{{NextInstallId}}" />
-        <button type="button" id="lbtnAddNewSubTask1" onclick="javascript:shownewsubtask();" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">Add New Task</button>
+        <input type="hidden" id="hdnNextInstallId"/>
+        <button type="button" id="lbtnAddNewSubTask1" onclick="javascript:AddNewTaskPopup();" style="color: Blue; text-decoration: underline; cursor: pointer; background: none;">Add New Task</button>
         <br />
         <asp:ValidationSummary ID="vsSubTask" runat="server" ValidationGroup="vgSubTask" ShowSummary="False" ShowMessageBox="True" />
         <div id="divNEWSubTask" runat="server" class="tasklistfieldset" style="display: none;">
@@ -553,7 +558,7 @@
 
                     </select>
                     </div>
-                    <div data-ng-controller="TaskGeneratorController">
+                    <div>
                         <div>
                             <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table edit-subtask">
                             <thead>
@@ -717,32 +722,34 @@
                                                 
                                                     <div class="right">
                                                         <a href="/sr_app/CreateSalesUser.aspx?id={{SubTask.TaskId}}" style="color: Blue;">{{SubTask.CreatedBy}}# {{SubTask.TaskCreatorFirstName}} {{SubTask.TaskCreatorLastName}}</a><br>
-                                                        <span>{{ SubTask.CreatedOn | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ SubTask.CreatedOn | date:'shortTime' }}</span>&nbsp;<span>(EST)</span>
+                                                        <span>{{ SubTask.CreatedOn | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ SubTask.CreatedOn | date:'shortTime' }}</span>&nbsp;<span>(EST)</span><br />
+                                                        <span>Updated On: {{ SubTask.UpdatedOn | date:'M/d/yyyy' }}</span>&nbsp;<span style="color: red">{{ SubTask.UpdatedOn | date:'shortTime' }}</span>&nbsp;<span>(EST)</span>
                                                     </div>
                                                     <strong>Title: <span data-taskid="{{SubTask.TaskId}}" class="TitleEdit">{{SubTask.Title}}</span></strong><br>
-                                                    <strong>URL: <span data-taskid="{{SubTask.TaskId}}" style="color: blue; cursor: pointer;" class="UrlEdit">{{SubTask.Url}}</span></strong><br>
+                                                    <strong ng-repeat="url in (SubTask.Url | semiColSplit)" repeat-end="onURLEnd()">URL: <span data-taskid="{{SubTask.TaskId}}" style="color: blue; cursor: pointer;" class="UrlEdit">{{ url }}</span><br /></strong>
                                                     <strong>Description: </strong>
                                                     <br>
                                                     <span data-taskid="{{SubTask.TaskId}}" class="DescEdit">
                                                         <div ng-bind-html="SubTask.Description | trustAsHtml"></div>
                                                     </span>                                                
                                                 </div>                                                                                        
-                                                <%--<button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>--%>
-                                            
+                                                <%--<button type="button" id="btnsubtasksave" class="btnsubtask" style="display: none;">Save</button>--%>                                            
                                             </div>
                                             <div class="nestedChildren">
-                                                    <div ng-repeat="Child in MultiLevelChildren | filter: {ParentTaskId: SubTask.TaskId} : true" 
-                                                        class="ChildRow{{SubTask.TaskId}}" data-level="{{Child.IndentLevel}}" data-label="{{Child.Label}}"
-                                                        style="clear:both; padding:5px;">
-                                                        <div ng-class="{level2: Child.IndentLevel==2, level3: Child.IndentLevel==3, parentdiv: Child.IndentLevel==1}">
-                                                            <div style="float:left" id="selectboxes{{SubTask.TaskId}}">
-                                                                <input ng-class="{hide: Child.IndentLevel!= 1}" type="checkbox" />
-                                                                <a href="#" style="color:blue" class="context-menu-child" data-childid="{{Child.Id}}" data-highlighter="{{SubTask.TaskId}}">{{Child.Label}}.</a>
-                                                            </div>
-                                                            <div ng-bind-html="Child.Description | trustAsHtml" class="ChildEdit" id="ChildEdit{{Child.Id}}" data-parentid="{{SubTask.TaskId}}" data-taskid="{{Child.Id}}"></div>
+                                                <div ng-repeat="Child in MultiLevelChildren | filter: {ParentTaskId: SubTask.TaskId} : true"
+                                                    class="ChildRow{{SubTask.TaskId}}" data-level="{{Child.IndentLevel}}" data-label="{{Child.Label}}"
+                                                    style="clear: both; padding: 5px;">
+                                                    <div ng-class="{level2: Child.IndentLevel==2, level3: Child.IndentLevel==3, parentdiv: Child.IndentLevel==1}"
+                                                        style="float:left;width: 95%;">
+                                                        <div style="float: left" id="selectboxes{{SubTask.TaskId}}">
+                                                            <input ng-class="{hide: Child.IndentLevel!= 1}" type="checkbox" />
+                                                            <a href="#" style="color: blue" class="context-menu-child" data-childid="{{Child.Id}}" data-highlighter="{{SubTask.TaskId}}">{{Child.Label}}.</a>
                                                         </div>
+                                                        <div ng-bind-html="Child.Description | trustAsHtml" class="ChildEdit" id="ChildEdit{{Child.Id}}" data-parentid="{{SubTask.TaskId}}" data-taskid="{{Child.Id}}"></div>
                                                     </div>
+                                                    <div class="delete-icon"><img src="../img/delete.jpg" alt="Delete" data-childid="{{Child.Id}}" onclick="DeleteChild(this, false)"/></div>
                                                 </div>
+                                            </div>
                                             <%--SubTask Part Starts--%>
                                             <div id="Div1" runat="server" align="center" class="taskSubPoints" style="background-color:white;padding-top: 5px;">
                                                 <div class="listId">
@@ -771,10 +778,6 @@
                                         </div>
                                         
                                         <div class="clr" style="height: 1px;"></div>
-                                        <input type="submit" name="btnshowdivsub1" value="+" onclick="return false;" id="btnshowdivsub1" class="showsubtaskDIV" data-parent-taskid="{{SubTask.TaskId}}" 
-                                            style="text-decoration: underline; cursor: pointer; background: none;" data-val-commandname="{{SubTask.NestLevel}}#{{SubTask.InstallId}}#{{SubTask.TaskId}}#1" data-val-tasklvl="{{SubTask.NestLevel}}" 
-                                            data-installid="{{SubTask.InstallId}}" data-val-commandargument="{{SubTask.TaskId}}">
-                                        &nbsp;
                                                                     
                                         <a href="javascript:void(0);" data-id="hypViewInitialComments" data-taskid="{{SubTask.TaskId}}" class="hide" 
                                             data-parent-commentid="0" data-startindex="0" data-pagesize="2"
@@ -805,10 +808,6 @@
                                             </table>
                                         </div>
                                         <a href="javascript:void(0);" data-taskid="{{SubTask.TaskId}}" data-parent-commentid="0" onclick="javascript:SubTaskCommentScript.AddTaskComment(this);">Comment +</a>
-
-                                        
-                                    
-                                    
                                     </td>
                                     <td width="15%">
                                         <ul ng-class="{hide: SubTask.NestLevel == '3', stulli: SubTask.NestLevel != '3'}">
@@ -872,7 +871,7 @@
                                                 data-chosen="1" data-placeholder="Select Users" onchange="EditAssignedSubTaskUsers(this);" data-taskid="{{SubTask.TaskId}}" 
                                                 data-taskstatus="{{SubTask.Status}}" class="chosen-input">
                                                 <option
-                                                    ng-repeat="item in DesignationAssignUsers"
+                                                    ng-repeat="item in Users"
                                                     value="{{item.Id}}"
                                                     label="{{item.FristName}}"
                                                     class="{{item.CssClass}}"
@@ -949,7 +948,7 @@
                                                                     <h5>
                                                                         <span class="sub-task-user" id="ltlCreatedUser">{{File.FirstName}}</span></h5>
                                                                     <div>
-                                                                        <a class="sub-task-link" id="lbtnDelete" href="#">Delete</a>
+                                                                        <a class="sub-task-link" id="lbtnDelete" data-aid="{{File.Id}}" onclick="OnDeleteAttachment(this);" href="#">Delete</a>
                                                                     </div>
                                                                     <br />
                                                                     <a class="image-link" href="/TaskAttachments/{{File.attachment.split('@')[0]}}">
@@ -2357,54 +2356,7 @@
                 $('#descimgpopup1').css({ 'opacity': "1" });
                 return false;
             });
-        });      
-
-        //For Add Task Button
-        $(".showsubtaskDIV").each(function (index) {
-            // This section is available to admin only.
-            <% if (this.IsAdminMode)
-    {
-               %>
-            $(this).unbind('click').bind("click", function () {
-                var commandName = $(this).attr("data-val-commandName");
-                var CommandArgument = $(this).attr("data-val-CommandArgument");
-                var TaskLevel = $(this).attr("data-val-taskLVL");
-                var strInstallId = $(this).attr('data-installid');
-                var parentTaskId = $(this).attr('data-parent-taskid');
-
-                $("#<%=divAddSubTask.ClientID%>").hide();
-                $("#<%=pnlCalendar.ClientID%>").hide();
-
-                var objAddSubTask = null;
-                if (TaskLevel == "1") {
-                    objAddSubTask = $("#<%=divAddSubTask.ClientID%>");
-                    shownewsubtask();
-                    maintask = false;
-                }
-                else if (TaskLevel == "2") {
-                    objAddSubTask = $("#<%=pnlCalendar.ClientID%>");
-
-                        var $tr = $('<tr><td colspan="4"></td></tr>');
-                        $tr.find('td').append(objAddSubTask);
-
-                        var $appendAfter = $('tr[data-parent-taskid="' + parentTaskId + '"]:last');
-                        if ($appendAfter.length == 0) {
-                            $appendAfter = $('tr[data-taskid="' + parentTaskId + '"]:last');
-                        }
-                        $appendAfter.after($tr);
-                    }
-
-                if (objAddSubTask != null) {
-                    objAddSubTask.show();
-                    ScrollTo(objAddSubTask);
-                    SetTaskDetailsForNew(CommandArgument, commandName, TaskLevel, strInstallId);
-                }
-
-                return false;
-            });
-
-            <% } %>
-        });
+        });              
 
         // For Drodown Task Priority
         $(".clsTaskPriority").each(function (index) {
@@ -2673,6 +2625,11 @@
                     else {
                         HideAjaxLoader();
                     }
+
+                    if ($('#lblStatus').length > 0) {
+                        $('#lblStatus').html('Changes saved successfully.');
+                    }
+
                     //alert(autosave);
                     if (autosave) {
                         HideAutoSaveProgress(tid);
@@ -3195,6 +3152,7 @@
             var uid = '';
             var SearchTargetEmail = true;
             var urltoCopy = '';
+            var TIdToDel = '';
 
             function ApplySubtaskLinkContextMenu() {
 
@@ -3205,7 +3163,8 @@
             }
 
             function sharePopup(obj) {
-                urltoCopy = updateQueryStringParameterTP(window.location.href, "hstid", $(obj).attr('data-highlighter'));
+                TIdToDel = $(obj).attr('data-highlighter');
+                urltoCopy = updateQueryStringParameterTP(window.location.href, "hstid", TIdToDel);
                 var taskfid = $(obj).attr('data-taskfid');
                 var tasktitle = $(obj).attr('data-tasktitle');
                 var AssignedUserId = $(obj).attr('data-AssignedUserId');
@@ -3253,6 +3212,22 @@
                 else {
                     var note = 'Shared: ' + $('#txtTaskLink').val();
                     addNote(this, uid, note);
+                }
+                return false;
+            });
+            $('#btnDelete').on('click', function () {
+                if (confirm('It will delete this task and all its child tasks. Are you sure?')) {
+                    CallJGWebService('HardDeleteTask', { TaskId: parseInt(TIdToDel) },
+                        function (data) {
+                            if (data) {
+                                LoadSubTasks();
+                                alert('Task deleted successfully.');
+                                $('#myModal').css('display', 'none');
+                            }
+                        },
+                        function (err) {
+                            alert('Error deleting task.');
+                        });
                 }
                 return false;
             });
@@ -3415,7 +3390,33 @@
                 });
         }
         });
-}
+    }
+    function SaveChildAttchmentToDB(taskid) {
+        if (IsAdminMode == 'True') {
+            var data = {
+                TaskId: taskid, attachments: $('#<%=hdnGridAttachment.ClientID%>').val()
+            };
+            $.ajax({
+                type: "POST",
+                url: url + "SaveUserAttachements",
+                data: data,
+                success: function (result) {
+                    //alert("Success");
+                    $('#<%=hdnGridAttachment.ClientID%>').val('');
+                    $('#<%=hdDropZoneTaskId.ClientID%>').val('');
+                    if (RefreshData)
+                        LoadSubTasks();
+                    else {
+                        sequenceScopeTG.getFileData(CurrentFileName, CurrentEditor);
+                    }
+                },
+                error: function (errorThrown) {
+                    console.log(errorThrown);
+                    alert("Failed!!!");
+                }
+            });
+        }
+    }
     function SaveAttchmentToDB() {
         if (IsAdminMode == 'True') {
             var data = {
@@ -3431,6 +3432,9 @@
                     $('#<%=hdDropZoneTaskId.ClientID%>').val('');
                     if (RefreshData)
                         LoadSubTasks();
+                    else {
+                        sequenceScopeTG.getFileData(CurrentFileName, CurrentEditor);
+                    }
                 },
                 error: function (errorThrown) {
                     console.log(errorThrown);
@@ -3516,7 +3520,22 @@ function setSelectedUsersLink() {
                     }
                 });
         }
-
+        function addNote(sender, uid, note) {
+            if (note != '') {
+                $('.search-label').html('Please Wait...');
+                ajaxExt({
+                    url: '/Sr_App/edituser.aspx/AddNotes',
+                    type: 'POST',
+                    data: '{ id: ' + uid + ', note: "' + note + '", touchPointSource: ' + <%=(int)JG_Prospect.Common.TouchPointSource.TaskGenerator %> + ' }',
+                    showThrobber: true,
+                    throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                    success: function (data, msg) {
+                        $('#txtSearchUser').val('');
+                        $('.search-label').html('Note Sent.');
+                    }
+                });
+            }
+        }
 
 
 

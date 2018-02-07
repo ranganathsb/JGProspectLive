@@ -1965,6 +1965,9 @@ namespace JG_Prospect
                             case ".xlsx":
                                 Stream objStream = File.OpenRead(strFilePath);
                                 dtExcel = ReadExcelFile(new ExcelPackage(objStream));
+
+                                CommonFunction.RemoveFile(strFilePath);
+
                                 break;
 
                             case ".csv":
@@ -1977,68 +1980,94 @@ namespace JG_Prospect
 
                         //Get duplicate records from Mastertable and remove it.
                         DataTable dtUniqueRecords = GetUniqueRecordsFromUpload(dtExcel);
-                        dtUniqueRecords.PrimaryKey = new DataColumn[] { dtUniqueRecords.Columns["RowNum"] };
 
-                        // Get XML document for from datatable to be imported.
-                        XmlDocument xmlDoc = GetIntsallUsersXmlDoc(dtUniqueRecords);
-
-                        // Check document against database for duplicate records.
-                        DataSet dsDuplicateCheckResult = InstallUserBLL.Instance.BulkIntsallUserDuplicateCheck(xmlDoc.InnerXml);
-
-                        // If duplicate records are found than remove it from current collection.
-                        if (dsDuplicateCheckResult != null && dsDuplicateCheckResult.Tables.Count > 0 && dsDuplicateCheckResult.Tables[0].Rows.Count > 0)
-                        {
-                            foreach (DataRow duplicateRecordRow in dsDuplicateCheckResult.Tables[0].Rows)
-                            {
-                                Int64 _filterName_needed = Convert.ToInt64(duplicateRecordRow["RowNum"]);
-                                DataRow duplicateRow = dtUniqueRecords.Select("RowNum = " + _filterName_needed).FirstOrDefault();
-                                duplicateRow.Delete();
-
-                            }
-
-                            // Make changes into datatable
-                            dtUniqueRecords.AcceptChanges();
-                        }
-
-                        //Show duplicated and invalid records.
-                        rptIncorrectRecords.DataSource = dtInvalid;
-                        rptIncorrectRecords.DataBind();
-
-                        if (dtInvalid != null)
-                        {
-                            ltlTotalInvalidUser.Text = dtInvalid.Rows.Count.ToString();
-                        }
-                        else
-                        {
-                            ltlTotalInvalidUser.Text = "0";
-                        }
-                        rptDuplicateRecords.DataSource = dsDuplicateCheckResult;
-                        rptDuplicateRecords.DataBind();
-                        if (dsDuplicateCheckResult != null && dsDuplicateCheckResult.Tables.Count > 0)
-                        {
-                            ltlTotalDuplicateUsers.Text = dsDuplicateCheckResult.Tables[0].Rows.Count.ToString();
-                        }
-                        else
-                        {
-                            ltlTotalDuplicateUsers.Text = "0";
-                        }
-
-                        rptUserstoBeAdded.DataSource = dtUniqueRecords;
-                        rptUserstoBeAdded.DataBind();
-
+                        // If unique records are found than process.
                         if (dtUniqueRecords != null)
                         {
-                            ltlTotalUserstobeAdded.Text = dtUniqueRecords.Rows.Count.ToString();
+                            dtUniqueRecords.PrimaryKey = new DataColumn[] { dtUniqueRecords.Columns["RowNum"] };
+
+                            // Get XML document for from datatable to be imported.
+                            XmlDocument xmlDoc = GetIntsallUsersXmlDoc(dtUniqueRecords);
+
+                            // Check document against database for duplicate records.
+                            DataSet dsDuplicateCheckResult = InstallUserBLL.Instance.BulkIntsallUserDuplicateCheck(xmlDoc.InnerXml);
+
+                            // If duplicate records are found than remove it from current collection.
+                            if (dsDuplicateCheckResult != null && dsDuplicateCheckResult.Tables.Count > 0 && dsDuplicateCheckResult.Tables[0].Rows.Count > 0)
+                            {
+                                foreach (DataRow duplicateRecordRow in dsDuplicateCheckResult.Tables[0].Rows)
+                                {
+                                    Int64 _filterName_needed = Convert.ToInt64(duplicateRecordRow["RowNum"]);
+                                    DataRow duplicateRow = dtUniqueRecords.Select("RowNum = " + _filterName_needed).FirstOrDefault();
+                                    duplicateRow.Delete();
+
+                                }
+
+                                // Make changes into datatable
+                                dtUniqueRecords.AcceptChanges();
+                            }
+
+                            //Show duplicated and invalid records.
+                            rptIncorrectRecords.DataSource = dtInvalid;
+                            rptIncorrectRecords.DataBind();
+
+                            if (dtInvalid != null)
+                            {
+                                ltlTotalInvalidUser.Text = dtInvalid.Rows.Count.ToString();
+                            }
+                            else
+                            {
+                                ltlTotalInvalidUser.Text = "0";
+                            }
+
+                            rptDuplicateRecords.DataSource = dsDuplicateCheckResult;
+                            rptDuplicateRecords.DataBind();
+                            if (dsDuplicateCheckResult != null && dsDuplicateCheckResult.Tables.Count > 0)
+                            {
+                                ltlTotalDuplicateUsers.Text = dsDuplicateCheckResult.Tables[0].Rows.Count.ToString();
+                            }
+                            else
+                            {
+                                ltlTotalDuplicateUsers.Text = "0";
+                            }
+
+                            rptUserstoBeAdded.DataSource = dtUniqueRecords;
+                            rptUserstoBeAdded.DataBind();
+
+                            if (dtUniqueRecords != null)
+                            {
+                                ltlTotalUserstobeAdded.Text = dtUniqueRecords.Rows.Count.ToString();
+                            }
+                            else
+                            {
+                                ltlTotalUserstobeAdded.Text = "0";
+                            }
+
+                            upnlBulkUploadStatus.Update();
+
+                            // Now all data cleaning operations are done.  can start sending emails and insert into database.
+                            ShowStatisticsAndSendEmails(dtUniqueRecords);
+
+                         
                         }
                         else
                         {
-                            ltlTotalUserstobeAdded.Text = "0";
+                            //Show duplicated and invalid records.
+                            rptIncorrectRecords.DataSource = dtInvalid;
+                            rptIncorrectRecords.DataBind();
+
+                            if (dtInvalid != null)
+                            {
+                                ltlTotalInvalidUser.Text = dtInvalid.Rows.Count.ToString();
+                            }
+                            else
+                            {
+                                ltlTotalInvalidUser.Text = "0";
+                            }
+                            upnlBulkUploadStatus.Update();
                         }
 
-                        upnlBulkUploadStatus.Update();
-
-                        // Now all data cleaning operations are done.  can start sending emails and insert into database.
-                        ShowStatisticsAndSendEmails(dtUniqueRecords);
+                        
 
 
                         // Old code, Commented due to change in requirements.
@@ -2246,10 +2275,24 @@ namespace JG_Prospect
         private DataTable GetUniqueRecordsFromUpload(DataTable dtAllRecords)
         {
             //Remove Duplicate Email records from master table
-            DataTable dtUniqueEmailRecords = dtAllRecords.AsEnumerable().GroupBy(x => x.Field<string>("Email")).Select(g => g.First()).CopyToDataTable();
+            DataTable dtUniqueEmailRecords, UniquePhone = null;
 
-            //Remove Duplicate Phone records from master table
-            DataTable UniquePhone = dtUniqueEmailRecords.AsEnumerable().GroupBy(x => x.Field<string>("Phone1")).Select(g => g.First()).CopyToDataTable();
+            var UniqueEmailRecordRows = dtAllRecords.AsEnumerable().GroupBy(x => x.Field<string>("Email")).Select(g => g.First());
+
+
+            if (UniqueEmailRecordRows.Any())
+            {
+                dtUniqueEmailRecords = UniqueEmailRecordRows.CopyToDataTable();
+                //Remove Duplicate Phone records from master table
+
+                var UniquePhoneRows = dtUniqueEmailRecords.AsEnumerable().GroupBy(x => x.Field<string>("Phone1")).Select(g => g.First());
+
+                if (UniquePhoneRows.Any())
+                {
+                    UniquePhone = UniquePhoneRows.CopyToDataTable(); 
+                }
+
+            }
 
             return UniquePhone;
         }

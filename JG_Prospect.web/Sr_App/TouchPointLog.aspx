@@ -34,6 +34,14 @@
             </div>
         </div>
     </div>
+    
+    <%--<div class="chats">
+        <div class="chat-row"></div>
+    </div>
+    <div>
+        <input type="text" id="chattext" />
+        <input type="button" value="Send" id="sendChat" />
+    </div>--%>
 
     <%--<div class="chats">
         <div class="chat-row"></div>
