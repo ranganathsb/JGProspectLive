@@ -175,15 +175,17 @@ namespace JG_Prospect.DAL
                                 OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()),
                                 OnlineAtFormatted = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString()
                             };
-                            foreach (DataRow connectionRow in returndata.Tables[0].Rows)
-                            {
-                                // Same user can open chat in multiple browsers/tabs at the same time.
-                                // Adding all ConnectionIds with chat user
-                                if (Convert.ToInt32(connectionRow["UserId"].ToString()) == userId)
-                                {
-                                    user.ConnectionIds.Add(connectionRow["ConnectionId"].ToString());
-                                }
-                            }
+                            if (!string.IsNullOrEmpty(item["ConnectionId"].ToString()))
+                                user.ConnectionIds.AddRange(item["ConnectionId"].ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList());
+                            //foreach (DataRow connectionRow in returndata.Tables[0].Rows)
+                            //{
+                            //    // Same user can open chat in multiple browsers/tabs at the same time.
+                            //    // Adding all ConnectionIds with chat user
+                            //    if (Convert.ToInt32(connectionRow["UserId"].ToString()) == userId)
+                            //    {
+                            //        user.ConnectionIds.Add(connectionRow["ConnectionId"].ToString());
+                            //    }
+                            //}
                             users.Add(user);
                         }
                     }
@@ -497,13 +499,22 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public void SaveChatMessage(ChatMessage message, string ChatGroupId, string ReceiverIds)
+        public void SaveChatMessage(ChatMessage message, string ChatGroupId, string ReceiverIds, int SenderUserId)
         {
             try
             {
                 // sort ReceiverIds into Asc
-                List<int> ids = ReceiverIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(m => Convert.ToInt32(m)).ToList();
+                List<int> ids = ReceiverIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                           .Select(m => Convert.ToInt32(m))
+                                           .Distinct()
+                                           .ToList();
+
+                // Remove SenderId From ReceiverIds
+                ids.Remove(SenderUserId);
+
+                // Create CSV values from ids
                 ReceiverIds = string.Join(",", ids.OrderBy(m => m).ToList());
+
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     returndata = new DataSet();

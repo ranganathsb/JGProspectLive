@@ -74,9 +74,9 @@ namespace JG_Prospect.BLL
             ChatDAL.Instance.DeleteChatUser(ConnectionId);
         }
 
-        public void SaveChatMessage(ChatMessage message, string ChatGroupId, string ReceiverIds)
+        public void SaveChatMessage(ChatMessage message, string ChatGroupId, string ReceiverIds, int SenderUserId)
         {
-            ChatDAL.Instance.SaveChatMessage(message, ChatGroupId, ReceiverIds);
+            ChatDAL.Instance.SaveChatMessage(message, ChatGroupId, ReceiverIds, SenderUserId);
         }
 
 
