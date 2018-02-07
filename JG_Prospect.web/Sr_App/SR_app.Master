@@ -682,7 +682,7 @@
                 var chatText = $(sender).parents('div.chat-text').find('input.mention').val();
                 if (chatText != undefined && chatText != '' && chatText != null) {
                     chat.server.sendChatMessage(chatGrpId, chatText, '<%=(int)JG_Prospect.Common.ChatSource.UserChat %>', receiverIds);
-                    $(sender).val('');
+                    $(sender).parents('div.chat-text').find('input.mention').val('');
                 }
             } else {
                 var charCode = (typeof e.which === "number") ? e.which : e.keyCode;
