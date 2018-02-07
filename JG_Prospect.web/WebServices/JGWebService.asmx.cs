@@ -1031,7 +1031,7 @@ namespace JG_Prospect.WebServices
 
             if (ForDashboard)
             {
-                if (!CommonFunction.CheckAdminAndItLeadMode() && UserId=="")
+                if (!CommonFunction.CheckAdminAndItLeadMode() && UserId == "")
                 {
                     UserId = JGSession.LoginUserID;
                     dtResult = TaskGeneratorBLL.Instance.GetAllInProAssReqUserTaskWithSequence(page == null ? 0 : Convert.ToInt32(page), pageSize == null ? 1000 : Convert.ToInt32(pageSize), Session["UserStatus"].Equals(JGConstant.InstallUserStatus.InterviewDate) ? true : false, UserId, false, StartDate, EndDate, ForInProgress);
@@ -1108,7 +1108,7 @@ namespace JG_Prospect.WebServices
                             TaskStatus += value.TrimStart("T".ToCharArray()) + ",";
                         }
                     }
-                    
+
                 }
             }
             TaskStatus = TaskStatus.TrimEnd(",".ToCharArray());
@@ -2270,13 +2270,19 @@ namespace JG_Prospect.WebServices
         {
             if (chatGroupId.ToLower() == "undefind" || chatGroupId.ToLower() == "null")
                 chatGroupId = null;
-            
-            List<int> userIds = receiverIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(m => Convert.ToInt32(m)).ToList();
-            userIds.Remove(JGSession.UserId);
-            List<ChatUser> receivers = ChatBLL.Instance.GetChatUsers(userIds).Results;
+            // Add Loggedin user into receiverIds
+            //receiverIds += "," + JGSession.UserId;
+
+            List<int> userIds = receiverIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                           .Select(m => Convert.ToInt32(m))                                           
+                                           .ToList();
+            userIds.Add(JGSession.UserId);
+            userIds = userIds.Distinct().OrderBy(m => m).ToList();
+
+            List<ChatUser> receivers = ChatBLL.Instance.GetChatUsers(userIds.Where(x => x != JGSession.UserId).ToList()).Results;
 
             #region Chat Messages
-            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId, string.Join(",", userIds.OrderBy(m=>m).ToList())).Results;
+            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId, string.Join(",", userIds.OrderBy(m => m).ToList())).Results;
             #endregion
 
             string ChatGroupName = string.Empty;

@@ -27,13 +27,13 @@ namespace JG_Prospect.Chat.Hubs
                                     httpContext.Request.ApplicationPath.TrimEnd('/') + "/";
                 // Getting Logged In UserID from cookie. 
                 // FYI: Sessions are not allowed in SignalR, so have to user some other way to pass information
-                int UserId = 0;
+                int SenderUserId = 0;
                 HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
                 if (auth_cookie != null)
-                    UserId = Convert.ToInt32(auth_cookie.Value);
+                    SenderUserId = Convert.ToInt32(auth_cookie.Value);
                 //add logger
-                ChatBLL.Instance.ChatLogger(chatGroupId, message, chatSourceId, UserId, httpContext.Request.UserHostAddress);
-                DataRow sender = InstallUserBLL.Instance.getuserdetails(UserId).Tables[0].Rows[0];
+                ChatBLL.Instance.ChatLogger(chatGroupId, message, chatSourceId, SenderUserId, httpContext.Request.UserHostAddress);
+                DataRow sender = InstallUserBLL.Instance.getuserdetails(SenderUserId).Tables[0].Rows[0];
                 string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? "default.jpg"
                                     : sender["Picture"].ToString().Replace("~/UploadeProfile/", "");
                 pic = /*baseUrl +*/ "Employee/ProfilePictures/" + pic;
@@ -42,7 +42,7 @@ namespace JG_Prospect.Chat.Hubs
                 {
                     Message = message,
                     ChatSourceId = chatSourceId,
-                    UserId = UserId,
+                    UserId = SenderUserId,
                     UserProfilePic = pic,
                     UserFullname = sender["FristName"].ToString() + " " + sender["Lastname"].ToString(),
                     UserInstallId = sender["UserInstallID"].ToString(),
@@ -84,14 +84,14 @@ namespace JG_Prospect.Chat.Hubs
                 foreach (var item in chatGroup.ChatUsers.Where(m => !m.OnlineAt.HasValue))
                 {
                     // Send Chat Notification Email
-                    ChatBLL.Instance.SendOfflineChatEmail(UserId, item.UserId.Value, sender["UserInstallID"].ToString(),
+                    ChatBLL.Instance.SendOfflineChatEmail(SenderUserId, item.UserId.Value, sender["UserInstallID"].ToString(),
                                                             chatMessage.Message, chatSourceId, baseurl, chatGroupId);
                 }
 
                 // Saving chat into database
                 //string ReceiverId = string.Join(",", chatGroup.ChatUsers.Where(m => m.UserId != UserId).Select(m => m.UserId).ToList());
                 //string ReceiverId = receiverIds;
-                ChatBLL.Instance.SaveChatMessage(chatMessage, chatGroupId, receiverIds);
+                ChatBLL.Instance.SaveChatMessage(chatMessage, chatGroupId, receiverIds, SenderUserId);
 
                 Clients.Group(chatGroupId).updateClient(new ActionOutput<ChatMessage>
                 {
