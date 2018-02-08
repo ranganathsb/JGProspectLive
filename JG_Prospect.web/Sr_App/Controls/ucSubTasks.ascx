@@ -3402,8 +3402,8 @@
                 data: data,
                 success: function (result) {
                     //alert("Success");
-                    $('#<%=hdnGridAttachment.ClientID%>').val('');
-                    $('#<%=hdDropZoneTaskId.ClientID%>').val('');
+                    <%--$('#<%=hdnGridAttachment.ClientID%>').val('');
+                    $('#<%=hdDropZoneTaskId.ClientID%>').val('');--%>
                     if (RefreshData)
                         LoadSubTasks();
                     else {
@@ -3428,8 +3428,8 @@
                 data: data,
                 success: function (result) {
                     //alert("Success");
-                    $('#<%=hdnGridAttachment.ClientID%>').val('');
-                    $('#<%=hdDropZoneTaskId.ClientID%>').val('');
+                    <%--$('#<%=hdnGridAttachment.ClientID%>').val('');
+                    $('#<%=hdDropZoneTaskId.ClientID%>').val('');--%>
                     if (RefreshData)
                         LoadSubTasks();
                     else {
