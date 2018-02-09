@@ -149,11 +149,11 @@
         }
         var pageSize = 20;
         $(document).ready(function () {
-            Paging($(this));
-            var RcvrID = getUrlVars()["RcvrID"];
-            var chatGroupId = getUrlVars()["CGID"];
-            if (RcvrID != undefined && chatGroupId != undefined)
-                InitiateChat($(this), RcvrID, chatGroupId);
+            //Paging($(this));
+            //var RcvrID = getUrlVars()["RcvrID"];
+            //var chatGroupId = getUrlVars()["CGID"];
+            //if (RcvrID != undefined && chatGroupId != undefined)
+            //    InitiateChat($(this), RcvrID, chatGroupId);
         });
     </script>
 </asp:Content>
