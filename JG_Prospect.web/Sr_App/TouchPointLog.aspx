@@ -10,7 +10,7 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <div class="notes-section" tuid="<%=loggedInUserId %>">
+    <div class="notes-section" tuid="<%=loggedInUserId %>" style="display:none;">
         <div class="notes-popup">
             <div class="heading">
                 <div class="title">User Touch Point Logs</div>
@@ -149,11 +149,11 @@
         }
         var pageSize = 20;
         $(document).ready(function () {
-            Paging($(this));
-            var RcvrID = getUrlVars()["RcvrID"];
-            var chatGroupId = getUrlVars()["CGID"];
-            if (RcvrID != undefined && chatGroupId != undefined)
-                InitiateChat($(this), RcvrID, chatGroupId);
+            //Paging($(this));
+            //var RcvrID = getUrlVars()["RcvrID"];
+            //var chatGroupId = getUrlVars()["CGID"];
+            //if (RcvrID != undefined && chatGroupId != undefined)
+            //    InitiateChat($(this), RcvrID, chatGroupId);
         });
     </script>
 </asp:Content>

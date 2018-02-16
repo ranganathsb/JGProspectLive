@@ -615,7 +615,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public ActionOutput<LoginUser> GetUsers(string keyword, string exceptUserIds = null)
+        public ActionOutput<LoginUser> GetUsers(string keyword, string exceptUserIds = null, int? LoggedInUserId=null)
         {
             try
             {
@@ -626,6 +626,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("GetUsersByKeyword");
                     database.AddInParameter(command, "@Keyword", DbType.String, keyword);
                     database.AddInParameter(command, "@ExceptUserIds", DbType.String, exceptUserIds);
+                    database.AddInParameter(command, "@LoggedInUserId", DbType.Int32, LoggedInUserId);
 
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);

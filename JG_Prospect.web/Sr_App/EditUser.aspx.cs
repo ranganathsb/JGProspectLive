@@ -2048,7 +2048,7 @@ namespace JG_Prospect
                             // Now all data cleaning operations are done.  can start sending emails and insert into database.
                             ShowStatisticsAndSendEmails(dtUniqueRecords);
 
-                         
+
                         }
                         else
                         {
@@ -2067,7 +2067,7 @@ namespace JG_Prospect
                             upnlBulkUploadStatus.Update();
                         }
 
-                        
+
 
 
                         // Old code, Commented due to change in requirements.
@@ -2289,7 +2289,7 @@ namespace JG_Prospect
 
                 if (UniquePhoneRows.Any())
                 {
-                    UniquePhone = UniquePhoneRows.CopyToDataTable(); 
+                    UniquePhone = UniquePhoneRows.CopyToDataTable();
                 }
 
             }
@@ -5263,7 +5263,29 @@ namespace JG_Prospect
             }
             string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
             int userID = Convert.ToInt32(JGSession.LoginUserID);
-            InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, "Note : " + note, "", touchPointSource);
+            string ChatGroupId = string.Empty;
+            //InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, "Note : " + note, "", touchPointSource);
+            var chat = ChatBLL.Instance.GetChatMessages(JGSession.UserId, id);
+            if (chat != null && chat.Results!=null && chat.Results.Count() > 0)
+            {
+                ChatGroupId = chat.Results[0].ChatGroupId;
+            }
+            else
+            {
+                ChatGroupId = Guid.NewGuid().ToString();
+            }
+            ChatBLL.Instance.SaveChatMessage(new ChatMessage
+            {
+                Message = note,
+                FileId = null,
+                ChatSourceId = (int)ChatSource.UserChat,
+                UserId = userID,
+                UserProfilePic = "",
+                UserFullname = "",
+                UserInstallId = "",
+                MessageAt = DateTime.UtcNow.ToEST(),
+                MessageAtFormatted = DateTime.UtcNow.ToEST().ToString()
+            }, ChatGroupId, id.ToString(), JGSession.UserId);
             return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
         }
 
@@ -5272,6 +5294,18 @@ namespace JG_Prospect
         {
             ActionOutput<LoginUser> users = InstallUserBLL.Instance.GetUsers(keyword);
             return new JavaScriptSerializer().Serialize(users);
+        }
+
+        public static void UploadFile()
+        {
+            var httpPostedFile = HttpContext.Current.Request.Files["attachment"];
+            if (httpPostedFile != null)
+            {
+                var fileSavePath = Path.Combine(HttpContext.Current.Server.MapPath("~/UploadedFiles"), httpPostedFile.FileName);
+
+                // Save the uploaded file to "UploadedFiles" folder
+                httpPostedFile.SaveAs(fileSavePath);
+            }
         }
     }
 }

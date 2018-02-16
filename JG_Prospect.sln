@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobScheduler", "JobSchedule
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailSchedular", "EmailSchedular\EmailSchedular.csproj", "{B88C3223-1198-4356-8FA2-46F20A9F82CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebMail", "WebMail\WebMail.csproj", "{BEEDF15E-9D22-4541-BD0F-740BFA1CC760}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{B88C3223-1198-4356-8FA2-46F20A9F82CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B88C3223-1198-4356-8FA2-46F20A9F82CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B88C3223-1198-4356-8FA2-46F20A9F82CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEEDF15E-9D22-4541-BD0F-740BFA1CC760}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEEDF15E-9D22-4541-BD0F-740BFA1CC760}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEEDF15E-9D22-4541-BD0F-740BFA1CC760}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEEDF15E-9D22-4541-BD0F-740BFA1CC760}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

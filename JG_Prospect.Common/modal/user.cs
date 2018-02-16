@@ -292,8 +292,14 @@ namespace JG_Prospect.Common.modal
         public string ReceiverIds { get; set; }
 
         public string GroupOrUsername { get; set; }
+        public int? InstallUserStatusId { get; set; } // 
     }
 
+    public class ChatUnReadCount
+    {
+        public int UserId { get; set; }
+        public int UnReadCount { get; set; }
+    }
     public class ChatUser : ActiveUser
     {
         public ChatUser()
@@ -302,6 +308,15 @@ namespace JG_Prospect.Common.modal
         }
         public List<string> ConnectionIds { get; set; }
         public bool ChatClosed { get; set; }
+    }
+
+    public class ChatFile
+    {
+        public int Id { get; set; }
+        public string DisplayName { get; set; }
+        public string SavedName { get; set; }
+        public string Mime { get; set; }
+        public string DownloadBinary { get; set; }
     }
 
     public class ChatMessage
@@ -318,6 +333,8 @@ namespace JG_Prospect.Common.modal
 
         public string ChatGroupId { get; set; }
 
+        public int? FileId { get; set; }
+        public bool IsRead { get; set; }
     }
 
     public class ChatMessageActiveUser

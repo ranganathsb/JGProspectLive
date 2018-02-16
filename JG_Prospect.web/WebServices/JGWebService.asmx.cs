@@ -2375,6 +2375,19 @@ namespace JG_Prospect.WebServices
         }
 
         #region Chat Section
+        [WebMethod(EnableSession =true)]
+        public string InitiateBlankChat()
+        {
+            // Update ActiveUsers in SingletonUserChatGroups
+            SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(JGSession.UserId).Results;
+
+            return new JavaScriptSerializer().Serialize(new ActionOutput<ActiveUser>
+            {
+                Results = SingletonUserChatGroups.Instance.ActiveUsers,
+                Status = ActionStatus.Successfull
+            });
+        }
+
         [WebMethod(EnableSession = true)]
         public string InitiateChat(string receiverIds, string chatGroupId)
         {
@@ -2486,9 +2499,12 @@ namespace JG_Prospect.WebServices
             // Modify existing connectionIds into particular ChatGroup and save into static "UserChatGroups" object
             foreach (var user in chatGroup.ChatUsers.Where(m => onlineUserIds.Contains(m.UserId.Value)))
             {
-                user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
-                user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
-                user.OnlineAtFormatted = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt.Value).FirstOrDefault().ToEST().ToString();
+                if (newConnections.Where(m => m.UserId == user.UserId).Any())
+                {
+                    user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
+                    user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
+                    user.OnlineAtFormatted = user.OnlineAt.HasValue ? user.OnlineAt.Value.ToEST().ToString() : null;
+                }
             }
             #endregion
 
@@ -2519,7 +2535,7 @@ namespace JG_Prospect.WebServices
                                                                  .ToList());
             existingUsers += "," + JGSession.UserId;
             List<ChatMentionUser> users = new List<ChatMentionUser>();
-            ActionOutput<LoginUser> op = InstallUserBLL.Instance.GetUsers(keyword, existingUsers);
+            ActionOutput<LoginUser> op = InstallUserBLL.Instance.GetUsers(keyword, existingUsers, JGSession.UserId);
             if (op != null && op.Status == ActionStatus.Successfull)
             {
                 users = op.Results.Select(m => new ChatMentionUser
@@ -2549,93 +2565,11 @@ namespace JG_Prospect.WebServices
             });
         }
 
-        //[WebMethod(EnableSession = true)]
-        //public string InitiateOldChat(int userID, string ChatGroupId)
-        //{
-        //    #region Chat Messages
-        //    List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(ChatGroupId).Results;
-        //    #endregion
-
-        //    string ChatGroupName = string.Empty;
-        //    var sender = ChatBLL.Instance.GetChatUser(JGSession.UserId).Object;
-        //    var receiver = ChatBLL.Instance.GetChatUser(userID).Object;
-        //    if (receiver != null)
-        //    {
-        //        List<ChatUser> chatUsers = new List<ChatUser>();
-        //        #region Chat Users
-        //        chatUsers.Add(new ChatUser // Set Sender
-        //        {
-        //            ConnectionIds = sender.ConnectionIds,
-        //            Email = sender.Email,
-        //            FirstName = sender.FirstName,
-        //            LastName = sender.LastName,
-        //            ProfilePic = sender.ProfilePic,
-        //            OnlineAt = sender.OnlineAt,
-        //            UserId = sender.UserId,
-        //            OnlineAtFormatted = sender.OnlineAtFormatted,
-        //            ChatClosed = false
-        //        });
-        //        chatUsers.Add(new ChatUser // Set Receiver
-        //        {
-        //            ConnectionIds = receiver.ConnectionIds,
-        //            Email = receiver.Email,
-        //            FirstName = receiver.FirstName,
-        //            LastName = receiver.LastName,
-        //            ProfilePic = receiver.ProfilePic,
-        //            OnlineAt = receiver.OnlineAt,
-        //            UserId = receiver.UserId,
-        //            OnlineAtFormatted = receiver.OnlineAtFormatted,
-        //            ChatClosed = false
-        //        });
-        //        #endregion
-
-        //        ChatGroupName = string.Join("-", chatUsers.Select(m => m.FirstName).ToList());
-
-        //        // If both users does not have any personal chat then add it
-        //        var existing = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatUsers.Count() == 2)
-        //                                                   //.Select(m => m.ChatUsers)
-        //                                                   //.ToList()
-        //                                                   .Where(m => m.ChatUsers.Where(x => x.UserId == userID).Any())
-        //                                                   .FirstOrDefault();
-        //        if (existing != null)
-        //        {
-        //            ChatGroupId = existing.ChatGroupId;
-        //            ChatGroupName = existing.ChatGroupName;
-
-        //            existing.ChatUsers.Where(m => m.UserId == userID).ToList().ForEach(m => m.ChatClosed = false);
-        //            SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatUsers.Count() == 2)
-        //                                                   .Where(m => m.ChatUsers.Where(x => x.UserId == userID).Any())
-        //                                                   .Select(m => m.ChatUsers)
-        //                                                   .FirstOrDefault()
-        //                                                   .ForEach(m => m.ChatClosed = false);
-        //        }
-        //        else
-        //        {
-        //            SingletonUserChatGroups.Instance.ChatGroups.Add(new ChatGroup
-        //            {
-        //                SenderId = JGSession.UserId,
-        //                ChatGroupId = ChatGroupId,
-        //                ChatGroupName = ChatGroupName,
-        //                ChatUsers = chatUsers,
-        //                ChatMessages = new List<ChatMessage>()
-        //            });
-        //        }
-
-        //        // Update ActiveUsers in SingletonUserChatGroups
-        //        SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(sender.UserId).Results;
-        //    }
-        //    ChatMessageActiveUser obj = new ChatMessageActiveUser();
-        //    obj.ChatGroupId = ChatGroupId;
-        //    obj.ChatGroupName = ChatGroupName;
-        //    obj.ChatMessages = messages;
-        //    obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers;
-
-        //    return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMessageActiveUser>
-        //    {
-        //        Object = obj,
-        //        Status = ActionStatus.Successfull
-        //    });
-        //}
+        [WebMethod(EnableSession =true)]
+        public string GetChatUnReadCount()
+        {
+            return new JavaScriptSerializer().Serialize(ChatBLL.Instance.GetChatUnReadCount(JGSession.UserId));
+        }
         #endregion
     }
 }

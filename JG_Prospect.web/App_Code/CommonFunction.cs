@@ -2083,6 +2083,38 @@ namespace JG_Prospect
                 HttpContext.Current.Session["UserInstallId"] = value;
             }
         }
+
+        public static string PortalEmail
+        {
+            get
+            {
+                if (HttpContext.Current.Session["PortalEmail"] == null)
+                {
+                    return string.Empty;
+                }
+                return Convert.ToString(HttpContext.Current.Session["PortalEmail"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["PortalEmail"] = value;
+            }
+        }
+
+        public static string PortalEmailPassword
+        {
+            get
+            {
+                if (HttpContext.Current.Session["PortalEmailPassword"] == null)
+                {
+                    return string.Empty;
+                }
+                return Convert.ToString(HttpContext.Current.Session["PortalEmailPassword"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["PortalEmailPassword"] = value;
+            }
+        }
     }
 }
 

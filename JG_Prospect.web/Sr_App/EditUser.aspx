@@ -271,7 +271,6 @@
             left: 0;
             bottom: 0;
             width: 100%;
-            display:none;
         }
 
         .notes-table {
@@ -654,7 +653,7 @@
                         var tdHeight = $('#user-' + userid).parents('tr').height();
                         $('#user-' + userid).html(tbl);
                         
-                        $('#user-' + userid).css('height',(tdHeight-6)+'px');
+                        $('#user-' + userid).css('height',(tdHeight-36)+'px');
                         var tuid = getUrlVars()["TUID"];
                         var nid = getUrlVars()["NID"];
                         if (tuid != undefined && nid!= undefined) {
@@ -664,8 +663,6 @@
                         tribute.attach(document.getElementById('txt-'+userid));
                     } else {
                         var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">' +
-                                    '<tr uid="' + userid + '"><td>&nbsp;</td><td>&nbsp;</td></tr>'+
-                                    '<tr uid="' + userid + '"><td>&nbsp;</td><td>&nbsp;</td></tr>'+
                                     '<tr uid="' + userid + '"><td>&nbsp;</td><td>&nbsp;</td></tr>'+
                                     '<tr uid="' + userid + '"><td>&nbsp;</td><td>&nbsp;</td></tr>'+
                                     '<tr uid="' + userid + '"><td>&nbsp;</td><td>&nbsp;</td></tr>'+
