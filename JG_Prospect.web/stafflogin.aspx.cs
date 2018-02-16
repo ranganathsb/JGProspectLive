@@ -1095,6 +1095,11 @@ namespace JG_Prospect
                             JGSession.UserInstallId = ds.Tables[0].Rows[0]["UserInstallId"].ToString().Trim();
                             JGSession.UserStatus = (JGConstant.InstallUserStatus)Convert.ToInt32(ds.Tables[0].Rows[0]["Status"]);
 
+                            JGSession.PortalEmail = !string.IsNullOrEmpty(ds.Tables[0].Rows[0]["PortalEmail"].ToString()) ?
+                                                        ds.Tables[0].Rows[0]["PortalEmail"].ToString().Trim() : null;
+                            JGSession.PortalEmailPassword = !string.IsNullOrEmpty(ds.Tables[0].Rows[0]["PortalEmailPassword"].ToString()) ?
+                                                        ds.Tables[0].Rows[0]["PortalEmailPassword"].ToString().Trim() : null;
+
                             UpdateUsersLastLoginTimeStamp(JGSession.LoginUserID, DateTime.UtcNow);
 
                             App_Code.CommonFunction.SetUserIdCookie(ds.Tables[0].Rows[0]["Id"].ToString());

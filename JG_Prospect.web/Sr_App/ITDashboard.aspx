@@ -2721,31 +2721,7 @@
                         if (Request.QueryString["PWT"] == "1")
                         {
                             %>
-                    <div class="notes-section" tuid="<%=loggedInUserId %>" style="width:98%;"">                        
-                        <div class="notes-popup">
-                            <div class="heading">
-                                <div class="title">User Touch Point Logs</div>
-
-                                <input type="hidden" id="PageIndex" value="0" />
-                            </div>
-                            <div class="content">
-                                Loading Notes...
-                            </div>
-                            <div class="pagingWrapper">
-                                <div class="total-results">Total <span class="total-results-count"></span>Results</div>
-                                <div class="pager">
-                                    <span class="first">« First</span> <span class="previous">Previous</span> <span class="numeric"></span><span class="next">Next</span> <span class="last">Last »</span>
-                                </div>
-                                <div class="pageInfo">
-                                </div>
-                            </div>
-                            <div class="add-notes-container">
-                                <input type="hidden" class="touchPointSource" value="<%=(int)JG_Prospect.Common.TouchPointSource.InterviewPopup %>"/>
-                                <textarea id="note-text" class="note-text textbox"></textarea>
-                                <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addPopupNotes(this)" />
-                            </div>
-                        </div>
-                    </div>
+                    
                             <%
                                 }
                      %>
@@ -2779,34 +2755,6 @@
             <!-- Interview Date popup ends -->
             <%} %>
 
-        </div>
-
-        <h2></h2>
-
-        <div class="notes-section" tuid="<%=loggedInUserId %>" style="width:98%;">           
-            <div class="notes-popup">
-                <div class="heading">
-                    <div class="title">User Touch Point Logs</div>
-
-                    <input type="hidden" id="PageIndex" value="0" />
-                </div>
-                <div class="content">
-                    Loading Notes...
-                </div>
-                <div class="pagingWrapper">
-                    <div class="total-results">Total <span class="total-results-count"></span>Results</div>
-                    <div class="pager">
-                        <span class="first">« First</span> <span class="previous">Previous</span> <span class="numeric"></span><span class="next">Next</span> <span class="last">Last »</span>
-                    </div>
-                    <div class="pageInfo">
-                    </div>
-                </div>
-                <div class="add-notes-container">
-                     <input type="hidden" class="touchPointSource" value="<%=(int)JG_Prospect.Common.TouchPointSource.ITDashboard %>"/>
-                    <textarea id="note-text" class="note-text textbox"></textarea>
-                    <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addPopupNotes(this)" />
-                </div>
-            </div>
         </div>
 
         <asp:HiddenField id="hdnUserId" runat="server"/>
@@ -4080,7 +4028,7 @@
         }
         var pageSize = 20;
         $(document).ready(function () {
-            Paging($(this));
+            //Paging($(this));
         });
     </script>
 </asp:Content>

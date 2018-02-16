@@ -17,7 +17,7 @@ namespace JG_Prospect.Chat.Hubs
     // [Authorize]
     public class ChatHub : Hub
     {
-        public void SendChatMessage(string chatGroupId, string message, int chatSourceId, string receiverIds)
+        public void SendChatMessage(string chatGroupId, string message, int chatSourceId, string receiverIds, int? fileId = null)
         {
             try
             {
@@ -31,6 +31,13 @@ namespace JG_Prospect.Chat.Hubs
                 HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
                 if (auth_cookie != null)
                     SenderUserId = Convert.ToInt32(auth_cookie.Value);
+
+                // Check for file attachment
+                if (fileId.HasValue && fileId.Value > 0)
+                {
+                    ChatFile file = ChatBLL.Instance.GetChatFile(fileId.Value);
+                    message = file.DisplayName + ":" + file.SavedName;
+                }
                 //add logger
                 ChatBLL.Instance.ChatLogger(chatGroupId, message, chatSourceId, SenderUserId, httpContext.Request.UserHostAddress);
                 DataRow sender = InstallUserBLL.Instance.getuserdetails(SenderUserId).Tables[0].Rows[0];
@@ -41,6 +48,7 @@ namespace JG_Prospect.Chat.Hubs
                 ChatMessage chatMessage = new ChatMessage
                 {
                     Message = message,
+                    FileId = fileId,
                     ChatSourceId = chatSourceId,
                     UserId = SenderUserId,
                     UserProfilePic = pic,
@@ -67,9 +75,12 @@ namespace JG_Prospect.Chat.Hubs
                 // Modify existing connectionIds into particular ChatGroup and save into static "UserChatGroups" object
                 foreach (var user in chatGroup.ChatUsers.Where(m => onlineUserIds.Contains(m.UserId.Value)))
                 {
-                    user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
-                    user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
-                    user.OnlineAtFormatted = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt.Value).FirstOrDefault().ToEST().ToString();
+                    if (newConnections.Where(m => m.UserId == user.UserId).Any())
+                    {
+                        user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
+                        user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
+                        user.OnlineAtFormatted = user.OnlineAt.HasValue ? user.OnlineAt.Value.ToEST().ToString() : null;
+                    }
                 }
 
                 // Adding each connection into SignalR Group, so that we can send messages to all connected users.
@@ -150,9 +161,12 @@ namespace JG_Prospect.Chat.Hubs
                 // Modify existing connectionIds into particular ChatGroup and save into static "UserChatGroups" object
                 foreach (var user in chatGroup.ChatUsers.Where(m => onlineUserIds.Contains(m.UserId.Value)))
                 {
-                    user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
-                    user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
-                    user.OnlineAtFormatted = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt.Value).FirstOrDefault().ToEST().ToString();
+                    if (newConnections.Where(m => m.UserId == user.UserId).Any())
+                    {
+                        user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
+                        user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
+                        user.OnlineAtFormatted = user.OnlineAt.HasValue ? user.OnlineAt.Value.ToEST().ToString() : null;
+                    }
                 }
                 // Adding each connection into SignalR Group, so that we can send messages to all connected users.
                 foreach (var item in chatGroup.ChatUsers.Where(m => m.OnlineAt.HasValue))
