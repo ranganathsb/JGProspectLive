@@ -341,6 +341,7 @@
     <Content Include="calendar\dot.gif" />
     <Content Include="calendar\Srcalendar.aspx" />
     <Content Include="changepassword.aspx" />
+    <Content Include="Chat\Attachments\blue-tick.png" />
     <Content Include="Chat\chat-notification.mp3" />
     <Content Include="Chat\chat.css" />
     <Content Include="Chat\ChatAttachmentUpload.aspx" />
@@ -3679,7 +3680,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Chat\Attachments\" />
     <Folder Include="ckeditor\plugins\imagepaste\" />
     <Folder Include="ckeditor\plugins\pastebase64\" />
     <Folder Include="ckeditor\skins\office2013\" />
