@@ -33,4 +33,9 @@ namespace JG_Prospect.Common
         public const string PageIndex = "PageIndex";
         public const string GridViewData = "GridViewData";
     }
+    public static class Cookies
+    {
+        public const string TimezoneOffset = "erw3r2353534";
+        public const string UserId = "dfmewsnjkfsd";
+    }
 }

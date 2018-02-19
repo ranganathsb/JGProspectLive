@@ -27,6 +27,118 @@ namespace JG_Prospect.Common
             return html;
         }
 
+        public static string GetSequenceDisplayText(string strSequence, int DesigntionID, string seqSuffix)
+        {
+            var sequenceText = "#SEQ#-#DESGPREFIX#:#TORS#";
+
+            if (strSequence == "N.A.")
+            {
+                sequenceText = strSequence;
+            }
+            else
+            {
+                //console.log(strSequence + strDesigntionID + seqSuffix);            
+                sequenceText = sequenceText.Replace("#SEQ#", strSequence).Replace("#DESGPREFIX#", GetInstallIDPrefixFromDesignationIDinJS(DesigntionID)).Replace("#TORS#", seqSuffix);
+            }
+            return sequenceText;
+        }
+
+        public static string GetInstallIDPrefixFromDesignationIDinJS(int DesignID)
+        {
+            var prefix = "";
+            switch (DesignID)
+            {
+                case 1:
+                    prefix = "ADM";
+                    break;
+                case 2:
+                    prefix = "JSL";
+                    break;
+                case 3:
+                    prefix = "JPM";
+                    break;
+                case 4:
+                    prefix = "OFM";
+                    break;
+                case 5:
+                    prefix = "REC";
+                    break;
+                case 6:
+                    prefix = "SLM";
+                    break;
+                case 7:
+                    prefix = "SSL";
+                    break;
+                case 8:
+                    prefix = "ITNA";
+                    break;
+                case 9:
+                    prefix = "ITJN";
+                    break;
+                case 10:
+                    prefix = "ITSN";
+                    break;
+                case 11:
+                    prefix = "ITAD";
+                    break;
+                case 12:
+                    prefix = "ITSPH";
+                    break;
+                case 13:
+                    prefix = "ITSB";
+                    break;
+                case 14:
+                    prefix = "INH";
+                    break;
+                case 15:
+                    prefix = "INJ";
+                    break;
+                case 16:
+                    prefix = "INM";
+                    break;
+                case 17:
+                    prefix = "INLM";
+                    break;
+                case 18:
+                    prefix = "INF";
+                    break;
+                case 19:
+                    prefix = "COM";
+                    break;
+                case 20:
+                    prefix = "SBC";
+                    break;
+                case 22:
+                    prefix = "ADS";
+                    break;
+                case 23:
+                    prefix = "ADR";
+                    break;
+                case 24:
+                    prefix = "ITSQA";
+                    break;
+                case 25:
+                    prefix = "ITJQA";
+                    break;
+                case 26:
+                    prefix = "ITJPH";
+                    break;
+                case 27:
+                    prefix = "ITSSE";
+                    break;
+                case 28:
+                    prefix = "ITSTE";
+                    break;
+                case 29:
+                    prefix = "ITFRXD";
+                    break;
+                default:
+                    prefix = "N.A.";
+                    break;
+            }
+
+            return prefix;
+        }
     }
 
     public class JGApplicationInfo

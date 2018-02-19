@@ -106,3 +106,51 @@ URL Referal is:   - 12/22/2017 12:53:50 PM
 URL Referal is:   - 12/26/2017 6:25:00 PM
 URL Referal is:   - 12/26/2017 7:50:25 PM
 URL Referal is:   - 12/27/2017 10:43:01 AM
+URL Referal is:   - 1/4/2018 1:38:22 PM
+localhost  - 1/4/2018 1:38:22 PM
+http://localhost:2724/stafflogin.aspx  - 1/4/2018 1:38:22 PM
+URL Referal is:   - 1/5/2018 11:18:31 AM
+localhost  - 1/5/2018 11:18:31 AM
+http://localhost:2724/stafflogin.aspx  - 1/5/2018 11:18:31 AM
+URL Referal is:   - 1/5/2018 1:09:04 PM
+localhost  - 1/5/2018 1:09:04 PM
+http://localhost:2724/stafflogin.aspx  - 1/5/2018 1:09:04 PM
+URL Referal is:   - 1/8/2018 5:43:46 PM
+localhost  - 1/8/2018 5:43:46 PM
+http://localhost:2724/stafflogin.aspx  - 1/8/2018 5:43:46 PM
+URL Referal is:   - 1/8/2018 7:10:07 PM
+localhost  - 1/8/2018 7:10:07 PM
+http://localhost:2724/stafflogin.aspx  - 1/8/2018 7:10:07 PM
+URL Referal is:   - 1/9/2018 5:01:48 PM
+localhost  - 1/9/2018 5:01:48 PM
+http://localhost:2724/stafflogin.aspx  - 1/9/2018 5:01:48 PM
+URL Referal is:   - 1/10/2018 2:05:58 PM
+URL Referal is:   - 1/10/2018 3:15:27 PM
+localhost  - 1/10/2018 3:15:27 PM
+http://localhost:2724/stafflogin.aspx  - 1/10/2018 3:15:27 PM
+URL Referal is:   - 1/10/2018 4:12:05 PM
+URL Referal is:   - 1/10/2018 4:21:29 PM
+localhost  - 1/10/2018 4:21:29 PM
+http://localhost:2724/stafflogin.aspx?returnurl=/Sr_App/ITDashboard.aspx  - 1/10/2018 4:21:29 PM
+URL Referal is:   - 1/11/2018 1:15:01 PM
+URL Referal is:   - 1/11/2018 2:15:37 PM
+localhost  - 1/11/2018 2:15:37 PM
+http://localhost:2724/Sr_App/ITDashboard.aspx  - 1/11/2018 2:15:37 PM
+URL Referal is:   - 1/12/2018 12:51:02 PM
+localhost  - 1/12/2018 12:51:02 PM
+http://localhost:2724/Sr_App/ITDashboard.aspx  - 1/12/2018 12:51:02 PM
+URL Referal is:   - 1/12/2018 1:22:54 PM
+localhost  - 1/12/2018 1:22:54 PM
+http://localhost:2724/stafflogin.aspx?returnurl=/Sr_App/TaskGenerator.aspx?TaskId=418&hstid=657  - 1/12/2018 1:22:54 PM
+URL Referal is:   - 1/12/2018 6:30:02 PM
+URL Referal is:   - 1/17/2018 3:38:07 PM
+URL Referal is:   - 1/18/2018 2:01:38 PM
+URL Referal is:   - 1/23/2018 10:37:28 AM
+localhost  - 1/23/2018 10:37:29 AM
+http://localhost:2724/Sr_App/TaskGenerator.aspx?TaskId=748&hstid=10819  - 1/23/2018 10:37:29 AM
+URL Referal is:   - 1/23/2018 11:25:52 AM
+localhost  - 1/23/2018 11:25:52 AM
+http://localhost:2724/stafflogin.aspx?returnurl=/Sr_App/TaskGenerator.aspx?TaskId=748&hstid=10819  - 1/23/2018 11:25:52 AM
+URL Referal is:   - 1/25/2018 11:31:32 AM
+localhost  - 1/25/2018 11:31:32 AM
+http://localhost:2724/Sr_App/ITDashboard.aspx  - 1/25/2018 11:31:32 AM
