@@ -558,7 +558,7 @@
 
                     </select>
                     </div>
-                    <div>
+                    <div data-ng-controller="TaskGeneratorController">
                         <div>
                             <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table edit-subtask">
                             <thead>
@@ -3402,8 +3402,8 @@
                 data: data,
                 success: function (result) {
                     //alert("Success");
-                    $('#<%=hdnGridAttachment.ClientID%>').val('');
-                    $('#<%=hdDropZoneTaskId.ClientID%>').val('');
+                    <%--$('#<%=hdnGridAttachment.ClientID%>').val('');
+                    $('#<%=hdDropZoneTaskId.ClientID%>').val('');--%>
                     if (RefreshData)
                         LoadSubTasks();
                     else {
@@ -3428,8 +3428,8 @@
                 data: data,
                 success: function (result) {
                     //alert("Success");
-                    $('#<%=hdnGridAttachment.ClientID%>').val('');
-                    $('#<%=hdDropZoneTaskId.ClientID%>').val('');
+                    <%--$('#<%=hdnGridAttachment.ClientID%>').val('');
+                    $('#<%=hdDropZoneTaskId.ClientID%>').val('');--%>
                     if (RefreshData)
                         LoadSubTasks();
                     else {

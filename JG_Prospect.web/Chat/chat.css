@@ -201,6 +201,7 @@ body {
         height: 265px;
         overflow-x: hidden;
         overflow-y: auto;
+        position:relative;
     }
 
         .chat-box .chats .chat-row {
