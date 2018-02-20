@@ -88,14 +88,11 @@ img.emoji {
     content: none;
 }
 
-.emoji-wysiwyg-editor {
-    padding: 6px;
+.telecom-dashboard-popup .emoji-wysiwyg-editor {
+    padding: 3px;
     padding-right: 35px;
     margin-bottom: 0px;
-    min-height: 35px; /* 35 */
-    height: 30px;
-    max-height: 284px;
-    overflow: auto;
+    overflow: hidden;
     line-height: 17px;
     border: 1px solid #bbb;
     border-radius: 2px;
@@ -106,9 +103,31 @@ img.emoji {
     -webkit-user-select: text;
     word-wrap: break-word;
     position: absolute;
-    bottom: 0;
-    width: 93%;
-    z-index: -1;
+    bottom: -27px;
+    width: 77.8%;
+    height: 19px !important;
+    font-size: 12px;
+}
+
+.telecom-dashboard-popup.fullscreen-chat .emoji-wysiwyg-editor {
+    padding: 6px;
+    padding-right: 35px;
+    margin-bottom: 0px;
+    overflow: hidden;
+    line-height: 17px;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    -webkit-user-select: text;
+    word-wrap: break-word;
+    position: absolute;
+    bottom: -38px;
+    width: 83.8%;
+    height: 24px !important;
+    font-size: 14px;
 }
 
 .emoji-wysiwyg-editor.parent-has-scroll {
@@ -244,13 +263,11 @@ img.emoji {
 .emoji-menu .emoji-items a:hover {
     background-color: #edf2f5;
 }
-
 .emoji-menu:after {
     content: ' ';
     display: block;
     clear: left;
-}
-
+} 
 .emoji-menu a .label {
-    display: none;
+    display: none; 
 }
