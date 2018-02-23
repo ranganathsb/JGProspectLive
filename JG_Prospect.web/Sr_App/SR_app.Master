@@ -1101,6 +1101,12 @@
                 $('.chat-users-section .list').html('<div class="no-user">No one is online!!!</div>');
                 $('.header-msg').html('<div class="no-user">No one is online!!!</div>');
             }
+            $('.header-msg').hover(function () {
+                var H = ($(window).height() - 100) + 'px';
+                $('.header-msg').css('height', H);
+            }, function(){
+                $('.header-msg').css('height', '40px');
+            });           
         }
 
         function SetChatMessageRead(data) {
