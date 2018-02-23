@@ -285,3 +285,66 @@ BEGIN
 
 		Select * from #OnlineUsersOrGroups Order By MessageAt Desc
 End
+
+GO
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'Sp_InsertTouchPointLog' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE Sp_InsertTouchPointLog
+  END
+Go
+-- =============================================
+-- Author:		Bhavik J. Vaishnani
+-- Create date: 29-11-2016
+-- Description:	Insert value of Touch Point log
+-- =============================================
+CREATE PROCEDURE [dbo].[Sp_InsertTouchPointLog] 
+	-- Add the parameters for the stored procedure here
+	@userID int = 0, 
+	@loginUserID int = 0
+	, @loginUserInstallID varchar (50) =''
+	, @LogTime datetime
+	, @changeLog nvarchar(max)
+	,@CurrGUID varchar(40)
+	,@TouchPointSource int
+AS
+-- Sp_InsertTouchPointLog 901,3797,'','10/10/2015','test sfssad','',1
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+    -- Insert statements for procedure here
+	/*
+	INSERT INTO [dbo].[tblUserTouchPointLog]
+           ([UserID]  ,[UpdatedByUserID] ,[UpdatedUserInstallID]
+           ,[ChangeDateTime]
+           ,[LogDescription]
+		   ,[CurrentUserGUID]
+		   ,[TouchPointSource])
+     VALUES
+           (@userID , @loginUserID ,@loginUserInstallID            
+           , /*@LogTime*/
+		   GETUTCDATE()
+           ,@changeLog
+		   ,@CurrGUID
+		   ,@TouchPointSource)
+	*/
+	Declare @ChatGroupId Varchar(100) = null
+
+	Select top 1 @ChatGroupId =S.ChatGroupId
+		From ChatMessage S With(NoLock)
+			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
+			Join ChatMessageReadStatus MS With(NoLock) On S.Id = MS.ChatMessageId
+		Where (S.SenderId = @loginUserID And S.ReceiverIds = Convert(Varchar(12), @userID))
+			Or (S.SenderId = @userID And S.ReceiverIds =  Convert(Varchar(12), @loginUserID))
+
+	if ISNULL(@ChatGroupId,'') = ''
+	begin
+		Select @ChatGroupId = NEWID ()  
+	end
+	Exec SaveChatMessage  @TouchPointSource, '', @loginUserID, @changeLog, null, @userID
+
+	Select IDENT_CURRENT('ChatMessage') as UserTouchPointLogID
+END
+
+GO
