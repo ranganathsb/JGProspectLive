@@ -625,10 +625,12 @@
         <img alt="throbber" src="../img/ajax-loader.gif" />
     </div>
     <div class="telecom-dashboard-popup fullscreen-chat">
-        <div class="header"><span class="popup-title">Chat Dashboard</span>            
+        <div class="header">
+            <span class="popup-title">Chat Dashboard</span>
             <span class="close" onclick="closeTelecomPopup(this)"><i class="fa fa-times-circle" aria-hidden="true"></i></span>
             <span class="min-max" onclick="minMax(this)"><i class="fa fa-window-maximize" aria-hidden="true"></i></span>
             <span class="fullscreen-btn" onclick="fullscreen(this)"><i class="fa fa-window-restore" aria-hidden="true"></i></span>
+            <input type="hidden" id="ChatSourceId" />
         </div>
         <div class="content-area">
             <div class="column1">
@@ -657,16 +659,16 @@
                 </div>
             </div>
             <div class="column3">
-            <div class="email-compose-section">
-                <%--<img src="../img/compose.PNG" />--%>
-            </div>
-            <div class="chat-users-section">
-                <div class="header">Contacts</div>
-                <div class="list">
-                    Loading Online Users...
+                <div class="email-compose-section">
+                    <%--<img src="../img/compose.PNG" />--%>
+                </div>
+                <div class="chat-users-section">
+                    <div class="header">Contacts</div>
+                    <div class="list">
+                        Loading Online Users...
+                    </div>
                 </div>
             </div>
-        </div>
         </div>
     </div>
     <div class="overlay">
@@ -693,10 +695,11 @@
         sendChat = function (e, sender) {
             var chatGrpId = $(sender).parents('.chat-box').find('#ChatGroupId').val();
             var receiverIds = $(sender).parents('.chat-box').find('#ReceiverIds').val();
+            var chatSourceId = $('#ChatSourceId').val();
             if ($(sender).hasClass('text-send')) {
                 var chatText = $(sender).parents('div.chat-text').find('.emoji-wysiwyg-editor').html();
                 if (chatText != undefined && chatText != '' && chatText != null) {
-                    chat.server.sendChatMessage(chatGrpId, chatText, '<%=(int)JG_Prospect.Common.ChatSource.UserChat %>', receiverIds, null);
+                    chat.server.sendChatMessage(chatGrpId, chatText, chatSourceId, receiverIds, null);
                     $('.emoji-wysiwyg-editor').html('');
                 }
             } else {
@@ -707,7 +710,7 @@
                     var chatText = $(sender).html();
                     $(sender).html('');
                     if (chatText != undefined && chatText != '' && chatText != null) {
-                        chat.server.sendChatMessage(chatGrpId, chatText, '<%=(int)JG_Prospect.Common.ChatSource.UserChat %>', receiverIds, null);
+                        chat.server.sendChatMessage(chatGrpId, chatText, chatSourceId, receiverIds, null);
                     }
                 }
             }
@@ -748,7 +751,7 @@
             var RcvrID = getUrlVars()["RcvrID"];
             var chatGroupId = getUrlVars()["CGID"];
             if (RcvrID != undefined && chatGroupId != undefined)
-                InitiateChat($('.left_panel'), RcvrID, chatGroupId);
+                InitiateChat($('.left_panel'), RcvrID, chatGroupId, '<%=(int)JG_Prospect.Common.ChatSource.UserChat%>');
         }).fail(function (reason) {
             debugger;
             console.log(reason);
@@ -762,6 +765,7 @@
             var id = data.Message.split('`')[0];
             var name = data.Message.split('`')[1];
             var receiverIds = data.Message.split('`')[2];
+            var chatSourceId = data.Object.ChatSourceId;
             var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
                                         '<div class="header"><span class="group-name">' + name +
                                             '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
@@ -779,7 +783,7 @@
             if ($('.all-chats').find('#' + id) != undefined)
                 if ($('.all-chats').find('#' + id).length <= 0) {
                     $('.all-chats').html(strChat);
-                    LoadPreviousChat(this, id, receiverIds);
+                    LoadPreviousChat(this, id, receiverIds, chatSourceId);
                     InitializeEmoji();
                 }
 
@@ -815,31 +819,7 @@
             $('.chat-box#' + id + ' .chats').append(str);
             //$('.chat-box .chats').scrollTop(d.prop("scrollHeight"));
             $('.chat-box#' + id + ' .chats').animate({ scrollTop: $('.chat-box#' + id + ' .chats').prop("scrollHeight") }, 500);
-            // reset existing @mention and add new @mention support
-            //var existingText = $('input.mention').val();
-            //$('input.mention').parent().find('.mentions').remove();
-            //$('input.mention').parent().find('.mentions-autocomplete-list').remove();
-            //$('input.mention').mentionsInput({
-            //    onDataRequest: function (mode, query, callback) {
-            //        ajaxExt({
-            //            url: '/WebServices/JGWebService.asmx/GetUsers',
-            //            type: 'POST',
-            //            data: '{ keyword: "' + query + '", chatGroupId:"' + userTobeAddedIntoChatGroupId + '" }',
-            //            showThrobber: true,
-            //            throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
-            //            success: function (data, msg) {
-            //                responseData = data.Results;
-            //                responseData = _.filter(responseData, function (item) {
-            //                    return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
-            //                });
-            //                callback.call(this, responseData);
-            //            }
-            //        });
-            //    }
-            //});
-            //if (existingText != undefined && existingText != null) {
-            //    $('input.mention').val(existingText);
-            //}
+            
             $('audio.chat-notification-sound').remove();
             if (loggedInUserId != data.Object.UserId) {
                 $('body').append('<audio autoplay class="chat-notification-sound"><source src="../Chat/chat-notification.mp3"><source src="../Chat/chat-notification.ogg"></audio>');
@@ -922,11 +902,11 @@
     <script type="text/javascript" src="../js/dropzone.js"></script>
 
     <script type="text/javascript">
-        function LoadPreviousChat(sender, chatGroupId, receiverIds) {
+        function LoadPreviousChat(sender, chatGroupId, receiverIds, chatSourceId) {
             ajaxExt({
                 url: '/WebServices/JGWebService.asmx/InitiateChat',
                 type: 'POST',
-                data: '{ receiverIds: "' + receiverIds + '", chatGroupId:"' + chatGroupId + '" }',
+                data: '{ receiverIds: "' + receiverIds + '", chatGroupId:"' + chatGroupId + ', chatSourceId:' + chatSourceId + '" }',
                 showThrobber: true,
                 throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                 success: function (data, msg) {
@@ -947,7 +927,7 @@
                                     '</div>' +
                                     '<div class="message"><div class="msg">' + msg + '</div>' +
                                     '<div class="time-container"><div class="tick">' +
-                                        '<img src="../img/'+tickColor+'-tick.png" /> </div>' +
+                                        '<img src="../img/' + tickColor + '-tick.png" /> </div>' +
                                         '<div class="time">' + data.Results[i].MessageAtFormatted + '</div>' +
                                         '<div class="est">(EST)</div> </div>' +
                                     '</div></div>';
@@ -960,11 +940,12 @@
             });
         }
 
-        function InitiateChat(sender, receiverIds, chatGroupId) {
+        function InitiateChat(sender, receiverIds, chatGroupId, chatSourceId) {
+            $('#ChatSourceId').val(chatSourceId);
             ajaxExt({
                 url: '/WebServices/JGWebService.asmx/InitiateChat',
                 type: 'POST',
-                data: '{ receiverIds: "' + receiverIds + '", chatGroupId:"' + chatGroupId + '" }',
+                data: '{ receiverIds: "' + receiverIds + '", chatGroupId:"' + chatGroupId + '", chatSourceId:' + chatSourceId + ' }',
                 showThrobber: true,
                 throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                 success: function (data, msg) {
@@ -1045,7 +1026,7 @@
                     if (loggedInUserId != data.Results[i].UserId) {
                         var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
                         var chatStatus = data.Results[i].OnlineAt == null ? 'offline' : (data.Results[i].Status == '1' ? 'active' : 'idle');
-                        str += '<div title="' + data.Results[i].GroupOrUsername + '" class="user-row bg' + data.Results[i].InstallUserStatusId + '" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\')">' +
+                        str += '<div title="' + data.Results[i].GroupOrUsername + '" class="user-row bg' + data.Results[i].InstallUserStatusId + '" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',<%=(int)JG_Prospect.Common.ChatSource.UserChat%>)">' +
                                     '<div class="profile">' +
                                         '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '" title="">' +
                                         (data.Results[i].UserId == null ? '' :
@@ -1069,8 +1050,8 @@
                     // remove this(loggedin) user from lits
                     if (loggedInUserId != data.Results[i].UserId) {
                         var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
-                        var chatStatus = data.Results[i].OnlineAt==null ? 'offline': (data.Results[i].Status == '1' ? 'active' : 'idle');
-                        str += '<div class="row bg' + data.Results[i].InstallUserStatusId + '" title="' + data.Results[i].GroupOrUsername + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\')">' +
+                        var chatStatus = data.Results[i].OnlineAt == null ? 'offline' : (data.Results[i].Status == '1' ? 'active' : 'idle');
+                        str += '<div class="row bg' + data.Results[i].InstallUserStatusId + '" title="' + data.Results[i].GroupOrUsername + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',<%=(int)JG_Prospect.Common.ChatSource.UserChat%>)">' +
                                 '<div class="user-image">' +
                                     '<div class="img">' +
                                         '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '"></div>' +
@@ -1104,9 +1085,9 @@
             $('.header-msg').hover(function () {
                 var H = ($(window).height() - 100) + 'px';
                 $('.header-msg').css('height', H);
-            }, function(){
+            }, function () {
                 $('.header-msg').css('height', '40px');
-            });           
+            });
         }
 
         function SetChatMessageRead(data) {
@@ -1224,7 +1205,7 @@
 
                                          }
                                      })
-                                     ;
+        ;
 
         function attachFile(sender) {
             //   $('#form-attachment').find('input[type="file"]').trigger('click');

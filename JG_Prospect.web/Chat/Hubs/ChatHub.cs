@@ -233,7 +233,24 @@ namespace JG_Prospect.Chat.Hubs
                 return base.OnConnected();
 
             // Update ActiveUsers in SingletonUserChatGroups
-            SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(UserId).Results;
+            var users = ChatBLL.Instance.GetOnlineUsers(UserId).Results;
+            var oldOnlineUers = SingletonUserChatGroups.Instance.ActiveUsers;
+            SingletonUserChatGroups.Instance.ActiveUsers = users;
+            if (SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
+                foreach (var item in oldOnlineUers)
+                {
+                    if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
+                                                    .FirstOrDefault() != null)
+                        SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
+                                                        .FirstOrDefault().Status = item.Status;
+                    if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == UserId).Any())
+                    {
+                        SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == UserId)
+                                                        .First().Status = (int)ChatUserStatus.Active;
+                        SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == UserId)
+                                                       .First().LastActivityAt = DateTime.UtcNow;
+                    }
+                }
             if (ChatProcessor.Instance == null)
             {
                 // Do nothing
@@ -268,8 +285,19 @@ namespace JG_Prospect.Chat.Hubs
 
             SingletonGlobal.Instance.ConnectedClients.Remove(Context.ConnectionId);
 
-            // User is offline
-            SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(user.UserId.Value).Results;
+            // User is offline            
+            // Update ActiveUsers in SingletonUserChatGroups
+            var users = ChatBLL.Instance.GetOnlineUsers(user.UserId.Value).Results;
+            var oldOnlineUers = SingletonUserChatGroups.Instance.ActiveUsers;
+            SingletonUserChatGroups.Instance.ActiveUsers = users;
+            if (SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
+                foreach (var item in oldOnlineUers)
+                {
+                    if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
+                                                    .FirstOrDefault() != null)
+                        SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
+                                                        .FirstOrDefault().Status = item.Status;
+                }
 
             string[] Exceptional = new string[1];
             Exceptional[0] = clientId;
@@ -346,10 +374,16 @@ namespace JG_Prospect.Chat.Hubs
                                                 .FirstOrDefault()
                                                 .Status = status;
                 if (status == (int)ChatUserStatus.Active)
+                {
                     SingletonUserChatGroups.Instance.ActiveUsers
                                                     .Where(m => m.UserId == UserId)
                                                     .FirstOrDefault()
                                                     .LastActivityAt = DateTime.UtcNow;
+                }
+                SingletonUserChatGroups.Instance.ActiveUsers
+                                                .Where(m => m.UserId == UserId)
+                                                .FirstOrDefault()
+                                                .Status = status;
             }
 
             ChatMessageActiveUser obj = new ChatMessageActiveUser();

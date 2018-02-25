@@ -637,7 +637,7 @@
             ajaxExt({
                 url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
                 type: 'POST',
-                data: '{ pageNumber: 0, pageSize: 5, userId: ' + userid + ' }',
+                data: '{ pageNumber: 0, pageSize: 5, userId: ' + userid + ',chatSourceId:<%=(int)JG_Prospect.Common.ChatSource.EditUserPage%> }',
                 showThrobber: true,
                 throbberPosition: { my: "left center", at: "right center", of: $('#user-' + userid), offset: "5 0" },
                 success: function (data, msg) {
@@ -679,7 +679,7 @@
             ajaxExt({
                 url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
                 type: 'POST',
-                data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + $('#popupNoteUserId').val() + ' }',
+                data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + $('#popupNoteUserId').val() + ',chatSourceId:<%=(int)JG_Prospect.Common.ChatSource.EditUserPage%> }',
                 showThrobber: true,
                 throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                 success: function (data, msg) {
@@ -713,7 +713,7 @@
                 //Paging($(this));
                 
                 // Open Chat Window
-                InitiateChat(this, $(this).attr('uid'), null);
+                InitiateChat(this, $(this).attr('uid'), null,'<%=(int)JG_Prospect.Common.ChatSource.EditUserPage%>');
                 //ajaxExt({
                 //    url: '/WebServices/JGWebService.asmx/InitiateChat',
                 //    type: 'POST',

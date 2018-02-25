@@ -95,7 +95,7 @@
             ajaxExt({
                 url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
                 type: 'POST',
-                data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + <%=loggedInUserId%> + ' }',
+                data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + <%=loggedInUserId%> + ',chatSourceId:<%=(int)JG_Prospect.Common.ChatSource.EditUserPage%> }',
                 showThrobber: true,
                 throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                 success: function (data, msg) {

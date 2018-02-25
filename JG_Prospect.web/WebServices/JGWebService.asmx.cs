@@ -2379,7 +2379,18 @@ namespace JG_Prospect.WebServices
         public string InitiateBlankChat()
         {
             // Update ActiveUsers in SingletonUserChatGroups
-            SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(JGSession.UserId).Results;
+            // Update ActiveUsers in SingletonUserChatGroups
+            var users = ChatBLL.Instance.GetOnlineUsers(JGSession.UserId).Results;
+            var oldOnlineUers = SingletonUserChatGroups.Instance.ActiveUsers;
+            SingletonUserChatGroups.Instance.ActiveUsers = users;
+            if (SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
+                foreach (var item in oldOnlineUers)
+                {
+                    if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
+                                                    .FirstOrDefault() != null)
+                        SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
+                                                        .FirstOrDefault().Status = item.Status;
+                }
 
             return new JavaScriptSerializer().Serialize(new ActionOutput<ActiveUser>
             {
@@ -2389,7 +2400,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public string InitiateChat(string receiverIds, string chatGroupId)
+        public string InitiateChat(string receiverIds, string chatGroupId, int chatSourceId)
         {
             if (chatGroupId.ToLower() == "undefind" || chatGroupId.ToLower() == "null")
                 chatGroupId = null;
@@ -2405,7 +2416,7 @@ namespace JG_Prospect.WebServices
             List<ChatUser> receivers = ChatBLL.Instance.GetChatUsers(userIds.Where(x => x != JGSession.UserId).ToList()).Results;
 
             #region Chat Messages
-            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId, string.Join(",", userIds.OrderBy(m => m).ToList())).Results;
+            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId, string.Join(",", userIds.OrderBy(m => m).ToList()), chatSourceId).Results;
             #endregion
 
             string ChatGroupName = string.Empty;
@@ -2465,7 +2476,7 @@ namespace JG_Prospect.WebServices
                     {
                         // ChatGroupId is null means, 1-1 chat
                         // Check if sender/receiver has previous chat exists, if yes, then fetch existing ChatGroupId
-                        messages = ChatBLL.Instance.GetChatMessages(sender.UserId.Value, Convert.ToInt32(receiverIds)).Results;
+                        messages = ChatBLL.Instance.GetChatMessages(sender.UserId.Value, Convert.ToInt32(receiverIds), chatSourceId).Results;
                         if (messages != null && messages.Count() > 0)
                             chatGroupId = messages.FirstOrDefault().ChatGroupId;
                     }
@@ -2486,7 +2497,18 @@ namespace JG_Prospect.WebServices
                 }
 
                 // Update ActiveUsers in SingletonUserChatGroups
-                SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(sender.UserId.Value).Results;
+                // Update ActiveUsers in SingletonUserChatGroups
+                var users = ChatBLL.Instance.GetOnlineUsers(JGSession.UserId).Results;
+                var oldOnlineUers = SingletonUserChatGroups.Instance.ActiveUsers;
+                SingletonUserChatGroups.Instance.ActiveUsers = users;
+                if (SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
+                    foreach (var item in oldOnlineUers)
+                    {
+                        if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
+                                                    .FirstOrDefault() != null)
+                            SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
+                                                            .FirstOrDefault().Status = item.Status;
+                    }
             }
 
             #region Update ConnectionId
@@ -2555,9 +2577,9 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public string LoadPreviousChat(string chatGroupId, string receiverIds)
+        public string LoadPreviousChat(string chatGroupId, string receiverIds, int chatSourceId)
         {
-            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId, receiverIds).Results;
+            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId, receiverIds, chatSourceId).Results;
             return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMessage>
             {
                 Results = messages,
