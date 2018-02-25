@@ -54,9 +54,9 @@ namespace JG_Prospect.BLL
             return ChatDAL.Instance.GetAllChatHistory();
         }
 
-        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId, string receiverIds)
+        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId, string receiverIds, int chatSourceId)
         {
-            return ChatDAL.Instance.GetChatMessages(ChatGroupId, receiverIds);
+            return ChatDAL.Instance.GetChatMessages(ChatGroupId, receiverIds, chatSourceId);
         }
 
         public ChatFile GetChatFile(int id)
@@ -131,9 +131,9 @@ namespace JG_Prospect.BLL
         }
 
 
-        public ActionOutput<ChatMessage> GetChatMessages(int userId, int receiverId)
+        public ActionOutput<ChatMessage> GetChatMessages(int userId, int receiverId, int chatSourceId)
         {
-            return ChatDAL.Instance.GetChatMessages(userId, receiverId);
+            return ChatDAL.Instance.GetChatMessages(userId, receiverId, chatSourceId);
         }
 
         public ActionOutput<ChatUnReadCount> GetChatUnReadCount(int LoggedInUserId)

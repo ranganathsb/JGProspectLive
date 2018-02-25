@@ -5223,9 +5223,9 @@ namespace JG_Prospect
         }
 
         [WebMethod]
-        public static string GetUserTouchPointLogs(int pageNumber, int pageSize, int userId)
+        public static string GetUserTouchPointLogs(int pageNumber, int pageSize, int userId, int chatSourceId)
         {
-            List<ChatMessage> chatMessages = ChatBLL.Instance.GetChatMessages(JGSession.UserId, userId).Results;
+            List<ChatMessage> chatMessages = ChatBLL.Instance.GetChatMessages(JGSession.UserId, userId, chatSourceId).Results;
             PagingResult<Notes> notes = new PagingResult<Notes>();
             notes.Status = ActionStatus.Successfull;
             notes.TotalResults = chatMessages.Count();
@@ -5265,7 +5265,7 @@ namespace JG_Prospect
             int userID = Convert.ToInt32(JGSession.LoginUserID);
             string ChatGroupId = string.Empty;
             //InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, "Note : " + note, "", touchPointSource);
-            var chat = ChatBLL.Instance.GetChatMessages(JGSession.UserId, id);
+            var chat = ChatBLL.Instance.GetChatMessages(JGSession.UserId, id, touchPointSource);
             if (chat != null && chat.Results!=null && chat.Results.Count() > 0)
             {
                 ChatGroupId = chat.Results[0].ChatGroupId;

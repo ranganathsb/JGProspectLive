@@ -338,13 +338,36 @@ BEGIN
 		Where (S.SenderId = @loginUserID And S.ReceiverIds = Convert(Varchar(12), @userID))
 			Or (S.SenderId = @userID And S.ReceiverIds =  Convert(Varchar(12), @loginUserID))
 
+	Print @ChatGroupId
 	if ISNULL(@ChatGroupId,'') = ''
 	begin
 		Select @ChatGroupId = NEWID ()  
 	end
-	Exec SaveChatMessage  @TouchPointSource, '', @loginUserID, @changeLog, null, @userID
+	Exec SaveChatMessage  @TouchPointSource, @ChatGroupId, @loginUserID, @changeLog, null, @userID
 
 	Select IDENT_CURRENT('ChatMessage') as UserTouchPointLogID
 END
 
 GO
+
+Go
+IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ChatSource]') AND type in (N'U'))
+BEGIN
+	CREATE TABLE [dbo].[ChatSource](
+		Id int Primary Key,
+		SourceName Varchar(200) Not Null
+	) 
+	Insert Into ChatSource Values(1,'EditUserPage');
+	Insert Into ChatSource Values(2,'ITDashboard');
+	Insert Into ChatSource Values(3,'InterviewPopup');
+	Insert Into ChatSource Values(4,'TouchPointLogPage');
+	Insert Into ChatSource Values(5,'ViewSalesUser');
+	Insert Into ChatSource Values(6,'ViewApplicantUser');
+	Insert Into ChatSource Values(7,'CreateSalesUser');
+	Insert Into ChatSource Values(8,'TaskGenerator');
+	Insert Into ChatSource Values(9,'TaskChat');
+	Insert Into ChatSource Values(10,'UserChat');
+
+	ALTER TABLE ChatMessage ADD CONSTRAINT FK_ChatMessage_ChatSourceId FOREIGN KEY (ChatSourceId)
+		REFERENCES ChatSource(Id);
+END

@@ -455,7 +455,8 @@ namespace JG_Prospect.DAL
                                 ChatGroupId = item["ChatGroupId"].ToString(),
                                 ReceiverIds = item["ReceiverIds"].ToString(),
                                 InstallUserStatusId = !string.IsNullOrEmpty(item["UserStatus"].ToString())
-                                                                ? (int?)Convert.ToInt32(item["UserStatus"].ToString()) : null
+                                                                ? (int?)Convert.ToInt32(item["UserStatus"].ToString()) : null,
+                                Status = (int)ChatUserStatus.Idle
                             });
                         }
                     }
@@ -591,7 +592,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId, string receiverIds)
+        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId, string receiverIds, int chatSourceId)
         {
             try
             {
@@ -602,6 +603,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("GetChatMessages");
                     database.AddInParameter(command, "@ChatGroupId", DbType.String, ChatGroupId);
                     database.AddInParameter(command, "@ReceiverIds", DbType.String, receiverIds);
+                    database.AddInParameter(command, "@ChatSourceId", DbType.Int32, chatSourceId);
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
 
@@ -645,7 +647,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public ActionOutput<ChatMessage> GetChatMessages(int userId, int receiverId)
+        public ActionOutput<ChatMessage> GetChatMessages(int userId, int receiverId, int chatSourceId)
         {
             try
             {
@@ -656,6 +658,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("GetChatMessagesByUsers");
                     database.AddInParameter(command, "@UserId", DbType.Int32, userId);
                     database.AddInParameter(command, "@ReceiverId", DbType.Int32, receiverId);
+                    database.AddInParameter(command, "@ChatSourceId", DbType.Int32, chatSourceId);
 
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);

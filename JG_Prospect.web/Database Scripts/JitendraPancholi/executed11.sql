@@ -326,7 +326,8 @@ Go
 */
 CREATE PROCEDURE [dbo].[GetChatMessages]
 	@ChatGroupId varchar(100),
-	@ReceiverIds Varchar(800)
+	@ReceiverIds Varchar(800),
+	@ChatSourceId Int
 AS    
 BEGIN
 	IF OBJECT_ID('tempdb..#TempChatMessages') IS NOT NULL DROP TABLE #TempChatMessages  
@@ -362,7 +363,7 @@ BEGIN
 			U.UserInstallId, U.Picture, Convert(bit,0) as IsRead
 		From #TempChatMessages S With(NoLock) 
 		Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
-		Where S.SortedChatUserIds = @ReceiverIds
+		Where S.SortedChatUserIds = @ReceiverIds And S.ChatGroupId = @ChatSourceId
 END
 
 
@@ -665,7 +666,7 @@ BEGIN
 			FOR XML PATH('')),4,800)
 		Where UserId IS NULL
 
-		Select * from #OnlineUsersOrGroups Order By /*MessageAt,*/ UserRank Desc
+		Select top 100 * from #OnlineUsersOrGroups Order By /*MessageAt,*/ UserRank Desc
 		--Order By Max(M.CreatedOn) Desc
 END
 
@@ -763,7 +764,8 @@ Go
 */  
 Create PROCEDURE GetChatMessagesByUsers  
 	@UserId int,
-	@ReceiverId int
+	@ReceiverId int,
+	@ChatSourceId int
 AS      
 BEGIN
 	Select S.Id, S.ChatGroupId, S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
@@ -772,6 +774,7 @@ BEGIN
 		From ChatMessage S With(NoLock)
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
 			Join ChatMessageReadStatus MS With(NoLock) On S.Id = MS.ChatMessageId
-		Where (S.SenderId = @UserId And S.ReceiverIds = Convert(Varchar(12), @ReceiverId))
-			Or (S.SenderId = @ReceiverId And S.ReceiverIds =  Convert(Varchar(12), @UserId))
+		Where ((S.SenderId = @UserId And S.ReceiverIds = Convert(Varchar(12), @ReceiverId))
+			Or (S.SenderId = @ReceiverId And S.ReceiverIds =  Convert(Varchar(12), @UserId)))
+			And S.ChatSourceId = @ChatSourceId
 End
