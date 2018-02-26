@@ -1038,7 +1038,7 @@
                                         '<div class="msg-container">' +
                                             (data.Results[i].LastMessageAtFormatted == null ? '' :
                                             '<div class="tick"><img src="../img/' + clr + '-tick.png"></div>') +
-                                            '<div class="msg">' + data.Results[i].LastMessage.split(':')[0] + '</div>' +
+                                            '<div class="msg">' + data.Results[i].LastMessage.split(':-:')[0] + '</div>' +
                                         '</div>' +
                                     '</div></div>';
                     }
@@ -1064,7 +1064,7 @@
 		                            '<div class="msg-container">' +
                                         (data.Results[i].LastMessageAtFormatted == null ? '' :
 			                            '<div class="tick"><img src="../img/' + clr + '-tick.png"></div>') +
-                                    '<div class="msg">' + data.Results[i].LastMessage.split(':')[0] + '</div>' +
+                                    '<div class="msg">' + data.Results[i].LastMessage.split(':-:')[0] + '</div>' +
 			                            '<div class="counter">3</div>' +
 		                            '</div>' +
 	                            '</div>' +
