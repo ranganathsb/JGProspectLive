@@ -36,7 +36,7 @@ namespace JG_Prospect.Chat.Hubs
                 if (fileId.HasValue && fileId.Value > 0)
                 {
                     ChatFile file = ChatBLL.Instance.GetChatFile(fileId.Value);
-                    message = file.DisplayName + ":" + file.SavedName;
+                    message = file.DisplayName + ":-:" + file.SavedName;
                 }
                 //add logger
                 ChatBLL.Instance.ChatLogger(chatGroupId, message, chatSourceId, SenderUserId, httpContext.Request.UserHostAddress);
