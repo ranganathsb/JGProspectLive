@@ -1,0 +1,119 @@
+.button-3{
+  text-align: center;
+}
+
+.button-3 li{
+  display: inline-block;
+  width: 45%;
+  max-width: 200px;
+  height:1em;
+  padding-top:1em;
+  padding-bottom:1em;
+  margin-bottom:1%;
+}
+.last{
+  clear: left;
+}
+.first{
+  clear: right;
+}
+#numberDisplay input{
+  text-align: center;
+    background: #666;
+    padding: 10px 0;
+    margin-top: 10px;
+    margin-bottom: 1%;
+    font-size: 22px;
+    color: #fff;
+    border: 2px solid #fff;
+    font-weight: 100;
+    width: 82%;
+    border-radius: 4px;
+}
+
+#actions .call.ready{
+  background: rgba(0, 255, 0, 0.2);
+  color:#fff;
+}
+#actions .call.ready:hover{
+  background: rgba(0, 255, 0, 0.4);
+}
+#actions .skip.ready{
+  background: rgba(0, 255, 0, 0.2);
+  color:#fff;
+}
+#actions .skip.ready:hover{
+  background: rgba(0, 255, 0, 0.4);
+}
+#actions .clear.ready{
+  background: rgba(255, 0, 0, 0.2);
+  color:#fff;
+}
+#actions .clear.ready:hover{
+  background: rgba(255, 0, 0, 0.4);
+}
+#actions .deactive{
+  opacity: .2;
+}
+
+#dialpad,
+#actions,
+#numberDisplay{
+  width: 100%;
+  margin: 0 auto;
+  text-align:center;
+}
+#dialpad.deactive{
+  opacity: .2;
+}
+#dialpad.deactive li:hover,
+#actions li.deactive:hover{
+  background: #eee;
+}
+#dialpad li{
+  font-weight: bold;
+    background: #444;
+    width: 30%;
+    font-size: 20px;
+    font-family: 'Lato' , sans-serif;
+    color: #fff;
+	cursor:pointer;
+	border-radius: 5px;
+}
+#dialpad li:hover{
+  background: Green;
+}
+#actions li{
+  background: #efefef;
+    opacity: .8;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#actions li.call.active{
+  background: rgba(0, 255, 0, 0.2);
+}
+#actions li.hangup{
+  background: rgba(255, 125, 0, 0.2);
+  color:#fff;
+}
+#actions li.hangup:hover{
+  background: rgba(255, 125, 0, 0.4);
+}
+#actions li:hover{
+  background: #ccc;
+}
+#phone{background:#333;width: 370px;margin:0 auto;display: inline-block;}
+#actions li a{color: #333;
+    display: inline-block;
+    padding: 10px 0;
+    width: 100%;font-family:'Lato' , sans-serif;    border-radius: 5px;}
+#actions li a:hover{text-decoration: none;}
+#actions li.skip{display:none;}
+#logout_box,#login_box{display:none !important;}
+div#wrapper {
+    margin-top: 1px;text-align: center;
+}#status_txt,#callDuration {
+    padding: 10px 0;
+    display: inline-block;
+    color: #777;
+}
