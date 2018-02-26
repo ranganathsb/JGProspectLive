@@ -682,7 +682,7 @@
                             <img src="../img/min-max.jpg"></span>
                     </div>
                     <%--<img src="../img/inbox.PNG" />--%>
-                    <iframe id="iframe-inbox" src="http://localhost:8080/"></iframe>
+                    <iframe id="iframe-inbox" src="http://webmail.jmgrovebuildingsupply.com/"></iframe>
                 </div>
                 <div class="chat-section">
                     <div class="chat-container" id="chat-container">
