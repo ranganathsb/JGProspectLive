@@ -323,7 +323,9 @@ function onCallFailed(cause) {
     $('#actions .clear').trigger('click');
     callOff(cause);
 }
-
+function date() {
+    return (new Date()).toISOString().substring(0, 10) + " " + Date().split(" ")[4];
+}
 function call() {
     var dest = $("#to").val();
     $('#callDuration').text('');
@@ -464,9 +466,9 @@ String.prototype.calltimer = function () {
 
 function callOff(reason) {
     if (typeof reason == "object") {
-        customAlert('Hangup', JSON.stringify(reason));
+       // customAlert('Hangup', JSON.stringify(reason));
     } else if (typeof reason == "string") {
-        customAlert('Hangup', reason);
+       // customAlert('Hangup', reason);
     }
     window.calltimer ? clearInterval(window.calltimer) : false;
     callStorage.dur = timer.toString().calltimer();
