@@ -636,13 +636,46 @@
         <div class="content-area">
             <div class="column1">
                 <div class="dialer-section">
-                    <img src="../img/dialer.PNG" />
+                    <div id="wrapper">
+                        <div id="phone">
+                            <div id="numberDisplay">
+                                <input type="text" name="to" value="" id="to" placeholder="Phone number or a SIP URI">
+                            </div>
+                            <div id="dialpad" class="button-3">
+                                <ul>
+                                    <li class="first">1</li>
+                                    <li>2</li>
+                                    <li class="last">3</li>
+                                    <li class="first">4</li>
+                                    <li>5</li>
+                                    <li class="last">6</li>
+                                    <li class="first">7</li>
+                                    <li>8</li>
+                                    <li class="last">9</li>
+                                    <li class="first">*</li>
+                                    <li>0</li>
+                                    <li class="last">#</li>
+                                </ul>
+                            </div>
+                            <div id="actions" class="button-3 deactive">
+                                <ul>
+                                    <li class="call" id="make_call" onclick="call();">Call</li>
+                                    <li class="skip">Skip</li>
+                                    <li class="clear" onclick="hangup();">Clear</li>
+                                </ul>
+                            </div>
+                            <div class="button-3">
+                                <span class="label" id="status_txt"></span>
+                                <span id="callDuration">00:00:00</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="user-list-section">
+                <%--<div class="user-list-section">
                     <img src="../img/user-list.PNG" />
-                </div>
+                </div>--%>
             </div>
-            <div class="column2">
+    <div class="column2">
                 <div class="email-section">
                     <div class="header">
                         <span class="group-name">Email Dashboard</span>
@@ -901,6 +934,9 @@
     <script src="../Content/emoji-picker/lib/js/emoji-picker.js"></script>
     <!-- End emoji-picker JavaScript -->
     <script type="text/javascript" src="../js/dropzone.js"></script>
+    <script type="text/javascript" src="http://s3.amazonaws.com/plivosdk/web/plivo.min.js"></script>
+    <script src="../js/button-action.js"></script>
+    <link href="../Content/dialer-call.css" rel="stylesheet">
 
     <script type="text/javascript">
         function LoadPreviousChat(sender, chatGroupId, receiverIds, chatSourceId) {
@@ -1291,6 +1327,11 @@
                             $('.telecom-dashboard-popup').removeClass('fullscreen-email');
                             $('.telecom-dashboard-popup').addClass('fullscreen-chat');
                             $('.telecom-dashboard-popup').find('.popup-title').html('Chat Dashboard');
+                            break;
+                        case 'phone':
+                            $('.telecom-dashboard-popup').removeClass('fullscreen-email');
+                            $('.telecom-dashboard-popup').removeClass('fullscreen-chat');
+                            //$('.telecom-dashboard-popup').find('.popup-title').html('Chat Dashboard');
                             break;
                     }
                 }
