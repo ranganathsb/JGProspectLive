@@ -1,6 +1,6 @@
 // States
 // 
-
+var callStorage = {}, timer = "00:00:00";
 (function ($){
   window.numberArray = [],
   window.phoneNumber = '',
@@ -330,6 +330,9 @@ function call() {
     if (isNotEmpty(dest)) {
         $('#status_txt').text('Calling..');
         Plivo.conn.call(dest);
+        callStorage.mode = "out";
+        callStorage.startTime = date();
+        callStorage.num = dest;
         timer = 0;
         window.calltimer = setInterval(function () {
             timer = timer + 1;
@@ -414,7 +417,7 @@ function onMediaPermission(result) {
     if (result) {
         console.log("get media permission");
     } else {
-        alert("you don't allow media permission, you will can't make a call until you allow it");
+        alert("you don't allow media permission, you can't make a call until you allow it");
     }
 }
 
@@ -473,7 +476,7 @@ function callOff(reason) {
     //saveCallLog(callStorage);
     //$('#callstatus').html('Idle');
     //$('.callinfo').hide();
-    //callStorage = {}; // reset callStorage
+    callStorage = {}; // reset callStorage
     timer = "00:00:00"; //reset the timer
     setTimeout(function () {
         $('#callDuration').html('');
