@@ -2234,6 +2234,7 @@
     <Content Include="MCQTest\ViewResults.aspx" />
     <Content Include="postdata.html" />
     <Content Include="Properties\PublishProfiles\DeveloperProfile.pubxml.user" />
+    <Content Include="Properties\PublishProfiles\TestProfile.pubxml.user" />
     <Content Include="screening-intermediate.aspx" />
     <Content Include="screening-popup.aspx" />
     <Content Include="Scripts\angular-mocks.js" />
@@ -2241,7 +2242,7 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="js\Jquery-mention\data.json" />
     <None Include="Properties\PublishProfiles\DeveloperProfile.pubxml" />
-    <None Include="Properties\PublishProfiles\LocalDev.pubxml" />
+    <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
