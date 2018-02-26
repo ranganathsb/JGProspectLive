@@ -2240,6 +2240,7 @@
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="js\Jquery-mention\data.json" />
+    <None Include="Properties\PublishProfiles\DeveloperProfile.pubxml" />
     <None Include="Properties\PublishProfiles\LocalDev.pubxml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
