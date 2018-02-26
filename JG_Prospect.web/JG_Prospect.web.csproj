@@ -340,6 +340,7 @@
     <Content Include="calendar\Dialog.js" />
     <Content Include="calendar\dot.gif" />
     <Content Include="calendar\Srcalendar.aspx" />
+    <Content Include="callingXML.aspx" />
     <Content Include="changepassword.aspx" />
     <Content Include="Chat\chat-notification.mp3" />
     <Content Include="Chat\chat.css" />
@@ -2553,6 +2554,13 @@
     </Compile>
     <Compile Include="AddResourcesJr.aspx.designer.cs">
       <DependentUpon>AddResourcesJr.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="callingXML.aspx.cs">
+      <DependentUpon>callingXML.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="callingXML.aspx.designer.cs">
+      <DependentUpon>callingXML.aspx</DependentUpon>
     </Compile>
     <Compile Include="Chat\ChatAttachmentUpload.aspx.cs">
       <DependentUpon>ChatAttachmentUpload.aspx</DependentUpon>
