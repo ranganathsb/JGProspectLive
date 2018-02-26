@@ -473,7 +473,7 @@ function callOff(reason) {
     //saveCallLog(callStorage);
     //$('#callstatus').html('Idle');
     //$('.callinfo').hide();
-    callStorage = {}; // reset callStorage
+    //callStorage = {}; // reset callStorage
     timer = "00:00:00"; //reset the timer
     setTimeout(function () {
         $('#callDuration').html('');
