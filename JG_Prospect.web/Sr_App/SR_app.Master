@@ -11,6 +11,7 @@
                         "://" + HttpContext.Current.Request.Url.Authority +
                         HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
 
+
 %>
 <!DOCTYPE html>
 <html data-ng-app="JGApp">
