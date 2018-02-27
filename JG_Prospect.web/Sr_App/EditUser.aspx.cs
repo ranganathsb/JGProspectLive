@@ -5278,7 +5278,7 @@ namespace JG_Prospect
             {
                 Message = note,
                 FileId = null,
-                ChatSourceId = (int)ChatSource.UserChat,
+                ChatSourceId = touchPointSource,
                 UserId = userID,
                 UserProfilePic = "",
                 UserFullname = "",
