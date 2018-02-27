@@ -626,8 +626,8 @@
                     showThrobber: true,
                     throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                     success: function (data, msg) {
-                        $(sender).parent().find('.note-text').val('');
-                        Paging(sender);
+                        $(sender).parents('.notes-inputs').find('.note-text').val('');
+                        //Paging(sender);
                         LoadNotes(sender, txtUid, uid);
                     }
                 });
@@ -658,6 +658,8 @@
                         var nid = getUrlVars()["NID"];
                         if (tuid != undefined && nid!= undefined) {
                             $('.notes-table tr#' + nid).addClass('blink-notes');
+                        }else{
+
                         }
                         //tribute.attach(document.querySelectorAll('.note-text'));
                         tribute.attach(document.getElementById('txt-'+userid));
