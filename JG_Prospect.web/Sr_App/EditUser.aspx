@@ -8,7 +8,7 @@
 <%@ Register Src="~/UserControl/ucStatusChangePopup.ascx" TagPrefix="ucStatusChange" TagName="PoPup" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-
+    
     <script src="../js/Custom/JgPopUp.js" type="text/javascript"></script>
     <link type="text/css" href="../css/flags24.css" rel="Stylesheet" />
     <link href="../css/jquery.timepicker.css" rel="stylesheet" />
@@ -843,7 +843,7 @@
         }
 
         function OverlayPopupUploadBulk() {
-            alert('Successfully imported users and auto-email/sms sent for request for applicant to fill out Hr form http://www.jmgroveconstruction.com/employment.php');
+            alert('Successfully imported users and auto-email/sms sent for request for applicant to fill out Hr form https://www.jmgroveconstruction.com/employment.php');
             document.getElementById('lightUploadBulk').style.display = 'block';
             document.getElementById('fadeUploadBulk').style.display = 'block';
             $("html, body").animate({ scrollTop: 0 }, "slow");
@@ -1050,6 +1050,13 @@
     <link href="../Styles/dd.css" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
+    <%
+    string baseUrl = HttpContext.Current.Request.Url.Scheme +
+                        "://" + HttpContext.Current.Request.Url.Authority +
+                        HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
+
+
+    %>
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
     <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />
     <script type="text/javascript" src="../js/dropzone.js"></script>
@@ -2551,7 +2558,7 @@
 
                             <span ng-class="{'redtext': EditSalesUser.Aggregate < 33, 'greentext': EditSalesUser.Aggregate > 33, 'hide': EditSalesUser.Aggregate == null}">{{EditSalesUser.Aggregate | number:2}}%</span>
                             <br>
-                            <a ng-class="hide" ng-href="http://jmgroveconstruction.com/Resumes/{{EditSalesUser.Resumepath}}" target="_blank">{{EditSalesUser.Resumepath}}</a>
+                            <a ng-class="hide" ng-href="//jmgroveconstruction.com/Resumes/{{EditSalesUser.Resumepath}}" target="_blank">{{EditSalesUser.Resumepath}}</a>
 
                         </td>
                         <td style="width: 17%; text-align: left;">
@@ -2759,13 +2766,13 @@
                     if (isdel == "0") {
                         // alert("if");
                         //alert($("#" + obj));
-                        $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/starred.png?dummy=' + d.getTime());
+                        $("#" + obj).removeAttr("src").prop('src', '<%=baseUrl %>/img/starred.png?dummy=' + d.getTime());
                         $("#" + obj).removeAttr("class").attr('class', 'starimgred');
                         $("#" + obj).removeAttr("alt").attr('alt', bookmarkedUser);
                         $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","1","' + obj + '")')
                     }
                     else {
-                        $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/star.png?dummy=' + d.getTime());
+                        $("#" + obj).removeAttr("src").prop('src', '<%=baseUrl %>/img/star.png?dummy=' + d.getTime());
                         $("#" + obj).removeAttr("class").attr('class', 'starimg');
                         $("#" + obj).removeAttr("alt").attr('alt', bookmarkedUser);
                         $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","0","' + obj + '")')
