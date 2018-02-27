@@ -24,13 +24,13 @@
     <%--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">--%>
     <link href="../css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="../js/mention/recommended-styles.css?v=<%#RandomGUID %>" rel="stylesheet" />
-    <%--<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/redmond/jquery-ui.css" />--%>
+    <%--<link rel="stylesheet" type="text/css" href="://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/redmond/jquery-ui.css" />--%>
 
     <%--<link href="../datetime/js/jquery.ptDayOnlySelect.css" rel="stylesheet" type="text/css" />
     <link href="../datetime/js/jquery.ptTimeOnlySelect.css" rel="stylesheet" type="text/css" />--%>
 
 
-    <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />--%>
+    <%--<link rel="stylesheet" href="://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />--%>
     <link href="../css/jquery-ui.css" rel="stylesheet" />
     <link href="../Content/paging.css?v=<%#RandomGUID %>" rel="stylesheet" />
 
@@ -52,7 +52,7 @@
 
 
     <script src="../Scripts/angular.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-sanitize.js"></script>
+    <script src="://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-sanitize.js"></script>
 
     <script type="text/javascript">
 
@@ -528,7 +528,7 @@
         </div>
     </form>
 
-    <%--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>--%>
+    <%--<script type="text/javascript" src="://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>--%>
     <script src="../js/jquery-ui.js"></script>
     <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyD0X4v7eqMFcWCR-VZAJwEMfb47id9IZao"></script>
     <script type="text/JavaScript" src="../Communication/webphone/js/linkify/linkify.js"></script>
@@ -555,7 +555,7 @@
         }
         $('#searchbutton').click(function () {
             var search_result = $('#qfront').val();
-            window.open('http://www.google.com/search?q=' + search_result);
+            window.open('://www.google.com/search?q=' + search_result);
 
         });
         $(".tableClass tr:even").addClass('even'); //Tables odd & Even
@@ -934,7 +934,7 @@
     <script src="../Content/emoji-picker/lib/js/emoji-picker.js"></script>
     <!-- End emoji-picker JavaScript -->
     <script type="text/javascript" src="../js/dropzone.js"></script>
-    <script type="text/javascript" src="http://s3.amazonaws.com/plivosdk/web/plivo.min.js"></script>
+    <script type="text/javascript" src="://s3.amazonaws.com/plivosdk/web/plivo.min.js"></script>
     <script src="../js/button-action.js"></script>
     <link href="../Content/dialer-call.css" rel="stylesheet">
 
