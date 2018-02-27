@@ -419,6 +419,7 @@ function onMediaPermission(result) {
     if (result) {
         console.log("get media permission");
     } else {
+        console.log(result);
         alert("you don't allow media permission, you can't make a call until you allow it");
     }
 }
