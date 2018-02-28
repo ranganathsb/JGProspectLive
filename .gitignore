@@ -50,4 +50,5 @@ JG_Prospect.web/Employee/
 /JobScheduler/obj/Release
 EmailSchedular/bin/
 JobScheduler/bin/
+WebMail/bin/
 WebMail/obj/
