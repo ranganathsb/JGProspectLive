@@ -17,7 +17,7 @@ namespace JG_Prospect.Chat.Hubs
     // [Authorize]
     public class ChatHub : Hub
     {
-        public void SendChatMessage(string chatGroupId, string message, int chatSourceId, string receiverIds)
+        public void SendChatMessage(string chatGroupId, string message, int chatSourceId, string receiverIds, int? fileId = null)
         {
             try
             {
@@ -31,6 +31,13 @@ namespace JG_Prospect.Chat.Hubs
                 HttpCookie auth_cookie = httpContext.Request.Cookies[Cookies.UserId];
                 if (auth_cookie != null)
                     SenderUserId = Convert.ToInt32(auth_cookie.Value);
+
+                // Check for file attachment
+                if (fileId.HasValue && fileId.Value > 0)
+                {
+                    ChatFile file = ChatBLL.Instance.GetChatFile(fileId.Value);
+                    message = file.DisplayName + ":-:" + file.SavedName;
+                }
                 //add logger
                 ChatBLL.Instance.ChatLogger(chatGroupId, message, chatSourceId, SenderUserId, httpContext.Request.UserHostAddress);
                 DataRow sender = InstallUserBLL.Instance.getuserdetails(SenderUserId).Tables[0].Rows[0];
@@ -41,6 +48,7 @@ namespace JG_Prospect.Chat.Hubs
                 ChatMessage chatMessage = new ChatMessage
                 {
                     Message = message,
+                    FileId = fileId,
                     ChatSourceId = chatSourceId,
                     UserId = SenderUserId,
                     UserProfilePic = pic,
@@ -71,7 +79,7 @@ namespace JG_Prospect.Chat.Hubs
                     {
                         user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
                         user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
-                        user.OnlineAtFormatted = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt.Value).FirstOrDefault().ToEST().ToString();
+                        user.OnlineAtFormatted = user.OnlineAt.HasValue ? user.OnlineAt.Value.ToEST().ToString() : null;
                     }
                 }
 
@@ -157,7 +165,7 @@ namespace JG_Prospect.Chat.Hubs
                     {
                         user.ConnectionIds = newConnections.Where(m => m.UserId == user.UserId).Select(m => m.ConnectionIds).FirstOrDefault();
                         user.OnlineAt = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt).FirstOrDefault();
-                        user.OnlineAtFormatted = newConnections.Where(m => m.UserId == user.UserId).OrderByDescending(m => m.OnlineAt).Select(m => m.OnlineAt.Value).FirstOrDefault().ToEST().ToString();
+                        user.OnlineAtFormatted = user.OnlineAt.HasValue ? user.OnlineAt.Value.ToEST().ToString() : null;
                     }
                 }
                 // Adding each connection into SignalR Group, so that we can send messages to all connected users.
@@ -225,7 +233,24 @@ namespace JG_Prospect.Chat.Hubs
                 return base.OnConnected();
 
             // Update ActiveUsers in SingletonUserChatGroups
-            SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(UserId).Results;
+            var users = ChatBLL.Instance.GetOnlineUsers(UserId).Results;
+            var oldOnlineUers = SingletonUserChatGroups.Instance.ActiveUsers;
+            SingletonUserChatGroups.Instance.ActiveUsers = users;
+            if (SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
+                foreach (var item in oldOnlineUers)
+                {
+                    if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
+                                                    .FirstOrDefault() != null)
+                        SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
+                                                        .FirstOrDefault().Status = item.Status;
+                    if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == UserId).Any())
+                    {
+                        SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == UserId)
+                                                        .First().Status = (int)ChatUserStatus.Active;
+                        SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == UserId)
+                                                       .First().LastActivityAt = DateTime.UtcNow;
+                    }
+                }
             if (ChatProcessor.Instance == null)
             {
                 // Do nothing
@@ -260,8 +285,19 @@ namespace JG_Prospect.Chat.Hubs
 
             SingletonGlobal.Instance.ConnectedClients.Remove(Context.ConnectionId);
 
-            // User is offline
-            SingletonUserChatGroups.Instance.ActiveUsers = ChatBLL.Instance.GetOnlineUsers(user.UserId.Value).Results;
+            // User is offline            
+            // Update ActiveUsers in SingletonUserChatGroups
+            var users = ChatBLL.Instance.GetOnlineUsers(user.UserId.Value).Results;
+            var oldOnlineUers = SingletonUserChatGroups.Instance.ActiveUsers;
+            SingletonUserChatGroups.Instance.ActiveUsers = users;
+            if (SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
+                foreach (var item in oldOnlineUers)
+                {
+                    if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
+                                                    .FirstOrDefault() != null)
+                        SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
+                                                        .FirstOrDefault().Status = item.Status;
+                }
 
             string[] Exceptional = new string[1];
             Exceptional[0] = clientId;
@@ -338,10 +374,16 @@ namespace JG_Prospect.Chat.Hubs
                                                 .FirstOrDefault()
                                                 .Status = status;
                 if (status == (int)ChatUserStatus.Active)
+                {
                     SingletonUserChatGroups.Instance.ActiveUsers
                                                     .Where(m => m.UserId == UserId)
                                                     .FirstOrDefault()
                                                     .LastActivityAt = DateTime.UtcNow;
+                }
+                SingletonUserChatGroups.Instance.ActiveUsers
+                                                .Where(m => m.UserId == UserId)
+                                                .FirstOrDefault()
+                                                .Status = status;
             }
 
             ChatMessageActiveUser obj = new ChatMessageActiveUser();

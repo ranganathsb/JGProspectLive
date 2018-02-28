@@ -24,12 +24,12 @@ namespace JG_Prospect.BLL
             private set {; }
         }
 
-        public ActionOutput<LoginUser> GetUsers(string keyword, string exceptUserIds = null)
+        public ActionOutput<LoginUser> GetUsers(string keyword, string exceptUserIds = null, int? LoggedInUserId = null)
         {
-            return InstallUserDAL.Instance.GetUsers(keyword, exceptUserIds);
+            return InstallUserDAL.Instance.GetUsers(keyword, exceptUserIds, LoggedInUserId);
         }
 
-        
+
 
         public void AddUserNotes(string Notes, int UserID, int AddedByID)
         {
@@ -671,7 +671,7 @@ namespace JG_Prospect.BLL
         public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType, int UserID, string PhoneExtNo, string PhoneISDCode, bool ClearDataBeforInsert)
         {
             return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone, phoneText, phoneType, UserID, PhoneExtNo, PhoneISDCode, ClearDataBeforInsert);
-        }        
+        }
 
         public int AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog, string strGUID, int touchPointSource)
         {
@@ -848,7 +848,7 @@ namespace JG_Prospect.BLL
 
         public int UpdateUsersLastLoginTime(int loginUserID, DateTime LogInTime)
         {
-            return InstallUserDAL.Instance.UpdateUsersLastLoginTime(loginUserID,LogInTime);
+            return InstallUserDAL.Instance.UpdateUsersLastLoginTime(loginUserID, LogInTime);
         }
 
         public int QuickSaveInstallUser(user objInstallUser)

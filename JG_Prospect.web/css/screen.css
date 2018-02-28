@@ -2492,7 +2492,7 @@ input[type='checkbox']:checked.largecheckbox {
 .modal {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    z-index: 9999; /* Sit on top */
     padding-top: 100px; /* Location of the box */
     left: 0;
     top: 0;
@@ -2829,13 +2829,14 @@ ul.auto-complete-users {
     position: absolute;
     height: 10px;
     width: 10px;
-    background: green;
+    background: #f27e00;
     top: 2px;
     right: 2px;
     border-radius: 5px;
 }
  .header-msg .row .user-image .status-icon.active{background: #02a800;}
  .header-msg .row .user-image .status-icon.idle{background: #f27e00;}
+ .header-msg .row .user-image .status-icon.offline{background: #999;}
  .header-msg .row .user-image .installid {
     position: absolute;
     bottom: 3px;

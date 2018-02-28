@@ -42,7 +42,7 @@ namespace JG_Prospect.Sr_App
                 {
                     // Li_Installer.Visible = false;
                 }
-                SetEmailCountersAccess();
+                //SetEmailCountersAccess();
             }
             else
             {
@@ -99,20 +99,20 @@ namespace JG_Prospect.Sr_App
 
         // Created By: Yogesh Keraliya
         // TODO: If user is admin then only show email link as of now.
-        private void SetEmailCountersAccess()
-        {
-            //if (JGSession.UserLoginId == CommonFunction.PreConfiguredAdminUserId)
-            //{
-            hypEmail.HRef = "javascript:window.open('/webmail/checkemail.aspx','mywindow','width=900,height=600')";
-            this.Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "EmailCount", "SetEmailCounts();", true);
-            idPhoneLink.Visible = true;
+        //private void SetEmailCountersAccess()
+        //{
+        //    //if (JGSession.UserLoginId == CommonFunction.PreConfiguredAdminUserId)
+        //    //{
+        //    hypEmail.HRef = "javascript:window.open('/webmail/checkemail.aspx','mywindow','width=900,height=600')";
+        //    this.Page.ClientScript.RegisterStartupScript(this.Page.GetType(), "EmailCount", "SetEmailCounts();", true);
+        //    idPhoneLink.Visible = true;
 
-            //}
-            //else
-            //{
-            //    idPhoneLink.Visible = false;
-            //}
-        }
+        //    //}
+        //    //else
+        //    //{
+        //    //    idPhoneLink.Visible = false;
+        //    //}
+        //}
 
     }
 }

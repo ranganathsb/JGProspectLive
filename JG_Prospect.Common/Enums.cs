@@ -22,8 +22,16 @@
 
     public enum ChatSource
     {
-        UserChat = 1,
-        TaskChat = 2
+        EditUserPage = 1,
+        ITDashboard = 2,
+        InterviewPopup = 3,
+        TouchPointLogPage = 4,
+        ViewSalesUser = 5,
+        ViewApplicantUser = 6,
+        CreateSalesUser = 7,
+        TaskGenerator = 8,
+        TaskChat = 9,
+        UserChat = 10
     }
 
     public enum ChatUserStatus

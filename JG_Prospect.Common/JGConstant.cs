@@ -84,6 +84,8 @@ namespace JG_Prospect.Common
 
         public static string RandomGUID = Guid.NewGuid().ToString();
 
+        public const string ChatFilePath = "~/Chat/Attachments";
+
         #endregion
 
         #region '--Enums--'

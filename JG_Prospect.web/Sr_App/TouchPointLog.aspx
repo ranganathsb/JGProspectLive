@@ -10,7 +10,7 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-    <div class="notes-section" tuid="<%=loggedInUserId %>">
+    <div class="notes-section" tuid="<%=loggedInUserId %>" style="display:none;">
         <div class="notes-popup">
             <div class="heading">
                 <div class="title">User Touch Point Logs</div>
@@ -95,7 +95,7 @@
             ajaxExt({
                 url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
                 type: 'POST',
-                data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + <%=loggedInUserId%> + ' }',
+                data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + <%=loggedInUserId%> + ',chatSourceId:<%=(int)JG_Prospect.Common.ChatSource.EditUserPage%> }',
                 showThrobber: true,
                 throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                 success: function (data, msg) {

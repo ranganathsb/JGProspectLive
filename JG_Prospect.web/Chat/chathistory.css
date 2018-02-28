@@ -1,0 +1,121 @@
+﻿.list .user-row {
+    padding: 2px;
+    width: 99%;
+    float: left;
+    cursor: pointer;
+}
+.list .user-row:hover{background: #ddd;}
+.user-row .profile {
+    float: left;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ddd;
+}
+.user-row .profile img {
+    height: 40px;
+    width: 40px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 4px;
+} .contents {
+    display: inline-block;
+    width: 235px;
+    border-radius: 0px;
+    padding: 2px 0;
+    position: relative;
+    height: 40px;
+    float: left;
+}.top {
+    width: 100%;
+    float: left;
+}.contents .top .name {
+    float: left;
+    width: 100%;
+    padding: 2px 0;
+    color: #000;
+    font-weight: bold;
+        white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}.contents .top .time {
+    float: right;
+    width: 125px;
+    padding: 2px 0;
+    color: #666;
+}.contents .msg-container {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+}.contents .msg-container .tick {
+    float: left;
+}.tick img {
+    width: 16px;
+}.contents .msg-container .msg {
+    float: left;
+    width: 90px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #666;
+    overflow: hidden;
+}
+ .history-section {
+    width: 82%;
+    float: left;
+    margin-left: 10px;
+}
+ .history-section .list {
+    float: left;
+    width: 300px;background: #fff;
+    border: 2px solid #bbb;height: 500px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+ .chats {
+    float: left;
+    width: 740px;
+    background: #fff;
+    border: 2px solid #ccc;
+    padding: 5px;height: 490px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}.chat-row {
+    display: inline-block;
+    width: 100%;
+}.chat-row .profile {
+    width: 40px;
+    height: 60px;float:left;
+}.chat-row .profile img {
+    width: 40px;
+    height: 40px;
+}.chat-row .profile .installid {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    text-align: center;
+    background: #ddd;
+    opacity: 0.6;
+    font-size: 5px;
+    display: none;
+}.chat-row .message {
+    display: inline-block;
+    width: 675px;
+    padding: 2px;
+    color: #fff;
+    font-size: 12px;
+    position: relative;
+}.chat-row .message .msg {
+    padding: 2px 4px;color:#000;
+} .chat-row .message .tick, .chats .chat-row .message .time, .chats .chat-row .message .est {
+    display: inline-block;
+    font-size: 11px;color:#000;
+}.est {
+    color: #A33E3F !important;
+}.time-container {
+    float: right;
+}
+ .name {
+    float: left;
+    width: 100px;
+}

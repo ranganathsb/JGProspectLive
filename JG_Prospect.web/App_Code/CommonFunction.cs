@@ -263,6 +263,10 @@ namespace JG_Prospect.App_Code
             {
                 switch (JGSession.Designation.ToUpper())
                 {
+                    //To add/edit Tasks
+                    case "IT - SR .NET DEVELOPER":
+                    case "IT - SR. PHP DEVELOPER":
+
                     case "ADMIN": // admin
                     case "ADMIN-SALES":
                     case "ADMIN RECRUITER":
@@ -2081,6 +2085,38 @@ namespace JG_Prospect
             set
             {
                 HttpContext.Current.Session["UserInstallId"] = value;
+            }
+        }
+
+        public static string PortalEmail
+        {
+            get
+            {
+                if (HttpContext.Current.Session["PortalEmail"] == null)
+                {
+                    return string.Empty;
+                }
+                return Convert.ToString(HttpContext.Current.Session["PortalEmail"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["PortalEmail"] = value;
+            }
+        }
+
+        public static string PortalEmailPassword
+        {
+            get
+            {
+                if (HttpContext.Current.Session["PortalEmailPassword"] == null)
+                {
+                    return string.Empty;
+                }
+                return Convert.ToString(HttpContext.Current.Session["PortalEmailPassword"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["PortalEmailPassword"] = value;
             }
         }
     }

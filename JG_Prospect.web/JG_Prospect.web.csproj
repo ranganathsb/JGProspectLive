@@ -145,14 +145,6 @@
     <Reference Include="itextsharp.xmlworker">
       <HintPath>External Dependencies\itextsharp.xmlworker.dll</HintPath>
     </Reference>
-    <Reference Include="MailApi, Version=6.0.2.220, Culture=neutral, PublicKeyToken=cd85b70fb26f9fc1, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>External Dependencies\MailApi.dll</HintPath>
-    </Reference>
-    <Reference Include="MailServerApi, Version=5.0.0.0, Culture=neutral, PublicKeyToken=7795db04536a1a7a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>External Dependencies\MailServerApi.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
       <Private>True</Private>
@@ -319,10 +311,6 @@
     <Content Include="bin\Ionic.Zip.dll" />
     <Content Include="bin\itextsharp.dll" />
     <Content Include="bin\itextsharp.xmlworker.dll" />
-    <Content Include="bin\MailApi.dll" />
-    <Content Include="bin\MailServerApi.dll" />
-    <Content Include="bin\Microsoft.Data.Edm.dll" />
-    <Content Include="bin\Microsoft.Data.OData.dll" />
     <Content Include="bin\Microsoft.Owin.dll" />
     <Content Include="bin\Microsoft.Owin.Security.dll" />
     <Content Include="bin\Microsoft.Practices.EnterpriseLibrary.Caching.Database.dll" />
@@ -337,31 +325,14 @@
     <Content Include="bin\Microsoft.Practices.ServiceLocation.dll" />
     <Content Include="bin\Microsoft.Practices.Unity.dll" />
     <Content Include="bin\Microsoft.Practices.Unity.Interception.dll" />
-    <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
-    <Content Include="bin\Microsoft.Web.Mvc.FixedDisplayModes.dll" />
     <Content Include="bin\Mono.Math.dll" />
     <Content Include="bin\Newtonsoft.Json.dll" />
     <Content Include="bin\NReco.PdfGenerator.dll" />
     <Content Include="bin\Org.Mentalis.Security.Cryptography.dll" />
     <Content Include="bin\Owin.dll" />
     <Content Include="bin\System.Net.Http.dll" />
-    <Content Include="bin\System.Net.Http.Formatting.dll" />
     <Content Include="bin\System.Net.Http.WebRequest.dll" />
-    <Content Include="bin\System.Spatial.dll" />
-    <Content Include="bin\System.Web.Helpers.dll" />
-    <Content Include="bin\System.Web.Http.dll" />
-    <Content Include="bin\System.Web.Http.OData.dll" />
-    <Content Include="bin\System.Web.Http.Tracing.dll" />
-    <Content Include="bin\System.Web.Http.WebHost.dll" />
-    <Content Include="bin\System.Web.Mvc.dll" />
-    <Content Include="bin\System.Web.Optimization.dll" />
-    <Content Include="bin\System.Web.Providers.dll" />
-    <Content Include="bin\System.Web.Razor.dll" />
-    <Content Include="bin\System.Web.WebPages.Deployment.dll" />
-    <Content Include="bin\System.Web.WebPages.dll" />
-    <Content Include="bin\System.Web.WebPages.Razor.dll" />
     <Content Include="bin\Telerik.Web.UI.DLL" />
-    <Content Include="bin\WebGrease.dll" />
     <Content Include="calendar\calendar.aspx" />
     <Content Include="calendar\calvis.js" />
     <Content Include="calendar\close.gif" />
@@ -369,9 +340,13 @@
     <Content Include="calendar\Dialog.js" />
     <Content Include="calendar\dot.gif" />
     <Content Include="calendar\Srcalendar.aspx" />
+    <Content Include="callingXML.aspx" />
     <Content Include="changepassword.aspx" />
+    <Content Include="Chat\Attachments\blue-tick.png" />
     <Content Include="Chat\chat-notification.mp3" />
     <Content Include="Chat\chat.css" />
+    <Content Include="Chat\ChatAttachmentUpload.aspx" />
+    <Content Include="Chat\chathistory.css" />
     <Content Include="Chat\chatwindow.html" />
     <Content Include="Chat\initialize.html" />
     <Content Include="ckeditor\adapters\jquery.js" />
@@ -1409,6 +1384,7 @@
     <Content Include="Communication\webphone\sound\rtc_ringtone.wav" />
     <Content Include="Communication\webphone\sound\rtc_ringtone_orig.wav" />
     <Content Include="Communication\webphone\webphone_api.js" />
+    <Content Include="Content\dialer-call.css" />
     <Content Include="Content\emoji-picker\lib\css\emoji.css" />
     <Content Include="Content\emoji-picker\lib\css\emoji.css.map" />
     <Content Include="Content\emoji-picker\lib\img\blank.gif" />
@@ -1582,7 +1558,10 @@
     <Content Include="Database Scripts\JitendraPancholi\executed 8.sql" />
     <Content Include="Database Scripts\JitendraPancholi\executed 9.sql" />
     <Content Include="Database Scripts\JitendraPancholi\executed 10.sql" />
-    <Content Include="Database Scripts\JitendraPancholi\Pending.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\GetUsersByKeyword.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed10.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed11.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\pending.sql" />
     <Content Include="Database Scripts\Kapil\Executed_3.sql" />
     <Content Include="Database Scripts\Kapil\Executed_4.sql" />
     <Content Include="Database Scripts\Kapil\Latest.sql" />
@@ -1944,6 +1923,8 @@
     <Content Include="img\33333.png" />
     <Content Include="img\4444.png" />
     <Content Include="img\ajax-loader.gif" />
+    <Content Include="img\attachment-small.png" />
+    <Content Include="img\attachment.png" />
     <Content Include="img\audio-icon.png" />
     <Content Include="img\Bar.png" />
     <Content Include="img\Bar1.png" />
@@ -2084,6 +2065,7 @@
     <Content Include="js\angular\scripts\TaskSequence-UiGrid.js" />
     <Content Include="js\angular\templates\sequence-header-template.html" />
     <Content Include="js\angular\templates\pager-template.html" />
+    <Content Include="js\button-action.js" />
     <Content Include="js\common-js.js" />
     <Content Include="js\edituser.js" />
     <Content Include="js\flipclock.min.js" />
@@ -2207,6 +2189,8 @@
     <Content Include="js\jquery-2.2.4.min.js" />
     <Content Include="js\Jquery-mention\jquery.mentionsInput.css" />
     <Content Include="js\Jquery-mention\jquery.mentionsInput.js" />
+    <Content Include="js\jquery.caret.js" />
+    <Content Include="js\jquery.dialogextend.min.js" />
     <Content Include="js\jquery.magnific-popup.min.js" />
     <Content Include="js\JCarousel.js" />
     <Content Include="js\jg-common.js" />
@@ -2253,12 +2237,15 @@
     <Content Include="MCQTest\ViewResults.aspx" />
     <Content Include="postdata.html" />
     <Content Include="Properties\PublishProfiles\DeveloperProfile.pubxml.user" />
+    <Content Include="Properties\PublishProfiles\TestProfile.pubxml.user" />
     <Content Include="screening-intermediate.aspx" />
     <Content Include="screening-popup.aspx" />
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="js\Jquery-mention\data.json" />
+    <None Include="Properties\PublishProfiles\DeveloperProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
     <None Include="Scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.6.4.js" />
     <Content Include="Scripts\jquery-1.6.4.min.js" />
@@ -2267,6 +2254,7 @@
     <Content Include="Scripts\jquery.magnific-popup.min.js" />
     <Content Include="Scripts\jquery.maskedinput.min.js" />
     <Content Include="Scripts\jquery.MultiFile.js" />
+    <Content Include="Scripts\jquery.signalR-2.2.0.min.js" />
     <Content Include="Scripts\jquery.signalR-2.2.2.js" />
     <Content Include="Scripts\jquery.signalR-2.2.2.min.js" />
     <Content Include="Scripts\ui-grid.js" />
@@ -2279,6 +2267,7 @@
     <Content Include="Sr_App\AttachQuotes.aspx" />
     <Content Include="Sr_App\CallSheet.aspx" />
     <Content Include="Sr_App\chat.aspx" />
+    <Content Include="Sr_App\ChatHistory.aspx" />
     <Content Include="Sr_App\ConstructionCalendar.aspx" />
     <Content Include="Sr_App\ContractFooter.aspx" />
     <Content Include="Sr_App\Controls\AddProductLinesControl.ascx" />
@@ -2570,6 +2559,20 @@
     <Compile Include="AddResourcesJr.aspx.designer.cs">
       <DependentUpon>AddResourcesJr.aspx</DependentUpon>
     </Compile>
+    <Compile Include="callingXML.aspx.cs">
+      <DependentUpon>callingXML.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="callingXML.aspx.designer.cs">
+      <DependentUpon>callingXML.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Chat\ChatAttachmentUpload.aspx.cs">
+      <DependentUpon>ChatAttachmentUpload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Chat\ChatAttachmentUpload.aspx.designer.cs">
+      <DependentUpon>ChatAttachmentUpload.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Chat\ChatProcessor.cs" />
     <Compile Include="Chat\Hubs\BaseHub.cs" />
     <Compile Include="ckeditor\plugins\uploadimage\ckeditorupload.aspx.cs">
@@ -2671,6 +2674,13 @@
     </Compile>
     <Compile Include="Sr_App\chat.aspx.designer.cs">
       <DependentUpon>chat.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\ChatHistory.aspx.cs">
+      <DependentUpon>ChatHistory.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\ChatHistory.aspx.designer.cs">
+      <DependentUpon>ChatHistory.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\Controls\ucSubTasks.ascx.cs">
       <DependentUpon>ucSubTasks.ascx</DependentUpon>
@@ -3700,7 +3710,6 @@
     <Folder Include="Database Scripts\Dipavali\" />
     <Folder Include="Database Scripts\Jaylem\" />
     <Folder Include="Database Scripts\Shekhar\" />
-    <Folder Include="Employee\ProfilePictures\" />
     <Folder Include="Employee\Resume\" />
     <Folder Include="fileman\aspnet_client\system_web\2_0_50727\" />
     <Folder Include="fileman\aspnet_client\system_web\4_0_30319\" />
@@ -3709,7 +3718,6 @@
     <Folder Include="fileman\Uploads\FLV\" />
     <Folder Include="fileman\Uploads\Images\" />
     <Folder Include="InvoicePdf\" />
-    <Folder Include="Log\" />
     <Folder Include="Resources\" />
     <Folder Include="signalr\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />
@@ -3794,10 +3802,6 @@
     <Content Include="Sr_App\MailDocSample\LIBC.pdf" />
     <Content Include="Sr_App\MailDocSample\LIBC.docx" />
     <Content Include="UserFile\SalesSample.xlsx" />
-    <None Include="Properties\PublishProfiles\DeveloperProfile.pubxml" />
-    <None Include="Properties\PublishProfiles\LivePublish.pubxml" />
-    <None Include="Properties\PublishProfiles\LocalLive.pubxml" />
-    <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Interop.Word">

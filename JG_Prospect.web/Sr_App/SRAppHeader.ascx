@@ -92,11 +92,11 @@
             <li><a href="#" class="red-text">All</a></li>
             <li>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
             <!--Email with # of unread msgs and new font-->
-            <li id="test"><a id="hypEmail" runat="server" style="color: white;" target="_blank">Emails<label id="lblNewCounter" class="badge badge-error">0</label><label id="lblUnRead" class="badge badge-error hide"></label></a></li>
+            <li id="test"><a id="hypEmail" class="clsPhoneLink" onclick="InitiateBlankChat(this, 'email')" runat="server" style="color: white;">Emails<label id="emailUnreadCount" class="badge badge-error">0</label><label id="lblUnRead" class="badge badge-error hide"></label></a></li>
             <li>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
-            <li><a id="idPhoneLink" runat="server" class="clsPhoneLink" onclick="GetPhoneDiv()">Phone / Vmail(0)<label id="lblNewCounter" class="badge badge-error">10</label><label id="lblUnRead" class="badge badge-error hide"></label></a></a></li>
+            <li><a id="idPhoneLink" runat="server" class="clsPhoneLink" onclick="InitiateBlankChat(this, 'phone')">Phone / Vmail(0)<label id="lblNewCounter" class="badge badge-error">10</label><label id="lblUnRead" class="badge badge-error hide"></label></a></a></li>
             <li>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
-            <li><a id="hypChat" href="#" onclick="javascript:OpenChatWindow();">Chat <label id="lblNewCounter" class="badge badge-error">10</label><label class="badge badge-error hide"></label></a></a></li>
+            <li><a id="hypChat" href="#" class="clsPhoneLink" onclick="InitiateBlankChat(this, 'chat');">Chat <label id="chatUnreadCount" style="display:none;" class="badge badge-error"></label><label class="badge badge-error hide"></label></a></a></li>
         </ul>
     </div>
     <div class="header-msg">

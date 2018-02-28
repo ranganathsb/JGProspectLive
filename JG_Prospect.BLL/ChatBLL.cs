@@ -49,9 +49,19 @@ namespace JG_Prospect.BLL
             return ChatDAL.Instance.GetOnlineUsers(LoggedInUserId);
         }
 
-        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId, string receiverIds)
+        public ActionOutput<ActiveUser> GetAllChatHistory()
         {
-            return ChatDAL.Instance.GetChatMessages(ChatGroupId, receiverIds);
+            return ChatDAL.Instance.GetAllChatHistory();
+        }
+
+        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId, string receiverIds, int chatSourceId)
+        {
+            return ChatDAL.Instance.GetChatMessages(ChatGroupId, receiverIds, chatSourceId);
+        }
+
+        public ChatFile GetChatFile(int id)
+        {
+            return ChatDAL.Instance.GetChatFile(id);
         }
 
         public ActionOutput SetChatMessageRead(int ChatMessageId, int ReceiverId)
@@ -67,6 +77,11 @@ namespace JG_Prospect.BLL
         public int GetChatUserCount()
         {
             return ChatDAL.Instance.GetChatUserCount();
+        }
+
+        public int SaveChatFile(string imageName, string newImageName, string contentType)
+        {
+            return ChatDAL.Instance.SaveChatFile(imageName, newImageName, contentType);
         }
 
         public void DeleteChatUser(string ConnectionId)
@@ -116,9 +131,14 @@ namespace JG_Prospect.BLL
         }
 
 
-        public ActionOutput<ChatMessage> GetChatMessages(int userId, int receiverId)
+        public ActionOutput<ChatMessage> GetChatMessages(int userId, int receiverId, int chatSourceId)
         {
-            return ChatDAL.Instance.GetChatMessages(userId, receiverId);
+            return ChatDAL.Instance.GetChatMessages(userId, receiverId, chatSourceId);
+        }
+
+        public ActionOutput<ChatUnReadCount> GetChatUnReadCount(int LoggedInUserId)
+        {
+            return ChatDAL.Instance.GetChatUnReadCount(LoggedInUserId);
         }
     }
 }

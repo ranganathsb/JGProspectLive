@@ -634,7 +634,6 @@
     });
 
     this.$menu.on('click', 'a', function(e) {
-
       self.emojiarea.updateBodyPadding(self.emojiarea.$editor);
       if ($(this).hasClass('emoji-menu-tab')) {
         if (self.getTabIndex(this) !== self.currentCategory) {

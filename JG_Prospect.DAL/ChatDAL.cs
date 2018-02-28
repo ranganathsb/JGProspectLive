@@ -124,6 +124,61 @@ namespace JG_Prospect.DAL
             }
         }
 
+
+        public int SaveChatFile(string imageName, string newImageName, string contentType)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("SaveChatFile");
+                    database.AddInParameter(command, "@DisplayName", DbType.String, imageName);
+                    database.AddInParameter(command, "@SavedName", DbType.String, newImageName);
+                    database.AddInParameter(command, "@Mime", DbType.String, contentType);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return Convert.ToInt32(returndata.Tables[0].Rows[0]["FileId"].ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
+
+        public ChatFile GetChatFile(int id)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetChatFile");
+                    database.AddInParameter(command, "@FileId", DbType.Int32, id);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    if (returndata != null && returndata.Tables.Count > 0 && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        return new ChatFile
+                        {
+                            Id = Convert.ToInt32(returndata.Tables[0].Rows[0]["Id"].ToString()),
+                            DisplayName = returndata.Tables[0].Rows[0]["DisplayName"].ToString(),
+                            Mime = returndata.Tables[0].Rows[0]["Mime"].ToString(),
+                            SavedName = returndata.Tables[0].Rows[0]["SavedName"].ToString()
+                        };
+                    }
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public void ChatLogger(string chatGroupId, string message, int chatSourceId, int UserId, string IP)
         {
             try
@@ -189,9 +244,10 @@ namespace JG_Prospect.DAL
                             users.Add(user);
                         }
                     }
-                    else
+                    userIds.RemoveAll(m => users.Select(x => x.UserId).ToList().Contains(m));
+                    // User if Offline
+                    if (userIds.Count() > 0)
                     {
-                        // User if Offline
                         var usrs = InstallUserDAL.Instance.GetUsersByIds(userIds);
                         if (usrs != null && usrs.Tables[0].Rows.Count > 0)
                         {
@@ -212,12 +268,12 @@ namespace JG_Prospect.DAL
                             }
                         }
                     }
-                    return new ActionOutput<ChatUser>
-                    {
-                        Results = users,
-                        Status = ActionStatus.Successfull
-                    };
                 }
+                return new ActionOutput<ChatUser>
+                {
+                    Results = users,
+                    Status = ActionStatus.Successfull
+                };
             }
             catch (Exception ex)
             {
@@ -378,19 +434,18 @@ namespace JG_Prospect.DAL
                     {
                         foreach (DataRow item in returndata.Tables[0].Rows)
                         {
-                            // DataRow item = returndata.Tables[0].Rows[0];
                             string pic = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
                                                     : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
                             users.Add(new ActiveUser
                             {
                                 UserId = string.IsNullOrEmpty(item["UserId"].ToString()) ? null : (int?)Convert.ToInt32(item["UserId"].ToString()),
-                                //ConnectionId = item["ConnectionId"].ToString(),
                                 GroupOrUsername = item["GroupOrUsername"].ToString(),
-                                //Email = item["Email"].ToString(),
                                 ProfilePic = pic,
                                 UserInstallId = item["UserInstallId"].ToString(),
-                                OnlineAt = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST(),
-                                OnlineAtFormatted = Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString(),
+                                OnlineAt = !string.IsNullOrEmpty(item["OnlineAt"].ToString()) ?
+                                                    (DateTime?)Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST() : null,
+                                OnlineAtFormatted = !string.IsNullOrEmpty(item["OnlineAt"].ToString()) ?
+                                                        Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString() : null,
                                 LastMessage = item["LastMessage"].ToString(),
                                 LastMessageAt = !string.IsNullOrEmpty(item["MessageAt"].ToString()) ?
                                                     (DateTime?)Convert.ToDateTime(item["MessageAt"].ToString()).ToEST() : null,
@@ -399,6 +454,9 @@ namespace JG_Prospect.DAL
                                 IsRead = Convert.ToBoolean(item["IsRead"].ToString()),
                                 ChatGroupId = item["ChatGroupId"].ToString(),
                                 ReceiverIds = item["ReceiverIds"].ToString(),
+                                InstallUserStatusId = !string.IsNullOrEmpty(item["UserStatus"].ToString())
+                                                                ? (int?)Convert.ToInt32(item["UserStatus"].ToString()) : null,
+                                Status = (int)ChatUserStatus.Idle
                             });
                         }
                     }
@@ -524,7 +582,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@ChatGroupId", DbType.String, ChatGroupId);
                     database.AddInParameter(command, "@SenderId", DbType.Int32, message.UserId);
                     database.AddInParameter(command, "@TextMessage", DbType.String, message.Message);
-                    database.AddInParameter(command, "@ChatFileId", DbType.String, null);
+                    database.AddInParameter(command, "@ChatFileId", DbType.String, message.FileId);
                     database.AddInParameter(command, "@ReceiverIds", DbType.String, ReceiverIds);
                     database.ExecuteScalar(command);
                 }
@@ -534,7 +592,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId, string receiverIds)
+        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId, string receiverIds, int chatSourceId)
         {
             try
             {
@@ -545,6 +603,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("GetChatMessages");
                     database.AddInParameter(command, "@ChatGroupId", DbType.String, ChatGroupId);
                     database.AddInParameter(command, "@ReceiverIds", DbType.String, receiverIds);
+                    database.AddInParameter(command, "@ChatSourceId", DbType.Int32, chatSourceId);
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
 
@@ -560,12 +619,14 @@ namespace JG_Prospect.DAL
                                 ChatGroupId = item["ChatGroupId"].ToString(),
                                 UserId = Convert.ToInt32(item["SenderId"].ToString()),
                                 Message = item["TextMessage"].ToString(),
+                                FileId = string.IsNullOrEmpty(item["ChatFileId"].ToString()) ? null : (int?)(Convert.ToInt32(item["ChatFileId"].ToString())),
                                 ChatSourceId = Convert.ToInt32(item["ChatSourceId"].ToString()),
                                 UserProfilePic = pic,
                                 UserInstallId = item["UserInstallId"].ToString(),
                                 UserFullname = item["Fullname"].ToString(),
                                 MessageAt = Convert.ToDateTime(item["CreatedOn"].ToString()),
-                                MessageAtFormatted = Convert.ToDateTime(item["CreatedOn"].ToString()).ToString()
+                                MessageAtFormatted = Convert.ToDateTime(item["CreatedOn"].ToString()).ToString(),
+                                IsRead = Convert.ToBoolean(item["IsRead"].ToString())
                             });
                         }
                     }
@@ -586,7 +647,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public ActionOutput<ChatMessage> GetChatMessages(int userId, int receiverId)
+        public ActionOutput<ChatMessage> GetChatMessages(int userId, int receiverId, int chatSourceId)
         {
             try
             {
@@ -597,6 +658,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("GetChatMessagesByUsers");
                     database.AddInParameter(command, "@UserId", DbType.Int32, userId);
                     database.AddInParameter(command, "@ReceiverId", DbType.Int32, receiverId);
+                    database.AddInParameter(command, "@ChatSourceId", DbType.Int32, chatSourceId);
 
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
@@ -612,13 +674,15 @@ namespace JG_Prospect.DAL
                             {
                                 ChatGroupId = item["ChatGroupId"].ToString(),
                                 UserId = Convert.ToInt32(item["SenderId"].ToString()),
+                                FileId = string.IsNullOrEmpty(item["ChatFileId"].ToString()) ? null : (int?)(Convert.ToInt32(item["ChatFileId"].ToString())),
                                 Message = item["TextMessage"].ToString(),
                                 ChatSourceId = Convert.ToInt32(item["ChatSourceId"].ToString()),
                                 UserProfilePic = pic,
                                 UserInstallId = item["UserInstallId"].ToString(),
                                 UserFullname = item["Fullname"].ToString(),
                                 MessageAt = Convert.ToDateTime(item["CreatedOn"].ToString()),
-                                MessageAtFormatted = Convert.ToDateTime(item["CreatedOn"].ToString()).ToString()
+                                MessageAtFormatted = Convert.ToDateTime(item["CreatedOn"].ToString()).ToString(),
+                                IsRead = Convert.ToBoolean(item["IsRead"].ToString())
                             });
                         }
                     }
@@ -633,6 +697,108 @@ namespace JG_Prospect.DAL
             {
                 return new ActionOutput<ChatMessage>
                 {
+                    Message = ex.Message,
+                    Status = ActionStatus.Error
+                };
+            }
+        }
+
+        public ActionOutput<ChatUnReadCount> GetChatUnReadCount(int loggedInUserId)
+        {
+            try
+            {
+                List<ChatUnReadCount> messages = new List<ChatUnReadCount>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetChatUnReadCount");
+                    database.AddInParameter(command, "@UserId", DbType.Int32, loggedInUserId);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            messages.Add(new ChatUnReadCount
+                            {
+                                UserId = Convert.ToInt32(item["SenderId"].ToString()),
+                                UnReadCount = Convert.ToInt32(item["UnReadCount"].ToString()),
+                            });
+                        }
+                    }
+                    return new ActionOutput<ChatUnReadCount>
+                    {
+                        Results = messages,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<ChatUnReadCount>
+                {
+                    Message = ex.Message,
+                    Status = ActionStatus.Error
+                };
+            }
+        }
+
+        public ActionOutput<ActiveUser> GetAllChatHistory()
+        {
+            try
+            {
+                List<ActiveUser> users = new List<ActiveUser>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetAllChatHistory");
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            // DataRow item = returndata.Tables[0].Rows[0];
+                            string pic = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                    : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
+                            users.Add(new ActiveUser
+                            {
+                                UserId = string.IsNullOrEmpty(item["UserId"].ToString()) ? null : (int?)Convert.ToInt32(item["UserId"].ToString()),
+                                //ConnectionId = item["ConnectionId"].ToString(),
+                                GroupOrUsername = item["GroupOrUsername"].ToString(),
+                                //Email = item["Email"].ToString(),
+                                ProfilePic = pic,
+                                UserInstallId = item["UserInstallId"].ToString(),
+                                OnlineAt = !string.IsNullOrEmpty(item["OnlineAt"].ToString()) ?
+                                                    (DateTime?)Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST() : null,
+                                OnlineAtFormatted = !string.IsNullOrEmpty(item["OnlineAt"].ToString()) ?
+                                                        Convert.ToDateTime(item["OnlineAt"].ToString()).ToEST().ToString() : null,
+                                LastMessage = item["LastMessage"].ToString(),
+                                LastMessageAt = !string.IsNullOrEmpty(item["MessageAt"].ToString()) ?
+                                                    (DateTime?)Convert.ToDateTime(item["MessageAt"].ToString()).ToEST() : null,
+                                LastMessageAtFormatted = !string.IsNullOrEmpty(item["MessageAt"].ToString()) ?
+                                                    Convert.ToDateTime(item["MessageAt"].ToString()).ToEST().ToString() : null,
+                                IsRead = Convert.ToBoolean(item["IsRead"].ToString()),
+                                ChatGroupId = item["ChatGroupId"].ToString(),
+                                ReceiverIds = item["ReceiverIds"].ToString(),
+                            });
+                        }
+                    }
+                    return new ActionOutput<ActiveUser>
+                    {
+                        Results = users,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<ActiveUser>
+                {
+                    Results = new List<ActiveUser>(),
                     Message = ex.Message,
                     Status = ActionStatus.Error
                 };
