@@ -59,7 +59,7 @@
             ajaxExt({
                 url: '/WebServices/JGWebService.asmx/LoadPreviousChat',
                 type: 'POST',
-                data: '{ receiverIds: "' + receiverIds + '", chatGroupId:"' + chatGroupId + '" }',
+                data: '{ receiverIds: "' + receiverIds + '", chatGroupId:"' + chatGroupId + '", chatSourceId:0 }',
                 showThrobber: true,
                 throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                 success: function (data, msg) {

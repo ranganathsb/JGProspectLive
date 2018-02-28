@@ -170,12 +170,13 @@ Go
 	GetChatUnReadCount 3797
 */  
 Create PROCEDURE GetChatUnReadCount
-	@UserId Int
+	@UserId Int,
+	@ChatSourceId Int
 AS      
 BEGIN
 	Select M.SenderId, Count(SenderId) As UnReadCount From ChatMessageReadStatus S With(NoLock)
 	Join ChatMessage M With(NoLock) on S.ChatMessageId = M.Id
-	Where S.ReceiverId = @UserId And S.IsRead = 0
+	Where S.ReceiverId = @UserId And S.IsRead = 0 And M.ChatSourceId = @ChatSourceId
 	Group By SenderId
 End
 

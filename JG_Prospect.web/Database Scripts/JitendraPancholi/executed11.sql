@@ -327,7 +327,7 @@ Go
 CREATE PROCEDURE [dbo].[GetChatMessages]
 	@ChatGroupId varchar(100),
 	@ReceiverIds Varchar(800),
-	@ChatSourceId Int
+	@ChatSourceId Int = 0
 AS    
 BEGIN
 	IF OBJECT_ID('tempdb..#TempChatMessages') IS NOT NULL DROP TABLE #TempChatMessages  
@@ -358,12 +358,24 @@ BEGIN
 
 		Set @Min = @Min + 1
 	End
-	Select S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
-			U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
-			U.UserInstallId, U.Picture, Convert(bit,0) as IsRead
-		From #TempChatMessages S With(NoLock) 
-		Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
-		Where S.SortedChatUserIds = @ReceiverIds And S.ChatGroupId = @ChatSourceId
+	If ISNULL(@ChatSourceId,'0') = '0'
+		Begin
+			Select S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
+				U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
+				U.UserInstallId, U.Picture, Convert(bit,0) as IsRead
+			From #TempChatMessages S With(NoLock) 
+			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
+			Where S.SortedChatUserIds = @ReceiverIds
+		End
+	Else
+		Begin
+			Select S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
+				U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
+				U.UserInstallId, U.Picture, Convert(bit,0) as IsRead
+			From #TempChatMessages S With(NoLock) 
+			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
+			Where S.SortedChatUserIds = @ReceiverIds And S.ChatGroupId = @ChatSourceId
+		End
 END
 
 
