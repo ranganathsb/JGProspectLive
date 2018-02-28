@@ -10,8 +10,6 @@
     string baseUrl = HttpContext.Current.Request.Url.Scheme +
                         "://" + HttpContext.Current.Request.Url.Authority +
                         HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
-
-
 %>
 <!DOCTYPE html>
 <html data-ng-app="JGApp">
