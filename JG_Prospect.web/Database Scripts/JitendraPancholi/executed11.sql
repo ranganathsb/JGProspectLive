@@ -322,7 +322,7 @@ Go
 -- Description: Add offline user to chatuser table
 -- =============================================    
 /*
-	GetChatMessages 'df5efc2d-8189-4763-9014-16c10bf3410c','901,1152,3697,3797,4848'
+	GetChatMessages 'b395e80d-e9d3-41c5-91f9-1219413eae57','901,3797',10
 */
 CREATE PROCEDURE [dbo].[GetChatMessages]
 	@ChatGroupId varchar(100),
@@ -358,23 +358,26 @@ BEGIN
 
 		Set @Min = @Min + 1
 	End
+	--Select * From #TempChatMessages S Where S.SortedChatUserIds = @ReceiverIds And S.ChatSourceId = @ChatSourceId
 	If ISNULL(@ChatSourceId,'0') = '0'
 		Begin
 			Select S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
 				U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
-				U.UserInstallId, U.Picture, Convert(bit,0) as IsRead
+				U.UserInstallId, U.Picture, MS.IsRead
 			From #TempChatMessages S With(NoLock) 
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
+			Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
 			Where S.SortedChatUserIds = @ReceiverIds
 		End
 	Else
 		Begin
 			Select S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
 				U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
-				U.UserInstallId, U.Picture, Convert(bit,0) as IsRead
+				U.UserInstallId, U.Picture, MS.IsRead
 			From #TempChatMessages S With(NoLock) 
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
-			Where S.SortedChatUserIds = @ReceiverIds And S.ChatGroupId = @ChatSourceId
+			Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
+			Where S.SortedChatUserIds = @ReceiverIds And S.ChatSourceId = @ChatSourceId
 		End
 END
 
@@ -493,7 +496,7 @@ Go
 -- Description: Get a list of top 5 users by starts with name, email   
 -- =============================================      
 /*  
-	GetOnlineUsers 901  
+	GetOnlineUsers 3797  
 */  
 Create PROCEDURE GetOnlineUsers  
 	@LoggedInUserId int  
@@ -678,7 +681,7 @@ BEGIN
 			FOR XML PATH('')),4,800)
 		Where UserId IS NULL
 
-		Select * from #OnlineUsersOrGroups Order By /*MessageAt,*/ UserRank Desc
+		Select * from #OnlineUsersOrGroups Order By MessageAt /*UserRank,*/ Desc
 		--Order By Max(M.CreatedOn) Desc
 END
 
@@ -771,7 +774,7 @@ Go
 -- Description: Get a list of top 5 users by starts with name, email   
 -- =============================================      
 /*  
-	GetChatMessagesByUsers 3797,4848
+	GetChatMessagesByUsers 3797,901,10
 	GetChatMessagesByUsers 4848,3797
 */  
 Create PROCEDURE GetChatMessagesByUsers  

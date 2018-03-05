@@ -10,8 +10,6 @@
     string baseUrl = HttpContext.Current.Request.Url.Scheme +
                         "://" + HttpContext.Current.Request.Url.Authority +
                         HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
-
-
 %>
 <!DOCTYPE html>
 <html data-ng-app="JGApp">
@@ -52,7 +50,7 @@
 
 
     <script src="../Scripts/angular.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-sanitize.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-sanitize.js"></script>
 
     <script type="text/javascript">
 
@@ -555,7 +553,7 @@
         }
         $('#searchbutton').click(function () {
             var search_result = $('#qfront').val();
-            window.open('http://www.google.com/search?q=' + search_result);
+            window.open('https://www.google.com/search?q=' + search_result);
 
         });
         $(".tableClass tr:even").addClass('even'); //Tables odd & Even
@@ -600,7 +598,6 @@
                     data: JSON.stringify(objPostDataJSON),
                     asynch: false,
                     success: function (data) {
-                        //console.log(OnSuccessCallBack);
                         HideAjaxLoader();
                         if (typeof (OnSuccessCallBack) === 'function') {
                             OnSuccessCallBack(data);
@@ -608,10 +605,6 @@
                     },
                     error: function (a, b, c) {
                         HideAjaxLoader();
-                        //console.log('jQuery ajax error.');
-                        //console.log(a);
-                        //console.log(b);
-                        //console.log(c);
                         if (typeof (OnErrorCallBack) === 'function') {
                             OnErrorCallBack(a, b, c);
                         }
@@ -636,6 +629,11 @@
         <div class="content-area">
             <div class="column1">
                 <div class="dialer-section">
+                    <div class="header">
+                        <span class="group-name">Phone / VMail Dashboard</span>
+                        <span class="minimize" onclick="minimizePhone(this)">
+                            <img src="../img/min-max.jpg"></span>
+                    </div>
                     <div id="wrapper">
                         <div id="phone">
                             <div id="numberDisplay">
@@ -669,13 +667,18 @@
                                 <span id="callDuration">00:00:00</span>
                             </div>
                         </div>
+                        <div class="call-logs">
+                            <div>
+                                Loading Scrips...
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <%--<div class="user-list-section">
                     <img src="../img/user-list.PNG" />
                 </div>--%>
             </div>
-    <div class="column2">
+            <div class="column2">
                 <div class="email-section">
                     <div class="header">
                         <span class="group-name">Email Dashboard</span>
@@ -683,7 +686,7 @@
                             <img src="../img/min-max.jpg"></span>
                     </div>
                     <%--<img src="../img/inbox.PNG" />--%>
-                    <iframe id="iframe-inbox" src="http://webmail.jmgrovebuildingsupply.com/"></iframe>
+                    <iframe id="iframe-inbox" src="https://web.jmgrovebuildingsupply.com/email/default.aspx"></iframe>
                 </div>
                 <div class="chat-section">
                     <div class="chat-container" id="chat-container">
@@ -726,7 +729,7 @@
         var userTobeAddedIntoChatGroupId = 0;
         var userChatStatus = '<%= (int)JG_Prospect.Common.ChatUserStatus.Active %>';
         var pageTitle = $('head').find('title').html();
-        sendChat = function (e, sender) {
+        sendChat = function (e, sender) {            
             var chatGrpId = $(sender).parents('.chat-box').find('#ChatGroupId').val();
             var receiverIds = $(sender).parents('.chat-box').find('#ReceiverIds').val();
             var chatSourceId = $('#ChatSourceId').val();
@@ -779,8 +782,9 @@
         // Start the connection.
         $.connection.hub.start().done(function () {
             console.log('started...');
+            GetOnlineUsers();
             GetChatUnReadCount();
-            chat.server.getOnlineChatUsers();
+            //chat.server.getOnlineChatUsers();
             // logic to open chat popup as per query string
             var RcvrID = getUrlVars()["RcvrID"];
             var chatGroupId = getUrlVars()["CGID"];
@@ -799,6 +803,7 @@
             var id = data.Message.split('`')[0];
             var name = data.Message.split('`')[1];
             var receiverIds = data.Message.split('`')[2];
+            var senderId = data.Message.split('`')[3];
             var chatSourceId = data.Object.ChatSourceId;
             var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
                                         '<div class="header"><span class="group-name">' + name +
@@ -817,13 +822,14 @@
             if ($('.all-chats').find('#' + id) != undefined)
                 if ($('.all-chats').find('#' + id).length <= 0) {
                     $('.all-chats').html(strChat);
-                    LoadPreviousChat(this, id, receiverIds, chatSourceId);
+                    LoadPreviousChat(this, id, receiverIds + ',' + senderId, chatSourceId);
                     InitializeEmoji();
                 }
-
+           
             // Show chat popup
             $('.telecom-dashboard-popup').show();
             $('.overlay').show();
+            $('#ChatSourceId').val(chatSourceId);
             // Calculate Center
             var sW = $(window).width();
             var pW = $('.telecom-dashboard-popup').width();
@@ -853,7 +859,7 @@
             $('.chat-box#' + id + ' .chats').append(str);
             //$('.chat-box .chats').scrollTop(d.prop("scrollHeight"));
             $('.chat-box#' + id + ' .chats').animate({ scrollTop: $('.chat-box#' + id + ' .chats').prop("scrollHeight") }, 500);
-            
+
             $('audio.chat-notification-sound').remove();
             if (loggedInUserId != data.Object.UserId) {
                 $('body').append('<audio autoplay class="chat-notification-sound"><source src="../Chat/chat-notification.mp3"><source src="../Chat/chat-notification.ogg"></audio>');
@@ -878,10 +884,11 @@
             }
         };
         chat.client.onConnectedCallback = function (data) {
-            bindChatUsers(data);
+            //console.log(data);
+            GetOnlineUsers();
         }
         chat.client.onDisconnectedCallback = function (data) {
-            bindChatUsers(data);
+            GetOnlineUsers();
         }
         chat.client.setChatUserStatusToIdleCallback = function (data) {
             bindChatUsers(data);
@@ -934,17 +941,17 @@
     <script src="../Content/emoji-picker/lib/js/emoji-picker.js"></script>
     <!-- End emoji-picker JavaScript -->
     <script type="text/javascript" src="../js/dropzone.js"></script>
-    <script type="text/javascript" src="http://s3.amazonaws.com/plivosdk/web/plivo.min.js"></script>
+    <script type="text/javascript" src="https://s3.amazonaws.com/plivosdk/web/plivo.min.js"></script>
     <script src="../js/button-action.js"></script>
     <link href="../Content/dialer-call.css" rel="stylesheet">
 
     <script type="text/javascript">
         function LoadPreviousChat(sender, chatGroupId, receiverIds, chatSourceId) {
             ajaxExt({
-                url: '/WebServices/JGWebService.asmx/InitiateChat',
+                url: '/WebServices/JGWebService.asmx/LoadPreviousChat',
                 type: 'POST',
-                data: '{ receiverIds: "' + receiverIds + '", chatGroupId:"' + chatGroupId + ', chatSourceId:' + chatSourceId + '" }',
-                showThrobber: true,
+                data: '{ receiverIds: "' + receiverIds + '", chatGroupId:"' + chatGroupId + '", chatSourceId:' + chatSourceId + ' }',
+                showThrobber: false,
                 throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                 success: function (data, msg) {
                     var loggedInUserId = getCookie('<%=JG_Prospect.Common.Cookies.UserId%>');
@@ -956,7 +963,7 @@
                         if (fileid != undefined && fileid != null && fileid != '') {
                             msg = '<a href="/chat/attachments/' + msg.split(':')[1] + '" target="_black">' + msg.split(':')[0] + '</a>';
                         }
-                        var tickColor = data.Object.ChatMessages[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
+                        var tickColor = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
                         str += '<div class="chat-row ' + senderReceiver + '" userid="' + data.Results[i].UserId + '"><div class="profile">' +
                                         '<img src="<%=baseUrl %>' + data.Results[i].UserProfilePic + '" title="' + data.Results[i].UserFullname + '" />' +
                                         '<div class="status-icon"></div><div class="installid">' +
@@ -1071,7 +1078,7 @@
                                         '<div class="installid"><a href="#">' + data.Results[i].UserInstallId + '</a></div>') +
                                     '</div>' +
                                     '<div class="contents" online-at="' + data.Results[i].OnlineAtFormatted + '">' +
-                                        '<div class="top"><div class="name">' + data.Results[i].GroupOrUsername + '</div><div class="time">' + (data.Results[i].LastMessageAtFormatted == null ? '' : data.Results[i].LastMessageAtFormatted.split(' ')[0]) + '</div></div>' +
+                                        '<div class="top"><div class="name">' + data.Results[i].GroupOrUsername + ' - <a href="#" title="<%=baseUrl%>Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '">' + data.Results[i].UserInstallId + '</a></div><div class="time">' + (data.Results[i].LastMessageAtFormatted == null ? '' : data.Results[i].LastMessageAtFormatted.split(' ')[0]) + '</div></div>' +
                                         '<div class="msg-container">' +
                                             (data.Results[i].LastMessageAtFormatted == null ? '' :
                                             '<div class="tick"><img src="../img/' + clr + '-tick.png"></div>') +
@@ -1097,7 +1104,7 @@
 		                            '<div class="installid"><a href="#">' + data.Results[i].UserInstallId + '</a></div>') +
                                 '</div>' +
 	                            '<div class="contents">' +
-		                            '<div class="top"><div class="name">' + data.Results[i].GroupOrUsername + '</div><div class="time">' + (data.Results[i].LastMessageAtFormatted == null ? '' : data.Results[i].LastMessageAtFormatted.split(' ')[0]) + '</div></div>' +
+		                            '<div class="top"><div class="name">' + data.Results[i].GroupOrUsername + ' - <a href="#" title="<%=baseUrl%>Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '">' + data.Results[i].UserInstallId + '</a></div><div class="time">' + (data.Results[i].LastMessageAtFormatted == null ? '' : data.Results[i].LastMessageAtFormatted.split(' ')[0]) + '</div></div>' +
 		                            '<div class="msg-container">' +
                                         (data.Results[i].LastMessageAtFormatted == null ? '' :
 			                            '<div class="tick"><img src="../img/' + clr + '-tick.png"></div>') +
@@ -1183,16 +1190,9 @@
                 thumbnailHeight: 30,
                 init: function () {
                     dzClosure = this;
-
                     this.on("maxfilesexceeded", function (data) {
                         alert('you are reached maximum attachment upload limit.');
                     });
-
-                        <%--this.on("drop", function (data) {
-                            //alert(taskId);
-                            $('#<%=hdDropZoneTaskId.ClientID%>').val(taskId);
-                        });--%>
-
                     // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
                     this.on("success", function (file, response) {
                         // Success coding goes here
@@ -1236,6 +1236,7 @@
                 $('.popup-title').html('Email Dashboard');
             }
         }
+
         $('.telecom-dashboard-popup').draggable({ handle: "div.header" })
                                      .resizable({
                                          stop: function (event, ui) {
@@ -1300,6 +1301,39 @@
             });
         }
 
+        function GetPhoneScripts(sender) {
+            ajaxExt({
+                url: '/WebServices/JGWebService.asmx/GetPhoneScripts',
+                type: 'POST',
+                data: '{strScriptId:0}',
+                showThrobber: false,
+                throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                success: function (data, msg) {
+                    var str = '';
+                    $.each(data.Results, function (i) {
+                        str += '<div class="row"><div class="title" onclick="showhideScript(this);">' + data.Results[i].Title + '</div><div class="desc">' + data.Results[i].DescriptionPlain + '</div></div>';
+                    });
+                    $('.call-logs').html(str);
+                }
+            });
+        }
+
+        function GetOnlineUsers() {
+            ajaxExt({
+                url: '/WebServices/JGWebService.asmx/InitiateBlankChat',
+                type: 'POST',
+                data: '{}',
+                showThrobber: false,
+                throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
+                success: function (data, msg) {
+                    var obj = {
+                        Object: { ActiveUsers: data.Results }
+                    };
+                    bindChatUsers(obj);
+                }
+            });
+        }
+
         function InitiateBlankChat(sender, box) {
             ajaxExt({
                 url: '/WebServices/JGWebService.asmx/InitiateBlankChat',
@@ -1329,15 +1363,38 @@
                             $('.telecom-dashboard-popup').find('.popup-title').html('Chat Dashboard');
                             break;
                         case 'phone':
+                            GetPhoneScripts(sender);
                             $('.telecom-dashboard-popup').removeClass('fullscreen-email');
                             $('.telecom-dashboard-popup').removeClass('fullscreen-chat');
-                            //$('.telecom-dashboard-popup').find('.popup-title').html('Chat Dashboard');
+                            $('.telecom-dashboard-popup').find('.popup-title').html('Phone / VMail Dashboard');
+                            break;
+                        case 'all':
+                            $('.telecom-dashboard-popup').removeClass('fullscreen-email');
+                            $('.telecom-dashboard-popup').removeClass('fullscreen-chat');
+                            $('.telecom-dashboard-popup').find('.popup-title').html('All Telecom Dashboard');
                             break;
                     }
                 }
             });
         }
-    </script>
 
-    </body>
-    </html>
+        function showhideScript(sender) {
+            if ($(sender).parent().find('.desc').is(':visible')) {
+                $(sender).parent().find('.desc').slideUp();
+            } else {
+                $(sender).parent().find('.desc').slideDown();
+            }
+        }
+
+        function minimizePhone(sender) {
+            if ($('.call-logs').is(':visible')) {
+                $('.call-logs').hide();
+            } else {
+                $('.call-logs').show();
+                $('.telecom-dashboard-popup').find('.popup-title').html('Phone / Vmail Dashboard');
+            }
+        }
+    </script>
+</body>
+
+</html>

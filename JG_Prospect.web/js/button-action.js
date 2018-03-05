@@ -483,5 +483,5 @@ function callOff(reason) {
     timer = "00:00:00"; //reset the timer
     setTimeout(function () {
         $('#callDuration').html('');
-    },3000);
+    }, 3000);
 }

@@ -1780,9 +1780,9 @@
                         <span id="lblUserStatus">User & Task Status</span><span style="color: red">*</span></td>
                     <td>
                         <span id="lblAddedBy">Users</span></td>
-                    <td style="width: 250px">
+                    <td style="width:250px">
                         <span id="lblSourceH">Saved Report</span></td>
-                    <td style="width: 380px">
+                    <td style="width:380px">
                         <span id="Label2">Select Period</span>
                     </td>
                     <td>Search</td>
@@ -1850,7 +1850,7 @@
                         </select><span id="lblLoading" style="display: none">Loading...</span>
                     </td>
                     <td></td>
-                    <td style="text-align: left; text-wrap: avoid; padding: 0px">
+                    <td style="text-align: left; text-wrap: avoid; padding:0px">
                         <div style="float: left; width: 57%;">
                             <input class="chkAllDates" name="chkAllDates" type="checkbox"><label for="chkAllDates">All</label>
                             <input class="chkOneYear" name="chkOneYear" type="checkbox"><label for="chkOneYear">1 year</label>
@@ -1865,17 +1865,16 @@
                             <asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="dateFrom"
                                 onkeypress="return false" MaxLength="10"
                                 Style="width: 80px;"></asp:TextBox>
-                                <cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
-                                </cc1:CalendarExtender>
-                                <br />
+                            <cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
+                            </cc1:CalendarExtender><br />
                             </span>
 
                             <span id="Label4">To :*
                             <asp:TextBox ID="txtTodate" CssClass="dateTo" onkeypress="return false"
                                 MaxLength="10" runat="server" TabIndex="3"
-                                Style="width: 80px; margin-left: 16px;"></asp:TextBox>
-                                <cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
-                                </cc1:CalendarExtender>
+                                Style="width: 80px;margin-left: 16px;"></asp:TextBox>
+                            <cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
+                            </cc1:CalendarExtender>
                             </span>
 
                             <span id="requirefrmdate" style="color: Red; visibility: hidden;">Select From date</span><span id="Requiretodate" style="color: Red; visibility: hidden;"> Select To date</span>
@@ -1897,16 +1896,17 @@
                     </td>
                 </tr>
                 <tr style="background-color: #000; color: white; font-weight: bold; text-align: center;">
-                    <td style="width: 34%">
+                    <td style="width:34%">
                         <span>Saved Report</span></td>
-                    <td style="width: 33%">
+                    <td style="width:33%">
                         <span>Select Period</span>
                     </td>
-                    <td style="width: 33%">Search</td>
+                    <td style="width:33%">
+                        Search</td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td style="text-align: left; text-wrap: avoid; padding: 0px">
+                    <td style="text-align: left; text-wrap: avoid; padding:0px">
                         <div style="float: left; width: 57%;">
                             <input class="chkAllDates" name="chkAllDates" type="checkbox"><label for="chkAllDates">All</label>
                             <input class="chkOneYear" name="chkOneYear" type="checkbox"><label for="chkOneYear">1 year</label>
@@ -1921,17 +1921,16 @@
                             <asp:TextBox ID="TextBox1" runat="server" TabIndex="2" CssClass="dateFrom"
                                 onkeypress="return false" MaxLength="10"
                                 Style="width: 80px;"></asp:TextBox>
-                                <cc1:CalendarExtender ID="CalendarExtender1" runat="server" TargetControlID="TextBox1">
-                                </cc1:CalendarExtender>
-                                <br />
+                            <cc1:CalendarExtender ID="CalendarExtender1" runat="server" TargetControlID="TextBox1">
+                            </cc1:CalendarExtender><br />
                             </span>
 
                             <span>To :*
                             <asp:TextBox ID="TextBox2" CssClass="dateTo" onkeypress="return false"
                                 MaxLength="10" runat="server" TabIndex="3"
-                                Style="width: 80px; margin-left: 16px;"></asp:TextBox>
-                                <cc1:CalendarExtender ID="CalendarExtender3" runat="server" TargetControlID="TextBox2">
-                                </cc1:CalendarExtender>
+                                Style="width: 80px;margin-left: 16px;"></asp:TextBox>
+                            <cc1:CalendarExtender ID="CalendarExtender3" runat="server" TargetControlID="TextBox2">
+                            </cc1:CalendarExtender>
                             </span>
 
                             <span id="requirefrmdate" style="color: Red; visibility: hidden;">Select From date</span><span id="Requiretodate" style="color: Red; visibility: hidden;"> Select To date</span>
@@ -1953,23 +1952,28 @@
             <div id="taskSequenceTabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
                 <div id="StaffTask">
                     <div id="tblStaffSeq" class="div-table tableSeqTask">
-                        <div>
-                            <div style="float: left; padding-top: 10px; margin-right: 1.7%; /*margin-bottom: -40px; */">
-                                <span id="lblFrom">{{pageFrom}}</span>&nbsp;<span id="ContentPlaceHolder1_Label5">to</span>&nbsp;
+                        <div style="float: left; padding-top: 10px; margin-right: 1.7%; /*margin-bottom: -40px; */">
+                            <span id="lblFrom">{{pageFrom}}</span>&nbsp;<span id="ContentPlaceHolder1_Label5">to</span>&nbsp;
                             <span id="lblTo" style="color: #19ea19">{{pageTo}}</span>
-                                <span id="lblof">of</span>
-                                <span id="lblCount" style="color: red;">{{pageOf}}</span>
-                                <span id="lblselectedchk" style="font-weight: bold;"></span>
-                                <img src="/img/refresh.png" class="refresh" id="refreshInProgTasks">
-                            </div>
+                            <span id="lblof">of</span>
+                            <span id="lblCount" style="color: red;">{{pageOf}}</span>
+                            <span id="lblselectedchk" style="font-weight: bold;"></span>
+                            <img src="/img/refresh.png" class="refresh" id="refreshInProgTasks">
+                        </div>
+                        <div ng-show="loader.loading" style="align-content: center;width: 90%;text-align: center;" class="">                            
+                            <img src="../img/ajax-loader.gif" style="vertical-align:middle">Please Wait...
+                        </div>
+                        <div>
                             <div style="width:80%; max-height: 200px; overflow: auto; float: right; margin-top: 20px;">
                                 <div id="accordion">
                                     <h2>&nbsp;<strong>How to commit your work</strong></h2>
                                     <div>
                                         <p class="MsoNormal" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal">
                                             <br />
-                                            <span style="font-size: 10pt;">Dear User,
-                                        In order to commit your work, You will need to complete your task assigned after completing and performing proper QA, Commit your Task on Test site.</span>
+                                            <span style="font-size: 10pt;">
+                                                Dear User,
+                                                In order to commit your work, You will need to complete your task assigned after completing and performing proper QA, Commit your Task on Test site.
+                                            </span>
                                         </p>
                                         <p class="MsoNormal" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal"><span style="font-size: 10pt;">To complete your task, you will need Environment in your local machine as described below.</span></p>
                                         <p class="MsoNormal" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal"><span style="font-size: 10pt;">Please follow below steps:</span></p>
@@ -1985,9 +1989,9 @@
                                         </p>
                                         <p class="MsoNormal" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">2) Download &amp; Setup source code from Our GitHub repository.<o:p /></span></p>
                                         <p class="MsoNormal" style="margin-bottom: 0.0001pt; line-height: normal; margin-left: 40px;"><span style="font-size: 10pt; font-family: verdana, sans-serif;">To do that below are the steps:<o:p /></span></p>
-                                        <p class="MsoNormal" style="margin-bottom: 0.0001pt; line-height: normal; margin-left: 40px;"><span style="font-size: 10pt; font-family: verdana, sans-serif;">a)&nbsp;<o:p /></span><span style="font-size: 13.3333px;">Clone the&nbsp;</span><a href="https://github.com/jmgrove2016/JGInterview" target="_blank" style="font-size: 13.3333px;"><span style="color: blue;">Interview Repository</span></a><span style="font-size: 13.3333px;">.&nbsp;If you are new to using Source Tree with Github, Watch our help video from&nbsp;</span><a href="http://web.jmgrovebuildingsupply.com/Tutorials/SourceTree/GithubRepositorySetup.mp4" target="_blank" style="font-size: 13.3333px;">here</a><span style="font-size: 13.3333px;">.&nbsp;</span></p>
+                                        <p class="MsoNormal" style="margin-bottom: 0.0001pt; line-height: normal; margin-left: 40px;"><span style="font-size: 10pt; font-family: verdana, sans-serif;">a)&nbsp;<o:p /></span><span style="font-size: 13.3333px;">Clone the&nbsp;</span><a href="https://github.com/jmgrove2016/JGInterview" target="_blank" style="font-size: 13.3333px;"><span style="color: blue;">Interview Repository</span></a><span style="font-size: 13.3333px;">.&nbsp;If you are new to using Source Tree with Github, Watch our help video from&nbsp;</span><a href="//web.jmgrovebuildingsupply.com/Tutorials/SourceTree/GithubRepositorySetup.mp4" target="_blank" style="font-size: 13.3333px;">here</a><span style="font-size: 13.3333px;">.&nbsp;</span></p>
                                         <p class="MsoNormal" style="margin-bottom: 0.0001pt; line-height: normal; margin-left: 40px;"><span style="font-size: 13.3333px;">&nbsp; &nbsp; &nbsp; &nbsp;<span style="color: #ff0000;">Note:</span>&nbsp;</span><span style="font-size: 8pt; color: #ff0000;">In help Video, We have taken </span><span style="font-size: 8pt; font-weight: bold; color: #ff0000;">JGProspectLive</span><span style="font-size: 8pt; color: #ff0000;"> Repository example.</span></p>
-                                        <p class="MsoNormal" style="margin-bottom: 0.0001pt; line-height: normal; margin-left: 40px;"><span style="font-size: 10pt;">b) Provide your Valid Github account while setting up code into your local system, which you have given at time of Accepting Technical Task from </span>Aptitude<span style="font-size: 10pt;">&nbsp;Success popup(Access to your github username you entered into success popup&nbsp;</span><span style="font-size: 13.3333px;">has already given&nbsp;</span><span style="font-size: 10pt;">&nbsp;automatically to work on our repository on github). Refer this </span><a href="http://web.jmgrovebuildingsupply.com/Resources/Help-Images/Success-Popup.png" target="_blank" style="font-size: 10pt;">image</a>&nbsp;<span style="font-size: 10pt;">for more clear understanding.</span></p>
+                                        <p class="MsoNormal" style="margin-bottom: 0.0001pt; line-height: normal; margin-left: 40px;"><span style="font-size: 10pt;">b) Provide your Valid Github account while setting up code into your local system, which you have given at time of Accepting Technical Task from </span>Aptitude<span style="font-size: 10pt;">&nbsp;Success popup(Access to your github username you entered into success popup&nbsp;</span><span style="font-size: 13.3333px;">has already given&nbsp;</span><span style="font-size: 10pt;">&nbsp;automatically to work on our repository on github). Refer this </span><a href="//web.jmgrovebuildingsupply.com/Resources/Help-Images/Success-Popup.png" target="_blank" style="font-size: 10pt;">image</a>&nbsp;<span style="font-size: 10pt;">for more clear understanding.</span></p>
                                         <p class="MsoNormal" style="margin-bottom: 0.0001pt; line-height: normal; margin-left: 40px;">
                                             <span style="font-size: 10pt; font-family: verdana, sans-serif;">
                                                 <o:p />
@@ -1996,24 +2000,25 @@
                                         <p class="MsoNormal" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;<o:p /></span></p>
                                         <p class="MsoNormal" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">3) Setup the development environment.</span></p>
                                         <p class="MsoNormal" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal"></p>
-                                        <p class="MsoNormal" style="margin-bottom: 0.0001pt; line-height: normal; margin-left: 40px;"><span style="font-size: 10pt;">a) Create your own branch on our repository to work on your tech task before you start coding on your assigned&nbsp;</span>Tech Task<span style="font-size: 10pt;">.&nbsp;</span><span style="font-size: 13.3333px;">If you are new to work with Github and don't know how to create your own branch, Watch our help video from&nbsp;</span><a href="http://web.jmgrovebuildingsupply.com/Tutorials/SourceTree/HowtoCreateOwnBranch.mp4" target="_blank" style="font-size: 13.3333px;">here</a><span style="font-size: 13.3333px;">.</span></p>
+                                        <p class="MsoNormal" style="margin-bottom: 0.0001pt; line-height: normal; margin-left: 40px;"><span style="font-size: 10pt;">a) Create your own branch on our repository to work on your tech task before you start coding on your assigned&nbsp;</span>Tech Task<span style="font-size: 10pt;">.&nbsp;</span><span style="font-size: 13.3333px;">If you are new to work with Github and don't know how to create your own branch, Watch our help video from&nbsp;</span><a href="//web.jmgrovebuildingsupply.com/Tutorials/SourceTree/HowtoCreateOwnBranch.mp4" target="_blank" style="font-size: 13.3333px;">here</a><span style="font-size: 13.3333px;">.</span></p>
                                         <p class="MsoNormal" style="margin-bottom: 0.0001pt; line-height: normal; margin-left: 40px;">
-                                            <span style="font-size: 10pt; font-family: verdana, sans-serif;">b) Please use connection string from web.config file of web project to connect to database.<br />
+                                            <span style="font-size: 10pt; font-family: verdana, sans-serif;">
+                                                b) Please use connection string from web.config file of web project to connect to database.<br />
                                                 <br />
                                             </span>
                                         </p>
                                         <p class="MsoNormal" style="margin-bottom: 0.0001pt; line-height: normal; margin-left: 40px;"><span style="font-size: 10pt; font-family: verdana, sans-serif;">c) Use any user from database to login into system in your local development environment. Don't try to use your own username you are using in live website because both environment are different and your username created in live is not in local environment.<o:p /></span></p>
                                         <p class="MsoNormal" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">&nbsp;<o:p /></span></p>
-                                        <p class="MsoNormal" style="mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; line-height: normal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">4) Log back into to&nbsp;<a href="http://web.jmgrovebuildingsupply.com/" target="_blank"><span style="color: blue">web.jmgrovebuildingsupply.com</span></a>, it will take you to&nbsp; IT dashboard page where you can see task assigned to you.&nbsp;</span></p>
-                                        <p class="MsoNormal" style="line-height: normal; margin-left: 40px;">a) From ITDashborad, Click on TaskLink and New Task Detail page will be open, and Task Assigned to you will be Highlighted and Blinking in Yellow. Click <a href="http://web.jmgrovebuildingsupply.com/Resources/Help-Images/ITDashboard-InterviewUser.png" target="_blank">Here</a>&nbsp;for more detail image.</p>
+                                        <p class="MsoNormal" style="mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; line-height: normal"><span style="font-size: 10pt; font-family: verdana, sans-serif;">4) Log back into to&nbsp;<a href="//web.jmgrovebuildingsupply.com/" target="_blank"><span style="color: blue">web.jmgrovebuildingsupply.com</span></a>, it will take you to&nbsp; IT dashboard page where you can see task assigned to you.&nbsp;</span></p>
+                                        <p class="MsoNormal" style="line-height: normal; margin-left: 40px;">a) From ITDashborad, Click on TaskLink and New Task Detail page will be open, and Task Assigned to you will be Highlighted and Blinking in Yellow. Click <a href="//web.jmgrovebuildingsupply.com/Resources/Help-Images/ITDashboard-InterviewUser.png" target="_blank">Here</a>&nbsp;for more detail image.</p>
                                         <p class="MsoNormal" style="line-height: normal; margin-left: 40px;">b) Read Task Requirements and Instructions Carefully before you jump over to code.</p>
-                                        <p class="MsoNormal" style="line-height: normal; margin-left: 40px;">c) Keep track of your database related changes into separate SQL file into Your Name Folder created under Database Script folder into Solution.&nbsp;<span style="font-size: 13.3333px;">Click&nbsp;</span><a href="http://web.jmgrovebuildingsupply.com/Resources/Help-Images/Database-Files-Interview.png" target="_blank" style="font-size: 13.3333px;">Here</a><span style="font-size: 13.3333px;">&nbsp;for more detail image.</span></p>
+                                        <p class="MsoNormal" style="line-height: normal; margin-left: 40px;">c) Keep track of your database related changes into separate SQL file into Your Name Folder created under Database Script folder into Solution.&nbsp;<span style="font-size: 13.3333px;">Click&nbsp;</span><a href="//web.jmgrovebuildingsupply.com/Resources/Help-Images/Database-Files-Interview.png" target="_blank" style="font-size: 13.3333px;">Here</a><span style="font-size: 13.3333px;">&nbsp;for more detail image.</span></p>
                                         <p class="MsoNormal" style="line-height: normal; margin-left: 40px;">d) After completing Task, <span style="color: #ff0000;">Make sure you have tested it thoroughly on your local environment by comparing word to word of Task Description with your completed task. Incomplete/Poorly Tested Task submission increase chances of your rejection for position you have applied.</span></p>
                                         <p class="MsoNormal" style="line-height: normal; margin-left: 40px;"></p>
                                         <p class="MsoNormal" style="mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; line-height: normal">
                                             <br />
                                         </p>
-                                        <p class="MsoNormal" style="mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; line-height: normal">5) Once You are satisfied with your code, Commit and Push it to remote repository. If you don't know how to commit on GitHub remote repository using Source Tree click on our help video <a href="http://web.jmgrovebuildingsupply.com/Tutorials/SourceTree/HowtoCommitChangesToGithub.mp4" target="_blank">Here</a>.</p>
+                                        <p class="MsoNormal" style="mso-margin-top-alt: auto; mso-margin-bottom-alt: auto; line-height: normal">5) Once You are satisfied with your code, Commit and Push it to remote repository. If you don't know how to commit on GitHub remote repository using Source Tree click on our help video <a href="//web.jmgrovebuildingsupply.com/Tutorials/SourceTree/HowtoCommitChangesToGithub.mp4" target="_blank">Here</a>.</p>
                                         <p class="MsoNormal" style="line-height: normal; margin-left: 40px;">
                                             <br />
                                         </p>
@@ -2028,7 +2033,8 @@
                                             </span>
                                         </p>
                                         <p class="MsoNormal" style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal">
-                                            <span style="font-size: 10pt; font-family: verdana, sans-serif; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">NOTE: Please have a look at advanced concepts listed here,&nbsp;</span><span style="font-size: 12.0pt; font-family: times new roman,serif; mso-fareast-font-family: times new roman"><a href="https://docs.microsoft.com/en-gb/aspnet/web-forms/" target="_self"><span style="font-size: 10.0pt; font-family: verdana,sans-serif; color: blue">https://docs.microsoft.com/en-gb/aspnet/web-forms/</span></a></span><span style="font-size: 10pt; font-family: verdana, sans-serif; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">&nbsp;in order to work faster and efficient with software currently we have.</span><span style="font-size: 10pt; font-family: verdana, sans-serif;"><br />
+                                            <span style="font-size: 10pt; font-family: verdana, sans-serif; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">NOTE: Please have a look at advanced concepts listed here,&nbsp;</span><span style="font-size: 12.0pt; font-family: times new roman,serif; mso-fareast-font-family: times new roman"><a href="https://docs.microsoft.com/en-gb/aspnet/web-forms/" target="_self"><span style="font-size: 10.0pt; font-family: verdana,sans-serif; color: blue">https://docs.microsoft.com/en-gb/aspnet/web-forms/</span></a></span><span style="font-size: 10pt; font-family: verdana, sans-serif; background-image: initial; background-position: initial; background-size: initial; background-repeat: initial; background-attachment: initial; background-origin: initial; background-clip: initial;">&nbsp;in order to work faster and efficient with software currently we have.</span><span style="font-size: 10pt; font-family: verdana, sans-serif;">
+                                                <br />
                                                 <br />
                                                 <!--[if !supportLineBreakNewLine]-->
                                                 <br />
@@ -2037,39 +2043,36 @@
                                                 <o:p />
                                             </span>
                                         </p>
-                                       
+
                                     </div>
                                 </div>
                             </div>
-                            <div ng-show="loader.loading" style="align-content: center; width: 90%; text-align: center;" class="">
-                                <img src="../img/ajax-loader.gif" style="vertical-align: middle">Please Wait...
+                        </div>
+                        <div style="clear: both"></div>
+                        <div class="div-table-row-header">
+                            <div class="div-table-col seq-number-fixed">Sequence#</div>
+                            <div class="div-table-col seq-taskid-fixed">
+                                ID#<div>Designation</div>
                             </div>
-                            <div style="clear: both"></div>
-                            <div class="div-table-row-header">
-                                <div class="div-table-col seq-number-fixed">Sequence#</div>
-                                <div class="div-table-col seq-taskid-fixed">
-                                    ID#<div>Designation</div>
-                                </div>
-                                <div class="div-table-col seq-tasktitle-fixed">
-                                    Parent Task
+                            <div class="div-table-col seq-tasktitle-fixed">
+                                Parent Task
                                         <div>SubTask Title</div>
-                                </div>
-                                <div class="div-table-col seq-taskstatus-fixed">
-                                    Status<div>Assigned To</div>
-                                </div>
-                                <div class="div-table-col seq-taskduedate-fixed" style="width: 7% !important">
-                                    Total Hours<br />
-                                    Total $
-                                </div>
-                                <div class="div-table-col seq-notes-fixed" style="width: 31% !important">Notes</div>
                             </div>
-                            <div class="noData" id="noDataIA">No Records Found!</div>
-                            <!-- NG Repeat Div starts -->
-                            <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in Tasks" ng-class="{orange : Task.Status==='4', yellow: Task.Status==='3'}" repeat-end="onStaffEnd()">
-                                <!-- Sequence# starts -->
-                                <div class="div-table-col seq-number-fixed">
-                                    <a ng-attr-id="autoClick{{Task.TaskId}}" href="javascript:void(0);" class="badge-hyperlink autoclickSeqEdit" ng-attr-data-taskseq="{{Task.Sequence}}" ng-attr-data-taskid="{{Task.TaskId}}" ng-attr-data-seqdesgid="{{Task.SequenceDesignationId}}"><span class="badge badge-success badge-xstext">
-                                        <label ng-attr-id="SeqLabel{{Task.TaskId}}">{{getSequenceDisplayText(!Task.Sequence?"N.A.":Task.Sequence,Task.SequenceDesignationId,Task.IsTechTask === "false" ? "SS" : "TT")}}</label></span></a>
+                            <div class="div-table-col seq-taskstatus-fixed">
+                                Status<div>Assigned To</div>
+                            </div>
+                            <div class="div-table-col seq-taskduedate-fixed" style="width:7% !important">
+                                Total Hours<br />Total $
+                            </div>
+                            <div class="div-table-col seq-notes-fixed" style="width:31% !important">Notes</div>
+                        </div>
+                        <div class="noData" id="noDataIA">No Records Found!</div>
+                        <!-- NG Repeat Div starts -->
+                        <div ng-attr-id="divMasterTask{{Task.TaskId}}" class="div-table-row" data-ng-repeat="Task in Tasks" ng-class="{orange : Task.Status==='4', yellow: Task.Status==='3'}" repeat-end="onStaffEnd()">
+                            <!-- Sequence# starts -->
+                            <div class="div-table-col seq-number-fixed">
+                                <a ng-attr-id="autoClick{{Task.TaskId}}" href="javascript:void(0);" class="badge-hyperlink autoclickSeqEdit" ng-attr-data-taskseq="{{Task.Sequence}}" ng-attr-data-taskid="{{Task.TaskId}}" ng-attr-data-seqdesgid="{{Task.SequenceDesignationId}}"><span class="badge badge-success badge-xstext">
+                                    <label ng-attr-id="SeqLabel{{Task.TaskId}}">{{getSequenceDisplayText(!Task.Sequence?"N.A.":Task.Sequence,Task.SequenceDesignationId,Task.IsTechTask === "false" ? "SS" : "TT")}}</label></span></a>
 
                                     <a id="seqArrowUp" runat="server" style="text-decoration: none;" ng-show="!$first" ng-attr-data-taskid="{{Task.TaskId}}" href="javascript:void(0);" ng-class="{hide: Task.Sequence == null || 0}" ng-attr-data-taskseq="{{Task.Sequence}}" ng-hide="{{Task.TaskId == BlinkTaskId}}" ng-attr-data-taskdesg="{{Task.SequenceDesignationId}}" onclick="swapSequence(this,true)">&#9650;</a>
                                     <a id="seqArrowDown" runat="server" style="text-decoration: none;" ng-class="{hide: Task.Sequence == null || 0}" ng-attr-data-taskid="{{Task.TaskId}}" ng-attr-data-taskseq="{{Task.Sequence}}" ng-attr-data-taskdesg="{{Task.SequenceDesignationId}}" href="javascript:void(0);" onclick="swapSequence(this,false)" ng-show="!$last">&#9660;</a>
@@ -2315,11 +2318,11 @@
                 <!--Top Grid Records Ends-->
 
 
-                <!--Top Grid Pager Starts-->
-                <div class="text-center" style="float: right">
-                    <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getTasks(page)"></jgpager>
-                </div>
-                <!--Top Grid Pager Ends-->
+            <!--Top Grid Pager Starts-->
+            <div class="text-center" style="float:right">
+                <jgpager page="{{page}}" pages-count="{{pagesCount}}" total-count="{{TotalRecords}}" search-func="getTasks(page)"></jgpager>
+            </div>
+            <!--Top Grid Pager Ends-->
 
 
                 <!--Bottom Grid Caption Starts-->
@@ -2435,44 +2438,48 @@
                                 </div>
                                 <!-- Status & Assigned To ends -->
 
-                                <!-- DueDate starts -->
-                                <div class="div-table-col seq-taskduedate-fixed" style="margin-top: -10px;">
-                                    <span class="hours-col">IT Lead: {{Task.ITLeadHours}}, User: {{Task.UserHours}}</span>
-                                    <div class="seqapprovalBoxes" id="SeqApprovalDiv{{Task.TaskId}}"
-                                        data-adminstatusupdateddate="{{ Task.AdminStatusUpdated | date:'M/d/yyyy' }}"
-                                        data-adminstatusupdatedtime="{{ Task.AdminStatusUpdated | date:'shortTime' }}"
-                                        data-adminstatusupdatedtimezone="{{StringIsNullOrEmpty(Task.AdminStatusUpdated) ? '' : '(EST)' }}"
-                                        data-adminstatusupdated="{{Task.AdminStatusUpdated}}"
-                                        data-admindisplayname="{{StringIsNullOrEmpty(Task.AdminUserInstallId)? Task.AdminUserId : Task.AdminUserInstallId}} - {{Task.AdminUserFirstName}} {{Task.AdminUserLastName}}"
-                                        data-adminstatususerid="{{Task.AdminUserId}}"
-                                        data-leadstatusupdateddate="{{ Task.TechLeadStatusUpdated | date:'M/d/yyyy' }}"
-                                        data-leadstatusupdatedtime="{{ Task.TechLeadStatusUpdated | date:'shortTime' }}"
-                                        data-leadstatusupdatedtimezone="{{StringIsNullOrEmpty(Task.TechLeadStatusUpdated) ? '' : '(EST)' }}"
-                                        data-leadstatusupdated="{{Task.ITLeadHours}}"
-                                        data-leadhours="{{Task.ITLeadHours}}"
-                                        data-leaddisplayname="{{StringIsNullOrEmpty(Task.TechLeadUserInstallId)? Task.TechLeadUserId : Task.TechLeadUserInstallId}} - {{Task.TechLeadUserFirstName}} {{Task.TechLeadUserLastName}}"
-                                        data-leaduserid="{{Task.TechLeadUserId}}"
-                                        data-userstatusupdateddate="{{ Task.OtherUserStatusUpdated | date:'M/d/yyyy' }}"
-                                        data-userstatusupdatedtime="{{ Task.OtherUserStatusUpdated | date:'shortTime' }}"
-                                        data-userstatusupdatedtimezone="{{StringIsNullOrEmpty(Task.OtherUserStatusUpdated) ? '' : '(EST)' }}"
-                                        data-userstatusupdated="{{Task.UserHours}}"
-                                        data-userhours="{{Task.UserHours}}"
-                                        data-userdisplayname="{{StringIsNullOrEmpty(Task.OtherUserInstallId)? Task.OtherUserId : Task.OtherUserInstallId}} - {{Task.OtherUserFirstName}} {{Task.OtherUserLastName}}"
-                                        data-useruserid="{{Task.OtherUserId}}">
-                                        <div style="width: 55%; float: left;">
-                                            <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngUserMasterClosedTask{{Task.TaskId}}" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                            <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkQAMasterClosedTask{{Task.TaskId}}" class="fz fz-QA" title="QA" />
-                                            <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkAlphaUserMasterClosedTask{{Task.TaskId}}" class="fz fz-Alpha" title="AlphaUser" />
-                                            <br />
-                                            <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkBetaUserMasterClosedTask{{Task.TaskId}}" class="fz fz-Beta" title="BetaUser" />
-                                            <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngITLeadClosedTask{{Task.TaskId}}" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                            <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngAdminClosedTask{{Task.TaskId}}" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
-                                        </div>
-                                        <div style="width: 42%; float: right;">
-                                            <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngITLeadMasterClosedTask{{Task.TaskId}}" class="fz fz-techlead largecheckbox" title="IT Lead" /><br />
-                                            <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngAdminMasterClosedTask{{Task.TaskId}}" class="fz fz-admin largecheckbox" title="Admin" />
-                                        </div>
+                            <!-- DueDate starts -->
+                            <div class="div-table-col seq-taskduedate-fixed" style="margin-top: -10px;">
+                                <span class="hours-col">IT Lead: {{Task.ITLeadHours}}, User: {{Task.UserHours}}</span>
+                                <div class="seqapprovalBoxes" id="SeqApprovalDiv{{Task.TaskId}}"
+                                    data-AdminStatusUpdatedDate="{{ Task.AdminStatusUpdated | date:'M/d/yyyy' }}"
+                                    data-AdminStatusUpdatedTime="{{ Task.AdminStatusUpdated | date:'shortTime' }}"
+                                    data-AdminStatusUpdatedTimezone="{{StringIsNullOrEmpty(Task.AdminStatusUpdated) ? '' : '(EST)' }}"
+                                    data-AdminStatusUpdated="{{Task.AdminStatusUpdated}}"
+                                    data-AdminDisplayName="{{StringIsNullOrEmpty(Task.AdminUserInstallId)? Task.AdminUserId : Task.AdminUserInstallId}} - {{Task.AdminUserFirstName}} {{Task.AdminUserLastName}}"
+                                    data-AdminStatusUserId="{{Task.AdminUserId}}"
+
+                                    data-LeadStatusUpdatedDate="{{ Task.TechLeadStatusUpdated | date:'M/d/yyyy' }}"
+                                    data-LeadStatusUpdatedTime="{{ Task.TechLeadStatusUpdated | date:'shortTime' }}"
+                                    data-LeadStatusUpdatedTimezone="{{StringIsNullOrEmpty(Task.TechLeadStatusUpdated) ? '' : '(EST)' }}"
+                                    data-LeadStatusUpdated="{{Task.ITLeadHours}}"
+                                    data-LeadHours="{{Task.ITLeadHours}}"
+                                    data-LeadDisplayName="{{StringIsNullOrEmpty(Task.TechLeadUserInstallId)? Task.TechLeadUserId : Task.TechLeadUserInstallId}} - {{Task.TechLeadUserFirstName}} {{Task.TechLeadUserLastName}}"
+                                    data-LeadUserId="{{Task.TechLeadUserId}}"
+
+                                    data-UserStatusUpdatedDate="{{ Task.OtherUserStatusUpdated | date:'M/d/yyyy' }}"
+                                    data-UserStatusUpdatedTime="{{ Task.OtherUserStatusUpdated | date:'shortTime' }}"
+                                    data-UserStatusUpdatedTimezone="{{StringIsNullOrEmpty(Task.OtherUserStatusUpdated) ? '' : '(EST)' }}"
+                                    data-UserStatusUpdated="{{Task.UserHours}}"
+                                    data-UserHours="{{Task.UserHours}}"
+                                    data-UserDisplayName="{{StringIsNullOrEmpty(Task.OtherUserInstallId)? Task.OtherUserId : Task.OtherUserInstallId}} - {{Task.OtherUserFirstName}} {{Task.OtherUserLastName}}"
+                                    data-UserUserId="{{Task.OtherUserId}}"
+
+                                    >
+                                    <div style="width: 55%; float: left;">
+                                        <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngUserMasterClosedTask{{Task.TaskId}}" ng-checked="{{Task.OtherUserStatus}}" ng-disabled="{{Task.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                        <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkQAMasterClosedTask{{Task.TaskId}}" class="fz fz-QA" title="QA" />
+                                        <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkAlphaUserMasterClosedTask{{Task.TaskId}}" class="fz fz-Alpha" title="AlphaUser" />
+                                        <br />
+                                        <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkBetaUserMasterClosedTask{{Task.TaskId}}" class="fz fz-Beta" title="BetaUser" />
+                                        <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngITLeadClosedTask{{Task.TaskId}}" ng-checked="{{Task.TechLeadStatus}}" ng-disabled="{{Task.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                        <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngAdminClosedTask{{Task.TaskId}}" ng-checked="{{Task.AdminStatus}}" ng-disabled="{{Task.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                     </div>
+                                    <div style="width: 42%; float: right;">
+                                        <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngITLeadMasterClosedTask{{Task.TaskId}}" class="fz fz-techlead largecheckbox" title="IT Lead" /><br />
+                                        <input type="checkbox" data-taskid="{{Task.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngAdminMasterClosedTask{{Task.TaskId}}" class="fz fz-admin largecheckbox"  title="Admin" />
+                                    </div>
+                                </div>
 
 
                                 </div>
@@ -2579,7 +2586,7 @@
                                                     <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngITLeadNestedSubTask{{TechTask.TaskId}}" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
                                                     <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngAdminNestedSubTask{{TechTask.TaskId}}" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                                 </div>
-                                                <div style="width: 43%; float: right;">
+                                            <div style="width: 43%; float: right;""> 
                                                     <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngITLeadMasterNestedSubTask{{TechTask.TaskId}}" class="fz fz-techlead largecheckbox" title="IT Lead" /><br />
                                                     <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngAdminMasterNestedSubTask{{TechTask.TaskId}}" class="fz fz-admin largecheckbox" title="Admin" />
                                                 </div>
@@ -2602,18 +2609,18 @@
                             <!-- Hours Total Row Starts -->
                             <div id="divMasterTaskTotal" class="div-table-row">
 
-                                <div class="div-table-col seq-taskid-fixed ng-binding">
-                                </div>
-                                <div class="div-table-col seq-tasktitle-fixed ng-binding">
-                                </div>
-                                <div class="div-table-col seq-taskstatus-fixed chosen-div">
-                                </div>
-                                <div class="div-table-col seq-taskduedate-fixed" style="margin-top: -10px; width: 200px;">
-                                    <span class="hours-col ng-binding"><b>(Total) IT Lead: {{TotalHoursITLead}}, User: {{TotalHoursUsers}}</b></span>
-                                </div>
+                            <div class="div-table-col seq-taskid-fixed ng-binding">
                             </div>
-                            <!-- Hours Total Row Ends -->
+                            <div class="div-table-col seq-tasktitle-fixed ng-binding">
+                            </div>
+                            <div class="div-table-col seq-taskstatus-fixed chosen-div">
+                            </div>
+                            <div class="div-table-col seq-taskduedate-fixed" style="margin-top: -10px;width: 200px;">
+                                <span class="hours-col ng-binding"><b>(Total) IT Lead: {{TotalHoursITLead}}, User: {{TotalHoursUsers}}</b></span>
+                            </div>
                         </div>
+                        <!-- Hours Total Row Ends -->
+                    </div>
 
 
 
@@ -2810,31 +2817,7 @@
                             if (Request.QueryString["PWT"] == "1")
                             {
                         %>
-                        <div class="notes-section" tuid="<%=loggedInUserId %>" style="width: 98%;">
-                            <div class="notes-popup">
-                                <div class="heading">
-                                    <div class="title">User Touch Point Logs</div>
-
-                                    <input type="hidden" id="PageIndex" value="0" />
-                                </div>
-                                <div class="content">
-                                    Loading Notes...
-                                </div>
-                                <div class="pagingWrapper">
-                                    <div class="total-results">Total <span class="total-results-count"></span>Results</div>
-                                    <div class="pager">
-                                        <span class="first">« First</span> <span class="previous">Previous</span> <span class="numeric"></span><span class="next">Next</span> <span class="last">Last »</span>
-                                    </div>
-                                    <div class="pageInfo">
-                                    </div>
-                                </div>
-                                <div class="add-notes-container">
-                                    <input type="hidden" class="touchPointSource" value="<%=(int)JG_Prospect.Common.TouchPointSource.InterviewPopup %>" />
-                                    <textarea id="note-text" class="note-text textbox"></textarea>
-                                    <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addPopupNotes(this)" />
-                                </div>
-                            </div>
-                        </div>
+                        
                         <%
                             }
                         %>
@@ -2864,38 +2847,11 @@
 
                     </div>
 
-                </div>
-                <!-- Interview Date popup ends -->
-                <%} %>
             </div>
+            <!-- Interview Date popup ends -->
+            <%} %>
 
-            <h2></h2>
-
-            <div class="notes-section" tuid="<%=loggedInUserId %>" style="width: 98%;">
-                <div class="notes-popup">
-                    <div class="heading">
-                        <div class="title">User Touch Point Logs</div>
-
-                        <input type="hidden" id="PageIndex" value="0" />
-                    </div>
-                    <div class="content">
-                        Loading Notes...
-                    </div>
-                    <div class="pagingWrapper">
-                        <div class="total-results">Total <span class="total-results-count"></span>Results</div>
-                        <div class="pager">
-                            <span class="first">« First</span> <span class="previous">Previous</span> <span class="numeric"></span><span class="next">Next</span> <span class="last">Last »</span>
-                        </div>
-                        <div class="pageInfo">
-                        </div>
-                    </div>
-                    <div class="add-notes-container">
-                        <input type="hidden" class="touchPointSource" value="<%=(int)JG_Prospect.Common.TouchPointSource.ITDashboard %>" />
-                        <textarea id="note-text" class="note-text textbox"></textarea>
-                        <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addPopupNotes(this)" />
-                    </div>
-                </div>
-            </div>
+        </div>
 
             <asp:HiddenField ID="hdnUserId" runat="server" />
         </div>
@@ -2927,15 +2883,15 @@
                 <!-- ITLead Hours section -->
                 <div style="width: 30%;" id="LeadClass">
                     <span>
-                        <label id="LeadHours"></label>
-                        Hour(s)
+                        <label id="LeadHours"></label>Hour(s)
                     </span>
                 </div>
                 <div style="width: 30%;" id="LeadClass2">
                     <input type="text" style="width: 55px;" placeholder="Est. Hours" id="txtITLeadHours" />
                 </div>
                 <div style="width: 50%; float: right; font-size: x-small;" id="LeadClass3">
-                    <input type="password" style="width: 100px;" placeholder="ITLead Password" onchange="javascript:FreezeSeqTask(this, 'L');" />
+                    <input type="password" style="width: 100px;" placeholder="ITLead Password" onchange="javascript:FreezeSeqTask(this, 'L');"
+                         />
                 </div>
                 <!-- ITLead password section -->
                 <div style="width: 50%; float: right; font-size: x-small;" id="LeadClass4">
@@ -2950,15 +2906,15 @@
                 <!-- UserHours section -->
                 <div style="width: 30%;" id="UserClass">
                     <span>
-                        <label id="UserHours"></label>
-                        Hour(s)
+                        <label id="UserHours"></label>Hour(s)
                                                         Hour(s)</span>
                 </div>
                 <div style="width: 30%;" id="UserClass2">
                     <input type="text" style="width: 55px;" placeholder="Est. Hours" id="txtUserHours" />
                 </div>
                 <div style="width: 50%; float: right; font-size: x-small;" id="UserClass3">
-                    <input type="password" style="width: 100px;" placeholder="User Password" onchange="javascript:FreezeSeqTask(this, 'U');" />
+                    <input type="password" style="width: 100px;" placeholder="User Password" onchange="javascript:FreezeSeqTask(this, 'U');"
+                         />
                 </div>
                 <!-- User password section -->
                 <div style="width: 50%; float: right; font-size: x-small;" id="UserClass4">
@@ -2985,40 +2941,40 @@
                     url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
                     type: 'POST',
                     data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + <%=loggedInUserId%> + ' }',
-                showThrobber: true,
-                throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
-                success: function (data, msg) {
-                    if (data.Data.length > 0) {
-                        PageNumbering(data.TotalResults);
-                        var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
-                        $(data.Data).each(function (i) {
-                            tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
-                                '<td><a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Data[i].UserID + '">' + data.Data[i].SourceUser + '<br/>' + data.Data[i].ChangeDateTimeFormatted + '</a></td>' +
-                                '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
-                                '</tr>';
-                        });
-                        tbl += '</table>';
-                        $('.notes-popup .content').html(tbl);
-                        var tuid = getUrlVars()["TUID"];
-                        var nid = getUrlVars()["NID"];
-                        if (tuid != undefined && nid != undefined) {
-                            $('.notes-popup tr#' + nid).addClass('blink-notes');
-                            $('html, body').animate({
-                                scrollTop: $(".notes-popup").offset().top
-                            }, 2000);
+                    showThrobber: true,
+                    throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                    success: function (data, msg) {
+                        if (data.Data.length > 0) {
+                            PageNumbering(data.TotalResults);
+                            var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
+                            $(data.Data).each(function (i) {
+                                tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
+                                    '<td><a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Data[i].UserID + '">' + data.Data[i].SourceUser + '<br/>' + data.Data[i].ChangeDateTimeFormatted + '</a></td>' +
+                                    '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
+                                    '</tr>';
+                            });
+                            tbl += '</table>';
+                            $('.notes-popup .content').html(tbl);
+                            var tuid = getUrlVars()["TUID"];
+                            var nid = getUrlVars()["NID"];
+                            if (tuid != undefined && nid != undefined) {
+                                $('.notes-popup tr#' + nid).addClass('blink-notes');
+                                $('html, body').animate({
+                                    scrollTop: $(".notes-popup").offset().top
+                                }, 2000);
+                            }
+                            $('.pagingWrapper').show();
+                            tribute.attach(document.querySelectorAll('.note-text'));
+                        } else {
+                            $('.notes-popup .content').html('Notes not found');
+                            $('.pagingWrapper').hide();
                         }
-                        $('.pagingWrapper').show();
-                        tribute.attach(document.querySelectorAll('.note-text'));
-                    } else {
-                        $('.notes-popup .content').html('Notes not found');
-                        $('.pagingWrapper').hide();
                     }
-                }
-            });
-            return false;
-        }
-        function addPopupNotes(sender) {
-            var userId = '<%=loggedInUserId%>';
+                });
+                return false;
+            }
+            function addPopupNotes(sender) {
+                var userId = '<%=loggedInUserId%>';
             addNotes(sender, userId);
         }
         function addNotes(sender, uid) {
@@ -3170,7 +3126,7 @@
         }
 
         $(document).ready(function () {
-            Paging($(this));
+            //Paging($(this));
             $(".chosen-select-multi").chosen();
             $('.chosen-dropDown').chosen();
             $('.chosen-dropDownStatus').chosen();
@@ -3897,18 +3853,18 @@
             function SetTaskCounterPopup() {
 
                 $('#' +'<%=lblNonFrozenTaskCounter.ClientID%>').click(function () {
-                // 
-                ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-                ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-            });
-            $('#' + '<%=lblFrozenTaskCounter.ClientID%>').click(function () {
+                    // 
+                    ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                    ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                });
+                $('#' + '<%=lblFrozenTaskCounter.ClientID%>').click(function () {
 
-                ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-                ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
-            });
-        }
+                    ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                    ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), 0);
+                });
+            }
 
-        function checkDropdown() {
+            function checkDropdown() {
          <%--   $('#<%=ddlDesigFrozen.ClientID %> [type="checkbox"]').each(function () {
                 $(this).click(function () { console.log($(this).prop('checked')); })
             });--%>
@@ -4086,96 +4042,31 @@
             function GetEmployeeInterviewDetails() {
 
                 var EmployeeId = $('#<%=hdnUserId.ClientID%>').val();
-            // alert(EmployeeId);
-            var postData;
-            var MethodToCall = "GetEmployeeInterviewDetails";
-            postData = {
-                UserId: EmployeeId
-            };
+                // alert(EmployeeId);
+                var postData;
+                var MethodToCall = "GetEmployeeInterviewDetails";
+                postData = {
+                    UserId: EmployeeId
+                };
 
 
-            CallJGWebService(MethodToCall, postData, OnEmployeeInterviewDetailsSuccess);
+                CallJGWebService(MethodToCall, postData, OnEmployeeInterviewDetailsSuccess);
 
-            function OnEmployeeInterviewDetailsSuccess(data) {
-                if (data.d) {
-                    var responseObj = JSON.parse(data.d);
+                function OnEmployeeInterviewDetailsSuccess(data) {
+                    if (data.d) {
+                        var responseObj = JSON.parse(data.d);
 
-                    if (responseObj) {
-                        $('#ltlApplicantName').html(responseObj[0].FristName + " " + responseObj[0].LastName);
-                        $('#ltlApplicantId').html(responseObj[0].UserInstallId);
-                        $('#ltlDesignation').html(responseObj[0].Designation);
-                        $('#InterviewDateTime').html(responseObj[0].RejectionDate + " " + responseObj[0].RejectionTime);
+                        if (responseObj) {
+                            $('#ltlApplicantName').html(responseObj[0].FristName + " " + responseObj[0].LastName);
+                            $('#ltlApplicantId').html(responseObj[0].UserInstallId);
+                            $('#ltlDesignation').html(responseObj[0].Designation);
+                            $('#InterviewDateTime').html(responseObj[0].RejectionDate + " " + responseObj[0].RejectionTime);
 
-                        SetInterviewDatePopupEmployeeInstructions(responseObj[0].DesignationId);
+                            SetInterviewDatePopupEmployeeInstructions(responseObj[0].DesignationId);
+                        }
                     }
                 }
             }
-        }
 
-        </script>
-
-        <script type="text/javascript">
-            function Paging(sender) {
-                $('#PageIndex').val(paging.currentPage);
-                ajaxExt({
-                    url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
-                    type: 'POST',
-                    data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + <%=loggedInUserId%> + ' }',
-                showThrobber: true,
-                throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
-                success: function (data, msg) {
-                    if (data.Data.length > 0) {
-                        PageNumbering(data.TotalResults);
-                        var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
-                        $(data.Data).each(function (i) {
-                            tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
-                                        '<td><a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Data[i].UpdatedByUserID + '">' + data.Data[i].SourceUser + '<br/>' + data.Data[i].ChangeDateTimeFormatted + '</a></td>' +
-                                        '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
-                                    '</tr>';
-                        });
-                        tbl += '</table>';
-                        $('.notes-popup .content').html(tbl);
-                        var tuid = getUrlVars()["TUID"];
-                        var nid = getUrlVars()["NID"];
-                        if (tuid != undefined && nid != undefined) {
-                            $('.notes-popup tr#' + nid).addClass('blink-notes');
-                            $('html, body').animate({
-                                scrollTop: $(".notes-popup").offset().top
-                            }, 2000);
-                        }
-                        $('.pagingWrapper').show();
-                        tribute.attach(document.querySelectorAll('.note-text'));
-                    } else {
-                        $('.notes-popup .content').html('Notes not found');
-                        $('.pagingWrapper').hide();
-                    }
-                }
-            });
-            return false;
-        }
-        function addPopupNotes(sender) {
-            var userId = '<%=loggedInUserId%>';
-            addNotes(sender, userId);
-        }
-        function addNotes(sender, uid) {
-            var note = $(sender).parent().find('.note-text').val();
-            var touchPointSource = $(sender).parent().find('.touchPointSource').val();
-            if (note != '')
-                ajaxExt({
-                    url: '/Sr_App/edituser.aspx/AddNotes',
-                    type: 'POST',
-                    data: '{ id: ' + uid + ', note: "' + note + '", touchPointSource: ' + touchPointSource + ' }',
-                    showThrobber: true,
-                    throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
-                    success: function (data, msg) {
-                        $(sender).parent().find('.note-text').val('');
-                        Paging(sender);
-                    }
-                });
-        }
-        var pageSize = 20;
-        $(document).ready(function () {
-            //Paging($(this));
-        });
         </script>
 </asp:Content>

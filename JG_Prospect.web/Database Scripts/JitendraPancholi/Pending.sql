@@ -372,3 +372,26 @@ BEGIN
 	ALTER TABLE ChatMessage ADD CONSTRAINT FK_ChatMessage_ChatSourceId FOREIGN KEY (ChatSourceId)
 		REFERENCES ChatSource(Id);
 END
+go
+
+IF NOT EXISTS( SELECT NULL FROM INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'tblScripts' AND column_name = 'DescriptionPlain')
+BEGIN
+	Alter Table tblScripts Add DescriptionPlain NVarchar(Max)
+END 
+
+
+GO
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'SP_GetScripts' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE SP_GetScripts
+  END
+Go
+CREATE Procedure [dbo].[SP_GetScripts]  
+(  
+ @intScriptId int = null  
+)  
+As  
+Begin  
+ Select intScriptId, strScriptName, strScriptDescription, strScriptDescription as DescriptionPlain  from tblScripts  
+ Where intScriptId =  CASE WHEN @intScriptId IS NULL THEN intScriptId ELSE @intScriptId END  
+End  
