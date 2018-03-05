@@ -2241,6 +2241,7 @@
     <Content Include="screening-intermediate.aspx" />
     <Content Include="screening-popup.aspx" />
     <Content Include="Scripts\angular-mocks.js" />
+    <Content Include="Scripts\angular-sanitize.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
     <Content Include="js\Jquery-mention\data.json" />
@@ -3846,7 +3847,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>0</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:2724/</IISUrl>
+          <IISUrl>http://localhost:2727</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

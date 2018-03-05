@@ -315,7 +315,7 @@ body {
     color: #000;
 }
 
-.all-chats .header .minimize,  .email-section .header .minimize{
+.all-chats .header .minimize,  .email-section .header .minimize, .dialer-section .header .minimize{
     color: #fff;
     font-size: inherit;
     float: left;
@@ -338,7 +338,7 @@ body {
         background: #666;
     }
 
-.all-chats .header .group-name, .email-section .header .group-name {
+.all-chats .header .group-name, .email-section .header .group-name,.dialer-section .header .group-name {
     margin: 3px;
     display: inline-block;
     width: 95%;
@@ -738,6 +738,13 @@ iframe#iframe-inbox {
     background: #666;
     margin-top: 1px;
 }
+.telecom-dashboard-popup .dialer-section .header {
+    min-width: 93%;
+    padding: 4px;
+    border: 1px solid #333;
+    font-size: 12px;
+    background: #666;
+}
 .telecom-dashboard-popup.fullscreen-email .column1{display:none;}
 .telecom-dashboard-popup.fullscreen-email .column3{display:none;}
 .telecom-dashboard-popup.fullscreen-email .chat-section{display:none;}
@@ -793,3 +800,4 @@ div.file-send .dz-preview{}
 .header-msg .row.bg5:hover, .list .user-row.bg5:hover{background-color:rgba(0,0,255,0.4);}
 .header-msg .row.bg6:hover, .list .user-row.bg6:hover{background-color:rgba(255,255,0,0.4);}
 .header-msg .row.bg10:hover, .list .user-row.bg10:hover{background-color:rgba(255,0,255,0.4);}
+.dialer-section .header .group-name{width:85%!important;}

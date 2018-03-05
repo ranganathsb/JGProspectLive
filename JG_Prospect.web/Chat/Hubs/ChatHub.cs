@@ -108,7 +108,7 @@ namespace JG_Prospect.Chat.Hubs
                 {
                     Status = ActionStatus.Successfull,
                     Object = chatMessage,
-                    Message = chatGroupId + "`" + chatGroup.ChatGroupName + "`" + receiverIds
+                    Message = chatGroupId + "`" + chatGroup.ChatGroupName + "`" + receiverIds+"`"+SenderUserId
                 });
             }
             catch (Exception ex)
@@ -226,7 +226,7 @@ namespace JG_Prospect.Chat.Hubs
                 UserId = Convert.ToInt32(auth_cookie.Value);
 
             ChatBLL.Instance.AddChatUser(UserId, Context.ConnectionId);
-
+            /*
             ChatUser user = ChatBLL.Instance.GetChatUser(UserId).Object;
 
             if (user == null)
@@ -236,7 +236,7 @@ namespace JG_Prospect.Chat.Hubs
             var users = ChatBLL.Instance.GetOnlineUsers(UserId).Results;
             var oldOnlineUers = SingletonUserChatGroups.Instance.ActiveUsers;
             SingletonUserChatGroups.Instance.ActiveUsers = users;
-            if (SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
+            if (oldOnlineUers != null && SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
                 foreach (var item in oldOnlineUers)
                 {
                     if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
@@ -259,12 +259,11 @@ namespace JG_Prospect.Chat.Hubs
 
             ChatMessageActiveUser obj = new ChatMessageActiveUser();
             obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
-
-            Clients.All.onConnectedCallback(new ActionOutput<ChatMessageActiveUser>
+            */
+            Clients.All.onConnectedCallback(new ActionOutput
             {
                 Status = ActionStatus.Successfull,
-                Message = user.GroupOrUsername + " is connected...",
-                Object = obj
+                Message = UserId + " User is connected..."
             });
             return base.OnConnected();
         }
@@ -280,17 +279,20 @@ namespace JG_Prospect.Chat.Hubs
             string clientId = Context.ConnectionId;
             ChatUser user = ChatBLL.Instance.GetChatUser(clientId).Object;
             ChatBLL.Instance.DeleteChatUser(clientId);
-            if (user == null)
+            /*
+            if (!(user != null && user.UserId.HasValue))
                 return base.OnDisconnected(stopCalled);
-
+            */
             SingletonGlobal.Instance.ConnectedClients.Remove(Context.ConnectionId);
-
+            string[] Exceptional = new string[1];
+            Exceptional[0] = clientId;
+            /*
             // User is offline            
             // Update ActiveUsers in SingletonUserChatGroups
             var users = ChatBLL.Instance.GetOnlineUsers(user.UserId.Value).Results;
             var oldOnlineUers = SingletonUserChatGroups.Instance.ActiveUsers;
             SingletonUserChatGroups.Instance.ActiveUsers = users;
-            if (SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
+            if (oldOnlineUers!=null && SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
                 foreach (var item in oldOnlineUers)
                 {
                     if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
@@ -299,16 +301,14 @@ namespace JG_Prospect.Chat.Hubs
                                                         .FirstOrDefault().Status = item.Status;
                 }
 
-            string[] Exceptional = new string[1];
-            Exceptional[0] = clientId;
+            
 
             ChatMessageActiveUser obj = new ChatMessageActiveUser();
             obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
-
-            Clients.AllExcept(Exceptional).onDisconnectedCallback(new ActionOutput<ChatMessageActiveUser>
+            */
+            Clients.AllExcept(Exceptional).onDisconnectedCallback(new ActionOutput
             {
-                Status = ActionStatus.Successfull,
-                Object = obj
+                Status = ActionStatus.Successfull
             });
 
             return base.OnDisconnected(stopCalled);

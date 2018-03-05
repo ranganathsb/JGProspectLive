@@ -690,7 +690,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public object AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, int[] TaskAssignedUsers ,string TaskLvl, bool blTechTask, Int64? Sequence)
+        public object AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, int[] TaskAssignedUsers, string TaskLvl, bool blTechTask, Int64? Sequence)
         {
             return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations, TaskAssignedUsers, TaskLvl, blTechTask, Sequence);
         }
@@ -2375,7 +2375,7 @@ namespace JG_Prospect.WebServices
         }
 
         #region Chat Section
-        [WebMethod(EnableSession =true)]
+        [WebMethod(EnableSession = true)]
         public string InitiateBlankChat()
         {
             // Update ActiveUsers in SingletonUserChatGroups
@@ -2383,7 +2383,7 @@ namespace JG_Prospect.WebServices
             var users = ChatBLL.Instance.GetOnlineUsers(JGSession.UserId).Results;
             var oldOnlineUers = SingletonUserChatGroups.Instance.ActiveUsers;
             SingletonUserChatGroups.Instance.ActiveUsers = users;
-            if (SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
+            if (oldOnlineUers != null && SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
                 foreach (var item in oldOnlineUers)
                 {
                     if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
@@ -2408,7 +2408,7 @@ namespace JG_Prospect.WebServices
             //receiverIds += "," + JGSession.UserId;
 
             List<int> userIds = receiverIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                                           .Select(m => Convert.ToInt32(m))                                           
+                                           .Select(m => Convert.ToInt32(m))
                                            .ToList();
             userIds.Add(JGSession.UserId);
             userIds = userIds.Distinct().OrderBy(m => m).ToList();
@@ -2501,7 +2501,7 @@ namespace JG_Prospect.WebServices
                 var users = ChatBLL.Instance.GetOnlineUsers(JGSession.UserId).Results;
                 var oldOnlineUers = SingletonUserChatGroups.Instance.ActiveUsers;
                 SingletonUserChatGroups.Instance.ActiveUsers = users;
-                if (SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
+                if (oldOnlineUers != null && SingletonUserChatGroups.Instance.ActiveUsers != null && SingletonUserChatGroups.Instance.ActiveUsers.Count() > 0)
                     foreach (var item in oldOnlineUers)
                     {
                         if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == item.UserId)
@@ -2579,6 +2579,14 @@ namespace JG_Prospect.WebServices
         [WebMethod(EnableSession = true)]
         public string LoadPreviousChat(string chatGroupId, string receiverIds, int chatSourceId)
         {
+            List<int> userIds = receiverIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                           .Select(m => Convert.ToInt32(m))
+                                           .ToList();
+            userIds.Add(JGSession.UserId);
+            userIds = userIds.Distinct().OrderBy(m => m).ToList();
+
+            receiverIds = string.Join(",", userIds.OrderBy(m => m).ToList());
+
             List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId, receiverIds, chatSourceId).Results;
             return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMessage>
             {
@@ -2587,10 +2595,50 @@ namespace JG_Prospect.WebServices
             });
         }
 
-        [WebMethod(EnableSession =true)]
+        [WebMethod(EnableSession = true)]
         public string GetChatUnReadCount()
         {
             return new JavaScriptSerializer().Serialize(ChatBLL.Instance.GetChatUnReadCount(JGSession.UserId));
+        }
+        #endregion
+
+        #region Phone
+        [WebMethod(EnableSession = true)]
+        public string GetPhoneScripts(string strScriptId)
+        {
+            DataSet ds = new DataSet();
+            int? intScriptId = Convert.ToInt32(strScriptId);
+            if (strScriptId == "0")
+                intScriptId = null;
+            ds = UserBLL.Instance.fetchAllScripts(intScriptId); ;
+            if (ds != null)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    List<PhoneScript> scripts = new List<PhoneScript>();
+                    foreach (DataRow item in ds.Tables[0].Rows)
+                    {
+                        scripts.Add(new PhoneScript
+                        {
+                            Id = Convert.ToInt32(item["intScriptId"]),
+                            Title = item["strScriptName"].ToString(),
+                            DescriptionPlain = item["DescriptionPlain"].ToString()
+                        });
+                    }
+                    //return JsonConvert.SerializeObject(ds.Tables[0]);
+                    return new JavaScriptSerializer().Serialize(new ActionOutput<PhoneScript>
+                    {
+                        Status = ActionStatus.Successfull,
+                        Results = scripts
+                    });
+                }
+                else
+                {
+                    return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+                }
+            }
+            else
+                return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
         }
         #endregion
     }

@@ -364,6 +364,13 @@ namespace JG_Prospect.Common.modal
         public int SenderId { get; set; }
     }
 
+    public class PhoneScript
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string DescriptionPlain { get; set; }
+    }
+
     public sealed class SingletonUserChatGroups
     {
         SingletonUserChatGroups()
@@ -423,6 +430,6 @@ namespace JG_Prospect.Common.modal
                 }
                 return instance;
             }
-        }
+        }        
     }
 }
