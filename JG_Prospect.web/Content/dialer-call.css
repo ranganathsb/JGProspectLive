@@ -127,7 +127,7 @@ div#wrapper {
     position: absolute;
     top: -33px;
     border-radius: 5px;
-    z-index: 1;
+    z-index: 101;
     border: 1px solid #999;overflow-x: hidden;
     overflow-y: auto;
 }.call-logs .row {

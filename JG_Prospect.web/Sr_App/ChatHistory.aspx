@@ -57,7 +57,7 @@
     <script type="text/javascript">
         function showChatHistory(sender, receiverIds, chatGroupId) {
             ajaxExt({
-                url: '/WebServices/JGWebService.asmx/LoadPreviousChat',
+                url: '/WebServices/JGWebService.asmx/ChatHistory',
                 type: 'POST',
                 data: '{ receiverIds: "' + receiverIds + '", chatGroupId:"' + chatGroupId + '", chatSourceId:0 }',
                 showThrobber: true,

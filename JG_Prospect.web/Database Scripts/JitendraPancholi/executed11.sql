@@ -368,6 +368,7 @@ BEGIN
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
 			Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
 			Where S.SortedChatUserIds = @ReceiverIds
+			Order By S.CreatedOn Asc
 		End
 	Else
 		Begin
@@ -378,6 +379,7 @@ BEGIN
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
 			Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
 			Where S.SortedChatUserIds = @ReceiverIds And S.ChatSourceId = @ChatSourceId
+			Order By S.CreatedOn Asc
 		End
 END
 
@@ -792,4 +794,5 @@ BEGIN
 		Where ((S.SenderId = @UserId And S.ReceiverIds = Convert(Varchar(12), @ReceiverId))
 			Or (S.SenderId = @ReceiverId And S.ReceiverIds =  Convert(Varchar(12), @UserId)))
 			And S.ChatSourceId = @ChatSourceId
+		Order By S.CreatedOn Asc
 End

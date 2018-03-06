@@ -2596,6 +2596,24 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public string ChatHistory(string chatGroupId, string receiverIds, int chatSourceId)
+        {
+            List<int> userIds = receiverIds.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                           .Select(m => Convert.ToInt32(m))
+                                           .ToList();
+            userIds = userIds.Distinct().OrderBy(m => m).ToList();
+
+            receiverIds = string.Join(",", userIds.OrderBy(m => m).ToList());
+
+            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId, receiverIds, chatSourceId).Results;
+            return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMessage>
+            {
+                Results = messages,
+                Status = ActionStatus.Successfull
+            });
+        }
+
+        [WebMethod(EnableSession = true)]
         public string GetChatUnReadCount()
         {
             return new JavaScriptSerializer().Serialize(ChatBLL.Instance.GetChatUnReadCount(JGSession.UserId));

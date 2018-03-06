@@ -733,25 +733,27 @@
             var chatGrpId = $(sender).parents('.chat-box').find('#ChatGroupId').val();
             var receiverIds = $(sender).parents('.chat-box').find('#ReceiverIds').val();
             var chatSourceId = $('#ChatSourceId').val();
-            if ($(sender).hasClass('text-send')) {
-                var chatText = $(sender).parents('div.chat-text').find('.emoji-wysiwyg-editor').html();
-                if (chatText != undefined && chatText != '' && chatText != null) {
-                    chat.server.sendChatMessage(chatGrpId, chatText, chatSourceId, receiverIds, null);
-                    $('.emoji-wysiwyg-editor').html('');
-                }
-            } else {
-                var charCode = (typeof e.which === "number") ? e.which : e.keyCode;
-                if (charCode === 13) {
-                    var ev = $.Event("keydown", { keyCode: 20 });
-                    $(sender).trigger(ev);
-                    var chatText = $(sender).html();
-                    $(sender).html('');
+            if (receiverIds != '' && receiverIds != null && chatSourceId != '' && chatSourceId != null) {
+                if ($(sender).hasClass('text-send')) {
+                    var chatText = $(sender).parents('div.chat-text').find('.emoji-wysiwyg-editor').html();
                     if (chatText != undefined && chatText != '' && chatText != null) {
                         chat.server.sendChatMessage(chatGrpId, chatText, chatSourceId, receiverIds, null);
+                        $('.emoji-wysiwyg-editor').html('');
+                    }
+                } else {
+                    var charCode = (typeof e.which === "number") ? e.which : e.keyCode;
+                    if (charCode === 13) {
+                        var ev = $.Event("keydown", { keyCode: 20 });
+                        $(sender).trigger(ev);
+                        var chatText = $(sender).html();
+                        $(sender).html('');
+                        if (chatText != undefined && chatText != '' && chatText != null) {
+                            chat.server.sendChatMessage(chatGrpId, chatText, chatSourceId, receiverIds, null);
+                        }
                     }
                 }
+                userTobeAddedIntoChatGroupId = chatGrpId;
             }
-            userTobeAddedIntoChatGroupId = chatGrpId;
         }
         minimize = function (sender) {
             if ($(sender).parents('.telecom-dashboard-popup').hasClass('fullscreen-chat')) {
@@ -1396,6 +1398,7 @@
             if ($('.call-logs').is(':visible')) {
                 $('.call-logs').hide();
             } else {
+                GetPhoneScripts(sender);
                 $('.call-logs').show();
                 $('.telecom-dashboard-popup').find('.popup-title').html('Phone / Vmail Dashboard');
             }
