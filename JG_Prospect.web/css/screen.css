@@ -2805,7 +2805,7 @@ ul.auto-complete-users {
     top: 100px;
     right: 0;
     background: #fff;
-    z-index:10;
+    z-index:100;
     border: 1px solid #666;
     overflow-x: hidden;
     overflow-y: hidden;
