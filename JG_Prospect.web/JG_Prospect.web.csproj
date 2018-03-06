@@ -1561,7 +1561,8 @@
     <Content Include="Database Scripts\JitendraPancholi\GetUsersByKeyword.sql" />
     <Content Include="Database Scripts\JitendraPancholi\executed10.sql" />
     <Content Include="Database Scripts\JitendraPancholi\executed11.sql" />
-    <Content Include="Database Scripts\JitendraPancholi\pending.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\executed12.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\pending-feb-18.sql" />
     <Content Include="Database Scripts\Kapil\Executed_3.sql" />
     <Content Include="Database Scripts\Kapil\Executed_4.sql" />
     <Content Include="Database Scripts\Kapil\Latest.sql" />
