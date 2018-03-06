@@ -845,7 +845,7 @@
             var msg = data.Object.Message;
             var fileid = data.Object.FileId;
             if (fileid != undefined && fileid != null && fileid != '') {
-                msg = '<a href="/chat/attachments/' + msg.split(':')[1] + '" target="_black">' + msg.split(':')[0] + '</a>';
+                msg = '<a href="/chat/attachments/' + msg.split(':-:')[1] + '" target="_black">' + msg.split(':-:')[0] + '</a>';
             }
             var str = '<div class="chat-row ' + senderReceiver + '" userid="' + data.Object.UserId + '"><div class="profile">' +
                             '<img src="<%=baseUrl %>' + data.Object.UserProfilePic + '" title="' + data.Object.UserFullname + '" />' +
@@ -963,7 +963,7 @@
                         var fileid = data.Results[i].FileId;
                         var msg = data.Results[i].Message;
                         if (fileid != undefined && fileid != null && fileid != '') {
-                            msg = '<a href="/chat/attachments/' + msg.split(':')[1] + '" target="_black">' + msg.split(':')[0] + '</a>';
+                            msg = '<a href="/chat/attachments/' + msg.split(':-:')[1] + '" target="_black">' + msg.split(':-:')[0] + '</a>';
                         }
                         var tickColor = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
                         str += '<div class="chat-row ' + senderReceiver + '" userid="' + data.Results[i].UserId + '"><div class="profile">' +
@@ -1035,7 +1035,7 @@
                             var fileid = data.Object.ChatMessages[i].FileId;
                             var msg = data.Object.ChatMessages[i].Message;
                             if (fileid != undefined && fileid != null && fileid != '') {
-                                msg = '<a href="/chat/attachments/' + msg.split(':')[1] + '" target="_black">' + msg.split(':')[0] + '</a>';
+                                msg = '<a href="/chat/attachments/' + msg.split(':-:')[1] + '" target="_black">' + msg.split(':-:')[0] + '</a>';
                             }
                             var tickColor = data.Object.ChatMessages[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
                             str += '<div class="chat-row ' + senderReceiver + '" userid="' + data.Object.ChatMessages[i].UserId + '"><div class="profile">' +
