@@ -226,7 +226,7 @@ namespace JG_Prospect.Chat.Hubs
                 UserId = Convert.ToInt32(auth_cookie.Value);
 
             ChatBLL.Instance.AddChatUser(UserId, Context.ConnectionId);
-            /*
+            
             ChatUser user = ChatBLL.Instance.GetChatUser(UserId).Object;
 
             if (user == null)
@@ -259,7 +259,7 @@ namespace JG_Prospect.Chat.Hubs
 
             ChatMessageActiveUser obj = new ChatMessageActiveUser();
             obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
-            */
+            
             Clients.All.onConnectedCallback(new ActionOutput
             {
                 Status = ActionStatus.Successfull,
@@ -279,14 +279,14 @@ namespace JG_Prospect.Chat.Hubs
             string clientId = Context.ConnectionId;
             ChatUser user = ChatBLL.Instance.GetChatUser(clientId).Object;
             ChatBLL.Instance.DeleteChatUser(clientId);
-            /*
+            
             if (!(user != null && user.UserId.HasValue))
                 return base.OnDisconnected(stopCalled);
-            */
+            
             SingletonGlobal.Instance.ConnectedClients.Remove(Context.ConnectionId);
             string[] Exceptional = new string[1];
             Exceptional[0] = clientId;
-            /*
+            
             // User is offline            
             // Update ActiveUsers in SingletonUserChatGroups
             var users = ChatBLL.Instance.GetOnlineUsers(user.UserId.Value).Results;
@@ -301,11 +301,9 @@ namespace JG_Prospect.Chat.Hubs
                                                         .FirstOrDefault().Status = item.Status;
                 }
 
+            //ChatMessageActiveUser obj = new ChatMessageActiveUser();
+            //obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
             
-
-            ChatMessageActiveUser obj = new ChatMessageActiveUser();
-            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
-            */
             Clients.AllExcept(Exceptional).onDisconnectedCallback(new ActionOutput
             {
                 Status = ActionStatus.Successfull
