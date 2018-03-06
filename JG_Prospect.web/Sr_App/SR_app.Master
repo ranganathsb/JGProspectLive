@@ -1317,6 +1317,7 @@
                     $.each(data.Results, function (i) {
                         str += '<div class="row"><div class="title" onclick="showhideScript(this);">' + data.Results[i].Title + '</div><div class="desc">' + data.Results[i].DescriptionPlain + '</div></div>';
                     });
+                    $('.call-logs').show();
                     $('.call-logs').html(str);
                 }
             });
@@ -1370,9 +1371,10 @@
                             GetPhoneScripts(sender);
                             $('.telecom-dashboard-popup').removeClass('fullscreen-email');
                             $('.telecom-dashboard-popup').removeClass('fullscreen-chat');
-                            $('.telecom-dashboard-popup').find('.popup-title').html('Phone / VMail Dashboard');
+                            $('.telecom-dashboard-popup').find('.popup-title').html('Phone / VMail Dashboard');                            
                             break;
                         case 'all':
+                            GetPhoneScripts(sender);
                             $('.telecom-dashboard-popup').removeClass('fullscreen-email');
                             $('.telecom-dashboard-popup').removeClass('fullscreen-chat');
                             $('.telecom-dashboard-popup').find('.popup-title').html('All Telecom Dashboard');
