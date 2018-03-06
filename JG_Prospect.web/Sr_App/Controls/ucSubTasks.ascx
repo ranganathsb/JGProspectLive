@@ -9,7 +9,7 @@
 <script type="text/javascript" src="../js/jquery.magnific-popup.min.js"></script>
 
 <script type="text/javascript" src="../js/lightslider.js"></script>
-<script type="text/javascript" src="../js/Common.js"></script>
+<script type="text/javascript" src="../js/jg-common.js"></script>
 
 <style type="text/css">
     .notes-section {
@@ -3468,7 +3468,7 @@ function setSelectedUsersLink() {
             ajaxExt({
                 url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
                 type: 'POST',
-                data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + <%=loggedInUserId%> + ' }',
+                data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + <%=loggedInUserId%> + ',chatSourceId:<%=(int)JG_Prospect.Common.ChatSource.TaskGenerator%> }',
                 showThrobber: true,
                 throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                 success: function (data, msg) {
