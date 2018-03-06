@@ -758,9 +758,11 @@
                 $(sender).parents('.telecom-dashboard-popup').removeClass('fullscreen-chat');
                 $(sender).parents('.telecom-dashboard-popup').removeClass('fullscreen-email');
                 $('.popup-title').html('ALL-Telecom Dashboard');
+                $(sender).parents('.telecom-dashboard-popup').find('.call-logs').hide();
             } else {
                 $(sender).parents('.telecom-dashboard-popup').addClass('fullscreen-chat');
                 $(sender).parents('.telecom-dashboard-popup').removeClass('fullscreen-email');
+                $(sender).parents('.telecom-dashboard-popup').find('.call-logs').hide();
                 $('.popup-title').html('Chat Dashboard');
             }
         }
@@ -1229,10 +1231,12 @@
             if ($(sender).parents('.telecom-dashboard-popup').hasClass('fullscreen-email')) {
                 $(sender).parents('.telecom-dashboard-popup').removeClass('fullscreen-email');
                 $(sender).parents('.telecom-dashboard-popup').removeClass('fullscreen-chat');
+                $(sender).parents('.telecom-dashboard-popup').find('.call-logs').hide();
                 $('.popup-title').html('ALL-Telecom Dashboard');
             } else {
                 $(sender).parents('.telecom-dashboard-popup').addClass('fullscreen-email');
                 $(sender).parents('.telecom-dashboard-popup').removeClass('fullscreen-chat');
+                $(sender).parents('.telecom-dashboard-popup').find('.call-logs').hide();
                 $('.popup-title').html('Email Dashboard');
             }
         }
