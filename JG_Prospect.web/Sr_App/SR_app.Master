@@ -686,7 +686,7 @@
                             <img src="../img/min-max.jpg"></span>
                     </div>
                     <%--<img src="../img/inbox.PNG" />--%>
-                    <iframe id="iframe-inbox" src="//web.jmgrovebuildingsupply.com/email/default.aspx"></iframe>
+                    <iframe id="iframe-inbox" src="/email/default.aspx"></iframe>
                 </div>
                 <div class="chat-section">
                     <div class="chat-container" id="chat-container">
@@ -1351,6 +1351,7 @@
                 throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                 success: function (data, msg) {
                     // Close Previous Chat
+                    $('.call-logs').hide();
                     var chat = $('.chat-container .chat-box').find('span.close');
                     closechat(chat);
                     $('.telecom-dashboard-popup').show();
@@ -1373,6 +1374,7 @@
                             break;
                         case 'phone':
                             //GetPhoneScripts(sender);
+                            $('.call-logs').show();
                             $('.telecom-dashboard-popup').removeClass('fullscreen-email');
                             $('.telecom-dashboard-popup').removeClass('fullscreen-chat');
                             $('.telecom-dashboard-popup').find('.popup-title').html('Phone / VMail Dashboard');                            
