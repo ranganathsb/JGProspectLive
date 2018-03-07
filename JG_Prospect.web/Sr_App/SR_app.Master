@@ -1407,6 +1407,17 @@
                 $('.telecom-dashboard-popup').find('.popup-title').html('Phone / Vmail Dashboard');
             }
         }
+
+        function loadEmailIFrame() {
+            $("#iframe-inbox").attr("src", "//web.jmgrovebuildingsupply.com/email/default.aspx");
+            setTimeout(function () {
+                $("#iframe-inbox").attr("src", "https://web.jmgrovebuildingsupply.com/email/default.aspx");
+            }, 3000);
+        }
+
+        $(document).ready(function () {
+            loadEmailIFrame();
+        });
     </script>
 </body>
 
