@@ -129,7 +129,7 @@ div#wrapper {
     border-radius: 5px;
     z-index: 101;
     border: 1px solid #999;overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: auto;display:none;
 }.call-logs .row {
     display: inline-block;
     width: 98%;

@@ -686,7 +686,7 @@
                             <img src="../img/min-max.jpg"></span>
                     </div>
                     <%--<img src="../img/inbox.PNG" />--%>
-                    <iframe id="iframe-inbox" src="//web.jmgrovebuildingsupply.com/email/default.aspx"></iframe>
+                    <iframe id="iframe-inbox" src="/email/default.aspx"></iframe>
                 </div>
                 <div class="chat-section">
                     <div class="chat-container" id="chat-container">
@@ -829,7 +829,7 @@
                     LoadPreviousChat(this, id, receiverIds + ',' + senderId, chatSourceId);
                     InitializeEmoji();
                 }
-           
+            GetPhoneScripts(sender);
             // Show chat popup
             $('.telecom-dashboard-popup').show();
             $('.overlay').show();
@@ -1058,6 +1058,7 @@
 
                         bindChatUsers(data);
                         InitializeEmoji();
+                        GetPhoneScripts(sender);
                     }
                 }
             });
@@ -1319,7 +1320,7 @@
                     $.each(data.Results, function (i) {
                         str += '<div class="row"><div class="title" onclick="showhideScript(this);">' + data.Results[i].Title + '</div><div class="desc">' + data.Results[i].DescriptionPlain + '</div></div>';
                     });
-                    $('.call-logs').show();
+                    //$('.call-logs').show();
                     $('.call-logs').html(str);
                 }
             });
@@ -1350,6 +1351,7 @@
                 throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                 success: function (data, msg) {
                     // Close Previous Chat
+                    $('.call-logs').hide();
                     var chat = $('.chat-container .chat-box').find('span.close');
                     closechat(chat);
                     $('.telecom-dashboard-popup').show();
@@ -1360,6 +1362,7 @@
                     };
                     bindChatUsers(obj);
                     GetChatUnReadCount();
+                    GetPhoneScripts(sender);
                     switch (box) {
                         case 'email':
                             $('.email-section').find('.minimize').trigger('click');
@@ -1370,13 +1373,13 @@
                             $('.telecom-dashboard-popup').find('.popup-title').html('Chat Dashboard');
                             break;
                         case 'phone':
-                            GetPhoneScripts(sender);
+                            //GetPhoneScripts(sender);
+                            $('.call-logs').show();
                             $('.telecom-dashboard-popup').removeClass('fullscreen-email');
                             $('.telecom-dashboard-popup').removeClass('fullscreen-chat');
                             $('.telecom-dashboard-popup').find('.popup-title').html('Phone / VMail Dashboard');                            
                             break;
                         case 'all':
-                            GetPhoneScripts(sender);
                             $('.telecom-dashboard-popup').removeClass('fullscreen-email');
                             $('.telecom-dashboard-popup').removeClass('fullscreen-chat');
                             $('.telecom-dashboard-popup').find('.popup-title').html('All Telecom Dashboard');
@@ -1397,8 +1400,9 @@
         function minimizePhone(sender) {
             if ($('.call-logs').is(':visible')) {
                 $('.call-logs').hide();
+                $('.telecom-dashboard-popup').find('.popup-title').html('All Telecom Dashboard');
             } else {
-                GetPhoneScripts(sender);
+                //GetPhoneScripts(sender);
                 $('.call-logs').show();
                 $('.telecom-dashboard-popup').find('.popup-title').html('Phone / Vmail Dashboard');
             }
