@@ -729,7 +729,7 @@
         var userTobeAddedIntoChatGroupId = 0;
         var userChatStatus = '<%= (int)JG_Prospect.Common.ChatUserStatus.Active %>';
         var pageTitle = $('head').find('title').html();
-        sendChat = function (e, sender) {            
+        sendChat = function (e, sender) {
             var chatGrpId = $(sender).parents('.chat-box').find('#ChatGroupId').val();
             var receiverIds = $(sender).parents('.chat-box').find('#ReceiverIds').val();
             var chatSourceId = $('#ChatSourceId').val();
@@ -829,7 +829,7 @@
                     LoadPreviousChat(this, id, receiverIds + ',' + senderId, chatSourceId);
                     InitializeEmoji();
                 }
-            GetPhoneScripts(sender);
+            GetPhoneScripts(this);
             // Show chat popup
             $('.telecom-dashboard-popup').show();
             $('.overlay').show();
@@ -1220,10 +1220,13 @@
         var emailTimer = setInterval(function () {
             var frame = document.getElementById('iframe-inbox');
             if (frame.contentWindow != null) {
-                frame.contentWindow.postMessage('<%=UserId%>', '*');
-                clearInterval(emailTimer);
+                if ($("#iframe-inbox").contents().find("#email") != null && $("#iframe-inbox").contents().find("#email") != undefined) {
+                    frame.contentWindow.postMessage('<%=UserId%>', '*');
+                    clearInterval(emailTimer);
+                }
             }
-        }, 2000);
+        }, 3000);
+
         function sendChatClear(e, sender) {
             var charCode = (typeof e.which === "number") ? e.which : e.keyCode;
             if (charCode === 13) {
@@ -1377,7 +1380,7 @@
                             $('.call-logs').show();
                             $('.telecom-dashboard-popup').removeClass('fullscreen-email');
                             $('.telecom-dashboard-popup').removeClass('fullscreen-chat');
-                            $('.telecom-dashboard-popup').find('.popup-title').html('Phone / VMail Dashboard');                            
+                            $('.telecom-dashboard-popup').find('.popup-title').html('Phone / VMail Dashboard');
                             break;
                         case 'all':
                             $('.telecom-dashboard-popup').removeClass('fullscreen-email');
@@ -1416,7 +1419,7 @@
         }
 
         $(document).ready(function () {
-            loadEmailIFrame();
+           // loadEmailIFrame();
         });
     </script>
 </body>
