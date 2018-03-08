@@ -21,6 +21,17 @@ namespace JG_Prospect.Chat.Hubs
         {
             try
             {
+                if (string.IsNullOrEmpty(receiverIds))
+                {
+                    ErrorLogBLL.Instance.SaveApplicationError("ChatHub", "ReceiverIds cannot be empty or null", "ReceiverIds cannot be empty or null", "");
+                    Clients.Group(chatGroupId).sendChatMessageCallbackError(new ActionOutput<string>
+                    {
+                        Status = ActionStatus.Successfull,
+                        Object = "ReceiverIds cannot be empty or null",
+                        Message = chatGroupId
+                    });
+                }
+
                 System.Web.HttpContextBase httpContext = Context.Request.GetHttpContext();
                 string baseurl = httpContext.Request.Url.Scheme + "://" +
                                     httpContext.Request.Url.Authority +
