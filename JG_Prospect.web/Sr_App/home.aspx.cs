@@ -151,28 +151,28 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        //[System.Web.Services.WebMethod]
-        //public static string GetAllScripts(string strScriptId)
-        //{
-        //    DataSet ds = new DataSet();
-        //    int? intScriptId = Convert.ToInt32(strScriptId);
-        //    if (strScriptId == "0")
-        //        intScriptId = null;
-        //    ds = UserBLL.Instance.fetchAllScripts(intScriptId); ;
-        //    if (ds != null)
-        //    {
-        //        if (ds.Tables[0].Rows.Count > 0)
-        //        {
-        //            return JsonConvert.SerializeObject(ds.Tables[0]);
-        //        }
-        //        else
-        //        {
-        //            return string.Empty;
-        //        }
-        //    }
-        //    else
-        //        return string.Empty;
-        //}
+        [System.Web.Services.WebMethod]
+        public static string GetAllScripts(string strScriptId)
+        {
+            DataSet ds = new DataSet();
+            int? intScriptId = Convert.ToInt32(strScriptId);
+            if (strScriptId == "0")
+                intScriptId = null;
+            ds = UserBLL.Instance.fetchAllScripts(intScriptId); ;
+            if (ds != null)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    return JsonConvert.SerializeObject(ds.Tables[0]);
+                }
+                else
+                {
+                    return string.Empty;
+                }
+            }
+            else
+                return string.Empty;
+        }
 
         //[System.Web.Services.WebMethod]
         //public static string ManageScripts(string intMode, string intScriptId, string strScriptName, string strScriptDescription)
