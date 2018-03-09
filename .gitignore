@@ -19,3 +19,16 @@ JG_Prospect.web/workspecsdemo.html
 JG_Prospect.web/TempCharts/
 JG_Prospect.web/CustomerDocs/
 JG_Prospect.web/UploadedFiles/
+JG_Prospect.web/Employee/ProfilePictures/
+JG_Prospect.web/UploadeProfile/
+packages/
+WebMail/obj/
+WebMail/bin/
+JobScheduler/obj/
+JobScheduler/bin/
+JGBulkEmailServices/obj/
+JG_Prospect.web/UploadedExcel/
+JG_Prospect.web/Employee/Resume/
+.vs/
+EmailSchedular/bin/
+EmailSchedular/obj/
