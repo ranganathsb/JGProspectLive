@@ -335,6 +335,9 @@ namespace JG_Prospect.Common.modal
 
         public int? FileId { get; set; }
         public bool IsRead { get; set; }
+
+        public int? TaskId { get; set; }
+        public int? TaskMultilevelListId { get; set; }
     }
 
     public class ChatMessageActiveUser
@@ -369,6 +372,24 @@ namespace JG_Prospect.Common.modal
         public int Id { get; set; }
         public string Title { get; set; }
         public string DescriptionPlain { get; set; }
+    }
+
+    public class TaskMultiLevelList
+    {
+        public TaskMultiLevelList()
+        {
+            Notes = new List<modal.Notes>();
+        }
+        public int Id { get; set; }
+        public int ParentTaskId { get; set; }
+        public string InstallId { get; set; }
+        public string Description { get; set; }
+        public int IndentLevel { get; set; }
+        public string Label { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public List<Notes> Notes { get; set; }
+        public string ReceiverIds { get; set; }
     }
 
     public sealed class SingletonUserChatGroups

@@ -161,7 +161,6 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
     }
 
-
     $scope.onStaffEnd = function () {
         $timeout(function () {
             setFirstRowAutoData();
