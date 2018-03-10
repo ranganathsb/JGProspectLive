@@ -568,7 +568,8 @@ namespace JG_Prospect.DAL
                                            .ToList();
 
                 // Remove SenderId From ReceiverIds
-                ids.Remove(SenderUserId);
+                if (ids.Count() > 0 && ids.Contains(SenderUserId))
+                    ids.Remove(SenderUserId);
 
                 // Create CSV values from ids
                 ReceiverIds = string.Join(",", ids.OrderBy(m => m).ToList());
@@ -584,6 +585,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@TextMessage", DbType.String, message.Message);
                     database.AddInParameter(command, "@ChatFileId", DbType.String, message.FileId);
                     database.AddInParameter(command, "@ReceiverIds", DbType.String, ReceiverIds);
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, message.TaskId);
+                    database.AddInParameter(command, "@TaskMultilevelListId", DbType.Int32, message.TaskMultilevelListId);
                     database.ExecuteScalar(command);
                 }
             }
@@ -799,6 +802,99 @@ namespace JG_Prospect.DAL
                 return new ActionOutput<ActiveUser>
                 {
                     Results = new List<ActiveUser>(),
+                    Message = ex.Message,
+                    Status = ActionStatus.Error
+                };
+            }
+        }
+
+        public ActionOutput<ChatMessage> GetTaskChatMessages(int chatSourceId, int TaskId, int TaskMultilevelListId = 0)
+        {
+            try
+            {
+                List<ChatMessage> messages = new List<ChatMessage>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetTaskChatMessages");
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    database.AddInParameter(command, "@TaskMultilevelListId", DbType.Int32, TaskMultilevelListId);
+                    database.AddInParameter(command, "@ChatSourceId", DbType.Int32, chatSourceId);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            // DataRow item = returndata.Tables[0].Rows[0];
+                            string pic = "Employee/ProfilePictures/" + (string.IsNullOrEmpty(item["Picture"].ToString()) ? "default.jpg"
+                                                    : item["Picture"].ToString().Replace("~/UploadeProfile/", ""));
+                            messages.Add(new ChatMessage
+                            {
+                                ChatGroupId = item["ChatGroupId"].ToString(),
+                                UserId = Convert.ToInt32(item["SenderId"].ToString()),
+                                Message = item["TextMessage"].ToString(),
+                                FileId = string.IsNullOrEmpty(item["ChatFileId"].ToString()) ? null : (int?)(Convert.ToInt32(item["ChatFileId"].ToString())),
+                                ChatSourceId = Convert.ToInt32(item["ChatSourceId"].ToString()),
+                                UserProfilePic = pic,
+                                UserInstallId = item["UserInstallId"].ToString(),
+                                UserFullname = item["Fullname"].ToString(),
+                                MessageAt = Convert.ToDateTime(item["CreatedOn"].ToString()),
+                                MessageAtFormatted = Convert.ToDateTime(item["CreatedOn"].ToString()).ToString(),
+                                IsRead = Convert.ToBoolean(item["IsRead"].ToString())
+                            });
+                        }
+                    }
+                    return new ActionOutput<ChatMessage>
+                    {
+                        Results = messages,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<ChatMessage>
+                {
+                    Message = ex.Message,
+                    Status = ActionStatus.Error
+                };
+            }
+        }
+
+        public ActionOutput<int> GetTaskUsers(int TaskId)
+        {
+            List<int> users = new List<int>();
+            try
+            {
+                List<ChatMessage> messages = new List<ChatMessage>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetTaskUsers");
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            users.Add(Convert.ToInt32(item["UserId"].ToString()));
+                        }
+                    }
+                    return new ActionOutput<int>
+                    {
+                        Results = users,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<int>
+                {
                     Message = ex.Message,
                     Status = ActionStatus.Error
                 };

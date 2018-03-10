@@ -465,7 +465,7 @@ function getLastAvailableSequence(TaskID, DesignationID, isFromDropDown) {
 
             DisplySequenceBox(TaskID, sequence.Table[0].Sequence);
 
-
+            
         }
 
     }

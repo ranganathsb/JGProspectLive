@@ -2400,7 +2400,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public string InitiateChat(string receiverIds, string chatGroupId, int chatSourceId)
+        public string InitiateChat(string receiverIds, string chatGroupId, int chatSourceId, int taskId = 0, int taskMultilevelListId = 0)
         {
             if (chatGroupId.ToLower() == "undefind" || chatGroupId.ToLower() == "null")
                 chatGroupId = null;
@@ -2416,7 +2416,9 @@ namespace JG_Prospect.WebServices
             List<ChatUser> receivers = ChatBLL.Instance.GetChatUsers(userIds.Where(x => x != JGSession.UserId).ToList()).Results;
 
             #region Chat Messages
-            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId, string.Join(",", userIds.OrderBy(m => m).ToList()), chatSourceId).Results;
+            List<ChatMessage> messages = taskId == 0 ? ChatBLL.Instance.GetChatMessages(chatGroupId, string.Join(",", userIds.OrderBy(m => m).ToList()), chatSourceId).Results
+                                            :
+                                            ChatBLL.Instance.GetTaskChatMessages(chatSourceId, taskId, taskMultilevelListId).Results;
             #endregion
 
             string ChatGroupName = string.Empty;
@@ -2454,14 +2456,16 @@ namespace JG_Prospect.WebServices
                     });
                 }
                 #endregion
-
-                ChatGroupName = string.Join("-", chatUsers.Select(m => m.GroupOrUsername).ToList());
+                DataSet taskDetail = TaskGeneratorBLL.Instance.GetTaskDetails(taskId);
+                ChatGroupName = taskId == 0 ? string.Join("-", chatUsers.Select(m => m.GroupOrUsername).ToList())
+                                : taskDetail.Tables[0].Rows[0]["Title"].ToString() + "(#" + taskId + ")";
 
                 // Check if ChatGroupId is already exists
                 var existing = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
                 if (existing != null)
                 {
-                    ChatGroupName = existing.ChatGroupName;
+                    ChatGroupName = taskId == 0 ? existing.ChatGroupName
+                                    : taskDetail.Tables[0].Rows[0]["Title"].ToString() + "(#" + taskId + ")";
                     existing.ChatUsers.Where(m => userIds.Contains(m.UserId.Value)).ToList().ForEach(m => m.ChatClosed = false);
 
                     SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId)
@@ -2476,7 +2480,10 @@ namespace JG_Prospect.WebServices
                     {
                         // ChatGroupId is null means, 1-1 chat
                         // Check if sender/receiver has previous chat exists, if yes, then fetch existing ChatGroupId
-                        messages = ChatBLL.Instance.GetChatMessages(sender.UserId.Value, Convert.ToInt32(receiverIds), chatSourceId).Results;
+                        messages = taskId == 0 ? ChatBLL.Instance.GetChatMessages(sender.UserId.Value, Convert.ToInt32(receiverIds), chatSourceId).Results
+                                            :
+                                            ChatBLL.Instance.GetTaskChatMessages(chatSourceId, taskId, taskMultilevelListId).Results;
+
                         if (messages != null && messages.Count() > 0)
                             chatGroupId = messages.FirstOrDefault().ChatGroupId;
                     }
@@ -2659,5 +2666,75 @@ namespace JG_Prospect.WebServices
                 return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
         }
         #endregion
+
+        [WebMethod(EnableSession = true)]
+        public String GetMultiLevelList(string ParentTaskId, int chatSourceId)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = null;
+
+            dtResult = TaskGeneratorBLL.Instance.GetMultilevelChildren(ParentTaskId);
+            List<TaskMultiLevelList> list = new List<TaskMultiLevelList>();
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                var users = ChatBLL.Instance.GetTaskUsers(Convert.ToInt32(ParentTaskId)).Results;
+                string receiverId = string.Empty;
+                if (users != null && users.Count() > 0)
+                {
+                    receiverId = string.Join(",", users.OrderBy(m => m).ToList());
+                }
+                foreach (DataRow item in dtResult.Tables[0].Rows)
+                {
+                    list.Add(new TaskMultiLevelList
+                    {
+                        ReceiverIds = receiverId,
+                        Id = Convert.ToInt32(item["Id"].ToString()),
+                        ParentTaskId = Convert.ToInt32(item["ParentTaskId"].ToString()),
+                        Description = item["Description"].ToString(),
+                        IndentLevel = Convert.ToInt32(item["IndentLevel"].ToString()),
+                        InstallId = item["InstallId"].ToString(),
+                        Label = item["Label"].ToString(),
+                        StartDate = string.IsNullOrEmpty(item["StartDate"].ToString()) ? null :
+                                        (DateTime?)(Convert.ToDateTime(item["StartDate"].ToString())),
+                        EndDate = string.IsNullOrEmpty(item["EndDate"].ToString()) ? null :
+                                        (DateTime?)(Convert.ToDateTime(item["EndDate"].ToString()))
+                    });
+                }
+                foreach (var row in list)
+                {
+                    List<ChatMessage> chatMessages = ChatBLL.Instance.GetTaskChatMessages(chatSourceId, row.ParentTaskId, row.Id).Results;
+                    row.Notes = chatMessages.Select(m => new Notes
+                    {
+                        TaskMultilevelListId = row.Id,
+                        TaskId = row.ParentTaskId,
+                        UpdatedByUserID = m.UserId,
+                        UpdatedUserInstallID = m.UserInstallId,
+                        ChangeDateTime = m.MessageAt,
+                        LogDescription = m.Message,
+                        UpdatedByFirstName = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0],
+                        UpdatedByLastName = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() > 1 ? m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1] : "",
+                        UpdatedByEmail = "",
+                        FristName = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0],
+                        LastName = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Count() > 1 ? m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1] : "",
+                        Email = "",
+                        Phone = "",
+                        ChangeDateTimeFormatted = m.MessageAtFormatted,
+                        SourceUser = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0],
+                        SourceUserInstallId = m.UserInstallId,
+                        SourceUsername = m.UserFullname,
+                        TouchPointSource = m.ChatSourceId
+                    }).OrderByDescending(x => x.ChangeDateTime).OrderByDescending(x => x.ChangeDateTime).Take(5).ToList();
+                }
+                return new JavaScriptSerializer().Serialize(new ActionOutput<TaskMultiLevelList>
+                {
+                    Status = ActionStatus.Successfull,
+                    Results = list
+                });
+            }
+            else
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+            }
+        }
     }
 }

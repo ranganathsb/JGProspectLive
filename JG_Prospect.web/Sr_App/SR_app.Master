@@ -733,11 +733,13 @@
             var chatGrpId = $(sender).parents('.chat-box').find('#ChatGroupId').val();
             var receiverIds = $(sender).parents('.chat-box').find('#ReceiverIds').val();
             var chatSourceId = $('#ChatSourceId').val();
+            var taskId = $('#TaskId').val();
+            var taskMultilevelListId = $('#TaskMultilevelListId').val();
             if (receiverIds != '' && receiverIds != null && chatSourceId != '' && chatSourceId != null) {
                 if ($(sender).hasClass('text-send')) {
                     var chatText = $(sender).parents('div.chat-text').find('.emoji-wysiwyg-editor').html();
                     if (chatText != undefined && chatText != '' && chatText != null) {
-                        chat.server.sendChatMessage(chatGrpId, chatText, chatSourceId, receiverIds, null);
+                        chat.server.sendChatMessage(chatGrpId, chatText, chatSourceId, receiverIds, null, taskId, taskMultilevelListId);
                         $('.emoji-wysiwyg-editor').html('');
                     }
                 } else {
@@ -748,7 +750,7 @@
                         var chatText = $(sender).html();
                         $(sender).html('');
                         if (chatText != undefined && chatText != '' && chatText != null) {
-                            chat.server.sendChatMessage(chatGrpId, chatText, chatSourceId, receiverIds, null);
+                            chat.server.sendChatMessage(chatGrpId, chatText, chatSourceId, receiverIds, null, taskId, taskMultilevelListId);
                         }
                     }
                 }
@@ -793,7 +795,7 @@
             var RcvrID = getUrlVars()["RcvrID"];
             var chatGroupId = getUrlVars()["CGID"];
             if (RcvrID != undefined && chatGroupId != undefined)
-                InitiateChat($('.left_panel'), RcvrID, chatGroupId, '<%=(int)JG_Prospect.Common.ChatSource.UserChat%>');
+                InitiateChat($('.left_panel'), RcvrID, chatGroupId, '<%=(int)JG_Prospect.Common.ChatSource.UserChat%>',0,0);
         }).fail(function (reason) {
             debugger;
             console.log(reason);
@@ -809,66 +811,75 @@
             var receiverIds = data.Message.split('`')[2];
             var senderId = data.Message.split('`')[3];
             var chatSourceId = data.Object.ChatSourceId;
-            var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
-                                        '<div class="header"><span class="group-name">' + name +
-                                            '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
-                                            '<span class="minimize" onclick="minimize(this)"><img src="../img/min-max.jpg" /></span></div>' +
-                                        '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
-                                        '<input type="hidden" id="ReceiverIds" value="' + receiverIds + '" />' +
-                                        '<div class="chats watermark-logo"></div>' +
-                                        '<div class="chat-text">' +
-                                            '<input type="text" data-emojiable="true" class="mention" placeholder="Say Something..." id="chattext" onkeyup="sendChat(event, this);" />' +
-                                            '<button class="text-send" onclick="sendChat(event, this)">Send</button>' +
-                                            '<div class="file-send"></div>' +
-                                            '<button class="record-send"><i class="fa fa-microphone" aria-hidden="true"></i></button>' +
-                                        '</div>' +
-                                   '</div>';
-            if ($('.all-chats').find('#' + id) != undefined)
-                if ($('.all-chats').find('#' + id).length <= 0) {
-                    $('.all-chats').html(strChat);
-                    LoadPreviousChat(this, id, receiverIds + ',' + senderId, chatSourceId);
-                    InitializeEmoji();
-                }
-            GetPhoneScripts(this);
-            // Show chat popup
-            $('.telecom-dashboard-popup').show();
-            $('.overlay').show();
-            $('#ChatSourceId').val(chatSourceId);
-            // Calculate Center
-            var sW = $(window).width();
-            var pW = $('.telecom-dashboard-popup').width();
-            var sH = $(window).height();
-            var pH = $('.telecom-dashboard-popup').height();
-            $('.telecom-dashboard-popup').css({ 'left': ((sW / 2) - (pW / 2)) + 'px', 'top': ((sH / 2) - (pH / 2)) + 'px' });
-            // Add the message to the page.
-            // Identify sender/receiver
-            var loggedInUserId = getCookie('<%=JG_Prospect.Common.Cookies.UserId%>');
-            var senderReceiver = loggedInUserId == data.Object.UserId ? 'sender' : 'receiver';
-            var msg = data.Object.Message;
-            var fileid = data.Object.FileId;
-            if (fileid != undefined && fileid != null && fileid != '') {
-                msg = '<a href="/chat/attachments/' + msg.split(':-:')[1] + '" target="_black">' + msg.split(':-:')[0] + '</a>';
+            var oldchatId = 'none';
+            // Check if other's chat is already open at receiver's end
+            if ($('.telecom-dashboard-popup').is(':visible')) {
+                oldchatId = $('.telecom-dashboard-popup').find('#ChatGroupId').val();
             }
-            var str = '<div class="chat-row ' + senderReceiver + '" userid="' + data.Object.UserId + '"><div class="profile">' +
-                            '<img src="<%=baseUrl %>' + data.Object.UserProfilePic + '" title="' + data.Object.UserFullname + '" />' +
-                            '<div class="status-icon"></div><div class="installid">' +
-                                '<a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Object.UserId + '">' + data.Object.UserInstallId + '</a></div>' +
-                        '</div>' +
-                        '<div class="message"><div class="msg">' + msg + '</div>' +
-                        '<div class="time-container"><div class="tick">' +
-                            '<img src="../img/grey-tick.png" /> </div>' +
-                            '<div class="time">' + data.Object.MessageAtFormatted + '</div>' +
-                            '<div class="est">(EST)</div> </div>' +
-                        '</div></div>';
-            $('.chat-box#' + id + ' .chats').append(str);
-            //$('.chat-box .chats').scrollTop(d.prop("scrollHeight"));
-            $('.chat-box#' + id + ' .chats').animate({ scrollTop: $('.chat-box#' + id + ' .chats').prop("scrollHeight") }, 500);
+            if (id == oldchatId || oldchatId == 'none') {
+                var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
+                                            '<div class="header"><span class="group-name">' + name +
+                                                '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
+                                                '<span class="minimize" onclick="minimize(this)"><img src="../img/min-max.jpg" /></span></div>' +
+                                            '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
+                                            '<input type="hidden" id="TaskId" value="' + id + '" />' +
+                                            '<input type="hidden" id="TaskMultilevelListId" value="' + id + '" />' +
+                                            '<input type="hidden" id="ReceiverIds" value="' + receiverIds + '" />' +
+                                            '<div class="chats watermark-logo"></div>' +
+                                            '<div class="chat-text">' +
+                                                '<input type="text" data-emojiable="true" class="mention" placeholder="Say Something..." id="chattext" onkeyup="sendChat(event, this);" />' +
+                                                '<button class="text-send" onclick="sendChat(event, this)">Send</button>' +
+                                                '<div class="file-send"></div>' +
+                                                '<button class="record-send"><i class="fa fa-microphone" aria-hidden="true"></i></button>' +
+                                            '</div>' +
+                                       '</div>';
+                if ($('.all-chats').find('#' + id) != undefined)
+                    if ($('.all-chats').find('#' + id).length <= 0) {
+                        $('.all-chats').html(strChat);
+                        LoadPreviousChat(this, id, receiverIds + ',' + senderId, chatSourceId);
+                        InitializeEmoji();
+                    }
+                GetPhoneScripts(this);
+                // Show chat popup
+                $('.telecom-dashboard-popup').show();
+                $('.overlay').show();
+                $('#ChatSourceId').val(chatSourceId);
+                // Calculate Center
+                var sW = $(window).width();
+                var pW = $('.telecom-dashboard-popup').width();
+                var sH = $(window).height();
+                var pH = $('.telecom-dashboard-popup').height();
+                $('.telecom-dashboard-popup').css({ 'left': ((sW / 2) - (pW / 2)) + 'px', 'top': ((sH / 2) - (pH / 2)) + 'px' });
+                // Add the message to the page.
+                // Identify sender/receiver
+                var loggedInUserId = getCookie('<%=JG_Prospect.Common.Cookies.UserId%>');
+                var senderReceiver = loggedInUserId == data.Object.UserId ? 'sender' : 'receiver';
+                var msg = data.Object.Message;
+                var fileid = data.Object.FileId;
+                if (fileid != undefined && fileid != null && fileid != '') {
+                    msg = '<a href="/chat/attachments/' + msg.split(':-:')[1] + '" target="_black">' + msg.split(':-:')[0] + '</a>';
+                }
+                var str = '<div class="chat-row ' + senderReceiver + '" userid="' + data.Object.UserId + '"><div class="profile">' +
+                                '<img src="<%=baseUrl %>' + data.Object.UserProfilePic + '" title="' + data.Object.UserFullname + '" />' +
+                                '<div class="status-icon"></div><div class="installid">' +
+                                    '<a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Object.UserId + '">' + data.Object.UserInstallId + '</a></div>' +
+                            '</div>' +
+                            '<div class="message"><div class="msg">' + msg + '</div>' +
+                            '<div class="time-container"><div class="tick">' +
+                                '<img src="../img/grey-tick.png" /> </div>' +
+                                '<div class="time">' + data.Object.MessageAtFormatted + '</div>' +
+                                '<div class="est">(EST)</div> </div>' +
+                            '</div></div>';
+                $('.chat-box#' + id + ' .chats').append(str);
+                //$('.chat-box .chats').scrollTop(d.prop("scrollHeight"));
+                $('.chat-box#' + id + ' .chats').animate({ scrollTop: $('.chat-box#' + id + ' .chats').prop("scrollHeight") }, 500);
 
-            $('audio.chat-notification-sound').remove();
-            if (loggedInUserId != data.Object.UserId) {
-                $('body').append('<audio autoplay class="chat-notification-sound"><source src="../Chat/chat-notification.mp3"><source src="../Chat/chat-notification.ogg"></audio>');
-                PageTitleNotification.Off();
-                PageTitleNotification.On('New Message!!!', 1000);
+                $('audio.chat-notification-sound').remove();
+                if (loggedInUserId != data.Object.UserId) {
+                    $('body').append('<audio autoplay class="chat-notification-sound"><source src="../Chat/chat-notification.mp3"><source src="../Chat/chat-notification.ogg"></audio>');
+                    PageTitleNotification.Off();
+                    PageTitleNotification.On('New Message!!!', 1000);
+                }
             }
             GetChatUnReadCount();
         };
@@ -889,6 +900,7 @@
         };
         chat.client.onConnectedCallback = function (data) {
             //console.log(data);
+            userChatStatus = data.Object;
             GetOnlineUsers();
         }
         chat.client.onDisconnectedCallback = function (data) {
@@ -988,12 +1000,12 @@
             });
         }
 
-        function InitiateChat(sender, receiverIds, chatGroupId, chatSourceId) {
+        function InitiateChat(sender, receiverIds, chatGroupId, chatSourceId, taskId, taskMultilevelListId) {
             $('#ChatSourceId').val(chatSourceId);
             ajaxExt({
                 url: '/WebServices/JGWebService.asmx/InitiateChat',
                 type: 'POST',
-                data: '{ receiverIds: "' + receiverIds + '", chatGroupId:"' + chatGroupId + '", chatSourceId:' + chatSourceId + ' }',
+                data: '{ receiverIds: "' + receiverIds + '", chatGroupId:"' + chatGroupId + '", chatSourceId:' + chatSourceId + ', taskId:'+taskId+', taskMultilevelListId:'+taskMultilevelListId+' }',
                 showThrobber: true,
                 throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                 success: function (data, msg) {
@@ -1018,6 +1030,8 @@
                                                 '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
                                                 '<span class="minimize" onclick="minimize(this)"><img src="../img/min-max.jpg" /></span></div>' +
                                             '<input type="hidden" id="ChatGroupId" value="' + id + '" />' +
+                                            '<input type="hidden" id="TaskId" value="' + taskId + '" />' +
+                                            '<input type="hidden" id="TaskMultilevelListId" value="' + taskMultilevelListId + '" />' +
                                             '<input type="hidden" id="ReceiverIds" value="' + receiverIds + '" />' +
                                             '<div class="chats watermark-logo"></div>' +
                                             '<div class="chat-text">' +
@@ -1075,7 +1089,7 @@
                     if (loggedInUserId != data.Results[i].UserId) {
                         var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
                         var chatStatus = data.Results[i].OnlineAt == null ? 'offline' : (data.Results[i].Status == '1' ? 'active' : 'idle');
-                        str += '<div title="' + data.Results[i].GroupOrUsername + '" class="user-row bg' + data.Results[i].InstallUserStatusId + '" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',<%=(int)JG_Prospect.Common.ChatSource.UserChat%>)">' +
+                        str += '<div title="' + data.Results[i].GroupOrUsername + '" class="user-row bg' + data.Results[i].InstallUserStatusId + '" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',<%=(int)JG_Prospect.Common.ChatSource.UserChat%>,0,0)">' +
                                     '<div class="profile">' +
                                         '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '" title="">' +
                                         (data.Results[i].UserId == null ? '' :
@@ -1100,7 +1114,7 @@
                     if (loggedInUserId != data.Results[i].UserId) {
                         var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'blue' : 'grey';
                         var chatStatus = data.Results[i].OnlineAt == null ? 'offline' : (data.Results[i].Status == '1' ? 'active' : 'idle');
-                        str += '<div class="row bg' + data.Results[i].InstallUserStatusId + '" title="' + data.Results[i].GroupOrUsername + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',<%=(int)JG_Prospect.Common.ChatSource.UserChat%>)">' +
+                        str += '<div class="row bg' + data.Results[i].InstallUserStatusId + '" title="' + data.Results[i].GroupOrUsername + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',<%=(int)JG_Prospect.Common.ChatSource.UserChat%>,0,0)">' +
                                 '<div class="user-image">' +
                                     '<div class="img">' +
                                         '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '"></div>' +
@@ -1208,7 +1222,7 @@
                         var chatId = $('.chat-box').find('#ChatGroupId').val();
                         var receiverIds = $('.chat-box').find('#ReceiverIds').val();
                         //$(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-                        chat.server.sendChatMessage(chatId, '', '<%=(int)JG_Prospect.Common.ChatSource.UserChat %>', receiverIds, fileId);
+                        chat.server.sendChatMessage(chatId, '', '<%=(int)JG_Prospect.Common.ChatSource.UserChat %>', receiverIds, fileId, null, null);
                     });
                     this.on("complete", function (file) {
                         this.removeFile(file);
@@ -1225,7 +1239,7 @@
                     clearInterval(emailTimer);
                 }
             }
-        }, 3000);
+        }, 6000);
 
         function sendChatClear(e, sender) {
             var charCode = (typeof e.which === "number") ? e.which : e.keyCode;
@@ -1298,8 +1312,12 @@
                     $.each(data.Results, function (i) {
                         total += data.Results[i].UnReadCount;
                         $('.chat-users-section .list .user-row[uid="' + data.Results[i].UserId + '"]')
-                                .find('.name')
-                                .append('<span class="unread-chat-count">' + data.Results[i].UnReadCount + '</span>');
+                                .find('.name .unread-chat-count')
+                                .remove();
+                        if (data.Results[i].UnReadCount > 0)
+                            $('.chat-users-section .list .user-row[uid="' + data.Results[i].UserId + '"]')
+                                    .find('.name')
+                                    .append('<span class="unread-chat-count">' + data.Results[i].UnReadCount + '</span>');
                     });
                     if (total > 0) {
                         $('#hypChat').parent().find('#chatUnreadCount').show();
@@ -1419,7 +1437,7 @@
         }
 
         $(document).ready(function () {
-           // loadEmailIFrame();
+             loadEmailIFrame();
         });
     </script>
 </body>

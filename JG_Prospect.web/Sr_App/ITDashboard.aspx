@@ -6,6 +6,30 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style>
+        .div-table-row .row {
+        display: inline-block;
+        width: 98%;
+        padding: 10px;
+        background: #eee;
+        border: 1px solid #aaa;
+        border-radius: 5px;
+        font-size: 11px;
+    }
+    .div-table-row .row a{color:blue;}
+    .div-table-row .row  ol {
+        list-style-type: decimal;
+    }
+    .row .row-item {
+        float: left;
+        width: 68%;
+    }
+    .row .notes-table {
+    float: left;
+}.row .notes-section {
+    float: left !important;
+    width: 31% !important;
+}.row .notes-section .second-col{width: 77%;}
+ .row .notes-section .first-col{width: 22%;}
         .clsTestMail {
             padding: 20px;
             font-size: 14px;
@@ -292,134 +316,125 @@
         }
 
         .notes-section {
-            float: left;
-            width: 100%;
+            position: relative;
+            width: 330px !important;
+            float: none !important;
+            margin: 1px 0 0 0 !important;
+            display: inline-block;
+            min-height: 90px;
+            display:none;
         }
 
-        .notes-popup {
-            width: 100%;
-            background: #fff;
-            border-radius: 5px;
-            margin: 10px 0px;
-        }
-
-        .notes-popup-background {
-            display: none;
-            height: 100%;
-            width: 100%;
-            position: fixed;
+        .notes-container {
+            display: block;
+            /*height: 66px;*/
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: absolute;
             top: 0;
             left: 0;
-            z-index: 10;
-            background: #000;
-            opacity: 0.5;
-        }
-
-        .notes-popup .heading {
             width: 100%;
-            display: inline-block;
-            background: #A33E3F;
-            color: #fff;
-            padding: 5px 0;
-            border-radius: 5px 5px 0 0;
+            float: none;
+            margin: 0;
+            padding: 0;
+            min-height: auto;
         }
 
-            .notes-popup .heading .title {
-                padding: 0 5px;
-                float: left;
-            }
-
-        .notes-popup .content {
-            padding: 5px;
+        .pos-rel {
+            position: relative;
         }
 
-        .notes-popup .heading .close {
-            float: right;
-            top: -11px;
-            font-size: 14px;
-            right: -8px;
-            background: #ccc;
-            border-radius: 19px;
-            cursor: pointer;
-        }
-
-        .notes-popup .content table {
+        .notes-inputs {
+            text-align: left;
+            height: 30px;
+            padding: 2px;
+            position: absolute;
+            left: 3px;
+            bottom: 0;
             width: 100%;
         }
 
-            .notes-popup .content table th {
-                border: 1px solid #ccc;
-                text-align: left;
-                padding: 3px;
-                font-size: 13px;
-                color: #ddd;
-                background: #000;
+        .notes-table {
+            height: auto;
+            width: 100%;
+            margin: 0 5px;
+            font-size: 12px;
+        }
+
+            .notes-table tbody {
+                height: auto !important;
             }
 
-            .notes-popup .content table td {
-                padding: 3px;
-                font-size: 12px;
-                border: 1px solid #ccc;
+            .notes-table th {
+                color: #fff;
+                padding: 5px !important;
+                background: #000 !important;
+                border: none;
             }
 
-            .notes-popup .content table tr:nth-child(even) {
-                background: #ba4f50;
+            .notes-table td {
+                padding: 2px !important;
+            }
+
+            .notes-table tr:nth-child(even) {
+                background: #A33E3F;
                 color: #fff;
             }
 
-            .notes-popup .content table tr:nth-child(odd) {
+            .notes-table tr:nth-child(odd) {
                 background: #FFF;
                 color: #000;
             }
-
-            .notes-popup .content table tr th:nth-child(1), .notes-popup .content table tr td:nth-child(1) {
-                width: 210px;
+            /*.notes-table tr a{font-size:10px;}*/
+            .notes-table tr:nth-child(even) a, .notes-popup tr:nth-child(even) a {
+                color: #fff;
             }
 
-        .notes-popup .add-notes-container {
-            display: inline-block;
-            width: 98%;
-            padding: 5px;
-            POSITION: relative;
+            .notes-table tr th:nth-child(1), .notes-table tr td:nth-child(1) {
+                width: 5%;
+            }
+
+            .notes-table tr th:nth-child(2), .notes-table tr td:nth-child(2) {
+                width: 27%;
+            }
+
+            .notes-table tr th:nth-child(3), .notes-table tr td:nth-child(3) {
+                width: 90px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+
+        .first-col {
+            width: 20%;
+            float: left;
         }
 
-            .notes-popup .add-notes-container textarea {
-                width: 80% !important;
-                height: 50px !important;
+            .first-col input {
                 padding: 5px !important;
-                float: left;
-                margin-right: 10px;
+                margin: 0 !important;
+                border-radius: 5px !important;
+                border: #b5b4b4 1px solid !important;
             }
 
-        .notes-popup .notes-container .note-desc {
-            width: 194px;
-            height: 29px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+        textarea.note-text {
+            height: 22px;
+            vertical-align: middle;
+            padding: 2px !important;
+            width: 255px;
+            margin: 0px;
+            border-radius: 5px;
+            border: #b5b4b4 1px solid;
         }
 
-        .notes-table tr:nth-child(odd) a {
+        .second-col {
+            float: left;
+            width: 79%;
         }
 
-        .notes-table tr:nth-child(even) a, .notes-popup tr:nth-child(even) a {
-            color: #fff;
-        }
-
-        .notes-table tr th:nth-child(1), .notes-table tr td:nth-child(1) {
-            width: 5%;
-        }
-
-        .notes-table tr th:nth-child(2), .notes-table tr td:nth-child(2) {
-            width: 27%;
-        }
-
-        .notes-table tr th:nth-child(3), .notes-table tr td:nth-child(3) {
-            width: 90px;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-        }
+            .second-col textarea.note-text {
+                width: 97%;
+            }
 
         .GrdBtnAdd {
             margin-top: 12px;
@@ -477,15 +492,16 @@
         }
 
         .seq-taskid-fixed {
-            width: 130px;
+            /*width: 130px;*/
+            width: 70px;
         }
 
         .seq-tasktitle-fixed {
-            width: 350px;
+            width: 200px;
         }
 
         .seq-taskstatus-fixed {
-            width: 250px;
+            width: 150px;
         }
 
         .seq-taskduedate-fixed {
@@ -2176,13 +2192,21 @@
 
                                 </div>
                                 <!-- DueDate ends -->
-
+                            <div class="notes-section">
                                 <!-- Notes starts -->
-                                <div class="div-table-col seq-notes-fixed-top">
-                                    Notes
+                                <div class="notes-container div-table-col seq-notes-fixed-top main-task" taskid="{{Task.TaskId}}" taskMultilevelListId="0">
+                                    notes
+                                </div>
+                                <div class="notes-inputs">
+                                    <div class="first-col">
+                                        <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this,567)" />
+                                    </div>
+                                    <div class="second-col">
+                                        <textarea class="note-text textbox" id="txt-{{Task.TaskId}}"></textarea>
+                                    </div>
                                 </div>
                                 <!-- Notes ends -->
-
+                                </div>
                                 <!-- Nested row starts -->
 
                                 <div class="div-table-nested" ng-class="{hide : StringIsNullOrEmpty(Task.SubSeqTasks)}">
@@ -2294,10 +2318,8 @@
                                                     <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngAdminMasterNested{{TechTask.TaskId}}" class="fz fz-admin largecheckbox" title="Admin" />
                                                 </div>
                                             </div>
-
-
                                         </div>
-                                        <div class="div-table-col seq-notes-fixed-top">
+                                        <div class="div-table-col seq-notes-fixed-top sub-task" taskid="0" taskMultilevelListId="0">
                                             Notes
                                         </div>
                                     </div>
@@ -2592,7 +2614,7 @@
                                                 </div>
                                             </div>
 
-
+ id="divMasterTask
                                         </div>
                                         <div class="div-table-col seq-notes-fixed">
                                             Notes
@@ -2975,205 +2997,205 @@
             }
             function addPopupNotes(sender) {
                 var userId = '<%=loggedInUserId%>';
-            addNotes(sender, userId);
-        }
-        function addNotes(sender, uid) {
-            var note = $(sender).parent().find('.note-text').val();
-            if (note != '')
-                ajaxExt({
-                    url: '/Sr_App/edituser.aspx/AddNotes',
-                    type: 'POST',
-                    data: '{ id: ' + uid + ', note: "' + note + '" }',
-                    showThrobber: true,
-                    throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
-                    success: function (data, msg) {
-                        $(sender).parent().find('.note-text').val('');
-                        Paging(sender);
+                addNotes(sender, userId);
+            }
+            function addNotes(sender, uid) {
+                var note = $(sender).parent().find('.note-text').val();
+                if (note != '')
+                    ajaxExt({
+                        url: '/Sr_App/edituser.aspx/AddNotes',
+                        type: 'POST',
+                        data: '{ id: ' + uid + ', note: "' + note + '" }',
+                        showThrobber: true,
+                        throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                        success: function (data, msg) {
+                            $(sender).parent().find('.note-text').val('');
+                            Paging(sender);
+                        }
+                    });
+            }
+            var ddlDesigSeqClientIDFrozenTasks = "";
+            var ddlDesigSeqClientID;
+            function changeTaskStatusClosed(Task) {
+                var StatusId = Task.value;
+                var TaskId = Task.getAttribute('data-highlighter');
+                var data = { intTaskId: TaskId, TaskStatus: StatusId };
+                $.ajax({
+                    type: "POST",
+                    url: url + "SetTaskStatus",
+                    data: data,
+                    success: function (result) {
+                        alert("Task Status Changed.");
+
+                        var dids = ""; var uids = '';
+                        if ($('.' + ddlDesigSeqClientID).val() != undefined)
+                            dids = $('.' + ddlDesigSeqClientID).val().join();
+                        if ($('.chosen-select-users').val() != undefined)
+                            uids = $('.chosen-select-users').val().join();
+
+                        var attrs = $('#pnlNewFrozenTask').attr('class').split(' ');
+                        var cls = attrs[attrs.length - 1];
+
+                        if (cls != 'hide') {
+                            ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).val(), $("#ddlSelectFrozenTask").val().join());
+                            ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), $("#ddlSelectFrozenTask").val().join());
+                        }
+                        else {
+                            ShowTaskSequenceDashBoard(dids, uids, true);
+                            ShowTaskSequenceDashBoard(dids, uids, false);
+                            //ShowAllClosedTasksDashBoard(dids, uids, pageSize);
+                        }
+                    },
+                    error: function (errorThrown) {
+                        alert("Failed!!!");
                     }
                 });
-        }
-        var ddlDesigSeqClientIDFrozenTasks = "";
-        var ddlDesigSeqClientID;
-        function changeTaskStatusClosed(Task) {
-            var StatusId = Task.value;
-            var TaskId = Task.getAttribute('data-highlighter');
-            var data = { intTaskId: TaskId, TaskStatus: StatusId };
-            $.ajax({
-                type: "POST",
-                url: url + "SetTaskStatus",
-                data: data,
-                success: function (result) {
-                    alert("Task Status Changed.");
-
-                    var dids = ""; var uids = '';
-                    if ($('.' + ddlDesigSeqClientID).val() != undefined)
-                        dids = $('.' + ddlDesigSeqClientID).val().join();
-                    if ($('.chosen-select-users').val() != undefined)
-                        uids = $('.chosen-select-users').val().join();
-
-                    var attrs = $('#pnlNewFrozenTask').attr('class').split(' ');
-                    var cls = attrs[attrs.length - 1];
-
-                    if (cls != 'hide') {
-                        ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).val(), $("#ddlSelectFrozenTask").val().join());
-                        ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), $("#ddlSelectFrozenTask").val().join());
-                    }
-                    else {
-                        ShowTaskSequenceDashBoard(dids, uids, true);
-                        ShowTaskSequenceDashBoard(dids, uids, false);
-                        //ShowAllClosedTasksDashBoard(dids, uids, pageSize);
-                    }
-                },
-                error: function (errorThrown) {
-                    alert("Failed!!!");
-                }
-            });
-        }
-
-        function pageLoad(sender, args) {            
-            ddlDesigSeqClientID = 'chosen-dropDown';
-            ddlDesigSeqClientIDFrozenTasks = 'chosen-dropdown-FrozenTasks';
-            ChosenDropDown();
-        }
-        var desIds = "";
-        var pageSize = 20;
-
-        function resetChosen(selector) {
-            var val = $(selector).val();
-
-            //
-            if (val != undefined && val != '') {
-                $(selector)
-                    .find('option:first-child').prop('selected', false)
-                    .end().trigger('chosen:updated');
-            } else {
-                $(selector)
-                    .find('option:first-child').prop('selected', true)
-                    .end().trigger('chosen:updated');
             }
-        }
 
-        function openSeqApprovalPopup(caller) {
-            var taskid = $(caller).attr('data-taskid');
-            $('#hdnTaskId').val(taskid);
-            var taskinfo = $('#SeqApprovalDiv' + taskid);
-            var AdminUpdatedDate = $(taskinfo).attr('data-AdminStatusUpdatedDate');
-            var AdminUpdatedTime = $(taskinfo).attr('data-AdminStatusUpdatedTime');
-            var AdminUpdatedTimezone = $(taskinfo).attr('data-AdminStatusUpdatedTimezone');
-            var AdminStatusUpdated = $(taskinfo).attr('data-AdminStatusUpdated');
-            var AdminDisplayName = $(taskinfo).attr('data-AdminDisplayName');
-            var AdminUserId = $(taskinfo).attr('data-AdminStatusUserId');
+            function pageLoad(sender, args) {            
+                ddlDesigSeqClientID = 'chosen-dropDown';
+                ddlDesigSeqClientIDFrozenTasks = 'chosen-dropdown-FrozenTasks';
+                ChosenDropDown();
+            }
+            var desIds = "";
+            var pageSize = 20;
 
-            var LeadUpdatedDate = $(taskinfo).attr('data-LeadStatusUpdatedDate');
-            var LeadUpdatedTime = $(taskinfo).attr('data-LeadStatusUpdatedTime');
-            var LeadUpdatedTimezone = $(taskinfo).attr('data-LeadStatusUpdatedTimezone');
-            var LeadStatusUpdated = $(taskinfo).attr('data-LeadStatusUpdated');
-            var LeadDisplayName = $(taskinfo).attr('data-LeadDisplayName');
-            var LeadHours = $(taskinfo).attr('data-LeadHours');
-            var LeadUserId = $(taskinfo).attr('data-LeadUserId');
+            function resetChosen(selector) {
+                var val = $(selector).val();
 
-            var UserUpdatedDate = $(taskinfo).attr('data-UserStatusUpdatedDate');
-            var UserUpdatedTime = $(taskinfo).attr('data-UserStatusUpdatedTime');
-            var UserUpdatedTimezone = $(taskinfo).attr('data-UserStatusUpdatedTimezone');
-            var UserStatusUpdated = $(taskinfo).attr('data-UserStatusUpdated');
-            var UserDisplayName = $(taskinfo).attr('data-UserDisplayName');
-            var UserHours = $(taskinfo).attr('data-UserHours');
-            var UserId = $(taskinfo).attr('data-UserUserId');
+                //
+                if (val != undefined && val != '') {
+                    $(selector)
+                        .find('option:first-child').prop('selected', false)
+                        .end().trigger('chosen:updated');
+                } else {
+                    $(selector)
+                        .find('option:first-child').prop('selected', true)
+                        .end().trigger('chosen:updated');
+                }
+            }
 
-            var approvaldialog = $('.SeqApprovalPopup');
-            $(approvaldialog).find('#AdminClass').attr('class', AdminStatusUpdated==''?'hide':'display_inline');
-            $(approvaldialog).find('#linkUser').attr('href', 'CreateSalesUser.aspx?id=' + AdminUserId);
-            $(approvaldialog).find('#AdminDate').html(AdminUpdatedDate);
-            $(approvaldialog).find('#AdminTime').html(AdminUpdatedTime);
-            $(approvaldialog).find('#AdminTimezone').html(AdminUpdatedTimezone);
-            $(approvaldialog).find('#AdminDisplayName').html(AdminDisplayName);
-            $(approvaldialog).find('#AdminClass2').attr('class', AdminStatusUpdated!=''?'hide':'display_inline');
+            function openSeqApprovalPopup(caller) {
+                var taskid = $(caller).attr('data-taskid');
+                $('#hdnTaskId').val(taskid);
+                var taskinfo = $('#SeqApprovalDiv' + taskid);
+                var AdminUpdatedDate = $(taskinfo).attr('data-AdminStatusUpdatedDate');
+                var AdminUpdatedTime = $(taskinfo).attr('data-AdminStatusUpdatedTime');
+                var AdminUpdatedTimezone = $(taskinfo).attr('data-AdminStatusUpdatedTimezone');
+                var AdminStatusUpdated = $(taskinfo).attr('data-AdminStatusUpdated');
+                var AdminDisplayName = $(taskinfo).attr('data-AdminDisplayName');
+                var AdminUserId = $(taskinfo).attr('data-AdminStatusUserId');
 
-            //Lead
-            $(approvaldialog).find('#LeadClass').attr('class', LeadStatusUpdated==''?'hide':'display_inline');
-            $(approvaldialog).find('#linkLead').attr('href', 'CreateSalesUser.aspx?id=' + LeadUserId);
-            $(approvaldialog).find('#linkLead').html(LeadDisplayName);
-            $(approvaldialog).find('#LeadDate').html(LeadUpdatedDate);
-            $(approvaldialog).find('#LeadTime').html(LeadUpdatedTime);
-            $(approvaldialog).find('#LeadTimezone').html(LeadUpdatedTimezone);
-            $(approvaldialog).find('#LeadDisplayName').html(LeadDisplayName);
-            $(approvaldialog).find('#LeadHours').html(LeadHours);
-            $(approvaldialog).find('#LeadClass2').attr('class', LeadStatusUpdated!=''?'hide':'display_inline');
-            $(approvaldialog).find('#LeadClass3').attr('class', LeadStatusUpdated!=''?'hide':'display_inline');
-            $(approvaldialog).find('#LeadClass4').attr('class', LeadStatusUpdated==''?'hide':'display_inline');
+                var LeadUpdatedDate = $(taskinfo).attr('data-LeadStatusUpdatedDate');
+                var LeadUpdatedTime = $(taskinfo).attr('data-LeadStatusUpdatedTime');
+                var LeadUpdatedTimezone = $(taskinfo).attr('data-LeadStatusUpdatedTimezone');
+                var LeadStatusUpdated = $(taskinfo).attr('data-LeadStatusUpdated');
+                var LeadDisplayName = $(taskinfo).attr('data-LeadDisplayName');
+                var LeadHours = $(taskinfo).attr('data-LeadHours');
+                var LeadUserId = $(taskinfo).attr('data-LeadUserId');
 
-            //User
-            $(approvaldialog).find('#UserClass').attr('class', UserUpdatedDate==''?'hide':'display_inline');
-            $(approvaldialog).find('#linkOtherUser').attr('href', 'CreateSalesUser.aspx?id=' + UserId);
-            $(approvaldialog).find('#OtherUserStatusUpdatedDate').html(UserUpdatedDate);
-            $(approvaldialog).find('#OtherUserStatusUpdatedTime').html(UserUpdatedTime);
-            $(approvaldialog).find('#OtherUserStatusUpdatedTimezone').html(UserUpdatedTimezone);
-            $(approvaldialog).find('#linkOtherUser').html(UserDisplayName);
-            $(approvaldialog).find('#UserHours').html(UserHours);
-            $(approvaldialog).find('#UserClass2').attr('class', UserStatusUpdated!=''?'hide':'display_inline');
-            $(approvaldialog).find('#UserClass3').attr('class', UserStatusUpdated!=''?'hide':'display_inline');
-            $(approvaldialog).find('#UserClass4').attr('class', UserStatusUpdated==''?'hide':'display_inline');
+                var UserUpdatedDate = $(taskinfo).attr('data-UserStatusUpdatedDate');
+                var UserUpdatedTime = $(taskinfo).attr('data-UserStatusUpdatedTime');
+                var UserUpdatedTimezone = $(taskinfo).attr('data-UserStatusUpdatedTimezone');
+                var UserStatusUpdated = $(taskinfo).attr('data-UserStatusUpdated');
+                var UserDisplayName = $(taskinfo).attr('data-UserDisplayName');
+                var UserHours = $(taskinfo).attr('data-UserHours');
+                var UserId = $(taskinfo).attr('data-UserUserId');
 
-            approvaldialog.dialog({
-                width: 400,
-                show: 'slide',
-                hide: 'slide',
-                autoOpen: false
-            });
+                var approvaldialog = $('.SeqApprovalPopup');
+                $(approvaldialog).find('#AdminClass').attr('class', AdminStatusUpdated==''?'hide':'display_inline');
+                $(approvaldialog).find('#linkUser').attr('href', 'CreateSalesUser.aspx?id=' + AdminUserId);
+                $(approvaldialog).find('#AdminDate').html(AdminUpdatedDate);
+                $(approvaldialog).find('#AdminTime').html(AdminUpdatedTime);
+                $(approvaldialog).find('#AdminTimezone').html(AdminUpdatedTimezone);
+                $(approvaldialog).find('#AdminDisplayName').html(AdminDisplayName);
+                $(approvaldialog).find('#AdminClass2').attr('class', AdminStatusUpdated!=''?'hide':'display_inline');
 
-            approvaldialog.removeClass("hide");
-            approvaldialog.dialog('open');
-        }
+                //Lead
+                $(approvaldialog).find('#LeadClass').attr('class', LeadStatusUpdated==''?'hide':'display_inline');
+                $(approvaldialog).find('#linkLead').attr('href', 'CreateSalesUser.aspx?id=' + LeadUserId);
+                $(approvaldialog).find('#linkLead').html(LeadDisplayName);
+                $(approvaldialog).find('#LeadDate').html(LeadUpdatedDate);
+                $(approvaldialog).find('#LeadTime').html(LeadUpdatedTime);
+                $(approvaldialog).find('#LeadTimezone').html(LeadUpdatedTimezone);
+                $(approvaldialog).find('#LeadDisplayName').html(LeadDisplayName);
+                $(approvaldialog).find('#LeadHours').html(LeadHours);
+                $(approvaldialog).find('#LeadClass2').attr('class', LeadStatusUpdated!=''?'hide':'display_inline');
+                $(approvaldialog).find('#LeadClass3').attr('class', LeadStatusUpdated!=''?'hide':'display_inline');
+                $(approvaldialog).find('#LeadClass4').attr('class', LeadStatusUpdated==''?'hide':'display_inline');
 
-        $(document).ready(function () {
-            //Paging($(this));
-            $(".chosen-select-multi").chosen();
-            $('.chosen-dropDown').chosen();
-            $('.chosen-dropDownStatus').chosen();
-            $('.chosen-dropdown-FrozenTasks').chosen();
-            $(".chosen-select-users").chosen({ no_results_text: "No users found!" });
-            $("#ddlSelectUserClosedTask").chosen({ no_results_text: "No users found!" });
-            $("#ddlSelectFrozenTask").chosen();
+                //User
+                $(approvaldialog).find('#UserClass').attr('class', UserUpdatedDate==''?'hide':'display_inline');
+                $(approvaldialog).find('#linkOtherUser').attr('href', 'CreateSalesUser.aspx?id=' + UserId);
+                $(approvaldialog).find('#OtherUserStatusUpdatedDate').html(UserUpdatedDate);
+                $(approvaldialog).find('#OtherUserStatusUpdatedTime').html(UserUpdatedTime);
+                $(approvaldialog).find('#OtherUserStatusUpdatedTimezone').html(UserUpdatedTimezone);
+                $(approvaldialog).find('#linkOtherUser').html(UserDisplayName);
+                $(approvaldialog).find('#UserHours').html(UserHours);
+                $(approvaldialog).find('#UserClass2').attr('class', UserStatusUpdated!=''?'hide':'display_inline');
+                $(approvaldialog).find('#UserClass3').attr('class', UserStatusUpdated!=''?'hide':'display_inline');
+                $(approvaldialog).find('#UserClass4').attr('class', UserStatusUpdated==''?'hide':'display_inline');
 
-            //InProAssigned
-            $(".chosen-select-users").change(function () {
-                resetChosen(".chosen-select-users");
-                ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(),true);
-                ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(),false);
-                //ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize);
-            });
+                approvaldialog.dialog({
+                    width: 400,
+                    show: 'slide',
+                    hide: 'slide',
+                    autoOpen: false
+                });
 
-            //Frozen/NonFrozen
-            $("#ddlSelectFrozenTask").change(function () {
-                resetChosen("#ddlSelectFrozenTask");
-                ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).val(), $("#ddlSelectFrozenTask").val().join());
-                ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), $("#ddlSelectFrozenTask").val().join());
-            });
+                approvaldialog.removeClass("hide");
+                approvaldialog.dialog('open');
+            }
 
-            //set page size
-            $('#drpPageSizeClosedTasks').change(function () {
-                desIds = $(".chosen-select-multi").val();
-                if (desIds == undefined) { desIds = ''; }
-                pageSize = $('#drpPageSizeClosedTasks').val();
-                //ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize)
-            });
+            $(document).ready(function () {
+                //Paging($(this));
+                $(".chosen-select-multi").chosen();
+                $('.chosen-dropDown').chosen();
+                $('.chosen-dropDownStatus').chosen();
+                $('.chosen-dropdown-FrozenTasks').chosen();
+                $(".chosen-select-users").chosen({ no_results_text: "No users found!" });
+                $("#ddlSelectUserClosedTask").chosen({ no_results_text: "No users found!" });
+                $("#ddlSelectFrozenTask").chosen();
 
-            //fill users
-            if ($('#' + '<%=tableFilter.ClientID%>').length > 0) {
-                $('#ddlUserStatus').find('option:first-child').prop('selected', false);
-                $('#ddlUserStatus option[value="U1"]').attr("selected", "selected");
-                $('#ddlUserStatus option[value="T3"]').attr("selected", "selected");
-                $('#ddlUserStatus option[value="T4"]').attr("selected", "selected");
-                $('#ddlUserStatus').trigger('chosen:updated');
-                //Get Designation for LoggedIn User
-                var des = <%=UserDesignationId%>;
+                //InProAssigned
+                $(".chosen-select-users").change(function () {
+                    resetChosen(".chosen-select-users");
+                    ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(),true);
+                    ShowTaskSequenceDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(),false);
+                    //ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize);
+                });
+
+                //Frozen/NonFrozen
+                $("#ddlSelectFrozenTask").change(function () {
+                    resetChosen("#ddlSelectFrozenTask");
+                    ShowFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).val(), $("#ddlSelectFrozenTask").val().join());
+                    ShowNonFrozenTaskSequenceDashBoard($('#' + ddlDesigSeqClientIDFrozenTasks).find('option:selected').val(), $("#ddlSelectFrozenTask").val().join());
+                });
+
+                //set page size
+                $('#drpPageSizeClosedTasks').change(function () {
+                    desIds = $(".chosen-select-multi").val();
+                    if (desIds == undefined) { desIds = ''; }
+                    pageSize = $('#drpPageSizeClosedTasks').val();
+                    //ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize)
+                });
+
+                //fill users
+                if ($('#' + '<%=tableFilter.ClientID%>').length > 0) {
+                    $('#ddlUserStatus').find('option:first-child').prop('selected', false);
+                    $('#ddlUserStatus option[value="U1"]').attr("selected", "selected");
+                    $('#ddlUserStatus option[value="T3"]').attr("selected", "selected");
+                    $('#ddlUserStatus option[value="T4"]').attr("selected", "selected");
+                    $('#ddlUserStatus').trigger('chosen:updated');
+                    //Get Designation for LoggedIn User
+                    var des = <%=UserDesignationId%>;
             
                 var DesToSelectITLead = ['8', '9', '10', '11', '12', '13', '24', '25', '26', '27', '28', '29'];
                 var DesToSelectForeman = ['14', '15', '16', '17', '18', '19', '20'];
                 var DesToSelectSalesManager = ['2', '3', '6', '7'];
                 var DesToSelectOfficeManager = ['1', '4', '5', '22', '23'];
 
-                //Set pre-selected options
+                    //Set pre-selected options
                 switch (des) {
                     case 21: {
                         $('#ddlDesignationSeq').find('option:first-child').prop('selected', false).end().trigger('chosen:updated');
@@ -3209,13 +3231,13 @@
                     }
                 }
 
-                //Refresh Choosen
+                    //Refresh Choosen
                 $("#ddlDesignationSeq").trigger("chosen:updated");
 
                 fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
                 fillUsers(ddlDesigSeqClientIDFrozenTasks, 'ddlSelectFrozenTask', 'lblLoadingFrozen');
             }
-        });
+            });
 
 
 
@@ -3542,8 +3564,11 @@
             }
 
             $(document).ready(function () {
-
                 Initialize();
+                setTimeout(function(){
+                    console.log('reload')
+                    //ReLoadNotes();
+                },20000);
             });
 
             //$(document).on('click', '#ddlSelectUserInProTask_chosen', function () {
@@ -3868,7 +3893,7 @@
          <%--   $('#<%=ddlDesigFrozen.ClientID %> [type="checkbox"]').each(function () {
                 $(this).click(function () { console.log($(this).prop('checked')); })
             });--%>
-        }
+            }
 
             function FreezeTask(sender) {
 
@@ -4067,6 +4092,109 @@
                     }
                 }
             }
+            function LoadNotes(sender, taskid, taskMultilevelListId) {
+                ajaxExt({
+                    url: '/Sr_App/itdashboard.aspx/GetTaskChatMessages',
+                    type: 'POST',
+                    data: '{ taskId: ' + taskid + ',taskMultilevelListId:'+taskMultilevelListId+',chatSourceId:<%=(int)JG_Prospect.Common.ChatSource.ITDashboard%> }',
+                    showThrobber: false,
+                    throbberPosition: { my: "left center", at: "right center", of: $('.task-' + taskid), offset: "5 0" },
+                    success: function (data, msg) {
+                        if (data.Data.length > 0) {
+                            var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">';
+                            $(data.Data).each(function (i) {
+                                tbl += '<tr>' +
+                                            '<td>' + data.Data[i].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UpdatedByUserID+'">' + data.Data[i].SourceUserInstallId + '</a><br/>'+data.Data[i].ChangeDateTimeFormatted+'</td>' +
+                                            '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
+                                        '</tr>';
+                            });
+                            tbl += '</table>';
+                            var tdHeight = $('.task-' + taskid).parents('tr').height();
+                            $(sender).html(tbl);                        
+                            $(sender).css('height',(tdHeight-36)+'px');
+                            var tuid = getUrlVars()["TUID"];
+                            var nid = getUrlVars()["NID"];
+                            if (tuid != undefined && nid!= undefined) {
+                                $('.notes-table tr#' + nid).addClass('blink-notes');
+                            }
+                        } else {
+                            var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">' +
+                                        '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
+                                        '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
+                                        '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
+                                       '</table>';
+                            $(sender).html(tbl);
+                        }
+                        LoadTaskMultilevelList(sender,taskid);
+                    }
+                });
+            }
 
+            function ReLoadNotes() {
+                $('.main-task').each(function (i) {
+                    var taskid = $(this).attr('taskid');
+                    var taskMultilevelListId = $(this).attr('taskMultilevelListId');
+                    LoadNotes($(this), taskid, taskMultilevelListId);
+                });
+            }
+
+            function LoadTaskMultilevelList(sender, taskId){                
+                ajaxExt({
+                    url: '/WebServices/JGWebService.asmx/GetMultiLevelList',
+                    type: 'POST',
+                    data: '{ ParentTaskId: ' + taskId + ',chatSourceId:<%=(int)JG_Prospect.Common.ChatSource.ITDashboard%> }',
+                    showThrobber: false,
+                    throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                    success: function (data, msg) {
+                        var str='<div class="row">';
+                        $.each(data.Results, function(i){
+                            str += '<div class="row-item">'+ '<a class="label" href"#">'+data.Results[i].Label+'.</a> ' +data.Results[i].Description + '</div>';
+                            
+                            if (data.Results[i].Notes.length > 0) {
+                                var tbl = '<div class="notes-section" onclick="openChat(this, '+data.Results[i].ParentTaskId+','+data.Results[i].Id+',\''+data.Results[i].ReceiverIds+'\')"><div class="note-list"><table class="notes-table" cellspacing="0" cellpadding="0">';
+                                    $(data.Results[i].Notes).each(function (j) {
+                                        tbl += '<tr>' +
+                                                    '<td>' + data.Results[i].Notes[j].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Results[i].Notes[j].UpdatedByUserID+'">' + data.Results[i].Notes[j].SourceUserInstallId + '</a><br/>'+data.Results[i].Notes[j].ChangeDateTimeFormatted+'</td>' +
+                                                    '<td title="' + data.Results[i].Notes[j].LogDescription + '"><div class="note-desc">' + data.Results[i].Notes[j].LogDescription + '</div></td>' +
+                                                '</tr>';
+                                    });
+                                    tbl += '</table></div>';
+                                    
+                                    str += tbl;
+                                } else {
+                                var tbl = '<div class="notes-section"><div class="note-list"><table class="notes-table" cellspacing="0" cellpadding="0">' +
+                                                '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
+                                                '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
+                                                '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
+                                               '</table></div>';
+                                    str += tbl;
+                            }
+                            str += '<div class="notes-inputs"><div class="first-col"><input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this,'+ taskId +','+data.Results[i].Id+')"></div><div class="second-col"><textarea class="note-text textbox"></textarea></div></div></div>';
+                        });
+                        str +='</div>';
+                        $(sender).parents('div.div-table-row').append(str);
+                    }
+                });
+            }
+            function addNotes(sender, taskId, taskMultilevelListId){
+                var note = $(sender).parents('.notes-inputs').find('.note-text').val();
+                if(note!='')
+                    ajaxExt({
+                        url: '/Sr_App/itdashboard.aspx/AddNotes',
+                        type: 'POST',
+                        data: '{ taskId: ' + taskId + ',taskMultilevelListId:'+taskMultilevelListId+', note: "' + note + '", touchPointSource: ' + <%=(int)JG_Prospect.Common.TouchPointSource.ITDashboard %> + ' }',
+                        showThrobber: true,
+                        throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                        success: function (data, msg) {
+                            $(sender).parents('.notes-inputs').find('.note-text').val('');
+                            //Paging(sender);
+                            LoadNotes($(sender).parents('.notes-section').find('.note-list'), txtUid, uid);
+                        }
+                    });
+            }
+
+            function openChat(sender, taskId, taskMultilevelListId, receiverIds){
+                InitiateChat(sender, receiverIds, null, '<%=(int)JG_Prospect.Common.ChatSource.ITDashboard%>', taskId, taskMultilevelListId);
+            }
         </script>
 </asp:Content>
