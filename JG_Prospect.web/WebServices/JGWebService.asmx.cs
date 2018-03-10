@@ -2394,7 +2394,7 @@ namespace JG_Prospect.WebServices
 
             return new JavaScriptSerializer().Serialize(new ActionOutput<ActiveUser>
             {
-                Results = SingletonUserChatGroups.Instance.ActiveUsers,
+                Results = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList(),
                 Status = ActionStatus.Successfull
             });
         }
@@ -2541,7 +2541,7 @@ namespace JG_Prospect.WebServices
             obj.ChatGroupId = chatGroupId;
             obj.ChatGroupName = ChatGroupName;
             obj.ChatMessages = messages;
-            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers;
+            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
 
             return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMessageActiveUser>
             {

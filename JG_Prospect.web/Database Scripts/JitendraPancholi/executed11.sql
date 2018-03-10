@@ -684,7 +684,7 @@ BEGIN
 			FOR XML PATH('')),4,800)
 		Where UserId IS NULL
 
-		Select top 20 * from #OnlineUsersOrGroups Order By MessageAt /*UserRank,*/ Desc
+		Select* from #OnlineUsersOrGroups Order By /*MessageAt,*/ UserRank Desc
 		--Order By Max(M.CreatedOn) Desc
 END
 
