@@ -57,7 +57,7 @@ namespace JG_Prospect.Chat
                 // Make entry into database for this attachment
                 int fileId = ChatBLL.Instance.SaveChatFile(imageName, NewImageName, file.ContentType);
 
-                Response.Write(NewImageName + "^" + fileId + "^" + imageName);
+                Response.Write(NewImageName + "^" + fileId + "^" + imageName + "^");
             }
         }
 

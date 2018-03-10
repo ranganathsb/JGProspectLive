@@ -166,18 +166,28 @@ Go
 -- =============================================      
 /*  
 	GetChatUnReadCount 1152
-	GetChatUnReadCount 901
+	GetChatUnReadCount 901,10
 	GetChatUnReadCount 3797
 */  
 Create PROCEDURE GetChatUnReadCount
 	@UserId Int,
-	@ChatSourceId Int
+	@ChatSourceId Int = null
 AS      
 BEGIN
-	Select M.SenderId, Count(SenderId) As UnReadCount From ChatMessageReadStatus S With(NoLock)
-	Join ChatMessage M With(NoLock) on S.ChatMessageId = M.Id
-	Where S.ReceiverId = @UserId And S.IsRead = 0 And M.ChatSourceId = @ChatSourceId
-	Group By SenderId
+	IF @ChatSourceId IS NULL
+	Begin
+		Select M.SenderId, Count(SenderId) As UnReadCount From ChatMessageReadStatus S With(NoLock)
+		Join ChatMessage M With(NoLock) on S.ChatMessageId = M.Id
+		Where S.ReceiverId = @UserId And S.IsRead = 0 And M.ChatSourceId = 10
+		Group By SenderId
+	End
+	Else
+	Begin
+		Select M.SenderId, Count(SenderId) As UnReadCount From ChatMessageReadStatus S With(NoLock)
+		Join ChatMessage M With(NoLock) on S.ChatMessageId = M.Id
+		Where S.ReceiverId = @UserId And S.IsRead = 0 And M.ChatSourceId = @ChatSourceId
+		Group By SenderId
+	End
 End
 
 GO

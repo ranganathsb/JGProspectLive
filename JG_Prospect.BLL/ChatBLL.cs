@@ -59,6 +59,16 @@ namespace JG_Prospect.BLL
             return ChatDAL.Instance.GetChatMessages(ChatGroupId, receiverIds, chatSourceId);
         }
 
+        public ActionOutput<ChatMessage> GetTaskChatMessages(int chatSourceId, int TaskId, int TaskMultilevelListId = 0)
+        {
+            return ChatDAL.Instance.GetTaskChatMessages(chatSourceId, TaskId, TaskMultilevelListId);
+        }
+
+        public ActionOutput<int> GetTaskUsers(int TaskId)
+        {
+            return ChatDAL.Instance.GetTaskUsers(TaskId);
+        }
+
         public ChatFile GetChatFile(int id)
         {
             return ChatDAL.Instance.GetChatFile(id);

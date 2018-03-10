@@ -8,6 +8,8 @@ namespace JG_Prospect.Common.modal
 {
     public class Notes
     {
+        public int TaskId { get; set; }
+        public int TaskMultilevelListId { get; set; }
         public int UserTouchPointLogID { get; set; }
         public int UserID { get; set; }
         public int UpdatedByUserID { get; set; }
