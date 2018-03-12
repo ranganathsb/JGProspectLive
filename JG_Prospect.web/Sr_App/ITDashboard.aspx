@@ -10,6 +10,7 @@
 }.div-table-col.seq-notes-fixed-top.sub-task {
     width: 308px;
 }
+ .row-item p{margin:0;}
         .div-table-row .row {
             display: inline-block;
             width: 99%;
@@ -18,6 +19,7 @@
             border: 1px solid #aaa;
             border-radius: 5px;
             font-size: 11px;
+            color:#000;
         }
 
             .div-table-row .row a {
@@ -832,8 +834,18 @@
                                 <!-- DueDate ends -->
 
                                 <!-- Notes starts -->
-                                <div class="div-table-col seq-notes" taskid="{{Task.TaskId}}" taskmultilevellistid="0">
-                                   Loading Notes...
+                                <div class="notes-section" taskid="{{TechTask.TaskId}}" taskMultilevelListId="0" style="position:relative;overflow-x:hidden;overflow-y: auto;min-height: 90px;width: 320px !important;">
+                                    <div class="div-table-col seq-notes-fixed-top sub-task" taskid="{{TechTask.TaskId}}" taskMultilevelListId="0">
+                                        Loading Notes...
+                                    </div>
+                                    <div class="notes-inputs">
+                                        <div class="first-col">
+                                            <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this)" />
+                                        </div>
+                                        <div class="second-col">
+                                            <textarea class="note-text textbox"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                                 <!-- Notes ends -->
 
@@ -2230,17 +2242,17 @@
 
                                 </div>
                                 <!-- DueDate ends -->
-                            <div class="notes-section" style="position:relative;overflow-x:hidden;overflow-y: auto;min-height: 90px;">
+                            <div class="notes-section" taskid="{{Task.TaskId}}" taskMultilevelListId="0" style="position:relative;overflow-x:hidden;overflow-y: auto;min-height: 90px;">
                                 <!-- Notes starts -->
                                 <div class="notes-container div-table-col seq-notes-fixed-top main-task" taskid="{{Task.TaskId}}" taskMultilevelListId="0">
                                     Loading Notes...
                                 </div>
                                 <div class="notes-inputs">
                                     <div class="first-col">
-                                        <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this,567)" />
+                                        <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this)" />
                                     </div>
                                     <div class="second-col">
-                                        <textarea class="note-text textbox" id="txt-{{Task.TaskId}}"></textarea>
+                                        <textarea class="note-text textbox"></textarea>
                                     </div>
                                 </div>
                                 <!-- Notes ends -->
@@ -2357,16 +2369,16 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="notes-section" style="position:relative;overflow-x:hidden;overflow-y: auto;min-height: 90px;width: 320px !important;">
+                                        <div class="notes-section" taskid="{{TechTask.TaskId}}" taskMultilevelListId="0" style="position:relative;overflow-x:hidden;overflow-y: auto;min-height: 90px;width: 320px !important;">
                                             <div class="div-table-col seq-notes-fixed-top sub-task" taskid="{{TechTask.TaskId}}" taskMultilevelListId="0">
                                                 Loading Notes...
                                             </div>
                                             <div class="notes-inputs">
                                                 <div class="first-col">
-                                                    <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this,567)" />
+                                                    <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this)" />
                                                 </div>
                                                 <div class="second-col">
-                                                    <textarea class="note-text textbox" id="txt-{{Task.TaskId}}"></textarea>
+                                                    <textarea class="note-text textbox"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -2445,7 +2457,7 @@
                                     Total Hours<br />
                                     Total $
                                 </div>
-                                <div class="div-table-col seq-notes-fixed">Notes</div>
+                                <div class="div-table-col seq-notes-fixed" style="width: 452px;">Notes</div>
                             </div>
                             <div class="noData" id="noDataCT">No Records Found!</div>
                             <!-- NG Repeat Div starts -->
@@ -2556,8 +2568,18 @@
                                 <!-- DueDate ends -->
 
                                 <!-- Notes starts -->
-                                <div class="div-table-col seq-notes-fixed">
-                                    Notes
+                                <div class="notes-section" taskid="{{Task.TaskId}}" taskMultilevelListId="0" style="position:relative;overflow-x:hidden;overflow-y: auto;min-height: 90px;width: 460px !important;">
+                                    <div style="width: 98%;height: 53px;overflow-x: hidden;overflow-y: auto;" class="div-table-col seq-notes-fixed-top main-task" taskid="{{Task.TaskId}}" taskMultilevelListId="0">
+                                        Loading Notes...
+                                    </div>
+                                    <div class="notes-inputs">
+                                        <div class="first-col">
+                                            <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this)" />
+                                        </div>
+                                        <div class="second-col">
+                                            <textarea class="note-text textbox"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                                 <!-- Notes ends -->
 
@@ -3047,13 +3069,15 @@
                 var userId = '<%=loggedInUserId%>';
                 addNotes(sender, userId);
             }
-            function addNotes(sender, uid) {
+            function addNotes(sender) {
                 var note = $(sender).parent().find('.note-text').val();
+                var tid=$(sender).parents('')
+                var mtid=0
                 if (note != '')
                     ajaxExt({
-                        url: '/Sr_App/edituser.aspx/AddNotes',
+                        url: '/Sr_App/itdashboard.aspx/AddNotes',
                         type: 'POST',
-                        data: '{ id: ' + uid + ', note: "' + note + '" }',
+                        data: '{ taskId: ' + tid + ', taskMultilevelListId: ' + mtid + ',note:"'+note+'",touchPointSource:<%=(int)JG_Prospect.Common.ChatSource.ITDashboard%> }',
                         showThrobber: true,
                         throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                         success: function (data, msg) {
@@ -4173,7 +4197,7 @@
                                        '</table>';
                             $(sender).html(tbl);
                         }
-                        $(sender).parents('.notes-section').attr('onclick','openChat(this, ' + taskid + ',' + 0 + ',\'' + data.Message + '\')');
+                        $(sender).parents('.notes-section').find('.notes-table').attr('onclick','openChat(this, ' + taskid + ',' + 0 + ',\'' + data.Message + '\')');
                         LoadTaskMultilevelList(sender,taskid);
                     }
                 });
@@ -4207,9 +4231,9 @@
                             str += '<div class="row-item">'+
                                         '<div class="col1">'+ '<a class="label" href"#">'+data.Results[i].Label+'.</a> ' +data.Results[i].Description + '</div>'+
                                         '<div class="col2">'+
-                                            '<div class="notes-section" onclick="openChat(this, '+data.Results[i].ParentTaskId+','+data.Results[i].Id+',\''+data.Results[i].ReceiverIds+'\')">'+
+                                            '<div class="notes-section" taskid="'+data.Results[i].ParentTaskId+'" taskMultilevelListId="'+data.Results[i].Id+'">'+
                                                 '<div class="note-list">'+
-                                                    '<table class="notes-table" cellspacing="0" cellpadding="0">';
+                                                    '<table onclick="openChat(this, '+data.Results[i].ParentTaskId+','+data.Results[i].Id+',\''+data.Results[i].ReceiverIds+'\')" class="notes-table" cellspacing="0" cellpadding="0">';
                             if (data.Results[i].Notes.length > 0) {
                                 var tbl = '';
                                 $(data.Results[i].Notes).each(function (j) {
@@ -4242,19 +4266,21 @@
                     }
                 });
             }
-            function addNotes(sender, taskId, taskMultilevelListId){
+            function addNotes(sender){
                 var note = $(sender).parents('.notes-inputs').find('.note-text').val();
+                var taskId=$(sender).parents('.notes-section').attr('taskid');
+                var taskmultilevellistid=$(sender).parents('.notes-section').attr('taskmultilevellistid');
                 if(note!='')
                     ajaxExt({
                         url: '/Sr_App/itdashboard.aspx/AddNotes',
                         type: 'POST',
-                        data: '{ taskId: ' + taskId + ',taskMultilevelListId:'+taskMultilevelListId+', note: "' + note + '", touchPointSource: ' + <%=(int)JG_Prospect.Common.TouchPointSource.ITDashboard %> + ' }',
+                        data: '{ taskId: ' + taskId + ',taskMultilevelListId:'+taskmultilevellistid+', note: "' + note + '", touchPointSource: ' + <%=(int)JG_Prospect.Common.TouchPointSource.ITDashboard %> + ' }',
                         showThrobber: true,
                         throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                         success: function (data, msg) {
                             $(sender).parents('.notes-inputs').find('.note-text').val('');
                             //Paging(sender);
-                            LoadNotes($(sender).parents('.notes-section').find('.note-list'), txtUid, uid);
+                            LoadNotes($(sender).parents('.notes-section').find('.notes-table').parent(), taskId, taskmultilevellistid);
                         }
                     });
             }
