@@ -780,7 +780,8 @@
             if (window.location.href.toLowerCase().indexOf('edituser.aspx') > 1)
                 ReLoadNotes();
             if (window.location.href.toLowerCase().indexOf('itdashboard') > 0) {
-                LoadNotes($('.main-task[taskid="' + taskId + '"]'), taskId, taskMultilevelListId);
+                var container = $('.notes-section[taskid="' + taskId + '"]');
+                LoadNotes(container, taskId, taskMultilevelListId);
             }
         }
         closeTelecomPopup = function (sender) {
