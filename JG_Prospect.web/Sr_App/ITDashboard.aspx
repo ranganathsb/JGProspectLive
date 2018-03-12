@@ -4257,7 +4257,10 @@
                         });
                         if(data.Results.length>0)
                             str +='</div>';
-                        $(sender).parents('div.div-table-row').append(str);
+                        var container=$(sender).parents('div.div-table-row');
+                        $(container).find('div.row').remove();
+                        $(container).append(str);
+                        
                         $('.row-item').each(function(){
                             var h = $(this).find('.col1').height();
                             $(this).find('.col2').css('height', h + 'px');
