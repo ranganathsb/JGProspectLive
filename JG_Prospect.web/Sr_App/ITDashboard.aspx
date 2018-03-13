@@ -5,31 +5,57 @@
 <%@ Register TagPrefix="asp" Namespace="Saplin.Controls" Assembly="DropDownCheckBoxes" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <style>
+    <style>.notes-container.div-table-col.seq-notes-fixed-top.main-task {
+    height: 60px;
+}.div-table-col.seq-notes-fixed-top.sub-task {
+    width: 308px;
+}
+ .row-item p{margin:0;}
         .div-table-row .row {
-        display: inline-block;
-        width: 98%;
-        padding: 10px;
-        background: #eee;
-        border: 1px solid #aaa;
-        border-radius: 5px;
-        font-size: 11px;
-    }
-    .div-table-row .row a{color:blue;}
-    .div-table-row .row  ol {
-        list-style-type: decimal;
-    }
-    .row .row-item {
-        float: left;
-        width: 68%;
-    }
-    .row .notes-table {
-    float: left;
-}.row .notes-section {
-    float: left !important;
-    width: 31% !important;
-}.row .notes-section .second-col{width: 77%;}
- .row .notes-section .first-col{width: 22%;}
+            display: inline-block;
+            width: 99%;
+            padding: 10px 0 10px 10px;
+            background: #eee;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            font-size: 11px;
+            color:#000;
+        }
+
+            .div-table-row .row a {
+                color: blue;
+            }
+
+            .div-table-row .row ol {
+                list-style-type: decimal;
+            }
+
+        .row .row-item {
+            float: left;
+            width: 100%;
+            position:relative;
+            min-height:90px;
+            margin-bottom:5px;
+        }
+        .row .row-item .col1{width:54%;float: left;min-height:90px;}
+        .row .row-item .col2{width:45%;float: left;position:relative;min-height:90px;}
+        .row .notes-table {
+            float: left;
+        }
+
+        .row .notes-section {
+            float: left !important;
+            width: 100% !important;
+        }
+
+            .row .notes-section .second-col {
+                width: 83%;
+            }
+
+            .row .notes-section .first-col {
+                width: 16%;
+            }
+
         .clsTestMail {
             padding: 20px;
             font-size: 14px;
@@ -316,16 +342,30 @@
         }
 
         .notes-section {
-            position: relative;
+           
             width: 330px !important;
             float: none !important;
             margin: 1px 0 0 0 !important;
             display: inline-block;
             min-height: 90px;
-            display:none;
         }
 
         .notes-container {
+            display: block;
+            /*height: 66px;*/
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            float: none;
+            margin: 0;
+            padding: 0;
+            min-height: auto;
+        }
+
+        .note-list {
             display: block;
             /*height: 66px;*/
             overflow-x: hidden;
@@ -347,9 +387,9 @@
         .notes-inputs {
             text-align: left;
             height: 30px;
-            padding: 2px;
+            padding: 0px;
             position: absolute;
-            left: 3px;
+            left: 0px;
             bottom: 0;
             width: 100%;
         }
@@ -357,8 +397,8 @@
         .notes-table {
             height: auto;
             width: 100%;
-            margin: 0 5px;
-            font-size: 12px;
+            margin: 0 0px;
+            font-size: 11px;
         }
 
             .notes-table tbody {
@@ -391,7 +431,7 @@
             }
 
             .notes-table tr th:nth-child(1), .notes-table tr td:nth-child(1) {
-                width: 5%;
+                width: 12% !important;
             }
 
             .notes-table tr th:nth-child(2), .notes-table tr td:nth-child(2) {
@@ -433,7 +473,7 @@
         }
 
             .second-col textarea.note-text {
-                width: 97%;
+                width: 99%;
             }
 
         .GrdBtnAdd {
@@ -794,8 +834,18 @@
                                 <!-- DueDate ends -->
 
                                 <!-- Notes starts -->
-                                <div class="div-table-col seq-notes">
-                                    Notes
+                                <div class="notes-section" taskid="{{TechTask.TaskId}}" taskMultilevelListId="0" style="position:relative;overflow-x:hidden;overflow-y: auto;min-height: 90px;width: 320px !important;">
+                                    <div class="div-table-col seq-notes-fixed-top sub-task" taskid="{{TechTask.TaskId}}" taskMultilevelListId="0">
+                                        Loading Notes...
+                                    </div>
+                                    <div class="notes-inputs">
+                                        <div class="first-col">
+                                            <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this)" />
+                                        </div>
+                                        <div class="second-col">
+                                            <textarea class="note-text textbox"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                                 <!-- Notes ends -->
 
@@ -2192,17 +2242,17 @@
 
                                 </div>
                                 <!-- DueDate ends -->
-                            <div class="notes-section">
+                            <div class="notes-section" taskid="{{Task.TaskId}}" taskMultilevelListId="0" style="position:relative;overflow-x:hidden;overflow-y: auto;min-height: 90px;">
                                 <!-- Notes starts -->
                                 <div class="notes-container div-table-col seq-notes-fixed-top main-task" taskid="{{Task.TaskId}}" taskMultilevelListId="0">
-                                    notes
+                                    Loading Notes...
                                 </div>
                                 <div class="notes-inputs">
                                     <div class="first-col">
-                                        <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this,567)" />
+                                        <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this)" />
                                     </div>
                                     <div class="second-col">
-                                        <textarea class="note-text textbox" id="txt-{{Task.TaskId}}"></textarea>
+                                        <textarea class="note-text textbox"></textarea>
                                     </div>
                                 </div>
                                 <!-- Notes ends -->
@@ -2319,8 +2369,18 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="div-table-col seq-notes-fixed-top sub-task" taskid="0" taskMultilevelListId="0">
-                                            Notes
+                                        <div class="notes-section" taskid="{{TechTask.TaskId}}" taskMultilevelListId="0" style="position:relative;overflow-x:hidden;overflow-y: auto;min-height: 90px;width: 320px !important;">
+                                            <div class="div-table-col seq-notes-fixed-top sub-task" taskid="{{TechTask.TaskId}}" taskMultilevelListId="0">
+                                                Loading Notes...
+                                            </div>
+                                            <div class="notes-inputs">
+                                                <div class="first-col">
+                                                    <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this)" />
+                                                </div>
+                                                <div class="second-col">
+                                                    <textarea class="note-text textbox"></textarea>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <!-- Body section ends -->
@@ -2397,7 +2457,7 @@
                                     Total Hours<br />
                                     Total $
                                 </div>
-                                <div class="div-table-col seq-notes-fixed">Notes</div>
+                                <div class="div-table-col seq-notes-fixed" style="width: 452px;">Notes</div>
                             </div>
                             <div class="noData" id="noDataCT">No Records Found!</div>
                             <!-- NG Repeat Div starts -->
@@ -2508,8 +2568,18 @@
                                 <!-- DueDate ends -->
 
                                 <!-- Notes starts -->
-                                <div class="div-table-col seq-notes-fixed">
-                                    Notes
+                                <div class="notes-section" taskid="{{Task.TaskId}}" taskMultilevelListId="0" style="position:relative;overflow-x:hidden;overflow-y: auto;min-height: 90px;width: 460px !important;">
+                                    <div style="width: 98%;height: 53px;overflow-x: hidden;overflow-y: auto;" class="div-table-col seq-notes-fixed-top main-task" taskid="{{Task.TaskId}}" taskMultilevelListId="0">
+                                        Loading Notes...
+                                    </div>
+                                    <div class="notes-inputs">
+                                        <div class="first-col">
+                                            <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this)" />
+                                        </div>
+                                        <div class="second-col">
+                                            <textarea class="note-text textbox"></textarea>
+                                        </div>
+                                    </div>
                                 </div>
                                 <!-- Notes ends -->
 
@@ -2999,13 +3069,15 @@
                 var userId = '<%=loggedInUserId%>';
                 addNotes(sender, userId);
             }
-            function addNotes(sender, uid) {
+            function addNotes(sender) {
                 var note = $(sender).parent().find('.note-text').val();
+                var tid=$(sender).parents('')
+                var mtid=0
                 if (note != '')
                     ajaxExt({
-                        url: '/Sr_App/edituser.aspx/AddNotes',
+                        url: '/Sr_App/itdashboard.aspx/AddNotes',
                         type: 'POST',
-                        data: '{ id: ' + uid + ', note: "' + note + '" }',
+                        data: '{ taskId: ' + tid + ', taskMultilevelListId: ' + mtid + ',note:"'+note+'",touchPointSource:<%=(int)JG_Prospect.Common.ChatSource.ITDashboard%> }',
                         showThrobber: true,
                         throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                         success: function (data, msg) {
@@ -3190,156 +3262,156 @@
                     //Get Designation for LoggedIn User
                     var des = <%=UserDesignationId%>;
             
-                var DesToSelectITLead = ['8', '9', '10', '11', '12', '13', '24', '25', '26', '27', '28', '29'];
-                var DesToSelectForeman = ['14', '15', '16', '17', '18', '19', '20'];
-                var DesToSelectSalesManager = ['2', '3', '6', '7'];
-                var DesToSelectOfficeManager = ['1', '4', '5', '22', '23'];
+                    var DesToSelectITLead = ['8', '9', '10', '11', '12', '13', '24', '25', '26', '27', '28', '29'];
+                    var DesToSelectForeman = ['14', '15', '16', '17', '18', '19', '20'];
+                    var DesToSelectSalesManager = ['2', '3', '6', '7'];
+                    var DesToSelectOfficeManager = ['1', '4', '5', '22', '23'];
 
                     //Set pre-selected options
-                switch (des) {
-                    case 21: {
-                        $('#ddlDesignationSeq').find('option:first-child').prop('selected', false).end().trigger('chosen:updated');
-                        $.each(DesToSelectITLead, function (index, value) {
-                            //Select Designation
-                            $("#ddlDesignationSeq option[value=" + value + "]").attr("selected", "selected");
-                        });
-                        break;
+                    switch (des) {
+                        case 21: {
+                            $('#ddlDesignationSeq').find('option:first-child').prop('selected', false).end().trigger('chosen:updated');
+                            $.each(DesToSelectITLead, function (index, value) {
+                                //Select Designation
+                                $("#ddlDesignationSeq option[value=" + value + "]").attr("selected", "selected");
+                            });
+                            break;
+                        }
+                        case 18: {
+                            $('#ddlDesignationSeq').find('option:first-child').prop('selected', false).end().trigger('chosen:updated');
+                            $.each(DesToSelectForeman, function (index, value) {
+                                //Select Designation
+                                $("#ddlDesignationSeq option[value=" + value + "]").attr("selected", "selected");
+                            });
+                            break;
+                        }
+                        case 6: {
+                            $('#ddlDesignationSeq').find('option:first-child').prop('selected', false).end().trigger('chosen:updated');
+                            $.each(DesToSelectSalesManager, function (index, value) {
+                                //Select Designation
+                                $("#ddlDesignationSeq option[value=" + value + "]").attr("selected", "selected");
+                            });
+                            break;
+                        }
+                        case 4: {
+                            $('#ddlDesignationSeq').find('option:first-child').prop('selected', false).end().trigger('chosen:updated');
+                            $.each(DesToSelectOfficeManager, function (index, value) {
+                                //Select Designation
+                                $("#ddlDesignationSeq option[value=" + value + "]").attr("selected", "selected");
+                            });
+                            break;
+                        }
                     }
-                    case 18: {
-                        $('#ddlDesignationSeq').find('option:first-child').prop('selected', false).end().trigger('chosen:updated');
-                        $.each(DesToSelectForeman, function (index, value) {
-                            //Select Designation
-                            $("#ddlDesignationSeq option[value=" + value + "]").attr("selected", "selected");
-                        });
-                        break;
-                    }
-                    case 6: {
-                        $('#ddlDesignationSeq').find('option:first-child').prop('selected', false).end().trigger('chosen:updated');
-                        $.each(DesToSelectSalesManager, function (index, value) {
-                            //Select Designation
-                            $("#ddlDesignationSeq option[value=" + value + "]").attr("selected", "selected");
-                        });
-                        break;
-                    }
-                    case 4: {
-                        $('#ddlDesignationSeq').find('option:first-child').prop('selected', false).end().trigger('chosen:updated');
-                        $.each(DesToSelectOfficeManager, function (index, value) {
-                            //Select Designation
-                            $("#ddlDesignationSeq option[value=" + value + "]").attr("selected", "selected");
-                        });
-                        break;
-                    }
-                }
 
                     //Refresh Choosen
-                $("#ddlDesignationSeq").trigger("chosen:updated");
+                    $("#ddlDesignationSeq").trigger("chosen:updated");
 
-                fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
-                fillUsers(ddlDesigSeqClientIDFrozenTasks, 'ddlSelectFrozenTask', 'lblLoadingFrozen');
-            }
+                    fillUsers(ddlDesigSeqClientID, 'ddlSelectUserInProTask', 'lblLoading');
+                    fillUsers(ddlDesigSeqClientIDFrozenTasks, 'ddlSelectFrozenTask', 'lblLoadingFrozen');
+                }
             });
 
 
 
-        $(window).load(function () {
-            checkNShowTaskPopup();
-            sequenceScope.ForDashboard = true;
-            var desId = "";
-            var userids = "";
-            desId = $('.' + ddlDesigSeqClientID).val();
-            userids = $(".chosen-select-users").val();
+            $(window).load(function () {
+                checkNShowTaskPopup();
+                sequenceScope.ForDashboard = true;
+                var desId = "";
+                var userids = "";
+                desId = $('.' + ddlDesigSeqClientID).val();
+                userids = $(".chosen-select-users").val();
 
-            if (desId != undefined) {
-                desId = desId.join();
-            }
-            else {
-                desId = "";
-            }
+                if (desId != undefined) {
+                    desId = desId.join();
+                }
+                else {
+                    desId = "";
+                }
 
-            if (userids != undefined) {
-                userids = userids.join();
-            }
-            else {
-                userids = "";
-            }
+                if (userids != undefined) {
+                    userids = userids.join();
+                }
+                else {
+                    userids = "";
+                }
 
-            $('#refreshClosedTask').on('click', function () {                
-                ShowTaskSequenceDashBoard('', '', false);
-                //ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize);
-            });
+                $('#refreshClosedTask').on('click', function () {                
+                    ShowTaskSequenceDashBoard('', '', false);
+                    //ShowAllClosedTasksDashBoard($('.' + ddlDesigSeqClientID).val().join(), $(".chosen-select-users").val().join(), pageSize);
+                });
 
-            $('#refreshInProgTasks').on('click', function () {
-                ShowTaskSequenceDashBoard('', '', true);
-            });
-
-
-            //Set Date Filters
-            $('.chkAllDates').attr("checked", true);
-            //Set Date
-            $('.dateFrom').val("All");
-            var EndDate = new Date();
-            EndDate = (EndDate.getMonth() + 1) + '/' + EndDate.getDate() + '/' + EndDate.getFullYear();
-            $('.dateTo').val(EndDate);
+                $('#refreshInProgTasks').on('click', function () {
+                    ShowTaskSequenceDashBoard('', '', true);
+                });
 
 
-            //for StartDate and EndDate trigger
-            $('.dateFrom').change(function () {
-                ShowTaskSequenceDashBoard(desId, userids, true);
-                ShowTaskSequenceDashBoard(desId, userids, false);
-            });
-
-            $('.dateTo').change(function () {
-                ShowTaskSequenceDashBoard(desId, userids, true);
-                ShowTaskSequenceDashBoard(desId, userids, false);
-            });
-
-            $('.chkAllDates').change(function () {
+                //Set Date Filters
+                $('.chkAllDates').attr("checked", true);
+                //Set Date
                 $('.dateFrom').val("All");
                 var EndDate = new Date();
                 EndDate = (EndDate.getMonth() + 1) + '/' + EndDate.getDate() + '/' + EndDate.getFullYear();
                 $('.dateTo').val(EndDate);
-                $('.chkOneYear').attr("checked", false); $('.chkThreeMonth').attr("checked", false); $('.chkOneMonth').attr("checked", false); $('.chkTwoWks').attr("checked", false);
-                ShowTaskSequenceDashBoard(desId, userids, true);
-                ShowTaskSequenceDashBoard(desId, userids, false);
-            });
 
-            $('.chkOneYear').change(function () {
-                addMonthsToDate(12);
-                $('.dateFrom').val(StartDate);
-                $('.dateTo').val(EndDate);
-                $('.chkThreeMonth').attr("checked", false); $('.chkOneMonth').attr("checked", false); $('.chkTwoWks').attr("checked", false); $('.chkAllDates').attr("checked", false);
-                ShowTaskSequenceDashBoard(desId, userids, true);
-                ShowTaskSequenceDashBoard(desId, userids, false);
-            });
 
-            $('.chkThreeMonth').change(function () {
-                addMonthsToDate(3);
-                $('.dateFrom').val(StartDate);
-                $('.dateTo').val(EndDate);
-                $('#chkOneYear').attr("checked", false); $('.chkOneMonth').attr("checked", false); $('.chkTwoWks').attr("checked", false); $('.chkAllDates').attr("checked", false);
-                ShowTaskSequenceDashBoard(desId, userids, true);
-                ShowTaskSequenceDashBoard(desId, userids, false);
-            });
+                //for StartDate and EndDate trigger
+                $('.dateFrom').change(function () {
+                    ShowTaskSequenceDashBoard(desId, userids, true);
+                    ShowTaskSequenceDashBoard(desId, userids, false);
+                });
 
-            $('.chkOneMonth').change(function () {
-                addMonthsToDate(1);
-                $('.dateFrom').val(StartDate);
-                $('.dateTo').val(EndDate);
-                $('#chkOneYear').attr("checked", false); $('.chkThreeMonth').attr("checked", false); $('.chkTwoWks').attr("checked", false); $('.chkAllDates').attr("checked", false);
-                ShowTaskSequenceDashBoard(desId, userids, true);
-                ShowTaskSequenceDashBoard(desId, userids, false);
-            });
+                $('.dateTo').change(function () {
+                    ShowTaskSequenceDashBoard(desId, userids, true);
+                    ShowTaskSequenceDashBoard(desId, userids, false);
+                });
 
-            $('.chkTwoWks').change(function () {
-                addDaysToDate(13);
-                $('.dateFrom').val(StartDate);
-                $('.dateTo').val(EndDate);
-                $('#chkOneYear').attr("checked", false); $('.chkThreeMonth').attr("checked", false); $('.chkOneMonth').attr("checked", false); $('.chkAllDates').attr("checked", false);
-                ShowTaskSequenceDashBoard(desId, userids, true);
-                ShowTaskSequenceDashBoard(desId, userids, false);
-            });
+                $('.chkAllDates').change(function () {
+                    $('.dateFrom').val("All");
+                    var EndDate = new Date();
+                    EndDate = (EndDate.getMonth() + 1) + '/' + EndDate.getDate() + '/' + EndDate.getFullYear();
+                    $('.dateTo').val(EndDate);
+                    $('.chkOneYear').attr("checked", false); $('.chkThreeMonth').attr("checked", false); $('.chkOneMonth').attr("checked", false); $('.chkTwoWks').attr("checked", false);
+                    ShowTaskSequenceDashBoard(desId, userids, true);
+                    ShowTaskSequenceDashBoard(desId, userids, false);
+                });
 
-            if ($('#' + '<%=tableFilter.ClientID%>').length > 0) {
+                $('.chkOneYear').change(function () {
+                    addMonthsToDate(12);
+                    $('.dateFrom').val(StartDate);
+                    $('.dateTo').val(EndDate);
+                    $('.chkThreeMonth').attr("checked", false); $('.chkOneMonth').attr("checked", false); $('.chkTwoWks').attr("checked", false); $('.chkAllDates').attr("checked", false);
+                    ShowTaskSequenceDashBoard(desId, userids, true);
+                    ShowTaskSequenceDashBoard(desId, userids, false);
+                });
+
+                $('.chkThreeMonth').change(function () {
+                    addMonthsToDate(3);
+                    $('.dateFrom').val(StartDate);
+                    $('.dateTo').val(EndDate);
+                    $('#chkOneYear').attr("checked", false); $('.chkOneMonth').attr("checked", false); $('.chkTwoWks').attr("checked", false); $('.chkAllDates').attr("checked", false);
+                    ShowTaskSequenceDashBoard(desId, userids, true);
+                    ShowTaskSequenceDashBoard(desId, userids, false);
+                });
+
+                $('.chkOneMonth').change(function () {
+                    addMonthsToDate(1);
+                    $('.dateFrom').val(StartDate);
+                    $('.dateTo').val(EndDate);
+                    $('#chkOneYear').attr("checked", false); $('.chkThreeMonth').attr("checked", false); $('.chkTwoWks').attr("checked", false); $('.chkAllDates').attr("checked", false);
+                    ShowTaskSequenceDashBoard(desId, userids, true);
+                    ShowTaskSequenceDashBoard(desId, userids, false);
+                });
+
+                $('.chkTwoWks').change(function () {
+                    addDaysToDate(13);
+                    $('.dateFrom').val(StartDate);
+                    $('.dateTo').val(EndDate);
+                    $('#chkOneYear').attr("checked", false); $('.chkThreeMonth').attr("checked", false); $('.chkOneMonth').attr("checked", false); $('.chkAllDates').attr("checked", false);
+                    ShowTaskSequenceDashBoard(desId, userids, true);
+                    ShowTaskSequenceDashBoard(desId, userids, false);
+                });
+
+                if ($('#' + '<%=tableFilter.ClientID%>').length > 0) {
                 
 
                 $('.' + ddlDesigSeqClientID).change(function (e) {
@@ -3567,7 +3639,7 @@
                 Initialize();
                 setTimeout(function(){
                     console.log('reload')
-                    //ReLoadNotes();
+                    ReLoadNotes();
                 },20000);
             });
 
@@ -4125,6 +4197,7 @@
                                        '</table>';
                             $(sender).html(tbl);
                         }
+                        $(sender).parents('.notes-section').find('.notes-table').attr('onclick','openChat(this, ' + taskid + ',' + 0 + ',\'' + data.Message + '\')');
                         LoadTaskMultilevelList(sender,taskid);
                     }
                 });
@@ -4132,6 +4205,11 @@
 
             function ReLoadNotes() {
                 $('.main-task').each(function (i) {
+                    var taskid = $(this).attr('taskid');
+                    var taskMultilevelListId = $(this).attr('taskMultilevelListId');
+                    LoadNotes($(this), taskid, taskMultilevelListId);
+                });
+                $('.sub-task').each(function (i) {
                     var taskid = $(this).attr('taskid');
                     var taskMultilevelListId = $(this).attr('taskMultilevelListId');
                     LoadNotes($(this), taskid, taskMultilevelListId);
@@ -4146,49 +4224,66 @@
                     showThrobber: false,
                     throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                     success: function (data, msg) {
-                        var str='<div class="row">';
+                        var str='';
+                        if(data.Results.length>0)
+                            str='<div class="row">';
                         $.each(data.Results, function(i){
-                            str += '<div class="row-item">'+ '<a class="label" href"#">'+data.Results[i].Label+'.</a> ' +data.Results[i].Description + '</div>';
-                            
+                            str += '<div class="row-item">'+
+                                        '<div class="col1">'+ '<a class="label" href"#">'+data.Results[i].Label+'.</a> ' +data.Results[i].Description + '</div>'+
+                                        '<div class="col2">'+
+                                            '<div class="notes-section" taskid="'+data.Results[i].ParentTaskId+'" taskMultilevelListId="'+data.Results[i].Id+'">'+
+                                                '<div class="note-list">'+
+                                                    '<table onclick="openChat(this, '+data.Results[i].ParentTaskId+','+data.Results[i].Id+',\''+data.Results[i].ReceiverIds+'\')" class="notes-table" cellspacing="0" cellpadding="0">';
                             if (data.Results[i].Notes.length > 0) {
-                                var tbl = '<div class="notes-section" onclick="openChat(this, '+data.Results[i].ParentTaskId+','+data.Results[i].Id+',\''+data.Results[i].ReceiverIds+'\')"><div class="note-list"><table class="notes-table" cellspacing="0" cellpadding="0">';
-                                    $(data.Results[i].Notes).each(function (j) {
-                                        tbl += '<tr>' +
-                                                    '<td>' + data.Results[i].Notes[j].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Results[i].Notes[j].UpdatedByUserID+'">' + data.Results[i].Notes[j].SourceUserInstallId + '</a><br/>'+data.Results[i].Notes[j].ChangeDateTimeFormatted+'</td>' +
-                                                    '<td title="' + data.Results[i].Notes[j].LogDescription + '"><div class="note-desc">' + data.Results[i].Notes[j].LogDescription + '</div></td>' +
-                                                '</tr>';
-                                    });
-                                    tbl += '</table></div>';
-                                    
-                                    str += tbl;
-                                } else {
-                                var tbl = '<div class="notes-section"><div class="note-list"><table class="notes-table" cellspacing="0" cellpadding="0">' +
-                                                '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
-                                                '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
-                                                '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
-                                               '</table></div>';
-                                    str += tbl;
-                            }
-                            str += '<div class="notes-inputs"><div class="first-col"><input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this,'+ taskId +','+data.Results[i].Id+')"></div><div class="second-col"><textarea class="note-text textbox"></textarea></div></div></div>';
+                                var tbl = '';
+                                $(data.Results[i].Notes).each(function (j) {
+                                    tbl += '<tr>' +
+                                                '<td>' + data.Results[i].Notes[j].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Results[i].Notes[j].UpdatedByUserID+'">' + data.Results[i].Notes[j].SourceUserInstallId + '</a><br/>'+data.Results[i].Notes[j].ChangeDateTimeFormatted+'</td>' +
+                                                '<td title="' + data.Results[i].Notes[j].LogDescription + '"><div class="note-desc">' + data.Results[i].Notes[j].LogDescription + '</div></td>' +
+                                            '</tr>';
+                                });
+                            } else {
+                                var tbl = '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
+                                           '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
+                                           '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>';
+                            }                            
+                            str += tbl +'</table></div>';// End of note list
+                            str += '<div class="notes-inputs">'+
+                                        '<div class="first-col"><input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this,'+ taskId +','+data.Results[i].Id+')"></div>'+
+                                        '<div class="second-col"><textarea class="note-text textbox"></textarea></div>'+
+                                    '</div>'+
+                                    '</div>'; // End of notes section
+                            str += '</div></div>'; // End of row-item
                         });
-                        str +='</div>';
-                        $(sender).parents('div.div-table-row').append(str);
+                        if(data.Results.length>0)
+                            str +='</div>';
+                        var container=$(sender).parents('div.div-table-row');
+                        $(container).find('div.row').remove();
+                        $(container).append(str);
+                        
+                        $('.row-item').each(function(){
+                            var h = $(this).find('.col1').height();
+                            $(this).find('.col2').css('height', h + 'px');
+                            $(this).find('.note-list').css('height', (h-30) + 'px');
+                        });
                     }
                 });
             }
-            function addNotes(sender, taskId, taskMultilevelListId){
+            function addNotes(sender){
                 var note = $(sender).parents('.notes-inputs').find('.note-text').val();
+                var taskId=$(sender).parents('.notes-section').attr('taskid');
+                var taskmultilevellistid=$(sender).parents('.notes-section').attr('taskmultilevellistid');
                 if(note!='')
                     ajaxExt({
                         url: '/Sr_App/itdashboard.aspx/AddNotes',
                         type: 'POST',
-                        data: '{ taskId: ' + taskId + ',taskMultilevelListId:'+taskMultilevelListId+', note: "' + note + '", touchPointSource: ' + <%=(int)JG_Prospect.Common.TouchPointSource.ITDashboard %> + ' }',
+                        data: '{ taskId: ' + taskId + ',taskMultilevelListId:'+taskmultilevellistid+', note: "' + note + '", touchPointSource: ' + <%=(int)JG_Prospect.Common.TouchPointSource.ITDashboard %> + ' }',
                         showThrobber: true,
                         throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                         success: function (data, msg) {
                             $(sender).parents('.notes-inputs').find('.note-text').val('');
                             //Paging(sender);
-                            LoadNotes($(sender).parents('.notes-section').find('.note-list'), txtUid, uid);
+                            LoadNotes($(sender).parents('.notes-section').find('.notes-table').parent(), taskId, taskmultilevellistid);
                         }
                     });
             }

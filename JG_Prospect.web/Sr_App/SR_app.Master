@@ -774,12 +774,20 @@
             chat.server.closeChat($(sender).parents('.chat-box').attr('id'));
             $(sender).parents('.chat-box').remove();
             if (window.location.href.toLowerCase().indexOf('edituser.aspx') > 1)
-                ReLoadNotes();
+                ReLoadNotes();            
         }
         closeTelecomPopup = function (sender) {
+            var taskId = $(sender).parents('.telecom-dashboard-popup').find('#TaskId').val();
+            var taskMultilevelListId = $(sender).parents('.telecom-dashboard-popup').find('#TaskMultilevelListId').val();
+            var receiverIds = $(sender).parents('.telecom-dashboard-popup').find('#ReceiverIds').val();
+            var chatGroupId = $(sender).parents('.telecom-dashboard-popup').find('#ChatGroupId').val();
             chat.server.closeChat($(sender).parents('.telecom-dashboard-popup').find('.chat-box').attr('id'));
             $(sender).parents('.telecom-dashboard-popup').hide();
             $('.overlay').hide();
+            if (window.location.href.toLowerCase().indexOf('itdashboard') > 0) {
+                var container = $('.notes-section[taskid="' + taskId + '"]').filter('div[taskmultilevellistid="' + taskMultilevelListId + '"]');
+                LoadNotes(container, taskId, taskMultilevelListId);
+            }            
         }
         addUserIntoChatGroup = function (id) {
             chat.server.addUserIntoChatGroup(userTobeAddedIntoChatGroupId, id);
