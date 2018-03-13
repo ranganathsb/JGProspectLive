@@ -5257,6 +5257,9 @@ namespace JG_Prospect
         [WebMethod]
         public static string AddNotes(int id, string note, int touchPointSource)
         {
+            string baseurl = HttpContext.Current.Request.Url.Scheme + "://" +
+                                    HttpContext.Current.Request.Url.Authority +
+                                    HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
             if (string.IsNullOrEmpty(note))
             {
                 return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
@@ -5288,6 +5291,22 @@ namespace JG_Prospect
                 MessageAt = DateTime.UtcNow.ToEST(),
                 MessageAtFormatted = DateTime.UtcNow.ToEST().ToString()
             }, ChatGroupId, id.ToString(), JGSession.UserId);
+
+            bool sendEmail = false;
+            // Send Email notification to all offline users
+            if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == id).Any())
+            {
+                if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => m.UserId == id && !m.OnlineAt.HasValue).Any())
+                {
+                    sendEmail = true;
+                }
+            }
+            else
+                sendEmail = true;
+
+            if(sendEmail)
+                ChatBLL.Instance.SendOfflineChatEmail(userID, id, strUserInstallId,
+                                                            note, touchPointSource, baseurl, ChatGroupId);
             return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
         }
 
