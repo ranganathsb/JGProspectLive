@@ -794,8 +794,9 @@
             // logic to open chat popup as per query string
             var RcvrID = getUrlVars()["RcvrID"];
             var chatGroupId = getUrlVars()["CGID"];
-            if (RcvrID != undefined && chatGroupId != undefined)
-                InitiateChat($('.left_panel'), RcvrID, chatGroupId, '<%=(int)JG_Prospect.Common.ChatSource.UserChat%>',0,0);
+            var chatSourceId = getUrlVars()["Src"];
+            if (RcvrID != undefined && chatGroupId != undefined && chatSourceId!=undefined)
+                InitiateChat($('.left_panel'), RcvrID, chatGroupId, chatSourceId,0,0);
         }).fail(function (reason) {
             debugger;
             console.log(reason);
