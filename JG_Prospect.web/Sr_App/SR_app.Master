@@ -526,7 +526,6 @@
         </div>
     </form>
 
-    <%--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>--%>
     <script src="../js/jquery-ui.js"></script>
     <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyD0X4v7eqMFcWCR-VZAJwEMfb47id9IZao"></script>
     <script type="text/JavaScript" src="../Communication/webphone/js/linkify/linkify.js"></script>
@@ -667,9 +666,17 @@
                                 <span id="callDuration">00:00:00</span>
                             </div>
                         </div>
-                        <div class="call-logs">
-                            <div>
-                                Loading Scrips...
+                        <div class="dialer-right">
+                            <div class="call-logs">
+                                <div>
+                                    Loading Scrips...
+                                </div>
+                            </div>
+                            <div class="phone-statistics">
+                                <div>Phone Statistic</div>
+                            </div>
+                            <div class="user-grid">
+                                <div>User Grid</div>
                             </div>
                         </div>
                     </div>
@@ -774,7 +781,7 @@
             chat.server.closeChat($(sender).parents('.chat-box').attr('id'));
             $(sender).parents('.chat-box').remove();
             if (window.location.href.toLowerCase().indexOf('edituser.aspx') > 1)
-                ReLoadNotes();            
+                ReLoadNotes();
         }
         closeTelecomPopup = function (sender) {
             var taskId = $(sender).parents('.telecom-dashboard-popup').find('#TaskId').val();
@@ -787,7 +794,7 @@
             if (window.location.href.toLowerCase().indexOf('itdashboard') > 0) {
                 var container = $('.notes-section[taskid="' + taskId + '"]').filter('div[taskmultilevellistid="' + taskMultilevelListId + '"]');
                 LoadNotes(container, taskId, taskMultilevelListId);
-            }            
+            }
         }
         addUserIntoChatGroup = function (id) {
             chat.server.addUserIntoChatGroup(userTobeAddedIntoChatGroupId, id);
@@ -803,7 +810,7 @@
             var RcvrID = getUrlVars()["RcvrID"];
             var chatGroupId = getUrlVars()["CGID"];
             if (RcvrID != undefined && chatGroupId != undefined)
-                InitiateChat($('.left_panel'), RcvrID, chatGroupId, '<%=(int)JG_Prospect.Common.ChatSource.UserChat%>',0,0);
+                InitiateChat($('.left_panel'), RcvrID, chatGroupId, '<%=(int)JG_Prospect.Common.ChatSource.UserChat%>', 0, 0);
         }).fail(function (reason) {
             debugger;
             console.log(reason);
@@ -964,6 +971,7 @@
     <script src="../Content/emoji-picker/lib/js/jquery.emojiarea.js"></script>
     <script src="../Content/emoji-picker/lib/js/emoji-picker.js"></script>
     <!-- End emoji-picker JavaScript -->
+
     <script type="text/javascript" src="../js/dropzone.js"></script>
     <script type="text/javascript" src="https://s3.amazonaws.com/plivosdk/web/plivo.min.js"></script>
     <script src="../js/button-action.js"></script>
@@ -1013,7 +1021,7 @@
             ajaxExt({
                 url: '/WebServices/JGWebService.asmx/InitiateChat',
                 type: 'POST',
-                data: '{ receiverIds: "' + receiverIds + '", chatGroupId:"' + chatGroupId + '", chatSourceId:' + chatSourceId + ', taskId:'+taskId+', taskMultilevelListId:'+taskMultilevelListId+' }',
+                data: '{ receiverIds: "' + receiverIds + '", chatGroupId:"' + chatGroupId + '", chatSourceId:' + chatSourceId + ', taskId:' + taskId + ', taskMultilevelListId:' + taskMultilevelListId + ' }',
                 showThrobber: true,
                 throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                 success: function (data, msg) {
@@ -1237,6 +1245,7 @@
                     });
                 }
             });
+            //$('div.emoji-menu').off('click');
         }
 
         var emailTimer = setInterval(function () {
@@ -1445,7 +1454,7 @@
         }
 
         $(document).ready(function () {
-             loadEmailIFrame();
+            loadEmailIFrame();
         });
     </script>
 </body>

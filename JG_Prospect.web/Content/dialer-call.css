@@ -121,7 +121,7 @@ div#wrapper {
 }.call-logs {
     width: 873px;
     float: left;
-    height: 556px;
+    height: 256px;
     background: #eee;
     left: 373px;
     position: absolute;
@@ -151,4 +151,26 @@ div#wrapper {
     background: #fff;
     border: 1px solid #ddd;
     display:none;
+}
+ .phone-statistics {
+    position: absolute;
+    left: 373px;
+    width: 873px;
+    height: 100px;
+    background: #fff;
+    top: 170px;
+    z-index: 101;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+}
+ .user-grid {
+    position: absolute;
+    left: 373px;
+    width: 873px;
+    height: 100px;
+    background: #fff;
+    top: 271px;
+    z-index: 101;
+    border: 1px solid #bbb;
+    border-radius: 5px;
 }
