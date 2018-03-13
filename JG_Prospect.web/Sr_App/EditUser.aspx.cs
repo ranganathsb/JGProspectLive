@@ -5266,7 +5266,7 @@ namespace JG_Prospect
             string ChatGroupId = string.Empty;
             //InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, "Note : " + note, "", touchPointSource);
             var chat = ChatBLL.Instance.GetChatMessages(JGSession.UserId, id, touchPointSource);
-            if (chat != null && chat.Results!=null && chat.Results.Count() > 0)
+            if (chat != null && chat.Results != null && chat.Results.Count() > 0)
             {
                 ChatGroupId = chat.Results[0].ChatGroupId;
             }
@@ -5280,6 +5280,8 @@ namespace JG_Prospect
                 FileId = null,
                 ChatSourceId = touchPointSource,
                 UserId = userID,
+                TaskId = 0,
+                TaskMultilevelListId = 0,
                 UserProfilePic = "",
                 UserFullname = "",
                 UserInstallId = "",

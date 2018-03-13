@@ -715,7 +715,7 @@
                 //Paging($(this));
                 
                 // Open Chat Window
-                InitiateChat(this, $(this).attr('uid'), null,'<%=(int)JG_Prospect.Common.ChatSource.EditUserPage%>');
+                InitiateChat(this, $(this).attr('uid'), null,'<%=(int)JG_Prospect.Common.ChatSource.EditUserPage%>',0,0);
                 //ajaxExt({
                 //    url: '/WebServices/JGWebService.asmx/InitiateChat',
                 //    type: 'POST',
