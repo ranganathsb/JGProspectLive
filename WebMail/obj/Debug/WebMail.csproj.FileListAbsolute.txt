@@ -1,5 +1,0 @@
-E:\Projects\Web\JGProspectiveLive - JP\WebMail\bin\WebMail.dll.config
-E:\Projects\Web\JGProspectiveLive - JP\WebMail\bin\WebMail.dll
-E:\Projects\Web\JGProspectiveLive - JP\WebMail\bin\WebMail.pdb
-E:\Projects\Web\JGProspectiveLive - JP\WebMail\obj\Debug\WebMail.dll
-E:\Projects\Web\JGProspectiveLive - JP\WebMail\obj\Debug\WebMail.pdb
