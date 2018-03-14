@@ -96,6 +96,90 @@
         //        }
     </script>
     <style type="text/css">
+        .header-msg{
+            min-height: 158px;
+        }
+        .seq-number-fixed {
+            width: 120px;
+        }
+
+        .seq-taskid-fixed {
+            /*width: 130px;*/
+            width: 70px;
+        }
+
+        .seq-tasktitle-fixed {
+            width: 256px;
+            word-wrap: break-word;
+        }
+
+        .seq-taskstatus-fixed {
+            width: 150px;
+        }
+
+        .seq-taskduedate-fixed {
+            width: 100px;
+        }
+
+        .seq-notes-fixed {
+            width: 40%;
+        }
+
+        .seq-notes-fixed {
+            width: 33%;
+        }
+        .orange {
+            background-color: orange;
+            color: black;
+        }
+
+        .yellow {
+            background-color: yellow;
+            color: black;
+        }
+
+            .yellow span.parent-task-title {
+                color: red;
+            }
+
+        .gray {
+            background-color: Gray;
+        }
+
+        .red {
+            background-color: red;
+            color: white;
+        }
+
+            .red span.parent-task-title {
+                color: white;
+            }
+
+        .black {
+            background-color: black;
+            color: white;
+        }
+
+            .black span.parent-task-title {
+                color: red;
+            }
+
+        .lightgray {
+            background-color: lightgray;
+        }
+
+        .green {
+            background-color: green;
+            color: white;
+        }
+
+            .green span.parent-task-title {
+                color: white;
+            }
+
+        .defaultColor {
+            background-color: #F6F1F3;
+        }
         .ui-widget-header {
             border: 0;
             background: none /*{bgHeaderRepeat}*/;
@@ -1157,7 +1241,7 @@
                 var H = ($(window).height() - 100) + 'px';
                 $('.header-msg').css('height', H);
             }, function () {
-                $('.header-msg').css('height', '40px');
+                $('.header-msg').css('height', '158px');
             });
         }
 

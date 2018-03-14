@@ -56,7 +56,21 @@
     font-weight: normal;
     left: 1px;
 }
-
+    #ViewTab ul {
+        position: absolute;
+        top: 415px;
+        margin-right: 19px;
+    }
+    .content_panel{
+        margin-top:46px;
+    }
+    .search_google input[type=text]{
+        margin-top: 97px;
+    }
+    .tasklist{
+        width: 86% !important;
+        margin-left: 189px !important;
+    }
     /*.ProfilImg:hover .caption {
         opacity: 0.6;
     }*/
@@ -65,7 +79,19 @@
 
 </script>
 <div class="header">
-    <img src="../img/logo.png" alt="logo" width="88" height="89" class="logo" />
+    <%--<img src="../img/logo.png" alt="logo" width="88" height="89" class="logo" />--%>
+    <div class="logo" style="font-weight: bold; color: red;">
+        <img src="../img/logo.png" alt="logo" width="88" height="89"><br>
+        <hr style="width: 68%;">
+        <span>JMGC LLC - #001</span><hr style="width: 68%;">
+        <br>
+        <span style="color: white;">72 E Lancaster Ave </span>
+        <br>
+        <span>Malvern, PA 19355</span><br>
+        <span style="color: white;">HR: (215)483-3098 EXT#4</span><br>
+        <span style="background-color: yellow;">?mngr?</span>
+
+    </div>
     <div id="divTask">
         <uc1:TaskGenerator runat="server" ID="TaskGenerator" />
     </div>
