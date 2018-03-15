@@ -429,14 +429,14 @@
                 else {
                     $("#spnProfilePic").addClass("errortext");
                 }
-
+                alert('profile pic is : ' +  valid);
                 args.IsValid = valid;
             }
 
             function validateResume(sender, args) {
 
                 var valid = false;
-                var fileExtension = ['jpeg', 'jpg', 'gif', 'png', 'pdf', 'doc', 'txt'];
+                var fileExtension = ['jpeg', 'jpg', 'gif', 'png', 'pdf', 'doc', 'txt','docx'];
                 var maxFileSize = 2097152; // 2MB -> 2 * 1024 * 1024
 
                 var fileUpload = $(fupResume);
@@ -473,7 +473,7 @@
                 else {
                     $("#spnResume").addClass("errortext");
                 }
-
+                alert('resume is : ' + valid);
                 args.IsValid = valid;
             }
 
