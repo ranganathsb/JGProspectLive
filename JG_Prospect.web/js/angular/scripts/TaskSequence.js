@@ -23,7 +23,7 @@ function callWebServiceMethod($http, methodName, filters) {
 
 
 function applyFunctions($scope, $compile, $http, $timeout, $filter) {
-
+    $scope.IsAdmin = false;
     $scope.Tasks = [];
     $scope.ClosedTask = [];
     $scope.ParentTaskDesignations = [];
@@ -78,8 +78,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
     $scope.TechCurrentpage = 0;
     $scope.TechTotalRecords = 0;
 
-    $scope.LoadCalendarData = function () {
-
+    $scope.LoadCalendarData = function () {        
         
         $('#calendar').fullCalendar({
             header: {
@@ -94,9 +93,10 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
             eventLimit: true, // allow "more" link when too many events
             events: function (start, end, timezone, callback) {
                 $('#loading').fadeIn(300);
-                callWebServiceMethod($http, "GetCalendarTasksByDate", { StartDate: start, EndDate: end }).then(function (data) {
+                callWebServiceMethod($http, "GetCalendarTasksByDate", { StartDate: $scope.StartDate == '' ? start : $scope.StartDate, EndDate: $scope.EndDate == '' ? end : $scope.EndDate, UserId: sequenceScope.UserId, DesignationIDs: sequenceScope.UserSelectedDesigIds, TaskUserStatus: sequenceScope.UserStatus }).then(function (data) {
                     CalendarData = JSON.parse(data.data.d);
                     CalendarData = CalendarData.AllEvents;
+                    
                     var events = [];
                     if (!!CalendarData) {
                         $.map(CalendarData, function (r) {
@@ -113,6 +113,13 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         });
                     }
                     callback(events);
+                    //Change View        
+                    debugger;
+                    if ($scope.StartDate != '' && $scope.StartDate != undefined && $scope.StartDate != 'All') {
+                        $('#calendar').fullCalendar('changeView', 'month', $scope.StartDate == '' ? start : $scope.StartDate);
+                        //$scope.StartDate = $scope.EndDate = '';
+                    }
+                    //Clear Dates after use to prevent apply filters forcefully                    
                     $('#loading').fadeOut(300);
                 });
 

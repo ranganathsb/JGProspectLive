@@ -112,12 +112,12 @@
 
                         <div>
                             <span>From :*
-                            <input name="ctl00$ContentPlaceHolder1$TextBox1" type="text" maxlength="10" id="ContentPlaceHolder1_TextBox1" tabindex="2" class="dateFrom" onkeypress="return false" style="width: 80px;">
+                            <input name="ctl00$ContentPlaceHolder1$TextBox1" type="text" maxlength="10" id="ContentPlaceHolder1_TextBox1" tabindex="2" class="dateFromTop" onkeypress="return false" style="width: 80px;">
                             <br>
                             </span>
 
                             <span>To :*
-                            <input name="ctl00$ContentPlaceHolder1$TextBox2" type="text" maxlength="10" id="ContentPlaceHolder1_TextBox2" tabindex="3" class="dateTo" onkeypress="return false" style="width: 80px;margin-left: 16px;">
+                            <input name="ctl00$ContentPlaceHolder1$TextBox2" type="text" maxlength="10" id="ContentPlaceHolder1_TextBox2" tabindex="3" class="dateToTop" onkeypress="return false" style="width: 80px;margin-left: 16px;">
                             
                             </span>
 

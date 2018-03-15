@@ -499,6 +499,34 @@ namespace JG_Prospect.DAL
 
         }
 
+        public bool MoveTask(int TaskId, int FromTaskId, int ToTaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_MoveTask");
+
+                    database.AddInParameter(command, "@TaskId", SqlDbType.BigInt, TaskId);
+                    database.AddInParameter(command, "@FromTaskId", SqlDbType.BigInt, FromTaskId);
+                    database.AddInParameter(command, "@ToTaskId", SqlDbType.BigInt, ToTaskId);
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    int retVal = database.ExecuteNonQuery(command);
+
+                    return retVal > 0;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
 
         public bool DeleteTaskSubSequence(Int64 TaskId)
         {
@@ -1458,7 +1486,7 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
-        public DataSet GetCalendarTasksByDate(string StartDate, string EndDate, string userid)
+        public DataSet GetCalendarTasksByDate(string StartDate, string EndDate, string userid, String DesignationIDs, string TaskUserStatus)
         {
             try
             {
@@ -1468,9 +1496,12 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("usp_GetCalendarTasksByDate");
                     command.CommandType = CommandType.StoredProcedure;
 
-                    database.AddInParameter(command, "@StartDate", DbType.Date, StartDate);
-                    database.AddInParameter(command, "@EndDate", DbType.Date, EndDate);
-                    database.AddInParameter(command, "@userid", DbType.String, userid);
+                    database.AddInParameter(command, "@StartDate", DbType.String, StartDate.Equals("All") ? "" : StartDate);
+                    database.AddInParameter(command, "@EndDate", DbType.String, EndDate);
+                    database.AddInParameter(command, "@UserIds", SqlDbType.VarChar, userid);
+                    database.AddInParameter(command, "@DesignationIds", SqlDbType.VarChar, DesignationIDs);
+                    database.AddInParameter(command, "@TaskStatus", SqlDbType.VarChar, TaskUserStatus.Split(":".ToCharArray())[0]);
+                    database.AddInParameter(command, "@UserStatus", SqlDbType.VarChar, TaskUserStatus.Split(":".ToCharArray())[1]);
                     returndata = database.ExecuteDataSet(command);
 
                     return returndata;
@@ -1738,6 +1769,48 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("sp_GetMultiLevelList");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@ParentTaskId", DbType.String, ParentTaskId);
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        public DataSet GetRootTasks(int ExcludedTaskId)
+        {
+            DataSet result = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetRootTasks");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@TaskId", DbType.String, ExcludedTaskId);
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        public DataSet GetChildTasks(int ParentTaskId)
+        {
+            DataSet result = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("USP_GetTasksByRoot");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@TaskId", DbType.String, ParentTaskId);
                     result = database.ExecuteDataSet(command);
                 }
                 return result;
@@ -2709,6 +2782,32 @@ namespace JG_Prospect.DAL
             catch
             {
                 return -1;
+            }
+        }
+
+        public bool UpdateFeedbackTask(int EstimatedHours, string Password, string StartDate, string EndDate, int TaskId, bool IsITLead, int UserId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_FreezeFeedbackTask");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    database.AddInParameter(command, "@EstimatedHours", DbType.Int32, EstimatedHours);
+                    database.AddInParameter(command, "@StartDate", DbType.String, StartDate);
+                    database.AddInParameter(command, "@EndDate", DbType.String, EndDate);
+                    database.AddInParameter(command, "@IsITLead", DbType.Boolean, IsITLead);
+                    database.AddInParameter(command, "@UId", DbType.Int32, UserId);
+
+                    return database.ExecuteNonQuery(command)>0;
+                }
+            }
+            catch
+            {
+                return false;
             }
         }
 
