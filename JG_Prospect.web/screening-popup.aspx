@@ -429,7 +429,7 @@
                 else {
                     $("#spnProfilePic").addClass("errortext");
                 }
-                alert('profile pic is : ' +  valid);
+                //alert('profile pic is : ' +  valid);
                 args.IsValid = valid;
             }
 
@@ -473,7 +473,7 @@
                 else {
                     $("#spnResume").addClass("errortext");
                 }
-                alert('resume is : ' + valid);
+                //alert('resume is : ' + valid);
                 args.IsValid = valid;
             }
 
