@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -274,9 +275,9 @@ namespace JG_Prospect.Common.modal
         }
         public int? UserId { get; set; }
         public string UserInstallId { get; set; }
-      //  public string FirstName { get; set; }
-       // public string LastName { get; set; }
-       // public string Email { get; set; }
+        //  public string FirstName { get; set; }
+        // public string LastName { get; set; }
+        // public string Email { get; set; }
         public DateTime? OnlineAt { get; set; }
         public string OnlineAtFormatted { get; set; }
         public string ProfilePic { get; set; }
@@ -370,8 +371,51 @@ namespace JG_Prospect.Common.modal
     public class PhoneScript
     {
         public int Id { get; set; }
+        public int Type { get; set; }
+        public int SubType { get; set; }
         public string Title { get; set; }
         public string DescriptionPlain { get; set; }
+    }
+
+    public enum ScriptType
+    {
+        [Description("Inbound Calls")]
+        Inbound = 1,
+        [Description("Outbound Calls")]
+        Outbound = 2
+    }
+
+    public enum ScriptSubType
+    {
+        [Description("Hr Calls")]
+        Hr = 1,
+        [Description("Sales Calls")]
+        Sales = 2,
+        [Description("Customer Services")]
+        Customer = 3
+    }
+
+    public class PhoneScriptType
+    {
+        public PhoneScriptType()
+        {
+            SubTypes = new List<modal.PhoneScriptSubType>();
+        }
+        public int Type { get; set; }
+        public string TypeName { get; set; }
+        public List<PhoneScriptSubType> SubTypes { get; set; }
+    }
+
+    public class PhoneScriptSubType
+    {
+        public PhoneScriptSubType()
+        {
+            PhoneScripts = new List<modal.PhoneScript>();
+        }
+        public int Type { get; set; }
+        public int SubType { get; set; }
+        public string SubTypeName { get; set; }
+        public List<PhoneScript> PhoneScripts { get; set; }
     }
 
     public class TaskMultiLevelList
@@ -451,6 +495,6 @@ namespace JG_Prospect.Common.modal
                 }
                 return instance;
             }
-        }        
+        }
     }
 }

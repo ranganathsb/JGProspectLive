@@ -134,8 +134,9 @@ namespace JG_Prospect.BLL
             var receiver = InstallUserBLL.Instance.getuserdetails(UserID).Tables[0].Rows[0];
             toEmail = receiver["Email"].ToString();
             messageUrl = BaseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&CGID=" + chatGroupId +
-                                    "&auth=" + loginCode + "&RcvrID=" + LoginUserID;
-            
+                                    "&auth=" + loginCode + "&RcvrID=" + LoginUserID + "&Src=" + ChatSource;
+
+
             body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
             EmailManager.SendEmail("New Message", toEmail, html.Subject, body, null);
         }

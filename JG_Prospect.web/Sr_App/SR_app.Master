@@ -20,7 +20,9 @@
     <link href="../css/jquery.ui.theme.css" rel="stylesheet" media="screen" type="text/css" />
     <link rel="stylesheet" type="text/css" href="//twitter.github.com/bootstrap/assets/css/bootstrap.css">
     <%--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">--%>
-    <link href="../css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <%--<link href="../css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />--%>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css" integrity="sha384-v2Tw72dyUXeU3y4aM2Y0tBJQkGfplr39mxZqlTBDUZAb9BGoC40+rdFCG0m10lXk" crossorigin="anonymous">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/fontawesome.css" integrity="sha384-q3jl8XQu1OpdLgGFvNRnPdj5VIlCvgsDQTQB6owSOHWlAurxul7f+JpUOVdAiJ5P" crossorigin="anonymous">
     <link href="../js/mention/recommended-styles.css?v=<%#RandomGUID %>" rel="stylesheet" />
     <%--<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/redmond/jquery-ui.css" />--%>
 
@@ -636,7 +638,7 @@
                     <div id="wrapper">
                         <div id="phone">
                             <div id="numberDisplay">
-                                <input type="text" name="to" value="" id="to" placeholder="Phone number or a SIP URI">
+                                <input type="text" name="to" value="" id="to" placeholder="Phone number">
                             </div>
                             <div id="dialpad" class="button-3">
                                 <ul>
@@ -672,12 +674,12 @@
                                     Loading Scrips...
                                 </div>
                             </div>
-                            <div class="phone-statistics">
+                            <%--<div class="phone-statistics">
                                 <div>Phone Statistic</div>
                             </div>
                             <div class="user-grid">
                                 <div>User Grid</div>
-                            </div>
+                            </div>--%>
                         </div>
                     </div>
                 </div>
@@ -721,9 +723,6 @@
         <source src="../Chat/chat-notification.mp3" />
         <source src="../Chat/chat-notification.ogg" />
     </audio>
-    <form method="post" id="form-attachment" enctype="multipart/form-data">
-        <input type="file" id="attachment" />
-    </form>
     <script src="../js/jquery.caret.js"></script>
     <%--<script src="../js/jquery.dialogextend.min.js"></script>--%>
     <link href="../Chat/chat.css?v=<%#RandomGUID %>" rel="stylesheet" />
@@ -844,7 +843,7 @@
                                             '<div class="chat-text">' +
                                                 '<input type="text" data-emojiable="true" class="mention" placeholder="Say Something..." id="chattext" onkeyup="sendChat(event, this);" />' +
                                                 '<button class="text-send" onclick="sendChat(event, this)">Send</button>' +
-                                                '<div class="file-send"></div>' +
+                                                '<div class="file-send">Drop Files</div>' +
                                                 '<button class="record-send"><i class="fa fa-microphone" aria-hidden="true"></i></button>' +
                                             '</div>' +
                                        '</div>';
@@ -899,6 +898,7 @@
             GetChatUnReadCount();
         };
         chat.client.addUserIntoChatGroupCallback = function (data) {
+            $('.emoji-wysiwyg-editor').html('');
             var id = data.Object.split('`')[0];
             var name = data.Object.split('`')[1];
             var userId = data.Object.split('`')[2];
@@ -907,6 +907,7 @@
             $('.chat-box#' + id).find('#ReceiverIds').val(receiverIds.join(','));
             $('.chat-box#' + id + ' .chats').append('<div class="newUser">' + data.Message + '</div>');
             $('.chat-box#' + id + ' .header').find('.group-name').html(name);
+            $('.chat-box#' + id + ' .chats').animate({ scrollTop: $('.chat-box#' + id + ' .chats').prop("scrollHeight") }, 500);
         };
         chat.client.closeChatCallback = function (data) {
             if (data.Object) {
@@ -1053,7 +1054,7 @@
                                             '<div class="chat-text">' +
                                                 '<input type="text" data-emojiable="true" class="mention" placeholder="Say Something..." id="chattext" onkeyup="sendChat(event, this);"  />' +
                                                 '<button class="text-send" onclick="sendChat(event, this)">Send</button>' +
-                                                '<div class="file-send"></div>' +
+                                                '<div class="file-send">Drop Files</div>' +
                                                 '<button class="record-send"><i class="fa fa-microphone" aria-hidden="true"></i></button>' +
                                             '</div>' +
                                        '</div>';
@@ -1350,16 +1351,30 @@
             ajaxExt({
                 url: '/WebServices/JGWebService.asmx/GetPhoneScripts',
                 type: 'POST',
-                data: '{strScriptId:0}',
+                data: '{id:0}',
                 showThrobber: false,
                 throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                 success: function (data, msg) {
                     var str = '';
                     $.each(data.Results, function (i) {
-                        str += '<div class="row"><div class="title" onclick="showhideScript(this);">' + data.Results[i].Title + '</div><div class="desc">' + data.Results[i].DescriptionPlain + '</div></div>';
+                        str += '<div class="row tab-' + data.Results[i].Type + '"><div class="title tab" id="' + data.Results[i].Type + '" onclick="showhideType(this);">' + data.Results[i].TypeName + '</div>';
+                        str += '<div class="type" id="' + data.Results[i].Type + '">';
+                        $.each(data.Results[i].SubTypes, function (j) {
+                            str += '<div class="title" id="' + data.Results[i].SubTypes[j].SubType + '" onclick="showhideSubType(this);">' + data.Results[i].SubTypes[j].SubTypeName + '</div>';
+                            str += '<div class="sub-type" id="' + data.Results[i].SubTypes[j].SubType + '" >';
+                            $.each(data.Results[i].SubTypes[j].PhoneScripts, function (k) {
+                                str += '<div class="title" onclick="showhideScript(this);" id="' + data.Results[i].SubTypes[j].PhoneScripts[k].Id + '" onclick="showhideScript(this);">' + data.Results[i].SubTypes[j].PhoneScripts[k].Title + '</div>';
+                                str += '<div class="desc" id="' + data.Results[i].SubTypes[j].PhoneScripts[k].Id + '">' + data.Results[i].SubTypes[j].PhoneScripts[k].DescriptionPlain + '</div>';
+                            });
+                            str += '</div>';
+                        });
+                        str += '</div></div>';
                     });
                     //$('.call-logs').show();
                     $('.call-logs').html(str);
+                    if (window.location.href.toLowerCase().indexOf('autodialer') > 1) {
+                        $('.scrips .script-data').html(str);
+                    }
                 }
             });
         }
@@ -1428,13 +1443,28 @@
         }
 
         function showhideScript(sender) {
-            if ($(sender).parent().find('.desc').is(':visible')) {
-                $(sender).parent().find('.desc').slideUp();
+            var id = $(sender).attr('id');
+            if ($(sender).parent().find('.desc#'+id).is(':visible')) {
+                $(sender).parent().find('.desc#' + id).slideUp();
             } else {
-                $(sender).parent().find('.desc').slideDown();
+                $(sender).parent().find('.desc#' + id).slideDown();
             }
         }
-
+        function showhideType(sender) {
+            if ($(sender).parent().find('.type').is(':visible')) {
+                $(sender).parent().find('.type').slideUp();
+            } else {
+                $(sender).parent().find('.type').slideDown();
+            }
+        }
+        function showhideSubType(sender) {
+            var id = $(sender).attr('id');
+            if ($(sender).parent().find('.sub-type#' + id).is(':visible')) {
+                $(sender).parent().find('.sub-type#' + id).slideUp();
+            } else {
+                $(sender).parent().find('.sub-type#' + id).slideDown();
+            }
+        }
         function minimizePhone(sender) {
             if ($('.call-logs').is(':visible')) {
                 $('.call-logs').hide();

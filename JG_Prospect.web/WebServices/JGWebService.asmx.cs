@@ -2629,38 +2629,57 @@ namespace JG_Prospect.WebServices
 
         #region Phone
         [WebMethod(EnableSession = true)]
-        public string GetPhoneScripts(string strScriptId)
+        public string GetPhoneScripts(int? id)
         {
-            DataSet ds = new DataSet();
-            int? intScriptId = Convert.ToInt32(strScriptId);
-            if (strScriptId == "0")
-                intScriptId = null;
-            ds = UserBLL.Instance.fetchAllScripts(intScriptId); ;
-            if (ds != null)
+            List<PhoneScript> scripts = UserBLL.Instance.GetPhoneScripts(id);
+            if (scripts != null)
             {
-                if (ds.Tables[0].Rows.Count > 0)
+                List<int> distTypes = scripts.Select(m => m.Type).Distinct().ToList();
+                List<PhoneScriptType> types = new List<PhoneScriptType>();
+                foreach (var item in scripts)
                 {
-                    List<PhoneScript> scripts = new List<PhoneScript>();
-                    foreach (DataRow item in ds.Tables[0].Rows)
-                    {
-                        scripts.Add(new PhoneScript
+                    if (!types.Where(m => m.Type == item.Type).Any())
+                        types.Add(new PhoneScriptType
                         {
-                            Id = Convert.ToInt32(item["intScriptId"]),
-                            Title = item["strScriptName"].ToString(),
-                            DescriptionPlain = item["DescriptionPlain"].ToString()
+                            Type = item.Type,
+                            TypeName = ((ScriptType)item.Type).ToEnumDescription()
                         });
-                    }
-                    //return JsonConvert.SerializeObject(ds.Tables[0]);
-                    return new JavaScriptSerializer().Serialize(new ActionOutput<PhoneScript>
-                    {
-                        Status = ActionStatus.Successfull,
-                        Results = scripts
-                    });
                 }
-                else
+                foreach (var type in types)
                 {
-                    return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+                    foreach (var item in scripts)
+                    {
+                        if (!type.SubTypes.Where(m => m.SubType == item.SubType && m.Type == type.Type).Any())
+                            type.SubTypes.Add(new PhoneScriptSubType
+                            {
+                                Type = type.Type,
+                                SubType = item.SubType,
+                                SubTypeName = ((ScriptSubType)item.SubType).ToEnumDescription(),
+                            });
+                    }
                 }
+                foreach (var type in types)
+                {
+                    foreach (var subType in type.SubTypes)
+                    {
+                        subType.PhoneScripts = scripts.Where(m => m.Type == subType.Type && m.SubType == subType.SubType)
+                                                    .Select(m => new PhoneScript
+                                                    {
+                                                        Title = m.Title,
+                                                        DescriptionPlain = m.DescriptionPlain,
+                                                        Id = m.Id,
+                                                        SubType = m.SubType,
+                                                        Type = m.Type
+                                                    }).ToList();
+                    }
+                }
+
+
+                return new JavaScriptSerializer().Serialize(new ActionOutput<PhoneScriptType>
+                {
+                    Status = ActionStatus.Successfull,
+                    Results = types
+                });
             }
             else
                 return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });

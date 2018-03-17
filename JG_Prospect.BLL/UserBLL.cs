@@ -277,6 +277,10 @@ namespace JG_Prospect.BLL
         {
             return UserDAL.Instance.fetchAllScripts(intScriptId);
         }
+        public List<PhoneScript> GetPhoneScripts(int? id = null)
+        {
+            return UserDAL.Instance.GetPhoneScripts(id);
+        }
         public DataSet manageScripts(PhoneDashboard objPhoneDashboard)
         {
             return UserDAL.Instance.manageScripts(objPhoneDashboard);

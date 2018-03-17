@@ -1,0 +1,70 @@
+﻿.dropdown {
+    margin: 0px;
+    width: 87%;
+    padding: 0px;
+    list-style: none;
+    background: linear-gradient(#ddd, #ccc);
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    cursor:pointer;
+    min-width: 120px;
+}
+.dropdown div{text-align: center;display: inline-block;width: 100%;position: relative;height: 18px;}
+.dropdown div span:nth-child(1){display: inline-block;width: 85%;border-right: 1px solid #aaa;height: 15px;position:absolute;padding:4px 0;left: 0;top: 0;}
+.dropdown.small div span:nth-child(1) {width: 74%;}
+.dropdown div span:nth-child(2) {
+    width: 16px;
+    height: 16px;
+    margin-top: 3px !important;
+    background: url(../css/msdropdown/dd_arrow.gif) no-repeat;
+    display: inline-block;
+    position: absolute !important;
+    right: 2px;
+    top: 0px;
+}
+.dropdown.small {
+    width: 80px;
+    min-width: 50px;
+    float: left;
+    margin-right: 2px;
+}
+.userlist-grid table.header-table{width:100%;border-spacing: 0px;}
+.userlist-grid table.header-table thead tr{background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;}
+.userlist-grid table.header-table tr th{padding: 10px;width: 15%;}
+.userlist-grid ul {
+    margin: 5px;
+    width: 87%;
+    padding: 0px;
+    list-style: none;
+    background: linear-gradient(#ddd, #ccc);
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    display:none;
+}
+.userlist-grid .header-table td:nth-child(5) {width:40%;}
+.userlist-grid ul li{cursor:pointer;padding: 5px;text-align:center;}
+.userlist-grid tbody input[type="checkbox"]{}
+.userlist-grid tbody input[type="text"]{width: 105px;padding:5px 3px;border-radius: 5px;margin-bottom: 3px;}
+.userlist-grid tbody .social input[type="text"]{width:70px;}
+.userlist-grid tbody input[type="button"]{padding: 5px 10px;background: url(/img/main-header-bg.png) repeat-x;color: #fff;cursor: pointer;border-radius: 5px;}
+.userlist-grid tbody span{top: -2px;position: relative;}
+
+ .userlist-grid table.user-table{width:100%;border-spacing: 0px;}
+ .userlist-grid table.user-table thead tr{background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;}
+ .userlist-grid table.user-table tr th{padding: 10px;width: 15%;}
+ .userlist-grid table.user-table tr th, td div{text-align: left;display: inline-block;width: 100%;margin-bottom:2px;}
+ .userlist-grid table.user-table tr th, td div span{float:left;}
+ .userlist-grid table.user-table tr th, td div ul{float:left;}
+ .userlist-grid table.user-table tr th, td:nth-child(1){width:7%;}
+ .userlist-grid table.user-table tr th, td:nth-child(2){width:10%;}
+ .userlist-grid table.user-table tr th, td:nth-child(3){width:10%;}
+ .userlist-grid table.user-table tr th, td:nth-child(4){width:10%;}
+ .userlist-grid table.user-table tr th, td:nth-child(5){width:21%;}
+ .userlist-grid table.user-table tr th, td:nth-child(6){width:10%;}
+ .userlist-grid table.user-table tr th, td:nth-child(7){width:32%;}
+
+  .userlist-grid table.user-table tr td div ul{margin:0px;}
+  .userlist-grid table.user-table tr td div span{margin:0px;position:unset;}
+  .userlist-grid table.user-table tr td div ul.small {width: 30%;margin-right: 5px;}
+  .userlist-grid table.user-table tr th, td div.row {width: 100%;}
+  .userlist-grid table.user-table tr th, td div.row div{width: 49%;float:left;}

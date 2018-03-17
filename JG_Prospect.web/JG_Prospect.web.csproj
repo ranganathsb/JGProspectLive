@@ -1412,6 +1412,8 @@
     <Content Include="Controls\Header.ascx" />
     <Content Include="Controls\left.ascx" />
     <Content Include="Controls\LeftMenu_home.ascx" />
+    <Content Include="Controls\user-grid.css" />
+    <Content Include="Controls\_UserGridPhonePopup.ascx" />
     <Content Include="CreateUser.aspx" />
     <Content Include="css\bootstrap-datepicker.css" />
     <Content Include="css\chosen.css" />
@@ -2267,6 +2269,7 @@
     <Content Include="Sr_App\AddEvents.aspx" />
     <Content Include="Sr_App\ajaxcalls.aspx" />
     <Content Include="Sr_App\AttachQuotes.aspx" />
+    <Content Include="Sr_App\AutoDialer.aspx" />
     <Content Include="Sr_App\CallSheet.aspx" />
     <Content Include="Sr_App\chat.aspx" />
     <Content Include="Sr_App\ChatHistory.aspx" />
@@ -2591,6 +2594,13 @@
     <Compile Include="ckeditor\plugins\uploadimage\fileuploader.aspx.designer.cs">
       <DependentUpon>fileuploader.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Controls\_UserGridPhonePopup.ascx.cs">
+      <DependentUpon>_UserGridPhonePopup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\_UserGridPhonePopup.ascx.designer.cs">
+      <DependentUpon>_UserGridPhonePopup.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Customer_Panel.aspx.cs">
       <DependentUpon>Customer_Panel.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2669,6 +2679,13 @@
     </Compile>
     <Compile Include="Sr_App\add-edit-aptitude-test.aspx.designer.cs">
       <DependentUpon>add-edit-aptitude-test.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\AutoDialer.aspx.cs">
+      <DependentUpon>AutoDialer.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\AutoDialer.aspx.designer.cs">
+      <DependentUpon>AutoDialer.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\chat.aspx.cs">
       <DependentUpon>chat.aspx</DependentUpon>

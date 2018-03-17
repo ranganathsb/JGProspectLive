@@ -25,7 +25,7 @@ namespace JG_Prospect.DAL
         public static UserDAL Instance
         {
             get { return m_UserDAL; }
-            private set { ;}
+            private set {; }
         }
 
         private DataSet returndata;
@@ -418,7 +418,7 @@ namespace JG_Prospect.DAL
                 {
                     returndata = new DataSet();
 
-                    DbCommand command = database.GetSqlStringCommand("SELECT * from tblInstallusers WHERE Id="+id);
+                    DbCommand command = database.GetSqlStringCommand("SELECT * from tblInstallusers WHERE Id=" + id);
                     command.CommandType = CommandType.Text;
                     returndata = database.ExecuteDataSet(command);
 
@@ -486,7 +486,7 @@ namespace JG_Prospect.DAL
         }
 
 
-        public bool changepassword(int loginid, string password,bool IsCustomer)//, string usertype, string password)
+        public bool changepassword(int loginid, string password, bool IsCustomer)//, string usertype, string password)
         {
             try
             {
@@ -1528,6 +1528,42 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@strScriptDescription", DbType.String, objPhoneDashboard.strScriptDescription);
                     returndata = database.ExecuteDataSet(command);
                     return returndata;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+        }
+
+        public List<PhoneScript> GetPhoneScripts(int? id = null)
+        {
+            try
+            {
+                List<PhoneScript> list = new List<PhoneScript>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetPhoneScripts");
+                    database.AddInParameter(command, "@Id", DbType.Int32, id);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            list.Add(new PhoneScript
+                            {
+                                Id = Convert.ToInt32(item["Id"].ToString()),
+                                Type = Convert.ToInt32(item["Type"].ToString()),
+                                SubType = Convert.ToInt32(item["SubType"].ToString()),
+                                Title = item["Title"].ToString(),
+                                DescriptionPlain = item["Description"].ToString()
+                            });
+                        }
+                    }
+                    return list;
                 }
             }
             catch (Exception ex)

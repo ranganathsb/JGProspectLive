@@ -48,7 +48,7 @@ namespace JG_Prospect.Sr_App
 
                 // Code change by Deep
                 var page = HttpContext.Current.Handler as Page;
-                if (page is EditUser)
+                if (page is EditUser || page is AutoDialer)
                 {
                     leftmenudiv.Visible = false;
                 }
@@ -61,7 +61,7 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-       
+
 
         protected void searchbutton_Click(object sender, EventArgs e)
         {
