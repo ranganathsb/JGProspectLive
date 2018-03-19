@@ -3496,7 +3496,7 @@
 
         function fillUsers(selector, fillDDL, loader) {
             // 
-            if (selector==undefined)
+            if (selector==undefined || selector == '')
                 return false;
             var did = '';
             if (($('.' + selector).val() != undefined)) {
