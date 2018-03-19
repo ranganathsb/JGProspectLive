@@ -4185,7 +4185,7 @@
                             tbl += '</table>';
                             var tdHeight = $('.task-' + taskid).parents('tr').height();
                             $(sender).html(tbl);                        
-                            $(sender).css('height',(tdHeight-36)+'px');
+                            //$(sender).css('height',(tdHeight-36)+'px');
                             var tuid = getUrlVars()["TUID"];
                             var nid = getUrlVars()["NID"];
                             if (tuid != undefined && nid!= undefined) {
@@ -4200,6 +4200,7 @@
                             $(sender).html(tbl);
                         }
                         $(sender).parents('.notes-section').find('.notes-table').attr('onclick','openChat(this, ' + taskid + ',' + 0 + ',\'' + data.Message + '\')');
+
                         LoadTaskMultilevelList(sender,taskid);
                     }
                 });
