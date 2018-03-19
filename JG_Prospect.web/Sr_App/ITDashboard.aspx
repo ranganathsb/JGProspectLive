@@ -537,7 +537,7 @@
         }
 
         .seq-tasktitle-fixed {
-            width: 250px;
+            width: 200px;
         }
 
         .seq-taskstatus-fixed {
