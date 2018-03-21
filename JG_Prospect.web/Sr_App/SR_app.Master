@@ -885,6 +885,7 @@
             GetChatUnReadCount();
         };
         chat.client.addUserIntoChatGroupCallback = function (data) {
+            $('.emoji-wysiwyg-editor').html('');
             var id = data.Object.split('`')[0];
             var name = data.Object.split('`')[1];
             var userId = data.Object.split('`')[2];
@@ -893,6 +894,7 @@
             $('.chat-box#' + id).find('#ReceiverIds').val(receiverIds.join(','));
             $('.chat-box#' + id + ' .chats').append('<div class="newUser">' + data.Message + '</div>');
             $('.chat-box#' + id + ' .header').find('.group-name').html(name);
+            $('.chat-box#' + id + ' .chats').animate({ scrollTop: $('.chat-box#' + id + ' .chats').prop("scrollHeight") }, 500);
         };
         chat.client.closeChatCallback = function (data) {
             if (data.Object) {

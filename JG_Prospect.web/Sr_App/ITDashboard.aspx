@@ -3423,7 +3423,8 @@
         }
 
         function fillUsers(selector, fillDDL, loader) {
-            // 
+            if (selector==undefined)
+                return false;
             var did = '';
             if (($('.' + selector).val() != undefined)) {
                 did = $('.' + selector).val().join();
