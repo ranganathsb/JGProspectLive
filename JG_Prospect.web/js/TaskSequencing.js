@@ -203,7 +203,9 @@ function ShowNonFrozenTaskSequenceDashBoard(DesId, UserId) {
     sequenceScopeNonFrozenTasks.getAssignUsers();
 
 }
-function ShowCalendarTasks() {    
+function ShowCalendarTasks() {
+    debugger;
+    CalendarUserClickSource = 'FILTER';
     sequenceScope.LoadCalendarData();
 }
 function clearSelectedDates() {

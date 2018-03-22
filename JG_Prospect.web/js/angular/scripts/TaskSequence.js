@@ -163,6 +163,9 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
             },
             loading: function (bool) {
                 if (!bool) {
+                    //debugger;
+                    if (CalendarUserClickSource == 'PIC')
+                        return false;
                     $('.fc-week').find('td').each(function (i, el) {  
                         var sender = $(this);                        
                         //$(sender).html('Loading...');
@@ -177,17 +180,24 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
                                 $.each(CalendarUsers, function (i, item) {
                                     html += '<img id="Header1_imgProfile" data-uid="' + item.UserId + '" style="border-radius: 50%;width: 34px;height: 34px;padding:5px" class="img-Profile calendar-user" src="../Employee/ProfilePictures/' + item.Picture + '">';
                                 });
-                                html += '<a href="#/" class="clear-user-filter" onClick="clearUserFilter(' + colDate + ')">Clear All</a></div>';
+                                html += '<a href="#/" class="clear-user-filter">Clear All</a></div>';
                                 $(sender).html(html);
 
                                 //Attach Event Handlers
+                                $('#user-container-' + colDate + ' .clear-user-filter').click(function () {
+                                    $('#user-container-' + colDate + ' .calendar-user').removeClass('calendar-users-image-border');
+                                    setCalendarFilterData();
+                                    refreshCalendarTasks();
+                                });
                                 $('#user-container-' + colDate + ' .calendar-user').click(function () {
+                                    CalendarUserClickSource = 'PIC';
                                     var uid = $(this).attr('data-uid');
                                     //alert(uid);
                                     setCalendarFilterData(uid);
                                     //ShowCalendarTasks();
                                     $('#calendar').fullCalendar('refetchEvents');
-                                    $(this).css({ 'border-style': 'solid', 'border-color': 'black', 'border-width': '1px' });
+                                    $('#user-container-' + colDate + ' .calendar-user').removeClass('calendar-users-image-border');
+                                    $(this).addClass('calendar-users-image-border');
                                 });
                             }                            
                         });
@@ -827,3 +837,4 @@ app.controller('AddNewTaskSequenceController', function PostsController($scope, 
 
 });
 var CalendarData;
+var CalendarUserClickSource;
