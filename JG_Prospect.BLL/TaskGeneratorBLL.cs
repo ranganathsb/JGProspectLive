@@ -234,6 +234,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetCalendarTasksByDate(StartDate, EndDate, userid, DesignationIDs, TaskUserStatus);
         }
 
+        public DataSet GetCalendarUsersByDate(string Date, string TaskUserStatus, string UserId)
+        {
+            return TaskGeneratorDAL.Instance.GetCalendarUsersByDate(Date, TaskUserStatus, UserId);
+        }
+
         public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
         {
             return TaskGeneratorDAL.Instance.GetTaskUserFiles(TaskId, objTaskFileDestination, intPageIndex, intPageSize);

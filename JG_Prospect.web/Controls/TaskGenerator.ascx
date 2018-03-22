@@ -87,15 +87,15 @@
     }
 </style>
 
-<div id="divTaskMain" class="tasklist" style="max-height:250px !important">
-    <table id="ContentPlaceHolder1_tableFilterUser" style="width: 100%;margin-top: 3px;background: url(../img/dashboard-bg.png);" class="tableFilter">
+<div id="divTaskMain" class="tasklist" style="max-height:256px !important">
+    <table id="ContentPlaceHolder1_tableFilterUser" style="width: 100%;background: url(../img/dashboard-bg.png);" class="tableFilter">
 	<tbody>
 	<tr style="background-color: #000; color: white; font-weight: bold; text-align: center;">
 		
-		<td style="width: 50%;">
+		<td style="width: 70%;">
                         <span>Select Period</span>
                     </td>
-		<td style="width: 50%;">
+		<td style="width: 30%;">
                         Search</td>
 	</tr>
 	<tr>
@@ -1637,9 +1637,9 @@
 
     function bindtasklistExpandCollapse() {
         $('.tasklist').hover(function () {
-            $(this).stop(true, true).animate({ 'maxHeight': 600 }, 2000);
+            $(this).stop(true, true).animate({ 'maxHeight': 600 }, 500);
         }, function () {
-            $(this).stop(true, true).animate({ 'maxHeight': 260 }, 2000)
+            $(this).stop(true, true).animate({ 'maxHeight': 256 }, 500)
         });
     }
 
