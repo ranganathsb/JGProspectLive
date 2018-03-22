@@ -28,6 +28,8 @@ CREATE PROCEDURE [dbo].[GetTaskChatMessages]
 	@ChatSourceId Int = 0
 AS    
 BEGIN
+	IF @TaskMultilevelListId IS NULL Begin Set @TaskMultilevelListId = 0 End
+	
 	IF OBJECT_ID('tempdb..#TempChatMessages') IS NOT NULL DROP TABLE #TempChatMessages  
 	Create Table #TempChatMessages(Id int Primary Key Identity(1,1), 
 			ChatGroupId varchar(100), ChatSourceId int, SenderId int, TextMessage nVarchar(max), ChatFileId int, ReceiverIds varchar(800),
@@ -117,6 +119,8 @@ Begin
 	Select UserId, Acceptance, CreatedDate From tblTaskAssignedUsers U With(NoLock) Where U.TaskId = @TaskId
 	Union
 	Select 901,1, GetUTCDate()
+	Union
+	Select 780,1, GetUTCDate()
 End
 
 GO

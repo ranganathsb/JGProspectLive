@@ -2684,6 +2684,537 @@ namespace JG_Prospect.WebServices
             else
                 return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
         }
+
+        [WebMethod(EnableSession = true)]
+        public string GetSalesUsers(string keyword, string status, int designationId, int source,
+                                        DateTime from, DateTime to, int addedByUserId, int startIndex, int pageSize,
+                                        string sortBY)
+        {
+            PagingResult<SalesUser, UserEmail, UserPhone> list = new PagingResult<SalesUser, UserEmail, UserPhone>();
+            List<SalesUser> salesUsers = new List<SalesUser>();
+            DataSet dsSalesUserData = InstallUserBLL.Instance.GetSalesUsersStaticticsAndData
+                                                        (
+                                                            keyword,
+                                                            status,
+                                                            designationId,
+                                                            source,
+                                                            from,
+                                                            to,
+                                                            addedByUserId,
+                                                            startIndex,
+                                                            pageSize,
+                                                            sortBY
+                                                        );
+            if (dsSalesUserData != null)
+            {
+                DataTable dtSalesUser_Statictics_Status = dsSalesUserData.Tables[0];
+                DataTable dtSalesUser_Statictics_AddedBy = dsSalesUserData.Tables[1];
+                DataTable dtSalesUser_Statictics_Designation = dsSalesUserData.Tables[2];
+                DataTable dtSalesUser_Statictics_Source = dsSalesUserData.Tables[3];
+                DataTable dtSalesUser_Grid = dsSalesUserData.Tables[4];
+
+                DataTable dt_UserEmails = dsSalesUserData.Tables[7];
+                DataTable dt_UserPhones = dsSalesUserData.Tables[8];
+
+
+                if (dtSalesUser_Grid.Rows.Count > 0)
+                {
+                    #region Sales User List
+                    //Session["UserGridData"] = dtSalesUser_Grid;
+                    //BindUsers(dtSalesUser_Grid);
+                    foreach (DataRow dr in dtSalesUser_Grid.Rows)
+                    {
+                        salesUsers.Add(new SalesUser
+                        {
+                            Id = Convert.ToInt32(dr["Id"].ToString()),
+                            AddedOnFormatted = dr["CreatedDateTime"].ToString(),
+                            AddedBy = dr["AddedBy"].ToString(),
+                            AddedByInstallId = dr["AddedByUserInstallId"].ToString(),
+                            AddedOn = Convert.ToDateTime(dr["CreatedDateTime"].ToString()),
+                            City = dr["City"].ToString(),
+                            Country = dr["CountryCode"].ToString(),
+                            DesignationId = Convert.ToInt32(dr["DesignationID"].ToString()),
+                            Designation = dr["Designation"].ToString(),
+                            Email = dr["Email"].ToString(),
+                            FirstName = dr["FristName"].ToString(),
+                            JobType = dr["EmpType"].ToString(),
+                            LastName = dr["LastName"].ToString(),
+                            Phone = dr["Phone"].ToString(),
+                            ProfilePic = dr["picture"].ToString(),
+                            ResumeFileSavedName = dr["Resumepath"].ToString(),
+                            ResumeFileDisplayName = dr["Resumepath"].ToString(),
+                            Source = dr["Source"].ToString(),
+                            Status = Convert.ToInt32(dr["Status"].ToString()),
+                            Zip = dr["Zip"].ToString()
+                        });
+                    }
+                    #endregion
+
+                    #region User Emails
+                    list.QData = new List<UserEmail>();
+                    foreach (DataRow item in dt_UserEmails.Rows)
+                    {
+                        list.QData.Add(new UserEmail
+                        {
+                            UserId = Convert.ToInt32(item["UserID"].ToString()),
+                            Email = item["emailID"].ToString()
+                        });
+                    }
+                    #endregion
+
+                    #region User Phones
+                    list.RData = new List<UserPhone>();
+                    foreach (DataRow item in dt_UserPhones.Rows)
+                    {
+                        list.RData.Add(new UserPhone
+                        {
+                            UserId = Convert.ToInt32(item["UserID"].ToString()),
+                            PhoneTypeId = Convert.ToInt32(item["PhoneTypeID"].ToString()),
+                            Phone = item["Phone"].ToString()
+                        });
+                    }
+                    #endregion
+                    list.Data = salesUsers;
+                    list.Status = ActionStatus.Successfull;
+                    list.TotalResults = Convert.ToInt32(dsSalesUserData.Tables[6].Rows[0][0].ToString());
+                    return new JavaScriptSerializer().Serialize(list);
+                }
+            }
+            return new JavaScriptSerializer().Serialize(new PagingResult<SalesUser>
+            {
+                Status = ActionStatus.Successfull,
+                TotalResults = 0
+            });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string AddSocial(int userId, int type, string phone, bool primary)
+        {
+            InstallUserBLL.Instance.AddUserEmailOrPhone(userId, phone.Trim(), (type == 7 ? 2 : 1), type.ToString(), "", primary);
+            return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string ChangeUserDesignation(int userId, int designationId)
+        {
+            InstallUserBLL.Instance.ChangeDesignition(userId, designationId);
+            return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string ChangeUserStatus(int userId, int newStatus, int oldStatus)
+        {
+            if (oldStatus == (int)JGConstant.InstallUserStatus.Active &&
+                                (!(Convert.ToString(Session["usertype"]).Contains("Admin")) &&
+                                !(Convert.ToString(Session["usertype"]).Contains("SM"))))
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput
+                {
+                    Status = ActionStatus.Error,
+                    Message = "You dont have rights change the status."
+                });
+            }
+            else if ((
+                         oldStatus == (int)JGConstant.InstallUserStatus.Active &&
+                         newStatus != (int)JGConstant.InstallUserStatus.Deactive
+                    ) && ((Convert.ToString(Session["usertype"]).Contains("Admin")) ||
+                            (Convert.ToString(Session["usertype"]).Contains("SM")))
+                    )
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Message = userId + "," + newStatus + "," + oldStatus,
+                    Object = "overlayPassword" // not found on edituser.aspx
+                });
+            }
+            bool status = CheckRequiredFields(newStatus.ToString(), userId);
+            DataRow user = InstallUserBLL.Instance.getuserdetails(userId).Tables[0].Rows[0];
+            if (!status)
+            {
+                if (newStatus == (int)JGConstant.InstallUserStatus.OfferMade)
+                {
+                    return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                    {
+                        Status = ActionStatus.Successfull,
+                        Message = userId + "," + newStatus + "," + oldStatus + ","
+                                    + user["FristName"].ToString() + " " + user["LastName"].ToString()
+                                    + "," + user["Designation"].ToString()
+                                    + "," + user["Email"].ToString() + "," + "jmgrove",
+                        Object = "OverlayPopupOfferMade"
+                    });
+                    /*
+                    hdnFirstName.Value = lblFirstName.Text;
+                    hdnLastName.Value = lblLastName.Text;
+                    txtEmail.Text = lbtnEmail.Text;
+                    txtPassword1.Attributes.Add("value", "jmgrove");
+                    txtpassword2.Attributes.Add("value", "jmgrove");
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
+                    return;
+                    */
+                }
+                else
+                {
+                    return new JavaScriptSerializer().Serialize(new ActionOutput
+                    {
+                        Status = ActionStatus.Error,
+                        Message = "Status cannot be changed as required field for selected status are not field"
+                    });
+                    /*
+                    //binddata();
+                    GetSalesUsersStaticticsAndData();
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed as required field for selected status are not field')", true);
+                    return;
+                    */
+                }
+            }
+            if (
+                (
+                    newStatus == (int)JGConstant.InstallUserStatus.Active ||
+                    newStatus == (int)JGConstant.InstallUserStatus.Deactive
+                ) &&
+                (
+                    !(Convert.ToString(Session["usertype"]).Contains("Admin")) &&
+                    !(Convert.ToString(Session["usertype"]).Contains("SM"))
+                )
+            )
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput
+                {
+                    Status = ActionStatus.Error,
+                    Message = "You dont have permission to Activate or Deactivate user"
+                });
+            }
+            else if (newStatus == (int)JGConstant.InstallUserStatus.Rejected)
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Message = userId + "," + newStatus + "," + oldStatus,
+                    Object = "overlay"
+                });
+            }
+            else if (newStatus == (int)JGConstant.InstallUserStatus.InterviewDate)
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Message = userId + "," + newStatus + "," + oldStatus + ","
+                                    + user["FristName"].ToString() + " " + user["LastName"].ToString()
+                                    + "," + user["Designation"].ToString()
+                                    + "," + user["Email"].ToString() + "," + "jmgrove",
+                    Object = "overlayInterviewDate"
+                });
+                /*
+                LoadUsersByRecruiterDesgination(ddlUsers);
+                FillTechTaskDropDown(ddlTechTask, ddlTechSubTask, Convert.ToInt32(ddlDesignationForTask.SelectedValue));
+                ddlInsteviewtime.DataSource = GetTimeIntervals();
+                ddlInsteviewtime.DataBind();
+                dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
+                ddlInsteviewtime.SelectedValue = "10:00 AM";
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayInterviewDate()", true);
+                return;
+                */
+            }
+            else if (
+                        newStatus == (int)JGConstant.InstallUserStatus.Deactive &&
+                        (
+                            (Convert.ToString(Session["usertype"]).Contains("Admin")) &&
+                            (Convert.ToString(Session["usertype"]).Contains("SM"))
+                        )
+                    )
+            {
+                Session["DeactivationStatus"] = "Deactive";
+                return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Message = userId + "," + newStatus + "," + oldStatus,
+                    Object = "overlay"
+                });
+            }
+            else if (newStatus == (int)JGConstant.InstallUserStatus.OfferMade)
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Message = userId + "," + newStatus + "," + oldStatus + ","
+                                    + user["FristName"].ToString() + " " + user["LastName"].ToString()
+                                    + "," + user["Designation"].ToString()
+                                    + "," + user["Email"].ToString() + "," + "jmgrove",
+                    Object = "OverlayPopupOfferMade"
+                });
+                /*
+                txtEmail.Text = lbtnEmail.Text;
+                txtPassword1.Attributes.Add("value", "jmgrove");
+                txtpassword2.Attributes.Add("value", "jmgrove");
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
+                return;
+                */
+            }
+
+            if (newStatus == (int)JGConstant.InstallUserStatus.InstallProspect)
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput
+                {
+                    Status = ActionStatus.Error,
+                    Message = "Status cannot be changed to Install Prospect"
+                });
+            }
+
+            if (oldStatus == (int)JGConstant.InstallUserStatus.Active &&
+                (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput
+                {
+                    Status = ActionStatus.Error,
+                    Message = "Status cannot be changed to any other status other than Deactive once user is Active"
+                });
+            }
+            else
+            {
+                // Adding a popUp...
+                InstallUserBLL.Instance.ChangeStatus(newStatus.ToString(), userId, DateTime.Today, DateTime.Now.ToShortTimeString(),
+                                                    Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, "txtReason.Text");
+
+                //Remove user from GitHub Repository
+                if (newStatus == (int)JGConstant.InstallUserStatus.Deactive)
+                {
+                    String GitUserName = InstallUserBLL.Instance.GetUserGithubUserName(userId);
+                    if (!string.IsNullOrEmpty(GitUserName.Trim()))
+                    {
+                        CommonFunction.DeleteUserFromGit(GitUserName, JGConstant.GitRepo.Interview);
+                    }
+                }
+
+                //binddata();
+                //GetSalesUsersStaticticsAndData();
+
+                if (newStatus == (int)JGConstant.InstallUserStatus.Active ||
+                    newStatus == (int)JGConstant.InstallUserStatus.Deactive)
+                    return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                    {
+                        Status = ActionStatus.Successfull,
+                        Message = userId + "," + newStatus + "," + oldStatus,
+                        Object = "showStatusChangePopUp" // not found on edituser.aspx
+                    });
+                return new JavaScriptSerializer().Serialize(new ActionOutput
+                {
+                    Status = ActionStatus.Successfull,
+                    Message = "Status Changed"
+                });
+            }
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string ChangeUserStatusWithReason(int userId, int newStatus, string reason)
+        {
+            if (Convert.ToString(Session["DeactivationStatus"]) == "Deactive")
+            {
+                DataSet ds = new DataSet();
+                string email = "";
+                string HireDate = "";
+                string EmpType = "";
+                string PayRates = "";
+                ds = InstallUserBLL.Instance.ChangeStatus(newStatus.ToString(), userId, DateTime.Today,
+                        DateTime.Now.ToShortTimeString(),
+                        Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]),
+                        JGSession.IsInstallUser.Value, reason);
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        if (Convert.ToString(ds.Tables[0].Rows[0][0]) != "")
+                        {
+                            email = Convert.ToString(ds.Tables[0].Rows[0][0]);
+                        }
+                        if (Convert.ToString(ds.Tables[0].Rows[0][1]) != "")
+                        {
+                            HireDate = Convert.ToString(ds.Tables[0].Rows[0][1]);
+                        }
+                        if (Convert.ToString(ds.Tables[0].Rows[0][2]) != "")
+                        {
+                            EmpType = Convert.ToString(ds.Tables[0].Rows[0][2]);
+                        }
+                        if (Convert.ToString(ds.Tables[0].Rows[0][3]) != "")
+                        {
+                            PayRates = Convert.ToString(ds.Tables[0].Rows[0][3]);
+                        }
+                    }
+                }
+                DataRow user = InstallUserBLL.Instance.getuserdetails(userId).Tables[0].Rows[0];
+                SendEmail(email, user["FristName"].ToString(), user["LastName"].ToString(),
+                            "Deactivation", reason, user["Designation"].ToString(),
+                            Convert.ToInt32(user["DesignationId"].ToString()), HireDate, EmpType, PayRates, 0);
+            }
+            else
+            {
+                InstallUserBLL.Instance.ChangeStatus(newStatus.ToString(), userId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, reason);
+            }
+
+            //Remove user from GitHub Repository
+            if (newStatus == (int)JGConstant.InstallUserStatus.Rejected)
+            {
+                String GitUserName = InstallUserBLL.Instance.GetUserGithubUserName(userId);
+                if (!string.IsNullOrEmpty(GitUserName.Trim()))
+                {
+                    CommonFunction.DeleteUserFromGit(GitUserName, JGConstant.GitRepo.Interview);
+                }
+            }
+            return new JavaScriptSerializer().Serialize(new ActionOutput
+            {
+                Status = ActionStatus.Successfull,
+                Message = "Status Changed"
+            });
+        }
+
+        [WebMethod(EnableSession =true)]
+        public string ChangeUserStatusOfferMade(int userId, int newStatus, string newEmail, string password)
+        {
+            InstallUserBLL.Instance.UpdateOfferMade(userId, newEmail, password);
+
+            DataSet ds = new DataSet();
+            string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;
+            email = HireDate = EmpType = PayRates = Desig = LastName = Address = FirstName = String.Empty;
+
+            ds = InstallUserBLL.Instance.ChangeStatus(newStatus.ToString(), userId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, "");
+            if (ds.Tables.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["Email"]) != "")
+                    {
+                        email = Convert.ToString(ds.Tables[0].Rows[0]["Email"]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["HireDate"]) != "")
+                    {
+                        HireDate = Convert.ToString(ds.Tables[0].Rows[0]["HireDate"]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["EmpType"]) != "")
+                    {
+                        EmpType = Convert.ToString(ds.Tables[0].Rows[0]["EmpType"]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["PayRates"]) != "")
+                    {
+                        PayRates = Convert.ToString(ds.Tables[0].Rows[0]["PayRates"]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["Designation"]) != "")
+                    {
+                        Desig = Convert.ToString(ds.Tables[0].Rows[0]["Designation"]);
+                    }
+                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["FristName"].ToString()))
+                    {
+                        FirstName = ds.Tables[0].Rows[0]["FristName"].ToString();
+                    }
+                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["LastName"].ToString()))
+                    {
+                        LastName = ds.Tables[0].Rows[0]["LastName"].ToString();
+                    }
+                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["Address"].ToString()))
+                    {
+                        Address = ds.Tables[0].Rows[0]["Address"].ToString();
+                    }
+                }
+            }
+            DataRow user = InstallUserBLL.Instance.getuserdetails(userId).Tables[0].Rows[0];
+            //string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199, 0, Desig);
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Offer_Made_Attachment_Template, user["DesignationId"].ToString());
+            string strHtml = objHTMLTemplate.Header + objHTMLTemplate.Body + objHTMLTemplate.Footer;
+            strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
+            strHtml = strHtml.Replace("#FirstName#", FirstName);
+            strHtml = strHtml.Replace("#LastName#", LastName);
+            strHtml = strHtml.Replace("#Address#", Address);
+            strHtml = strHtml.Replace("#Designation#", Desig);
+            if (!string.IsNullOrEmpty(EmpType))
+            {
+                int intEmpType = 0;
+                int.TryParse(EmpType, out intEmpType);
+
+                if (intEmpType > 0)
+                {
+                    EmpType = CommonFunction.GetEnumDescription((JGConstant.EmploymentType)intEmpType);
+                }
+
+                strHtml = strHtml.Replace("#EmpType#", EmpType);
+
+            }
+            else
+            {
+                strHtml = strHtml.Replace("#EmpType#", "________________");
+            }
+            strHtml = strHtml.Replace("#JoiningDate#", HireDate);
+            if (!string.IsNullOrEmpty(PayRates))
+            {
+                strHtml = strHtml.Replace("#RatePerHour#", PayRates);
+            }
+            else
+            {
+                strHtml = strHtml.Replace("#RatePerHour#", "____");
+            }
+            DateTime dtPayCheckDate;
+            if (!string.IsNullOrEmpty(HireDate))
+            {
+                dtPayCheckDate = Convert.ToDateTime(HireDate);
+            }
+            else
+            {
+                dtPayCheckDate = DateTime.Now;
+            }
+            dtPayCheckDate = new DateTime(dtPayCheckDate.Year, dtPayCheckDate.Month, DateTime.DaysInMonth(dtPayCheckDate.Year, dtPayCheckDate.Month));
+            strHtml = strHtml.Replace("#PayCheckDate#", dtPayCheckDate.ToShortDateString());
+
+            string strPath = JG_Prospect.App_Code.CommonFunction.ConvertHtmlToPdf(strHtml, Server.MapPath(@"~\Sr_App\MailDocument\MailAttachments\"), "Job acceptance letter");
+            List<Attachment> lstAttachments = new List<Attachment>();
+            if (File.Exists(strPath))
+            {
+                Attachment attachment = new Attachment(strPath);
+                attachment.Name = Path.GetFileName(strPath);
+                lstAttachments.Add(attachment);
+            }
+
+            SendEmail(email, FirstName, LastName, "Offer Made", "", Desig, Convert.ToInt32(user["DesignationId"].ToString()), HireDate, EmpType, PayRates,
+                HTMLTemplates.Offer_Made_Auto_Email, lstAttachments);
+
+            return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+        }
+
+        public bool CheckRequiredFields(string SelectedStatus, int Id)
+        {
+            DataSet dsNew = new DataSet();
+            dsNew = InstallUserBLL.Instance.getuserdetails(Id);
+            if (dsNew.Tables.Count > 0)
+            {
+                if (dsNew.Tables[0].Rows.Count > 0)
+                {
+                    if (SelectedStatus == "Applicant")
+                    {
+                        if (Convert.ToString(dsNew.Tables[0].Rows[0][1]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][2]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][3]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][8]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][38]) == "")
+                        {
+                            //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to Applicant as required fields for it are not filled.')", true);
+                            return false;
+                        }
+                    }
+                    else if (SelectedStatus == "OfferMade" || SelectedStatus == "Offer Made")
+                    {
+                        //if (Convert.ToString(dsNew.Tables[0].Rows[0][1]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][2]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][4]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][5]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][11]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][12]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][13]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][3]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][8]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][38]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][44]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][46]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][48]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][50]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][100]) == "")
+                        if (Convert.ToString(dsNew.Tables[0].Rows[0]["Email"]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0]["Password"]) == "")
+                        {
+                            // txtEmail.Text = Convert.ToString(dsNew.Tables[0].Rows[0]["Email"]);
+                            //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to Offer Made as required fields for it are not filled.')", true);
+                            return false;
+                        }
+                    }
+                    else if (SelectedStatus == "Active")
+                    {
+                        if (Convert.ToString(dsNew.Tables[0].Rows[0][1]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][2]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][3]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][4]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][5]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][7]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][9]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][11]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][12]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][13]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][17]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][16]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][17]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][8]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][18]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][19]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][20]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][35]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][38]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][39]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][44]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][46]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][48]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][50]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][100]) == "")
+                        {
+                            //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to Offer Made as required fields for it are not filled.')", true); 
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
         #endregion
 
         [WebMethod(EnableSession = true)]

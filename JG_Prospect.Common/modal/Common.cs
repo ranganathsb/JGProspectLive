@@ -37,4 +37,11 @@ namespace JG_Prospect.Common.modal
     {
         public List<T> Data { get; set; }
     }
+
+    public class PagingResult<T,Q,R> : PagingResultBase
+    {
+        public List<T> Data { get; set; }
+        public List<Q> QData { get; set; }
+        public List<R> RData { get; set; }
+    }
 }

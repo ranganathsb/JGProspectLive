@@ -541,7 +541,7 @@ BEGIN
 									CreatedOn,ChatUserIds)
 		Select S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, 
 					S.ReceiverIds, S.CreatedOn, Convert(varchar(12), S.SenderId) + ',' + S.ReceiverIds
-		From ChatMessage S With(NoLock) Where S.ChatSourceId = 10 --
+		From ChatMessage S With(NoLock) Where S.ChatSourceId in (2, 10) --
 	
 	Select @Min = Min(Id), @Max = Max(Id) From #TempChatMessages
 
@@ -610,7 +610,7 @@ BEGIN
 				From ChatMessage M With(NoLock)
 				Where (M.SenderId = @LoggedInUserId And M.ReceiverIds = Convert(Varchar(12), @UserId))
 						Or (M.SenderId = @UserId And M.ReceiverIds = Convert(Varchar(12), @LoggedInUserId))
-						And M.ChatSourceId = 10
+						And M.ChatSourceId in (2, 10)
 				Order By M.CreatedOn Desc   
 
 

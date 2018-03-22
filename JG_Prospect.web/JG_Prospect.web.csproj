@@ -2062,6 +2062,7 @@
     <Content Include="js\angular\scripts\FrozenTask.js" />
     <Content Include="js\angular\scripts\jgappfactories.js" />
     <Content Include="js\angular\scripts\edituser-angular.js" />
+    <Content Include="js\angular\scripts\Phone.js" />
     <Content Include="js\angular\scripts\TaskGenerator.js" />
     <Content Include="js\angular\scripts\TaskGeneratorHelper.js" />
     <Content Include="js\angular\scripts\TaskPopupHelper.js" />

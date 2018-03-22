@@ -10,6 +10,7 @@ using JG_Prospect.DAL.Database;
 using JG_Prospect.Common;
 using JG_Prospect.Common.modal;
 using System.Configuration;
+using static JG_Prospect.Common.JGCommon;
 
 namespace JG_Prospect.DAL
 {
@@ -1573,5 +1574,38 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public List<UserDesignation> GetUserDesignation(int? id = null)
+        {
+            try
+            {
+                List<UserDesignation> list = new List<UserDesignation>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetUserDesignations");
+                    database.AddInParameter(command, "@Id", DbType.Int32, id);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            list.Add(new UserDesignation
+                            {
+                                Id = Convert.ToInt32(item["Id"].ToString()),
+                                DepartmentId = Convert.ToInt32(item["DepartmentId"].ToString()),
+                                DesignationCode = item["DesignationCode"].ToString(),
+                                DesignationName = item["DesignationName"].ToString()
+                            });
+                        }
+                    }
+                    return list;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

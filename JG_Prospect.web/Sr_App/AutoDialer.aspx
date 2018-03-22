@@ -42,7 +42,7 @@
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
+    <link href="../css/chosen.css" rel="stylesheet" />
     <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
     <script src="../js/angular/scripts/jgapp.js"></script>
     <script src="../js/angular/scripts/TaskSequence.js"></script>
@@ -50,6 +50,7 @@
     <script src="../js/TaskSequencing.js"></script>
     <script src="../js/jquery.dd.min.js"></script>
     <script src="../js/angular/scripts/ClosedTasls.js"></script>
+    <script src="../js/angular/scripts/Phone.js"></script>
     <div class="dialer-container">
         <div id="wrapper">
             <div id="phone">
@@ -218,6 +219,7 @@
     <script type="text/javascript">
     $(document).ready(function () {
         GetPhoneScripts(this);
+        $('.search-user').trigger('click');
     });
     </script>
 </asp:Content>

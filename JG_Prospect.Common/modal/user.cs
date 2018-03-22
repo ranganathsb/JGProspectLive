@@ -246,6 +246,44 @@ namespace JG_Prospect.Common.modal
 
     }
 
+    public class SalesUser
+    {
+        public int Id { get; set; }
+        public string ProfilePic { get; set; }
+        public int DesignationId { get; set; }
+        public string Designation { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int Status { get; set; }
+        public string Source { get; set; }
+        public string AddedBy { get; set; }
+        public string AddedByInstallId { get; set; }
+        public DateTime AddedOn { get; set; }
+        public string AddedOnFormatted { get; set; }
+        public string Email { get; set; }
+        public string PhoneType { get; set; }
+        public string Phone { get; set; }
+        public string Country { get; set; }
+        public string Zip { get; set; }
+        public string City { get; set; }
+        public string JobType { get; set; }
+        public string ResumeFileDisplayName { get; set; }
+        public string ResumeFileSavedName { get; set; }
+    }
+
+    public class UserEmail
+    {
+        public int UserId { get; set; }
+        public string Email { get; set; }
+    }
+
+    public class UserPhone
+    {
+        public int UserId { get; set; }
+        public int PhoneTypeId { get; set; }
+        public string Phone { get; set; }
+    }
+
     public class LoginUser
     {
         public int ID { get; set; }

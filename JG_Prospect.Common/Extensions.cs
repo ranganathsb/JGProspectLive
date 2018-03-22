@@ -45,5 +45,26 @@ namespace JG_Prospect.Common
             Regex r = new Regex("(?<=[a-z])(?<x>[A-Z])|(?<=.)(?<x>[A-Z])(?=[a-z])");
             return r.Replace(pascalCaseString, " ${x}");
         }
+
+        public static List<KeyValuePair<TEnum, string>> GetList<TEnum>()
+        where TEnum : struct
+        {
+            if (!typeof(TEnum).IsEnum) throw new InvalidOperationException();
+            return ((TEnum[])Enum.GetValues(typeof(TEnum)))
+               .ToDictionary(k => k, v => ((Enum)(object)v).ToEnumDescription())
+               .ToList();
+        }
+
+        public static Dictionary<int, string> ToDictionary<T>()
+        {
+            // Ensure T is an enumerator
+            if (!typeof(T).IsEnum)
+            {
+                throw new ArgumentException("T must be an enumerator type.");
+            }
+
+            // Return Enumertator as a Dictionary
+            return Enum.GetValues(typeof(T)).Cast<T>().ToDictionary(i => (int)Convert.ChangeType(i, i.GetType()), t => t.ToString());
+        }
     }
 }

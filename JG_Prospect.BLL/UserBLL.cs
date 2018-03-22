@@ -7,6 +7,7 @@ using JG_Prospect.DAL;
 using JG_Prospect.Common;
 using JG_Prospect.Common.modal;
 using System.Data;
+using static JG_Prospect.Common.JGCommon;
 
 namespace JG_Prospect.BLL
 {
@@ -284,6 +285,11 @@ namespace JG_Prospect.BLL
         public DataSet manageScripts(PhoneDashboard objPhoneDashboard)
         {
             return UserDAL.Instance.manageScripts(objPhoneDashboard);
+        }
+
+        public List<UserDesignation> GetUserDesignation(int? Id = null)
+        {
+            return UserDAL.Instance.GetUserDesignation(Id);
         }
     }
 }

@@ -1300,6 +1300,8 @@ namespace JG_Prospect.Sr_App.Controls
             }
             else
             {
+                if (Session["DesigNew"] == null)
+                    Response.Redirect("/");
                 UserID = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
 
                 Designation =

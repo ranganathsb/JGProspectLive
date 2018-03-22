@@ -3496,6 +3496,8 @@
 
         function fillUsers(selector, fillDDL, loader) {
             // 
+            if (selector==undefined)
+                return false;
             var did = '';
             if (($('.' + selector).val() != undefined)) {
                 did = $('.' + selector).val().join();
@@ -4183,7 +4185,7 @@
                             tbl += '</table>';
                             var tdHeight = $('.task-' + taskid).parents('tr').height();
                             $(sender).html(tbl);                        
-                            $(sender).css('height',(tdHeight-36)+'px');
+                            //$(sender).css('height',(tdHeight-36)+'px');
                             var tuid = getUrlVars()["TUID"];
                             var nid = getUrlVars()["NID"];
                             if (tuid != undefined && nid!= undefined) {

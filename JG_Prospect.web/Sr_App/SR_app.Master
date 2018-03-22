@@ -791,7 +791,7 @@
             $(sender).parents('.telecom-dashboard-popup').hide();
             $('.overlay').hide();
             if (window.location.href.toLowerCase().indexOf('itdashboard') > 0) {
-                var container = $('.notes-section[taskid="' + taskId + '"]').filter('div[taskmultilevellistid="' + taskMultilevelListId + '"]');
+                var container = $('.notes-section[taskid="' + taskId + '"]').filter('div[taskmultilevellistid="' + taskMultilevelListId + '"]').find('.note-list');
                 LoadNotes(container, taskId, taskMultilevelListId);
             }
         }
