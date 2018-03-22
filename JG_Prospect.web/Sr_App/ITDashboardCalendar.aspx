@@ -81,6 +81,14 @@
             cursor: pointer;
             padding: 1px;
         }
+        .calendar-users-image-border {
+            border-style: solid; 
+            border-color: black;
+            border-width: 1px
+        }
+        .calendar-users-image-border-none{
+            border-style:none;
+        }
     </style>
     <link href="../css/chosen.css" rel="stylesheet" />
     <link rel="stylesheet" href="../js/fullcalendar/css/fullcalendar.css" />        
@@ -94,12 +102,12 @@
     <script type="text/javascript">
         $(document).ready(function () {
             
-            
             //$.noConflict();
             if ('<%=IsSuperUser.ToString().ToLower().Trim()%>' == 'true') {
                 sequenceScope.IsAdmin = true;
                 //$.noConflict();
                 $('#refreshInProgTasks').on('click', function () {
+                    CalendarUserClickSource = 'FILTER';
                     $('#calendar').fullCalendar('refetchEvents');
                 });
                 $(".chosen-dropDown").chosen();
@@ -165,27 +173,32 @@
                 //CHange events for filters
                 $("#ddlSelectUser").change(function () {
                     //resetChosen("#chosen-select-users");
+                    CalendarUserClickSource = 'FILTER';
                     setCalendarFilterData();
                     refreshCalendarTasks();
                 });
                 $('#ddlUserStatus').change(function () {
                     //resetChosen(this);
+                    CalendarUserClickSource = 'FILTER';
                     fillUsers('ddlDesignationSeq', 'ddlSelectUser', 'lblLoading');
                     setCalendarFilterData();
                     refreshCalendarTasks();
                 });
                 $('#ddlDesignationSeq').change(function () {
                     //resetChosen(this);
+                    CalendarUserClickSource = 'FILTER';
                     fillUsers('ddlDesignationSeq', 'ddlSelectUser', 'lblLoading');
                     setCalendarFilterData();
                     refreshCalendarTasks();
                 });
 
                 $('.fc-icon-left-single-arrow').click(function () {
+                    CalendarUserClickSource = 'FILTER';
                     clearSelectedDates();
                 });
 
                 $('.fc-icon-right-single-arrow').click(function () {
+                    CalendarUserClickSource = 'FILTER';
                     clearSelectedDates();
                 });
             } else {//User Mode : NonAdmin
@@ -194,6 +207,7 @@
                 ShowCalendarTasks();
                 $('#refreshInProgTasks').on('click', function () {
                     //$.noConflict();
+                    CalendarUserClickSource = 'FILTER';
                     $('#calendar').fullCalendar('refetchEvents');
                 });
             }
@@ -201,11 +215,13 @@
             setDateFilter(true);
             //for StartDate and EndDate trigger
             $('.dateFrom').change(function () {
+                CalendarUserClickSource = 'FILTER';
                 setCalendarFilterData();
                 refreshCalendarTasks();
             });
 
             $('.dateTo').change(function () {
+                CalendarUserClickSource = 'FILTER';
                 setCalendarFilterData();
                 refreshCalendarTasks();
             });            
