@@ -1099,10 +1099,17 @@ namespace JG_Prospect.Sr_App
         [WebMethod]
         public static string GetTaskChatMessages(int taskId, int chatSourceId, int taskMultilevelListId = 0)
         {
+            var users = ChatBLL.Instance.GetTaskUsers(taskId).Results;
+            string receiverId = string.Empty;
+            if (users != null && users.Count() > 0)
+            {
+                receiverId = string.Join(",", users.OrderBy(m => m).ToList());
+            }
             List<ChatMessage> chatMessages = ChatBLL.Instance.GetTaskChatMessages(chatSourceId, taskId, taskMultilevelListId).Results;
             PagingResult<Notes> notes = new PagingResult<Notes>();
             notes.Status = ActionStatus.Successfull;
             notes.TotalResults = chatMessages.Count();
+            notes.Message = receiverId;
             notes.Data = chatMessages.Select(m => new Notes
             {
                 TaskMultilevelListId = taskMultilevelListId,

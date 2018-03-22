@@ -121,6 +121,16 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetMultilevelChildren(ParentTaskId);
         }
 
+        public DataSet GetRootTasks(int ExcludedTaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetRootTasks(ExcludedTaskId);
+        }
+
+        public DataSet GetChildTasks(int ParentTaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetChildTasks(ParentTaskId);
+        }
+
         //GetMultilevelChildren
 
         public bool SaveTaskDesignations(UInt64 TaskId, String strDesignations, String TaskIDCode)
@@ -179,6 +189,12 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.DeleteTaskSequence(TaskId);
         }
+
+        public bool MoveTask(int TaskId, int FromTaskId, int ToTaskId)
+        {
+            return TaskGeneratorDAL.Instance.MoveTask(TaskId, FromTaskId, ToTaskId);
+        }
+
         public bool DeleteTaskSubSequence(Int64 TaskId)
         {
             return TaskGeneratorDAL.Instance.DeleteTaskSubSequence(TaskId);
@@ -213,9 +229,14 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskMultilevelChildInfo(TaskId);
         }
 
-        public DataSet GetCalendarTasksByDate(string StartDate, string EndDate, string userid)
+        public DataSet GetCalendarTasksByDate(string StartDate, string EndDate, string userid, String DesignationIDs, string TaskUserStatus)
         {
-            return TaskGeneratorDAL.Instance.GetCalendarTasksByDate(StartDate, EndDate, userid);
+            return TaskGeneratorDAL.Instance.GetCalendarTasksByDate(StartDate, EndDate, userid, DesignationIDs, TaskUserStatus);
+        }
+
+        public DataSet GetCalendarUsersByDate(string Date, string TaskUserStatus, string UserId)
+        {
+            return TaskGeneratorDAL.Instance.GetCalendarUsersByDate(Date, TaskUserStatus, UserId);
         }
 
         public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
@@ -480,6 +501,10 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.UpdateTaskApproval(objTaskApproval);
         }
 
+        public bool UpdateFeedbackTask(int EstimatedHours, string Password, string StartDate, string EndDate, int TaskId, bool IsITLead, int UserId)
+        {
+            return TaskGeneratorDAL.Instance.UpdateFeedbackTask(EstimatedHours, Password, StartDate, EndDate, TaskId, IsITLead, UserId);
+        }
 
         //--------- Start DP -----------
         public DataSet GetInProgressTasks(string userid, string desigid, string vSearch, int pageindex, int pagesize)

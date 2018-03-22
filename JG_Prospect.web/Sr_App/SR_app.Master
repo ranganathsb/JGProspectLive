@@ -96,6 +96,90 @@
         //        }
     </script>
     <style type="text/css">
+        .header-msg{
+            min-height: 158px;
+        }
+        .seq-number-fixed {
+            width: 120px;
+        }
+
+        .seq-taskid-fixed {
+            /*width: 130px;*/
+            width: 70px;
+        }
+
+        .seq-tasktitle-fixed {
+            width: 256px;
+            word-wrap: break-word;
+        }
+
+        .seq-taskstatus-fixed {
+            width: 150px;
+        }
+
+        .seq-taskduedate-fixed {
+            width: 100px;
+        }
+
+        .seq-notes-fixed {
+            width: 40%;
+        }
+
+        .seq-notes-fixed {
+            width: 33%;
+        }
+        .orange {
+            background-color: orange;
+            color: black;
+        }
+
+        .yellow {
+            background-color: yellow;
+            color: black;
+        }
+
+            .yellow span.parent-task-title {
+                color: red;
+            }
+
+        .gray {
+            background-color: Gray;
+        }
+
+        .red {
+            background-color: red;
+            color: white;
+        }
+
+            .red span.parent-task-title {
+                color: white;
+            }
+
+        .black {
+            background-color: black;
+            color: white;
+        }
+
+            .black span.parent-task-title {
+                color: red;
+            }
+
+        .lightgray {
+            background-color: lightgray;
+        }
+
+        .green {
+            background-color: green;
+            color: white;
+        }
+
+            .green span.parent-task-title {
+                color: white;
+            }
+
+        .defaultColor {
+            background-color: #F6F1F3;
+        }
         .ui-widget-header {
             border: 0;
             background: none /*{bgHeaderRepeat}*/;
@@ -774,12 +858,20 @@
             chat.server.closeChat($(sender).parents('.chat-box').attr('id'));
             $(sender).parents('.chat-box').remove();
             if (window.location.href.toLowerCase().indexOf('edituser.aspx') > 1)
-                ReLoadNotes();
+                ReLoadNotes();            
         }
         closeTelecomPopup = function (sender) {
+            var taskId = $(sender).parents('.telecom-dashboard-popup').find('#TaskId').val();
+            var taskMultilevelListId = $(sender).parents('.telecom-dashboard-popup').find('#TaskMultilevelListId').val();
+            var receiverIds = $(sender).parents('.telecom-dashboard-popup').find('#ReceiverIds').val();
+            var chatGroupId = $(sender).parents('.telecom-dashboard-popup').find('#ChatGroupId').val();
             chat.server.closeChat($(sender).parents('.telecom-dashboard-popup').find('.chat-box').attr('id'));
             $(sender).parents('.telecom-dashboard-popup').hide();
             $('.overlay').hide();
+            if (window.location.href.toLowerCase().indexOf('itdashboard') > 0) {
+                var container = $('.notes-section[taskid="' + taskId + '"]').filter('div[taskmultilevellistid="' + taskMultilevelListId + '"]').find('.note-list');
+                LoadNotes(container, taskId, taskMultilevelListId);
+            }            
         }
         addUserIntoChatGroup = function (id) {
             chat.server.addUserIntoChatGroup(userTobeAddedIntoChatGroupId, id);
@@ -1152,7 +1244,7 @@
                 var H = ($(window).height() - 100) + 'px';
                 $('.header-msg').css('height', H);
             }, function () {
-                $('.header-msg').css('height', '40px');
+                $('.header-msg').css('height', '158px');
             });
         }
 

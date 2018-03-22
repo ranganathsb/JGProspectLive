@@ -203,6 +203,77 @@ function ShowNonFrozenTaskSequenceDashBoard(DesId, UserId) {
     sequenceScopeNonFrozenTasks.getAssignUsers();
 
 }
+function ShowCalendarTasks() {
+    debugger;
+    CalendarUserClickSource = 'FILTER';
+    sequenceScope.LoadCalendarData();
+}
+function clearSelectedDates() {
+    //sequenceScope.StartDate = sequenceScope.EndDate = '';
+}
+function setCalendarFilterData(uid) {
+    //Data for fetching records
+    var DesignationIDs = "";
+    var userids = "";
+    DesignationIDs = $('#ddlDesignationSeq').val();
+    userids = $("#ddlSelectUser").val();
+
+    if (DesignationIDs != undefined) {
+        DesignationIDs = DesignationIDs.join();
+        DesignationIDs = DesignationIDs == '0' ? '' : DesignationIDs;
+    }
+    else {
+        DesignationIDs = "";
+    }
+
+    if (userids != undefined) {
+        userids = userids.join();
+        userids = userids == '0' ? '' : userids;
+    }
+    else {
+        userids = "";
+    }
+    if (uid != undefined && uid != null) {
+        userids = uid;
+    }
+
+    var UserStatus = $('#ddlUserStatus').length > 0 ? $('#ddlUserStatus').val().join() : ':';
+    /////////////
+
+    sequenceScope.UserSelectedDesigIds = DesignationIDs;
+    sequenceScope.UserStatus = UserStatus;
+    sequenceScope.UserId = userids;
+    //Start Date
+    var StartDate = $('.dateFrom').val();
+    if (StartDate != undefined)
+        sequenceScope.StartDate = StartDate;
+    else
+        sequenceScope.StartDate = "";
+
+    //End Date
+    var EndDate = $('.dateTo').val();
+    if (EndDate != undefined)
+        sequenceScope.EndDate = EndDate;
+    else
+        sequenceScope.EndDate = "";
+}
+function resetChosen(selector) {
+    var val = $(selector).val();
+
+    //
+    if (val != undefined && val != '') {
+        $(selector)
+            .find('option:first-child').prop('selected', false)
+            .end().trigger('chosen:updated');
+    } else {
+        $(selector)
+            .find('option:first-child').prop('selected', true)
+            .end().trigger('chosen:updated');
+    }
+}
+function refreshCalendarTasks() {
+    $('#calendar').fullCalendar('refetchEvents');
+}
 
 function ShowTaskSequenceDashBoard(DesId, UserId, For) {
 

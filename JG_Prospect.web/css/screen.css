@@ -462,7 +462,7 @@ form.inline {
 }
 
 .header {
-    min-height: 200px;
+    min-height: 264px;
     position: relative;
     min-width: 600px;
 }
@@ -619,7 +619,7 @@ form.inline {
 .nav {
     background: url(../img/nav-bg.png) repeat-x;
     height: 40px;
-    top: 170px;
+    top: 263px;
     border-radius: 5px;
     position: absolute;
     width: 100%;
@@ -1400,6 +1400,15 @@ ul.left_nav {
     margin: 0 !important;
     border-radius: 5px !important;
     border: #b5b4b4 1px solid !important;
+}
+
+.tasklistSearch {
+    overflow: auto;
+    max-height: 165px;
+    margin-left: 220px !important;
+    width: 75%;
+    position: relative;
+    z-index: 9;
 }
 
 .tasklist {
