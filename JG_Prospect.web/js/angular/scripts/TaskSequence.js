@@ -70,7 +70,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
     $scope.TotalRecordsCT = 0;
     $scope.HighLightTaskId = 0;
     $scope.BlinkTaskId = 0;
-
+    $scope.CalendarUsers = [];
 
     $scope.TechTasks = [];
     $scope.Techpage = 0;
@@ -78,8 +78,8 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
     $scope.TechCurrentpage = 0;
     $scope.TechTotalRecords = 0;
 
-    $scope.LoadCalendarData = function () {        
-        
+    $scope.LoadCalendarData = function () {
+        //debugger;
         $('#calendar').fullCalendar({
             header: {
                 left: 'prev,next today',
@@ -114,7 +114,6 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
                     }
                     callback(events);
                     //Change View        
-                    debugger;
                     if ($scope.StartDate != '' && $scope.StartDate != undefined && $scope.StartDate != 'All') {
                         $('#calendar').fullCalendar('changeView', 'month', $scope.StartDate == '' ? start : $scope.StartDate);
                         //$scope.StartDate = $scope.EndDate = '';
@@ -149,9 +148,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
                 $('.tooltiptopicevent').remove();
 
             },
-            dayClick: function () {
-                tooltip.hide()
-            },
+            
             eventResizeStart: function () {
                 tooltip.hide()
             },
@@ -163,7 +160,41 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
             },
             eventRender: function (event, element) {
                 element.find('.fc-title').html(event.title);
-            }
+            },
+            loading: function (bool) {
+                if (!bool) {
+                    $('.fc-week').find('td').each(function (i, el) {  
+                        var sender = $(this);                        
+                        //$(sender).html('Loading...');
+                        $(sender).html('');
+                        var colDate = $(sender).attr('data-date');
+                        callWebServiceMethod($http, "GetCalendarUsersByDate", { Date: colDate, UserId: sequenceScope.UserId, DesignationIDs: sequenceScope.UserSelectedDesigIds, TaskUserStatus: sequenceScope.UserStatus  }).then(function (data) {
+                            $scope.CalendarUsers = JSON.parse(data.data.d);
+                            CalendarUsers = $scope.CalendarUsers.Users;
+                            //debugger;
+                            if (CalendarUsers.length > 0) {
+                                var html = '<div class="calendar-users-container" id="user-container-' + colDate + '">';
+                                $.each(CalendarUsers, function (i, item) {
+                                    html += '<img id="Header1_imgProfile" data-uid="' + item.UserId + '" style="border-radius: 50%;width: 34px;height: 34px;padding:5px" class="img-Profile calendar-user" src="../Employee/ProfilePictures/' + item.Picture + '">';
+                                });
+                                html += '<a href="#/" class="clear-user-filter" onClick="clearUserFilter(' + colDate + ')">Clear All</a></div>';
+                                $(sender).html(html);
+
+                                //Attach Event Handlers
+                                $('#user-container-' + colDate + ' .calendar-user').click(function () {
+                                    var uid = $(this).attr('data-uid');
+                                    //alert(uid);
+                                    setCalendarFilterData(uid);
+                                    //ShowCalendarTasks();
+                                    $('#calendar').fullCalendar('refetchEvents');
+                                    $(this).css({ 'border-style': 'solid', 'border-color': 'black', 'border-width': '1px' });
+                                });
+                            }                            
+                        });
+                    });                    
+                }
+                //Possibly call you feed loader to add the next feed in line
+            }            
         });
 
     }

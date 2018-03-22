@@ -1402,6 +1402,15 @@ ul.left_nav {
     border: #b5b4b4 1px solid !important;
 }
 
+.tasklistSearch {
+    overflow: auto;
+    max-height: 165px;
+    margin-left: 220px !important;
+    width: 75%;
+    position: relative;
+    z-index: 9;
+}
+
 .tasklist {
     overflow: auto;
     max-height: 165px;

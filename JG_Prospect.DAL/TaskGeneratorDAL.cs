@@ -1513,6 +1513,31 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+        public DataSet GetCalendarUsersByDate(string Date, string TaskUserStatus, string UserId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("usp_GetCalenderUsersByDate");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@Date", DbType.String, Date);
+                    database.AddInParameter(command, "@UserIds", SqlDbType.VarChar, UserId);
+                    database.AddInParameter(command, "@TaskStatus", SqlDbType.VarChar, TaskUserStatus.Split(":".ToCharArray())[0]);
+                    database.AddInParameter(command, "@UserStatus", SqlDbType.VarChar, TaskUserStatus.Split(":".ToCharArray())[1]);
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public DataSet GetTaskMultilevelChildInfo(int TaskId)
         {

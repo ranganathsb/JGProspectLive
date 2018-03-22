@@ -28,6 +28,8 @@ namespace JG_Prospect.WebServices
     [System.Web.Script.Services.ScriptService]
     public class JGWebService : System.Web.Services.WebService
     {
+        public static string TaskUserStatuses { get; set; }
+
         #region '--TaskComments--'
 
         [WebMethod]
@@ -570,6 +572,27 @@ namespace JG_Prospect.WebServices
         #endregion
 
         [WebMethod(EnableSession = true)]
+        public String GetCalendarUsersByDate(string Date, string TaskUserStatus, string UserId)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = null;
+         
+            dtResult = TaskGeneratorBLL.Instance.GetCalendarUsersByDate(Date, TaskUserStatuses, UserId);
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                dtResult.DataSetName = "Events";
+                dtResult.Tables[0].TableName = "Users";
+                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
+        [WebMethod(EnableSession = true)]
         public String GetCalendarTasksByDate(string StartDate, string EndDate, string UserId, String DesignationIDs,  string TaskUserStatus)
         {
             string strMessage = string.Empty;
@@ -582,9 +605,9 @@ namespace JG_Prospect.WebServices
             }
 
             //Extract Selected Task & User Status
-            TaskUserStatus = GenerateStatusCodes(TaskUserStatus, false, true);
+            TaskUserStatuses = GenerateStatusCodes(TaskUserStatus, false, true);
 
-            dtResult = TaskGeneratorBLL.Instance.GetCalendarTasksByDate(StartDate, EndDate, UserId, DesignationIDs, TaskUserStatus);
+            dtResult = TaskGeneratorBLL.Instance.GetCalendarTasksByDate(StartDate, EndDate, UserId, DesignationIDs, TaskUserStatuses);
 
             if (dtResult != null && dtResult.Tables.Count > 0)
             {

@@ -59,6 +59,28 @@
             max-height: 58px;
             overflow-y: auto;
         }
+        .cal-user-height{
+            height: 75px;
+        }
+        .calendar-user{
+            border-radius: 50%;width: 38px;height: 38px;
+        }
+        .fc-agenda-view .fc-day-grid .fc-row{
+            min-height: 7em !important;
+        }
+        .calendar-users-container{
+            height:80px;
+            overflow-y:auto;
+        }
+        .calendar-users-container img:hover {
+            border: solid;
+            border-radius: 50%;
+            border-color:#cd0a0a;
+            border-width: 1px;
+            border-collapse: collapse;
+            cursor: pointer;
+            padding: 1px;
+        }
     </style>
     <link href="../css/chosen.css" rel="stylesheet" />
     <link rel="stylesheet" href="../js/fullcalendar/css/fullcalendar.css" />        
@@ -71,6 +93,8 @@
     <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            
+            
             //$.noConflict();
             if ('<%=IsSuperUser.ToString().ToLower().Trim()%>' == 'true') {
                 sequenceScope.IsAdmin = true;
@@ -378,8 +402,8 @@
                 </tr>
             </table>
         <%} %>
+        
         <div id="calendar">
-
         </div>
     </div>
 </asp:Content>

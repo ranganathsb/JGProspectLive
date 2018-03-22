@@ -209,7 +209,7 @@ function ShowCalendarTasks() {
 function clearSelectedDates() {
     //sequenceScope.StartDate = sequenceScope.EndDate = '';
 }
-function setCalendarFilterData() {
+function setCalendarFilterData(uid) {
     //Data for fetching records
     var DesignationIDs = "";
     var userids = "";
@@ -230,6 +230,9 @@ function setCalendarFilterData() {
     }
     else {
         userids = "";
+    }
+    if (uid != undefined && uid != null) {
+        userids = uid;
     }
 
     var UserStatus = $('#ddlUserStatus').length > 0 ? $('#ddlUserStatus').val().join() : ':';

@@ -20,13 +20,12 @@
 </style>--%>
 <style>
     #divTask {
-        width: 80%;
-        height: 150px;
+        
+        height: 265px;
     }
 
         #divTask:hover {
-            height: 100%;
-            position: absolute;
+            
         }
     /*#divTask:hover > nav {
             position:fixed;
@@ -68,8 +67,8 @@
         margin-top: 97px;
     }
     .tasklist{
-        width: 86% !important;
-        margin-left: 189px !important;
+        width: 100% !important;
+        margin-left: 0px !important;
     }
     /*.ProfilImg:hover .caption {
         opacity: 0.6;
@@ -80,21 +79,30 @@
 </script>
 <div class="header">
     <%--<img src="../img/logo.png" alt="logo" width="88" height="89" class="logo" />--%>
-    <div class="logo" style="font-weight: bold; color: red;">
-        <img src="../img/logo.png" alt="logo" width="88" height="89"><br>
-        <hr style="width: 68%;">
-        <span>JMGC LLC - #001</span><hr style="width: 68%;">
-        <br>
-        <span style="color: white;">72 E Lancaster Ave </span>
-        <br>
-        <span>Malvern, PA 19355</span><br>
-        <span style="color: white;">HR: (215)483-3098 EXT#4</span><br>
-        <span style="background-color: yellow;">?mngr?</span>
-
-    </div>
-    <div id="divTask">
-        <uc1:TaskGenerator runat="server" ID="TaskGenerator" />
-    </div>
+    <table style="width: 100%">
+        <tr>
+            <td style="height: 265px; width: 225px">
+                <div class="logo" style="font-weight: bold; color: red;">
+                    <img src="../img/logo.png" alt="logo" width="88" height="89"><br>
+                    <%--<hr style="width: 68%;">--%>
+                    <span style="font-size: 13px;">JMGC LLC - #001</span><hr style="width: 68%;">
+                    <br>
+                    <span style="color: white;">72 E Lancaster Ave </span>
+                    <br>
+                    <span>Malvern, PA 19355</span><br>
+                    <span style="color: white;">HR: (215)483-3098 EXT#4</span><br>
+                    <span style="background-color: yellow;"></span>
+                </div>
+            </td>
+            <td>
+                <div id="divTask">
+                    <uc1:TaskGenerator runat="server" ID="TaskGenerator" />
+                </div>
+            </td>
+            <td style="width: 392px"></td>
+        </tr>
+    </table>    
+    
     <div class="user_panel">
         <div class="ProfilImg">
             <asp:Image CssClass="img-Profile" ID="imgProfile" runat="server" />
