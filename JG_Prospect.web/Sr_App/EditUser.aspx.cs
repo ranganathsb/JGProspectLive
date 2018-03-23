@@ -3370,7 +3370,7 @@ namespace JG_Prospect
                     }
 
                     // As per new specification newly added user will have hidden status.
-                    objIntsallUser.status = Convert.ToInt32(JGConstant.InstallUserStatus.Hidden).ToString();
+                    objIntsallUser.status = Convert.ToInt32(JGConstant.InstallUserStatus.Applicant).ToString();
 
 
                     //Commented By: Yogesh Keraliya

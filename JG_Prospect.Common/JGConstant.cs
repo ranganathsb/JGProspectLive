@@ -226,7 +226,7 @@ namespace JG_Prospect.Common
             Active = 1
             ,
             Applicant = 2
-                ,
+                ,   
             Deactive = 3
                 ,
             InstallProspect = 4
