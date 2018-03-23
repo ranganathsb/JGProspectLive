@@ -2642,12 +2642,13 @@ namespace JG_Prospect.WebServices
             }
             #endregion
 
+            messages.ForEach(x => x.IsRead = true);
             ChatMessageActiveUser obj = new ChatMessageActiveUser();
             obj.ChatGroupId = chatGroupId;
             obj.ChatGroupName = ChatGroupName;
             obj.ChatMessages = messages;
             obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
-
+            
             return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMessageActiveUser>
             {
                 Object = obj,
