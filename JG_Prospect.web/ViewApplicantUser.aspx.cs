@@ -1358,7 +1358,13 @@ namespace JG_Prospect
             //Check if user has given exam and is above acceptable percentage.
             overAllPercentageScored = AptitudeTestBLL.Instance.GetExamsResultByUserID(this.UserID, ref isAllExamGiven);
 
-            if (isAllExamGiven && overAllPercentageScored > JGApplicationInfo.GetAcceptiblePrecentage()) // if user has finished attempting all available designation exams then check pass or fail result.
+
+            // Changed by yogesh keraliya
+            // Ref: Skype chat 03/23/2018
+            // Now pass percentage is not important.
+            ///if (isAllExamGiven && overAllPercentageScored > JGApplicationInfo.GetAcceptiblePrecentage()) // if user has finished attempting all available designation exams then check pass or fail result.
+
+            if (isAllExamGiven) // if user has finished attempting all available designation exams then check pass or fail result.
             {
                 isAllExamGiven = true;
             }

@@ -1136,7 +1136,7 @@ namespace JG_Prospect
                                 strRedirectUrl = HttpUtility.UrlDecode(Request.Url.Query.Replace("?returnurl=", ""));
                                 Response.Redirect(strRedirectUrl);
                             }
-                            else if (JGSession.UserStatus.HasValue && JGSession.UserStatus.Value == JGConstant.InstallUserStatus.Applicant)
+                            else if (JGSession.UserStatus.HasValue && (JGSession.UserStatus.Value == JGConstant.InstallUserStatus.Applicant || JGSession.UserStatus.Value == JGConstant.InstallUserStatus.ReferralApplicant))
                             {
                                 if (isProfileUpdateRequired)
                                     strRedirectUrl = String.Concat("screening-intermediate.aspx", "?returnurl=/ViewApplicantUser.aspx?Id=", JGSession.LoginUserID);
