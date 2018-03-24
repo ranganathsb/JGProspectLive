@@ -25,10 +25,12 @@ namespace JG_Prospect.Sr_App
         public int loggedInUserId = 0;
         public bool TaskListView = true;
         public int UserDesignationId = 0;
+        //public string RandomGUID;
         #endregion
 
         protected void Page_Load(object sender, EventArgs e)
         {
+           // RandomGUID = SingletonGlobal.Instance.RandomGUID;
             JG_Prospect.App_Code.CommonFunction.AuthenticateUser();
             UserDesignationId = JGSession.DesignationId;
 

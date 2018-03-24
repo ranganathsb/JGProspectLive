@@ -28,6 +28,8 @@ namespace JG_Prospect.WebServices
     [System.Web.Script.Services.ScriptService]
     public class JGWebService : System.Web.Services.WebService
     {
+        public static string TaskUserStatuses { get; set; }
+
         #region '--TaskComments--'
 
         [WebMethod]
@@ -132,6 +134,28 @@ namespace JG_Prospect.WebServices
         #endregion
 
         #region '--TaskApproval--'
+        [WebMethod(EnableSession = true)]
+        public object FreezeFeedbackTask(int EstimatedHours, string Password, string StartDate, string EndDate, int TaskId, bool IsITLead)
+        {
+            string strMessage = "Task Freezed Successfully";
+            bool blSuccess = false;
+
+            if (!Password.Equals(Convert.ToString(Session["loginpassword"])))
+            {
+                strMessage = "Task cannot be freezed as password is not valid.";
+            }
+            else
+            {
+                blSuccess = TaskGeneratorBLL.Instance.UpdateFeedbackTask(EstimatedHours, Password, StartDate, EndDate, TaskId, (JGSession.DesignationId == (byte)JG_Prospect.Common.JGConstant.DesignationType.IT_Lead), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]));
+            }
+
+            var result = new
+            {
+                Message = strMessage,
+                Success = blSuccess
+            };
+            return result;
+        }
 
         [WebMethod(EnableSession = true)]
         public object FreezeTask(string strEstimatedHours, string strTaskApprovalId, string strTaskId, string strPassword)
@@ -548,19 +572,42 @@ namespace JG_Prospect.WebServices
         #endregion
 
         [WebMethod(EnableSession = true)]
-        public String GetCalendarTasksByDate(string StartDate, string EndDate)
+        public String GetCalendarUsersByDate(string Date, string TaskUserStatus, string UserId)
         {
             string strMessage = string.Empty;
-            string userid = "";
+            DataSet dtResult = null;
+         
+            dtResult = TaskGeneratorBLL.Instance.GetCalendarUsersByDate(Date, TaskUserStatuses, UserId);
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                dtResult.DataSetName = "Events";
+                dtResult.Tables[0].TableName = "Users";
+                strMessage = JsonConvert.SerializeObject(dtResult, Formatting.Indented);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public String GetCalendarTasksByDate(string StartDate, string EndDate, string UserId, String DesignationIDs,  string TaskUserStatus)
+        {
+            string strMessage = string.Empty;
             DataSet dtResult = null;
             if (!CommonFunction.CheckAdminAndItLeadMode())
             {
-                int UserId = 0;
-                Int32.TryParse(JGSession.LoginUserID, out UserId);
-                userid = UserId.ToString();
+                int uid = 0;
+                Int32.TryParse(JGSession.LoginUserID, out uid);
+                UserId = uid.ToString();
             }
 
-            dtResult = TaskGeneratorBLL.Instance.GetCalendarTasksByDate(StartDate, EndDate, userid);
+            //Extract Selected Task & User Status
+            TaskUserStatuses = GenerateStatusCodes(TaskUserStatus, false, true);
+
+            dtResult = TaskGeneratorBLL.Instance.GetCalendarTasksByDate(StartDate, EndDate, UserId, DesignationIDs, TaskUserStatuses);
 
             if (dtResult != null && dtResult.Tables.Count > 0)
             {
@@ -693,6 +740,52 @@ namespace JG_Prospect.WebServices
         public object AddNewSubTask(int ParentTaskId, String Title, String URL, String Desc, String Status, String Priority, String DueDate, String TaskHours, String InstallID, String Attachments, String TaskType, String TaskDesignations, int[] TaskAssignedUsers, string TaskLvl, bool blTechTask, Int64? Sequence)
         {
             return SaveSubTask(ParentTaskId, Title, URL, Desc, Status, Priority, DueDate, TaskHours, InstallID, Attachments, TaskType, TaskDesignations, TaskAssignedUsers, TaskLvl, blTechTask, Sequence);
+        }
+
+        [WebMethod]
+        public string GetRootTasks(int ExcludedTaskId)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = null;
+
+            dtResult = TaskGeneratorBLL.Instance.GetRootTasks(ExcludedTaskId);
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                dtResult.DataSetName = "TasksDataSet";
+                dtResult.Tables[0].TableName = "Tasks";
+                System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                doc.LoadXml(dtResult.GetXml());
+                strMessage = JsonConvert.SerializeXmlNode(doc);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
+        }
+
+        [WebMethod]
+        public string GetChildTasks(int ParentTaskId)
+        {
+            string strMessage = string.Empty;
+            DataSet dtResult = null;
+
+            dtResult = TaskGeneratorBLL.Instance.GetChildTasks(ParentTaskId);
+
+            if (dtResult != null && dtResult.Tables.Count > 0)
+            {
+                dtResult.DataSetName = "TasksDataSet";
+                dtResult.Tables[0].TableName = "Tasks";
+                System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+                doc.LoadXml(dtResult.GetXml());
+                strMessage = JsonConvert.SerializeXmlNode(doc);
+            }
+            else
+            {
+                strMessage = String.Empty;
+            }
+            return strMessage;
         }
 
         [WebMethod(EnableSession = true)]
@@ -909,6 +1002,14 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public bool MoveTask(int TaskId, int FromTaskId, int ToTaskId)
+        {
+            Boolean blnReturnResult = TaskGeneratorBLL.Instance.MoveTask(TaskId, FromTaskId, ToTaskId);
+
+            return blnReturnResult;
+        }
+
+        [WebMethod(EnableSession = true)]
         public bool DeleteTaskSubSequence(Int64 TaskId)
         {
             Boolean blnReturnResult = TaskGeneratorBLL.Instance.DeleteTaskSubSequence(TaskId);
@@ -968,7 +1069,7 @@ namespace JG_Prospect.WebServices
             else
             {
                 //Extract Selected Task & User Status
-                TaskUserStatus = GenerateStatusCodes(TaskUserStatus, true);
+                TaskUserStatus = GenerateStatusCodes(TaskUserStatus, true, false);
             }
 
 
@@ -1122,7 +1223,7 @@ namespace JG_Prospect.WebServices
                 UserId = "";
 
             //Extract Selected Task & User Status
-            TaskUserStatus = GenerateStatusCodes(TaskUserStatus, !ForInProgress);
+            TaskUserStatus = GenerateStatusCodes(TaskUserStatus, !ForInProgress, false);
 
             if (ForDashboard)
             {
@@ -1177,7 +1278,7 @@ namespace JG_Prospect.WebServices
             return strMessage;
         }
 
-        private static string GenerateStatusCodes(string TaskUserStatus, bool ForClosedGrid)
+        private static string GenerateStatusCodes(string TaskUserStatus, bool ForClosedGrid, bool ForCalendar)
         {
             string UserStatus = "";
             string TaskStatus = "";
@@ -1195,6 +1296,10 @@ namespace JG_Prospect.WebServices
                         {
                             TaskStatus += value.TrimStart("T".ToCharArray()) + ",";
                         }
+                    }
+                    else if (ForCalendar)
+                    {
+                        TaskStatus += value.TrimStart("T".ToCharArray()) + ",";
                     }
                     else
                     {
@@ -2537,12 +2642,13 @@ namespace JG_Prospect.WebServices
             }
             #endregion
 
+            messages.ForEach(x => x.IsRead = true);
             ChatMessageActiveUser obj = new ChatMessageActiveUser();
             obj.ChatGroupId = chatGroupId;
             obj.ChatGroupName = ChatGroupName;
             obj.ChatMessages = messages;
             obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
-
+            
             return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMessageActiveUser>
             {
                 Object = obj,

@@ -23,7 +23,7 @@ function callWebServiceMethod($http, methodName, filters) {
 
 
 function applyFunctions($scope, $compile, $http, $timeout, $filter) {
-
+    $scope.IsAdmin = false;
     $scope.Tasks = [];
     $scope.ClosedTask = [];
     $scope.ParentTaskDesignations = [];
@@ -70,7 +70,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
     $scope.TotalRecordsCT = 0;
     $scope.HighLightTaskId = 0;
     $scope.BlinkTaskId = 0;
-
+    $scope.CalendarUsers = [];
 
     $scope.TechTasks = [];
     $scope.Techpage = 0;
@@ -79,8 +79,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
     $scope.TechTotalRecords = 0;
 
     $scope.LoadCalendarData = function () {
-
-        
+        //debugger;
         $('#calendar').fullCalendar({
             header: {
                 left: 'prev,next today',
@@ -94,9 +93,10 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
             eventLimit: true, // allow "more" link when too many events
             events: function (start, end, timezone, callback) {
                 $('#loading').fadeIn(300);
-                callWebServiceMethod($http, "GetCalendarTasksByDate", { StartDate: start, EndDate: end }).then(function (data) {
+                callWebServiceMethod($http, "GetCalendarTasksByDate", { StartDate: $scope.StartDate == '' ? start : $scope.StartDate, EndDate: $scope.EndDate == '' ? end : $scope.EndDate, UserId: sequenceScope.UserId, DesignationIDs: sequenceScope.UserSelectedDesigIds, TaskUserStatus: sequenceScope.UserStatus }).then(function (data) {
                     CalendarData = JSON.parse(data.data.d);
                     CalendarData = CalendarData.AllEvents;
+                    
                     var events = [];
                     if (!!CalendarData) {
                         $.map(CalendarData, function (r) {
@@ -113,6 +113,12 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
                         });
                     }
                     callback(events);
+                    //Change View        
+                    if ($scope.StartDate != '' && $scope.StartDate != undefined && $scope.StartDate != 'All') {
+                        $('#calendar').fullCalendar('changeView', 'month', $scope.StartDate == '' ? start : $scope.StartDate);
+                        //$scope.StartDate = $scope.EndDate = '';
+                    }
+                    //Clear Dates after use to prevent apply filters forcefully                    
                     $('#loading').fadeOut(300);
                 });
 
@@ -142,9 +148,7 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
                 $('.tooltiptopicevent').remove();
 
             },
-            dayClick: function () {
-                tooltip.hide()
-            },
+            
             eventResizeStart: function () {
                 tooltip.hide()
             },
@@ -156,7 +160,51 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
             },
             eventRender: function (event, element) {
                 element.find('.fc-title').html(event.title);
-            }
+            },
+            loading: function (bool) {
+                if (!bool) {
+                    //debugger;
+                    if (CalendarUserClickSource == 'PIC')
+                        return false;
+                    $('.fc-week').find('td').each(function (i, el) {  
+                        var sender = $(this);                        
+                        //$(sender).html('Loading...');
+                        $(sender).html('');
+                        var colDate = $(sender).attr('data-date');
+                        callWebServiceMethod($http, "GetCalendarUsersByDate", { Date: colDate, UserId: sequenceScope.UserId, DesignationIDs: sequenceScope.UserSelectedDesigIds, TaskUserStatus: sequenceScope.UserStatus  }).then(function (data) {
+                            $scope.CalendarUsers = JSON.parse(data.data.d);
+                            CalendarUsers = $scope.CalendarUsers.Users;
+                            //debugger;
+                            if (CalendarUsers.length > 0) {
+                                var html = '<div class="calendar-users-container" id="user-container-' + colDate + '">';
+                                $.each(CalendarUsers, function (i, item) {
+                                    html += '<img id="Header1_imgProfile" data-uid="' + item.UserId + '" style="border-radius: 50%;width: 34px;height: 34px;padding:5px" class="img-Profile calendar-user" src="../Employee/ProfilePictures/' + item.Picture + '">';
+                                });
+                                html += '<a href="#/" class="clear-user-filter">Clear All</a></div>';
+                                $(sender).html(html);
+
+                                //Attach Event Handlers
+                                $('#user-container-' + colDate + ' .clear-user-filter').click(function () {
+                                    $('#user-container-' + colDate + ' .calendar-user').removeClass('calendar-users-image-border');
+                                    setCalendarFilterData();
+                                    refreshCalendarTasks();
+                                });
+                                $('#user-container-' + colDate + ' .calendar-user').click(function () {
+                                    CalendarUserClickSource = 'PIC';
+                                    var uid = $(this).attr('data-uid');
+                                    //alert(uid);
+                                    setCalendarFilterData(uid);
+                                    //ShowCalendarTasks();
+                                    $('#calendar').fullCalendar('refetchEvents');
+                                    $('#user-container-' + colDate + ' .calendar-user').removeClass('calendar-users-image-border');
+                                    $(this).addClass('calendar-users-image-border');
+                                });
+                            }                            
+                        });
+                    });                    
+                }
+                //Possibly call you feed loader to add the next feed in line
+            }            
         });
 
     }
@@ -202,6 +250,8 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
             //Set MouseHover Popup
             $('.chosen-choices').mouseenter(function () {
                 var parent = $(this).parent().parent().attr('class');
+                if (parent == undefined || parent == '')
+                    return false;
                 if (parent.indexOf('chosen-div') >= 0) {
                     if ($(this).find('li').length > 1) {
 
@@ -789,3 +839,4 @@ app.controller('AddNewTaskSequenceController', function PostsController($scope, 
 
 });
 var CalendarData;
+var CalendarUserClickSource;

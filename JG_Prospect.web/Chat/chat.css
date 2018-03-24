@@ -781,29 +781,31 @@ div.file-send .dz-preview{}
     right: 35px;
     color: #fff;
     cursor:pointer;
-    font-size: 24px;
+    font-size: 17px;
 }
 .telecom-dashboard-popup .header .fullscreen-btn {
     position: absolute;
-    top: 5px;
-    right: 70px;
+    top: 9px;
+    right: 59px;
     color: #fff;
-    cursor:pointer;
-    font-size: 24px;
+    cursor: pointer;
+    font-size: 17px;
 }
 .telecom-dashboard-popup.fullscreen{left: 0px !important;top: 0px !important;width: 99.7%;height: 100%;}
 .telecom-dashboard-popup.minimize{width: 250px;height:40px;bottom: 0px !important;top: auto !important;left: 10px !important;position:fixed;}
 .telecom-dashboard-popup.minimize .header{min-width: 228px;}
 .telecom-dashboard-popup.minimize .content-area{display:none;}
-.telecom-dashboard-popup .unread-chat-count{background: #e55456;
+.telecom-dashboard-popup .unread-chat-count,.header-msg .row .user-image span.unread-chat-count{
+    background: red;
     color: #fff;
     font-size: 10px;
-    padding: 2px;
+    padding: 2px 5px;
     border-radius: 9px;
     position: absolute;
-    top: 1px;
-    margin-left: 2px;}
-
+    top: 0px;
+    left: 0px;
+    box-shadow: 1px 1px 2px #666;}
+.header-msg .row .caller div .time{font-size: 12px;position: absolute;left: 0px;bottom: -22px;}
 .header-msg .row.bg1, .list .user-row.bg1{background-color:rgba(255,0,0,0.2);}
 .header-msg .row.bg2, .list .user-row.bg2{background-color:rgba(0,255,0,0.2);}
 .header-msg .row.bg5, .list .user-row.bg5{background-color:rgba(0,0,255,0.2);}

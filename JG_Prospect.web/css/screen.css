@@ -462,7 +462,7 @@ form.inline {
 }
 
 .header {
-    min-height: 200px;
+    min-height: 264px;
     position: relative;
     min-width: 600px;
 }
@@ -619,7 +619,7 @@ form.inline {
 .nav {
     background: url(../img/nav-bg.png) repeat-x;
     height: 40px;
-    top: 170px;
+    top: 263px;
     border-radius: 5px;
     position: absolute;
     width: 100%;
@@ -1400,6 +1400,15 @@ ul.left_nav {
     margin: 0 !important;
     border-radius: 5px !important;
     border: #b5b4b4 1px solid !important;
+}
+
+.tasklistSearch {
+    overflow: auto;
+    max-height: 165px;
+    margin-left: 220px !important;
+    width: 75%;
+    position: relative;
+    z-index: 9;
 }
 
 .tasklist {
@@ -2851,7 +2860,7 @@ ul.auto-complete-users {
 }.header-msg .row .contents .top{width:100%;float: left;}
  .header-msg .row .contents .top .name{
     float: left;
-    width: 135px;
+    width: 195px;
     padding: 2px 0;color: #000;
     font-weight: bold;overflow: hidden;
     text-overflow: ellipsis;
@@ -2877,13 +2886,14 @@ ul.auto-complete-users {
     overflow: hidden;
 }
 .header-msg .row .contents .msg-container .counter {float: left;display:none;}
-.header-msg .row .caller{float: left;margin-left:3px;
+.header-msg .row .caller{float: left;margin-left:3px;position:relative;
     /*font-size: 12px;
     width: 88px;*/}
 .header-msg .row .caller div{float: left;font-size: 20px;}
 .header-msg .row .caller .phone{margin-right: 2px;color: #e55456;}
 .header-msg .row .caller .email{margin-right: 2px;color: #000;}
 .header-msg .row .caller .video{color:#e55456;}
+.header-msg .row .caller div.time{position: absolute;font-size: 12px;left: 0;bottom: -22px;}
 /*.chat-container {position: fixed;bottom: 0;right: 0;z-index: 1;}*/
 .chat-container iframe {height: 300px;width: 1000px;}
 

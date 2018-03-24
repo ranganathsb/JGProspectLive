@@ -1933,7 +1933,6 @@
     <Content Include="img\Bar1.png" />
     <Content Include="img\Bar2.png" />
     <Content Include="img\Bar3.png" />
-    <Content Include="img\blue-tick.png" />
     <Content Include="img\btn1.png" />
     <Content Include="img\chosen-sprite%402x.png" />
     <Content Include="img\chosen-sprite.png" />
@@ -1944,6 +1943,8 @@
     <Content Include="img\controls.png" />
     <Content Include="img\dialer.PNG" />
     <Content Include="img\delete.jpg" />
+    <Content Include="img\double-blue-tick.png" />
+    <Content Include="img\double-grey-tick.png" />
     <Content Include="img\Email art header.png" />
     <Content Include="img\Email footer.png" />
     <Content Include="img\excel-icon.png" />
@@ -1953,7 +1954,6 @@
     <Content Include="img\flags24.png" />
     <Content Include="img\folder.png" />
     <Content Include="img\gplus.png" />
-    <Content Include="img\grey-tick.png" />
     <Content Include="img\icon_calendar.gif" />
     <Content Include="img\icon_email.PNG" />
     <Content Include="img\icon_jg.PNG" />
@@ -2059,6 +2059,7 @@
     <Content Include="JGCalender\scripts\calendarscript.js" />
     <Content Include="JrAnnualCalendar.aspx" />
     <Content Include="js\angular\scripts\ClosedTasls.js" />
+    <Content Include="js\angular\scripts\CommonFunctions.js" />
     <Content Include="js\angular\scripts\FrozenTask.js" />
     <Content Include="js\angular\scripts\jgappfactories.js" />
     <Content Include="js\angular\scripts\edituser-angular.js" />

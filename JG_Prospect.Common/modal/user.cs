@@ -509,7 +509,8 @@ namespace JG_Prospect.Common.modal
     {
         SingletonGlobal()
         {
-            RandomGUID = JGConstant.RandomGUID;
+            Random generator = new Random();
+            RandomGUID = generator.Next(0, 999999).ToString("D6");
             ConnectedClients = new List<string>();
         }
 

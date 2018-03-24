@@ -367,7 +367,7 @@
 
         .note-list {
             display: block;
-            /*height: 66px;*/
+            height: 66px !important;
             overflow-x: hidden;
             overflow-y: auto;
             position: absolute;
@@ -561,8 +561,8 @@
         }
     </style>
     <link href="../css/chosen.css" rel="stylesheet" />
-    <link href="../Styles/dd.css" rel="stylesheet" />
-    <link href="../Content/touchPointlogs.css" rel="stylesheet" />
+    <link href="../Styles/dd.css?v=<%#JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>" rel="stylesheet" />
+    <link href="../Content/touchPointlogs.css?v=<%#JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="right_panel" ng-app="JGApp">
@@ -2259,133 +2259,133 @@
                                 </div>
                                 <!-- Nested row starts -->
 
-                                <div class="div-table-nested" ng-class="{hide : StringIsNullOrEmpty(Task.SubSeqTasks)}">
+                            <div class="div-table-nested" ng-class="{hide : StringIsNullOrEmpty(Task.SubSeqTasks)}">
 
-                                    <!-- Body section starts -->
-                                    <div class="div-table-row" ng-repeat="TechTask in correctDataforAngular(Task.SubSeqTasks)" ng-class="{orange : TechTask.Status==='4', yellow: TechTask.Status==='3'}">
-                                        <!-- Sequence# starts -->
-                                        <div class="div-table-col seq-number-fixed">
-                                            <a style="text-decoration: none;" ng-show="!$first" ng-attr-data-taskid="{{TechTask.TaskId}}" href="javascript:void(0);" class="uplink" ng-class="{hide: TechTask.Sequence == null || 0}" ng-attr-data-taskseq="{{TechTask.SubSequence}}" ng-attr-data-taskdesg="{{TechTask.SequenceDesignationId}}" onclick="swapSubSequence(this,true)">&#9650;</a><a style="text-decoration: none;" ng-class="{hide: TechTask.Sequence == null || 0}" ng-attr-data-taskid="{{TechTask.TaskId}}" ng-attr-data-taskseq="{{TechTask.SubSequence}}" class="downlink" ng-attr-data-taskdesg="{{TechTask.SequenceDesignationId}}" href="javascript:void(0);" ng-show="!$last" onclick="swapSubSequence(this,false)">&#9660;</a>
-                                            <a ng-attr-id="autoClick{{Task.TaskId}}" href="javascript:void(0);" class="badge-hyperlink autoclickSeqEdit" ng-attr-data-taskid="{{TechTask.TaskId}}" ng-attr-data-seqdesgid="{{TechTask.SequenceDesignationId}}"><span class="badge badge-error badge-xstext">
-                                                <label ng-attr-id="SeqLabel{{TechTask.TaskId}}">{{getSequenceDisplayText(!TechTask.Sequence?"N.A.":TechTask.Sequence + " (" + toRoman(TechTask.SubSequence)+ ")",TechTask.SequenceDesignationId,TechTask.IsTechTask == "false" ? "SS" : "TT")}}</label></span></a>
-                                            <div class="handle-counter" ng-class="{hide: TechTask.TaskId != HighLightTaskId}" ng-attr-id="divSeq{{TechTask.TaskId}}">
-                                                <input type="text" class="textbox hide" ng-attr-data-original-val='{{ TechTask.Sequence == null && 0 || TechTask.Sequence}}' ng-attr-data-original-desgid="{{TechTask.SequenceDesignationId}}" ng-attr-id='txtSeq{{TechTask.TaskId}}' value="{{  TechTask.Sequence == null && 0 || TechTask.Sequence}}" />
+                                <!-- Body section starts -->
+                                <div class="div-table-row" ng-repeat="TechTask in correctDataforAngular(Task.SubSeqTasks)" ng-class="{orange : TechTask.Status==='4', yellow: TechTask.Status==='3'}">
+                                    <!-- Sequence# starts -->
+                                    <div class="div-table-col seq-number-fixed">
+                                        <a style="text-decoration: none;" ng-show="!$first" ng-attr-data-taskid="{{TechTask.TaskId}}" href="javascript:void(0);" class="uplink" ng-class="{hide: TechTask.Sequence == null || 0}" ng-attr-data-taskseq="{{TechTask.SubSequence}}" ng-attr-data-taskdesg="{{TechTask.SequenceDesignationId}}" onclick="swapSubSequence(this,true)">&#9650;</a><a style="text-decoration: none;" ng-class="{hide: TechTask.Sequence == null || 0}" ng-attr-data-taskid="{{TechTask.TaskId}}" ng-attr-data-taskseq="{{TechTask.SubSequence}}" class="downlink" ng-attr-data-taskdesg="{{TechTask.SequenceDesignationId}}" href="javascript:void(0);" ng-show="!$last" onclick="swapSubSequence(this,false)">&#9660;</a>
+                                        <a ng-attr-id="autoClick{{Task.TaskId}}" href="javascript:void(0);" class="badge-hyperlink autoclickSeqEdit" ng-attr-data-taskid="{{TechTask.TaskId}}" ng-attr-data-seqdesgid="{{TechTask.SequenceDesignationId}}"><span class="badge badge-error badge-xstext">
+                                            <label ng-attr-id="SeqLabel{{TechTask.TaskId}}">{{getSequenceDisplayText(!TechTask.Sequence?"N.A.":TechTask.Sequence + " (" + toRoman(TechTask.SubSequence)+ ")",TechTask.SequenceDesignationId,TechTask.IsTechTask == "false" ? "SS" : "TT")}}</label></span></a>
+                                        <div class="handle-counter" ng-class="{hide: TechTask.TaskId != HighLightTaskId}" ng-attr-id="divSeq{{TechTask.TaskId}}">
+                                            <input type="text" class="textbox hide" ng-attr-data-original-val='{{ TechTask.Sequence == null && 0 || TechTask.Sequence}}' ng-attr-data-original-desgid="{{TechTask.SequenceDesignationId}}" ng-attr-id='txtSeq{{TechTask.TaskId}}' value="{{  TechTask.Sequence == null && 0 || TechTask.Sequence}}" />
 
 
-                                            </div>
                                         </div>
-                                        <!-- Sequence# ends -->
+                                    </div>
+                                    <!-- Sequence# ends -->
 
-                                        <!-- ID# and Designation starts -->
-                                        <div class="div-table-col seq-taskid-fixed">
-                                            <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{TechTask.MainParentId}}&hstid={{TechTask.TaskId}}" oncontextmenu="openCopyBox(this);return false;" data-installid="{{TechTask.InstallId}}" parentdata-highlighter="{{TechTask.MainParentId}}" data-highlighter="{{TechTask.TaskId}}" class="bluetext context-menu" target="_blank">{{ TechTask.InstallId }}</a><br />
-                                            {{getDesignationString(TechTask.TaskDesignation)}}
+                                    <!-- ID# and Designation starts -->
+                                    <div class="div-table-col seq-taskid-fixed">
+                                        <a ng-href="../Sr_App/TaskGenerator.aspx?TaskId={{TechTask.MainParentId}}&hstid={{TechTask.TaskId}}" oncontextmenu="openCopyBox(this);return false;" data-installid="{{TechTask.InstallId}}" parentdata-highlighter="{{TechTask.MainParentId}}" data-highlighter="{{TechTask.TaskId}}" class="bluetext context-menu" target="_blank">{{ TechTask.InstallId }}</a><br />
+                                        {{getDesignationString(TechTask.TaskDesignation)}}
                                         <div ng-attr-id="divSeqDesg{{TechTask.TaskId}}" ng-class="{hide: TechTask.TaskId != HighLightTaskId}">
                                             <select class="textbox hide" ng-attr-data-taskid="{{TechTask.TaskId}}" ng-options="item as item.Name for item in ParentTaskDesignations track by item.Id" ng-model="DesignationSelectModel[$index]">
                                             </select>
                                         </div>
-                                        </div>
-                                        <!-- ID# and Designation ends -->
+                                    </div>
+                                    <!-- ID# and Designation ends -->
 
-                                        <!-- Parent Task & SubTask Title starts -->
-                                        <div class="div-table-col seq-tasktitle-fixed">
-                                            {{ TechTask.ParentTaskTitle }}
+                                    <!-- Parent Task & SubTask Title starts -->
+                                    <div class="div-table-col seq-tasktitle-fixed">
+                                        {{ TechTask.ParentTaskTitle }}
                                         <br />
-                                            {{ TechTask.Title }}
-                                        </div>
-                                        <!-- Parent Task & SubTask Title ends -->
+                                        {{ TechTask.Title }}
+                                    </div>
+                                    <!-- Parent Task & SubTask Title ends -->
 
-                                        <!-- Status & Assigned To starts -->
-                                        <div class="div-table-col seq-taskstatus-fixed chosen-div">
-                                            <select id="drpStatusSubsequenceNested{{TechTask.TaskId}}" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
+                                    <!-- Status & Assigned To starts -->
+                                    <div class="div-table-col seq-taskstatus-fixed chosen-div">
+                                        <select id="drpStatusSubsequenceNested{{TechTask.TaskId}}" onchange="changeTaskStatusClosed(this);" data-highlighter="{{TechTask.TaskId}}">
 
-                                                <option ng-selected="{{TechTask.Status == '4'}}" value="4">InProgress</option>
-                                                <%--<option ng-selected="{{TechTask.Status == '2'}}" style="color: red" value="2">Requested</option>--%>
-                                                <option ng-selected="{{TechTask.Status == '3'}}" style="color: lawngreen" value="3">Request-Assigned</option>
-                                                <option ng-selected="{{TechTask.Status == '1'}}" value="1">Open</option>
-                                                <% if (IsSuperUser)
-                                                    { %>
-                                                <%--<option ng-selected="{{TechTask.Status == '5'}}" value="5">Pending</option>--%>
-                                                <%--<option ng-selected="{{TechTask.Status == '6'}}" value="6">ReOpened</option>  --%>
-                                                <option ng-selected="{{TechTask.Status == '8'}}" value="8">SpecsInProgress-NOT OPEN</option>
-                                                <%} %>
+                                            <option ng-selected="{{TechTask.Status == '4'}}" value="4">InProgress</option>
+                                            <%--<option ng-selected="{{TechTask.Status == '2'}}" style="color: red" value="2">Requested</option>--%>
+                                            <option ng-selected="{{TechTask.Status == '3'}}" style="color: lawngreen" value="3">Request-Assigned</option>
+                                            <option ng-selected="{{TechTask.Status == '1'}}" value="1">Open</option>
+                                            <% if (IsSuperUser)
+                                                { %>
+                                            <%--<option ng-selected="{{TechTask.Status == '5'}}" value="5">Pending</option>--%>
+                                            <%--<option ng-selected="{{TechTask.Status == '6'}}" value="6">ReOpened</option>  --%>
+                                            <option ng-selected="{{TechTask.Status == '8'}}" value="8">SpecsInProgress-NOT OPEN</option>
+                                            <%} %>
 
-                                                <%--<option ng-selected="{{TechTask.Status == '10'}}" value="10">Finished</option>--%>
-                                                <option ng-selected="{{TechTask.Status == '11'}}" value="11">Test Commit</option>
-                                                <% if (IsSuperUser)
-                                                    { %>
-                                                <option ng-selected="{{TechTask.Status == '12'}}" value="12">Live Commit</option>
-                                                <option ng-selected="{{TechTask.Status == '7'}}" value="7">Closed</option>
-                                                <option ng-selected="{{TechTask.Status == '14'}}" value="14">Billed</option>
-                                                <option ng-selected="{{TechTask.Status == '9'}}" value="9">Deleted</option>
-                                                <%} %>
-                                            </select>
-                                            <br />
-                                            <select <%=!IsSuperUser ? "disabled" : ""%> id="ddcbSeqAssignedIA{{TechTask.TaskId}}" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
-                                                <option
-                                                    ng-repeat="item in DesignationAssignUsers"
-                                                    value="{{item.Id}}"
-                                                    label="{{item.FristName}}"
-                                                    class="{{item.CssClass}}">{{item.FristName}}
+                                            <%--<option ng-selected="{{TechTask.Status == '10'}}" value="10">Finished</option>--%>
+                                            <option ng-selected="{{TechTask.Status == '11'}}" value="11">Test Commit</option>
+                                            <% if (IsSuperUser)
+                                                { %>
+                                            <option ng-selected="{{TechTask.Status == '12'}}" value="12">Live Commit</option>
+                                            <option ng-selected="{{TechTask.Status == '7'}}" value="7">Closed</option>
+                                            <option ng-selected="{{TechTask.Status == '14'}}" value="14">Billed</option>
+                                            <option ng-selected="{{TechTask.Status == '9'}}" value="9">Deleted</option>
+                                            <%} %>
+                                        </select>
+                                        <br />
+                                        <select <%=!IsSuperUser ? "disabled" : ""%> id="ddcbSeqAssignedIA{{TechTask.TaskId}}" style="width: 100%;" multiple ng-attr-data-assignedusers="{{TechTask.TaskAssignedUserIDs}}" data-chosen="1" data-placeholder="Select Users" onchange="EditSeqAssignedTaskUsers(this);" data-taskid="{{TechTask.TaskId}}" data-taskstatus="{{TechTask.Status}}">
+                                            <option
+                                                ng-repeat="item in DesignationAssignUsers"
+                                                value="{{item.Id}}"
+                                                label="{{item.FristName}}"
+                                                class="{{item.CssClass}}">{{item.FristName}}
                                                 
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <!-- Status & Assigned To ends -->
-                                        <div class="div-table-col seq-taskduedate-fixed">
-                                            <div class="seqapprovalBoxes" id="SeqApprovalDiv{{TechTask.TaskId}}"
-                                                data-adminstatusupdateddate="{{ TechTask.AdminStatusUpdated | date:'M/d/yyyy' }}"
-                                                data-adminstatusupdatedtime="{{ TechTask.AdminStatusUpdated | date:'shortTime' }}"
-                                                data-adminstatusupdatedtimezone="{{StringIsNullOrEmpty(TechTask.AdminStatusUpdated) ? '' : '(EST)' }}"
-                                                data-adminstatusupdated="{{TechTask.AdminStatusUpdated}}"
-                                                data-admindisplayname="{{StringIsNullOrEmpty(TechTask.AdminUserInstallId)? TechTask.AdminUserId : TechTask.AdminUserInstallId}} - {{TechTask.AdminUserFirstName}} {{TechTask.AdminUserLastName}}"
-                                                data-adminstatususerid="{{TechTask.AdminUserId}}"
-                                                data-leadstatusupdateddate="{{ TechTask.TechLeadStatusUpdated | date:'M/d/yyyy' }}"
-                                                data-leadstatusupdatedtime="{{ TechTask.TechLeadStatusUpdated | date:'shortTime' }}"
-                                                data-leadstatusupdatedtimezone="{{StringIsNullOrEmpty(TechTask.TechLeadStatusUpdated) ? '' : '(EST)' }}"
-                                                data-leadstatusupdated="{{TechTask.ITLeadHours}}"
-                                                data-leadhours="{{TechTask.ITLeadHours}}"
-                                                data-leaddisplayname="{{StringIsNullOrEmpty(TechTask.TechLeadUserInstallId)? TechTask.TechLeadUserId : TechTask.TechLeadUserInstallId}} - {{TechTask.TechLeadUserFirstName}} {{TechTask.TechLeadUserLastName}}"
-                                                data-leaduserid="{{TechTask.TechLeadUserId}}"
-                                                data-userstatusupdateddate="{{ TechTask.OtherUserStatusUpdated | date:'M/d/yyyy' }}"
-                                                data-userstatusupdatedtime="{{ TechTask.OtherUserStatusUpdated | date:'shortTime' }}"
-                                                data-userstatusupdatedtimezone="{{StringIsNullOrEmpty(TechTask.OtherUserStatusUpdated) ? '' : '(EST)' }}"
-                                                data-userstatusupdated="{{TechTask.UserHours}}"
-                                                data-userhours="{{TechTask.UserHours}}"
-                                                data-userdisplayname="{{StringIsNullOrEmpty(TechTask.OtherUserInstallId)? TechTask.OtherUserId : TechTask.OtherUserInstallId}} - {{TechTask.OtherUserFirstName}} {{TechTask.OtherUserLastName}}"
-                                                data-useruserid="{{TechTask.OtherUserId}}">
-                                                <div style="width: 55%; float: left;">
-                                                    <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngUserNested{{TechTask.TaskId}}" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
-                                                    <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkQANested{{TechTask.TaskId}}" class="fz fz-QA" title="QA" />
-                                                    <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkAlphaUserNested{{TechTask.TaskId}}" class="fz fz-Alpha" title="AlphaUser" />
-                                                    <br />
-                                                    <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkBetaUserNested{{TechTask.TaskId}}" class="fz fz-Beta" title="BetaUser" />
-                                                    <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngITLeadNested{{TechTask.TaskId}}" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
-                                                    <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngAdminNested{{TechTask.TaskId}}" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
-                                                </div>
-                                                <div style="width: 43%; float: right;">
-                                                    <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngITLeadMasterNested{{TechTask.TaskId}}" class="fz fz-techlead largecheckbox" title="IT Lead" /><br />
-                                                    <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngAdminMasterNested{{TechTask.TaskId}}" class="fz fz-admin largecheckbox" title="Admin" />
-                                                </div>
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <!-- Status & Assigned To ends -->
+                                    <div class="div-table-col seq-taskduedate-fixed">
+                                        <div class="seqapprovalBoxes" id="SeqApprovalDiv{{TechTask.TaskId}}"
+                                            data-adminstatusupdateddate="{{ TechTask.AdminStatusUpdated | date:'M/d/yyyy' }}"
+                                            data-adminstatusupdatedtime="{{ TechTask.AdminStatusUpdated | date:'shortTime' }}"
+                                            data-adminstatusupdatedtimezone="{{StringIsNullOrEmpty(TechTask.AdminStatusUpdated) ? '' : '(EST)' }}"
+                                            data-adminstatusupdated="{{TechTask.AdminStatusUpdated}}"
+                                            data-admindisplayname="{{StringIsNullOrEmpty(TechTask.AdminUserInstallId)? TechTask.AdminUserId : TechTask.AdminUserInstallId}} - {{TechTask.AdminUserFirstName}} {{TechTask.AdminUserLastName}}"
+                                            data-adminstatususerid="{{TechTask.AdminUserId}}"
+                                            data-leadstatusupdateddate="{{ TechTask.TechLeadStatusUpdated | date:'M/d/yyyy' }}"
+                                            data-leadstatusupdatedtime="{{ TechTask.TechLeadStatusUpdated | date:'shortTime' }}"
+                                            data-leadstatusupdatedtimezone="{{StringIsNullOrEmpty(TechTask.TechLeadStatusUpdated) ? '' : '(EST)' }}"
+                                            data-leadstatusupdated="{{TechTask.ITLeadHours}}"
+                                            data-leadhours="{{TechTask.ITLeadHours}}"
+                                            data-leaddisplayname="{{StringIsNullOrEmpty(TechTask.TechLeadUserInstallId)? TechTask.TechLeadUserId : TechTask.TechLeadUserInstallId}} - {{TechTask.TechLeadUserFirstName}} {{TechTask.TechLeadUserLastName}}"
+                                            data-leaduserid="{{TechTask.TechLeadUserId}}"
+                                            data-userstatusupdateddate="{{ TechTask.OtherUserStatusUpdated | date:'M/d/yyyy' }}"
+                                            data-userstatusupdatedtime="{{ TechTask.OtherUserStatusUpdated | date:'shortTime' }}"
+                                            data-userstatusupdatedtimezone="{{StringIsNullOrEmpty(TechTask.OtherUserStatusUpdated) ? '' : '(EST)' }}"
+                                            data-userstatusupdated="{{TechTask.UserHours}}"
+                                            data-userhours="{{TechTask.UserHours}}"
+                                            data-userdisplayname="{{StringIsNullOrEmpty(TechTask.OtherUserInstallId)? TechTask.OtherUserId : TechTask.OtherUserInstallId}} - {{TechTask.OtherUserFirstName}} {{TechTask.OtherUserLastName}}"
+                                            data-useruserid="{{TechTask.OtherUserId}}">
+                                            <div style="width: 55%; float: left;">
+                                                <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngUserNested{{TechTask.TaskId}}" ng-checked="{{TechTask.OtherUserStatus}}" ng-disabled="{{TechTask.OtherUserStatus}}" class="fz fz-user" title="User" />
+                                                <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkQANested{{TechTask.TaskId}}" class="fz fz-QA" title="QA" />
+                                                <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkAlphaUserNested{{TechTask.TaskId}}" class="fz fz-Alpha" title="AlphaUser" />
+                                                <br />
+                                                <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkBetaUserNested{{TechTask.TaskId}}" class="fz fz-Beta" title="BetaUser" />
+                                                <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngITLeadNested{{TechTask.TaskId}}" ng-checked="{{TechTask.TechLeadStatus}}" ng-disabled="{{TechTask.TechLeadStatus}}" class="fz fz-techlead" title="IT Lead" />
+                                                <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngAdminNested{{TechTask.TaskId}}" ng-checked="{{TechTask.AdminStatus}}" ng-disabled="{{TechTask.AdminStatus}}" class="fz fz-admin" title="Admin" />
                                             </div>
-                                        </div>
-                                        <div class="notes-section" taskid="{{TechTask.TaskId}}" taskMultilevelListId="0" style="position:relative;overflow-x:hidden;overflow-y: auto;min-height: 90px;width: 320px !important;">
-                                            <div class="div-table-col seq-notes-fixed-top sub-task" taskid="{{TechTask.TaskId}}" taskMultilevelListId="0">
-                                                Loading Notes...
-                                            </div>
-                                            <div class="notes-inputs">
-                                                <div class="first-col">
-                                                    <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this)" />
-                                                </div>
-                                                <div class="second-col">
-                                                    <textarea class="note-text textbox"></textarea>
-                                                </div>
+                                            <div style="width: 43%; float: right;">
+                                                <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngITLeadMasterNested{{TechTask.TaskId}}" class="fz fz-techlead largecheckbox" title="IT Lead" /><br />
+                                                <input type="checkbox" data-taskid="{{TechTask.TaskId}}" onchange="openSeqApprovalPopup(this)" id="chkngAdminMasterNested{{TechTask.TaskId}}" class="fz fz-admin largecheckbox" title="Admin" />
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- Body section ends -->
-
+                                    <div class="notes-section" taskid="{{TechTask.TaskId}}" taskmultilevellistid="0" style="position: relative; overflow-x: hidden; overflow-y: auto; min-height: 90px; width: 320px !important;">
+                                        <div class="div-table-col seq-notes-fixed-top sub-task" taskid="{{TechTask.TaskId}}" taskmultilevellistid="0">
+                                            Loading Notes...
+                                        </div>
+                                        <div class="notes-inputs">
+                                            <div class="first-col">
+                                                <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this)" />
+                                            </div>
+                                            <div class="second-col">
+                                                <textarea class="note-text textbox"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                                <!-- Body section ends -->
+
+                            </div>
 
                                 <!-- Nested row ends -->
 
@@ -3019,12 +3019,12 @@
 
         <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
 
-        <script src="../js/angular/scripts/jgapp.js"></script>
-        <script src="../js/angular/scripts/TaskSequence.js"></script>
-        <script src="../js/angular/scripts/FrozenTask.js"></script>
-        <script src="../js/TaskSequencing.js"></script>
-        <script src="../js/jquery.dd.min.js"></script>
-        <script src="../js/angular/scripts/ClosedTasls.js"></script>
+        <script src="../js/angular/scripts/jgapp.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
+        <script src="../js/angular/scripts/TaskSequence.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
+        <script src="../js/angular/scripts/FrozenTask.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
+        <script src="../js/TaskSequencing.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
+        <script src="../js/jquery.dd.min.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
+        <script src="../js/angular/scripts/ClosedTasls.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
 
         <script type="text/javascript">
             function Paging(sender) {
@@ -3496,7 +3496,7 @@
 
         function fillUsers(selector, fillDDL, loader) {
             // 
-            if (selector==undefined)
+            if (selector==undefined || selector == '')
                 return false;
             var did = '';
             if (($('.' + selector).val() != undefined)) {
@@ -3684,7 +3684,7 @@
             function SetAccordingContent() {
                 $("#accordion" ).accordion({
                     collapsible: true
-                });
+                });//                
             }
 
             //$(".context-menu").bind("contextmenu", function () {
@@ -4200,6 +4200,7 @@
                             $(sender).html(tbl);
                         }
                         $(sender).parents('.notes-section').find('.notes-table').attr('onclick','openChat(this, ' + taskid + ',' + 0 + ',\'' + data.Message + '\')');
+
                         LoadTaskMultilevelList(sender,taskid);
                     }
                 });
@@ -4218,7 +4219,7 @@
                 });
             }
 
-            function LoadTaskMultilevelList(sender, taskId){                
+            function LoadTaskMultilevelList(sender, taskId) {
                 ajaxExt({
                     url: '/WebServices/JGWebService.asmx/GetMultiLevelList',
                     type: 'POST',
@@ -4226,47 +4227,52 @@
                     showThrobber: false,
                     throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                     success: function (data, msg) {
-                        var str='';
-                        if(data.Results.length>0)
-                            str='<div class="row">';
-                        $.each(data.Results, function(i){
-                            str += '<div class="row-item">'+
-                                        '<div class="col1">'+ '<a class="label" href"#">'+data.Results[i].Label+'.</a> ' +data.Results[i].Description + '</div>'+
-                                        '<div class="col2">'+
-                                            '<div class="notes-section" taskid="'+data.Results[i].ParentTaskId+'" taskMultilevelListId="'+data.Results[i].Id+'">'+
-                                                '<div class="note-list">'+
-                                                    '<table onclick="openChat(this, '+data.Results[i].ParentTaskId+','+data.Results[i].Id+',\''+data.Results[i].ReceiverIds+'\')" class="notes-table" cellspacing="0" cellpadding="0">';
+                        var str = '';
+                        if (data.Results.length > 0)
+                            str = '<div id="accordionParentTask' + taskId + '"><h2>&nbsp;<strong>Load more</strong></h2><div><div class="row">';
+                        $.each(data.Results, function (i) {
+                            str += '<div class="row-item">' +
+                                '<div class="col1">' + '<a class="label" href"#">' + data.Results[i].Label + '.</a> ' + data.Results[i].Description + '</div>' +
+                                '<div class="col2">' +
+                                '<div class="notes-section" taskid="' + data.Results[i].ParentTaskId + '" taskMultilevelListId="' + data.Results[i].Id + '">' +
+                                '<div class="note-list">' +
+                                '<table onclick="openChat(this, ' + data.Results[i].ParentTaskId + ',' + data.Results[i].Id + ',\'' + data.Results[i].ReceiverIds + '\')" class="notes-table" cellspacing="0" cellpadding="0">';
                             if (data.Results[i].Notes.length > 0) {
                                 var tbl = '';
                                 $(data.Results[i].Notes).each(function (j) {
                                     tbl += '<tr>' +
-                                                '<td>' + data.Results[i].Notes[j].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Results[i].Notes[j].UpdatedByUserID+'">' + data.Results[i].Notes[j].SourceUserInstallId + '</a><br/>'+data.Results[i].Notes[j].ChangeDateTimeFormatted+'</td>' +
-                                                '<td title="' + data.Results[i].Notes[j].LogDescription + '"><div class="note-desc">' + data.Results[i].Notes[j].LogDescription + '</div></td>' +
-                                            '</tr>';
+                                        '<td>' + data.Results[i].Notes[j].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].Notes[j].UpdatedByUserID + '">' + data.Results[i].Notes[j].SourceUserInstallId + '</a><br/>' + data.Results[i].Notes[j].ChangeDateTimeFormatted + '</td>' +
+                                        '<td title="' + data.Results[i].Notes[j].LogDescription + '"><div class="note-desc">' + data.Results[i].Notes[j].LogDescription + '</div></td>' +
+                                        '</tr>';
                                 });
                             } else {
-                                var tbl = '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
-                                           '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
-                                           '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>';
-                            }                            
-                            str += tbl +'</table></div>';// End of note list
-                            str += '<div class="notes-inputs">'+
-                                        '<div class="first-col"><input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this,'+ taskId +','+data.Results[i].Id+')"></div>'+
-                                        '<div class="second-col"><textarea class="note-text textbox"></textarea></div>'+
-                                    '</div>'+
-                                    '</div>'; // End of notes section
+                                var tbl = '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>' +
+                                    '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>' +
+                                    '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>';
+                            }
+                            str += tbl + '</table></div>';// End of note list
+                            str += '<div class="notes-inputs">' +
+                                '<div class="first-col"><input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this,' + taskId + ',' + data.Results[i].Id + ')"></div>' +
+                                '<div class="second-col"><textarea class="note-text textbox"></textarea></div>' +
+                                '</div>' +
+                                '</div>'; // End of notes section
                             str += '</div></div>'; // End of row-item
                         });
-                        if(data.Results.length>0)
-                            str +='</div>';
-                        var container=$(sender).parents('div.div-table-row');
+                        if (data.Results.length > 0)
+                            str += '</div></div></div>';
+                        var container = $(sender).parents('div.div-table-row');
                         $(container).find('div.row').remove();
                         $(container).append(str);
-                        
-                        $('.row-item').each(function(){
+
+                        $('.row-item').each(function () {
                             var h = $(this).find('.col1').height();
                             $(this).find('.col2').css('height', h + 'px');
-                            $(this).find('.note-list').css('height', (h-30) + 'px');
+                            $(this).find('.note-list').css('height', (h - 30) + 'px');
+                        });
+
+                        $("#accordionParentTask" + taskId).accordion({
+                            collapsible: true,
+                            active: false
                         });
                     }
                 });
