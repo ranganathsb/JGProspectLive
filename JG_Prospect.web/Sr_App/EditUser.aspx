@@ -885,6 +885,7 @@
             if (e.keyCode == 13) {
                 $('.btnSearchGridData').trigger('click');
             }
+            e.stopPropagation();
         });
 
         $(document).on('click','.ClearSearch', function(e){
@@ -1358,7 +1359,7 @@
                         <div style="float: right;">
                             <input type="button" class="btnSearc ClearSearch" value="Clear" />
                             <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox txtSearch" placeholder="search users" MaxLength="15" />
-                            <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc btnSearchGridData" OnClick="btnSearchGridData_Click" />
+                            <asp:Button ID="btnSearchGridData" runat="server" Text="Search" class="btnSearc btnSearchGridData" OnClick="btnSearchGridData_Click" />
 
                             Number of Records: 
                             <asp:DropDownList ID="ddlPageSize_grdUsers" runat="server" AutoPostBack="true"
