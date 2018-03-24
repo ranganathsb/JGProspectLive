@@ -717,7 +717,7 @@ namespace JG_Prospect.BLL
                 toEmail = "hr@jmgroveconstruction.com";
                 messageUrl = baseUrl + "Sr_App/edituser.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID + "&auth=" + loginCode;
             }
-            else if (LastUserTouchPoint != null && LoginUserID == UserID) // send email to receiver
+            else if (LastUserTouchPoint != null && LastUserTouchPoint.Count() > 0 && LoginUserID == UserID) // send email to receiver
             {
                 // send email to user
                 var lastSender = getuserdetails(LastUserTouchPoint.First().UpdatedByUserID).Tables[0].Rows[0];

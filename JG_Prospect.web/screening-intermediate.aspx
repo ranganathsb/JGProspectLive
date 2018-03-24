@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/JGApplicant.Master" AutoEventWireup="true" CodeBehind="screening-intermediate.aspx.cs" Inherits="JG_Prospect.screening_intermediate" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div id="screeningPopup" class="modal hide">
