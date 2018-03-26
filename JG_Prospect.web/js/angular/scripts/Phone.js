@@ -22,7 +22,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         var from = $('input.fromDate').val();
         var to = $('input.toDate').val();
         var addedBy = $('div.addedBy select').find('option:selected').val();
-        var sortBY = 'FristName ASC';
+        var sortBY = 'CreatedDateTime DESC';
         if (from == '' || from == null)
             from = '01/01/1999';
         if (to == '' || to == null)
@@ -37,7 +37,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
                 var str = '', options = '';
                 setTimeout(function () {
-                    options = $('.userlist-grid .header-table .designationId').find('select').html();
+                    options = $('.userlist-grid .header-table .user-designations').find('select').html();
                     str = '<select class="" onchange="ChangeDesignation(this)">' + options + '</select>';
                     $('#SalesUserGrid').find('.userDesignations').each(function (i) {
                         var did = $(this).attr('did');
@@ -56,7 +56,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                     });
 
                     options = $('.userlist-grid .header-table .employmentTypes').find('select').html();
-                    str = '<select class="">' + options + '</select>';
+                    str = '<select class="" onchange="updateEmpType(this)">' + options + '</select>';
                     $('#SalesUserGrid').find('.employmentTypes').each(function (i) {
                         var empType = $(this).attr('empType');
                         $(this).html(str);
@@ -73,6 +73,9 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                     $('#SalesUserGrid').find('select').find('option').removeAttr('data-ng-repeat');
                     $('#SalesUserGrid').find('select').find('option').removeAttr('class');
                     $('#SalesUserGrid').find('select').chosen({ width: '100%' });
+
+                    // Loading Notes
+                    ReLoadNotes();
                 }, 100);
             });
     }

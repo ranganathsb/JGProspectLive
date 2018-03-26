@@ -17,14 +17,29 @@ namespace JG_Prospect.Controls
     {
         public List<UserStatus> userStatuses;
         public List<UserDesignation> userDesignations;
+        public List<FilterDesignation> filterDesignations;
         public List<UserAddedBy> userAddedBy;
         public List<UserSource> sources;
         public Dictionary<int, string> employmentTypes;
         public Dictionary<int, string> dsPhoneType;
         protected void Page_Load(object sender, EventArgs e)
         {
+            filterDesignations = new List<FilterDesignation>();
+            DataSet dsDesignation = DesignationBLL.Instance.GetAllDesignationsForHumanResource();
+            if (dsDesignation.Tables.Count > 0)
+            {
+                foreach (DataRow item in dsDesignation.Tables[0].Rows)
+                {
+                    filterDesignations.Add(new FilterDesignation
+                    {
+                        Id = Convert.ToInt32(item["ID"]),
+                        DesignationName = item["DesignationName"].ToString()
+                    });
+                }
+            }
             userStatuses = FullDropDown.GetUserStatuses();
             userDesignations = FullDropDown.GetUserDesignation(null);
+
             userAddedBy = InstallUserBLL.Instance.GeAddedBytUsersFormatted();
             sources = InstallUserBLL.Instance.GetSourceList();
             employmentTypes = Extensions.ToDictionary<EmploymentType>();

@@ -249,12 +249,14 @@ namespace JG_Prospect.Common.modal
     public class SalesUser
     {
         public int Id { get; set; }
+        public string UserInstallId { get; set; }
         public string ProfilePic { get; set; }
         public int DesignationId { get; set; }
         public string Designation { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Status { get; set; }
+        public string StatusName { get; set; }
         public string Source { get; set; }
         public string AddedBy { get; set; }
         public string AddedByInstallId { get; set; }

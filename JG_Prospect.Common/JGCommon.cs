@@ -24,12 +24,35 @@ namespace JG_Prospect.Common
             public int DepartmentId { get; set; }
             public string DesignationCode { get; set; }
         }
+
+        public class FilterDesignation
+        {
+            public int Id { get; set; }
+            public string DesignationName { get; set; }
+        }
         public class UserStatus
         {
             public string Status { get; set; }
             public string StatusValue { get; set; }
         }
 
+        public class TechTask
+        {
+            public int Id { get; set; }
+            public string Title { get; set; }
+        }
+        public class SubTechTask
+        {
+            public int Id { get; set; }
+            public string Title { get; set; }
+        }
+
+        public class Recruiter
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public string optionCss { get; set; }
+        }
         public static string GenerateOTP(int length)
         {
             const string valid = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789011223344556677889900";
