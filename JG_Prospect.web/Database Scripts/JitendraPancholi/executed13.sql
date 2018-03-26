@@ -20,7 +20,7 @@ Go
 -- Description: Add offline user to chatuser table
 -- =============================================    
 /*
-	GetTaskChatMessages 702,0,10
+	GetTaskChatMessages 785,0,2
 */
 CREATE PROCEDURE [dbo].[GetTaskChatMessages]
 	@TaskId int,
@@ -79,10 +79,12 @@ BEGIN
 		Begin
 			Select Distinct S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
 				U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
-				U.UserInstallId, U.Picture, MS.IsRead
+				U.UserInstallId, U.Picture, 
+				Convert(bit,1) As IsRead
+				/*(Select MS.IsRead From ChatMessageReadStatus MS Where MS.ChatMessageId = S.ChatMessageId And S.ReceiverIds like '%'+ Convert(Varchar(12), MS.ReceiverId)+'%') As IsRead*/
 			From #TempChatMessages S With(NoLock) 
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
-			Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
+			--Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
 			--Where S.SortedChatUserIds = @ReceiverIds
 			Order By S.CreatedOn Asc
 		End
@@ -90,10 +92,12 @@ BEGIN
 		Begin
 			Select Distinct S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
 				U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
-				U.UserInstallId, U.Picture, MS.IsRead
+				U.UserInstallId, U.Picture, /*MS.IsRead*/
+				Convert(bit,1) As IsRead
+				/*(Select MS.IsRead From ChatMessageReadStatus MS Where MS.ChatMessageId = S.ChatMessageId And S.ReceiverIds like '%'+ Convert(Varchar(12), MS.ReceiverId)+'%') As IsRead*/
 			From #TempChatMessages S With(NoLock) 
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
-			Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
+			--Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
 			Where /*S.SortedChatUserIds = @ReceiverIds And*/ S.ChatSourceId = @ChatSourceId
 			Order By S.CreatedOn Asc
 		End

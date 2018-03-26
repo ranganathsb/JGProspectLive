@@ -1218,7 +1218,7 @@
                     if (loggedInUserId != data.Results[i].UserId) {
                         var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'double-blue' : 'double-grey';
                         var chatStatus = data.Results[i].OnlineAt == null ? 'offline' : (data.Results[i].Status == '1' ? 'active' : 'idle');
-                        str += '<div title="' + data.Results[i].GroupOrUsername + '" class="user-row bg' + data.Results[i].InstallUserStatusId + '" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',<%=(int)JG_Prospect.Common.ChatSource.UserChat%>,' + data.Results[i].TaskId + ',' + data.Results[i].TaskMultilevelListId + ')">' +
+                        str += '<div title="' + data.Results[i].GroupOrUsername + '" class="user-row bg' + data.Results[i].InstallUserStatusId + '" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',' + (parseInt(data.Results[i].TaskId) > 0 ? 2 : 10) + ',' + data.Results[i].TaskId + ',' + data.Results[i].TaskMultilevelListId + ')">' +
                                     '<div class="profile">' +
                                         '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '" title="">' +
                                         (data.Results[i].UserId == null ? '' :
@@ -1234,17 +1234,17 @@
                                             '<div class="msg">' + data.Results[i].LastMessage.split(':-:')[0] + '</div>' +
                                         '</div>' +
                                     '</div></div>';
-                                }
+                    }
                 });
-                            $('.chat-users-section .list').html(str);
+                $('.chat-users-section .list').html(str);
                 // Bind Top Right Corner user list
-                            str = '';
-                            $.each(data.Results, function (i) {
-                                // remove this(loggedin) user from lits
-                                if (loggedInUserId != data.Results[i].UserId) {
-                                    var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'double-blue' : 'double-grey';
-                                    var chatStatus = data.Results[i].OnlineAt == null ? 'offline' : (data.Results[i].Status == '1' ? 'active' : 'idle');
-                                    str += '<div class="user-row row bg' + data.Results[i].InstallUserStatusId + '" title="' + data.Results[i].GroupOrUsername + '" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',<%=(int)JG_Prospect.Common.ChatSource.UserChat%>,' + data.Results[i].TaskId + ',' + data.Results[i].TaskMultilevelListId + ')">' +
+                str = '';
+                $.each(data.Results, function (i) {
+                    // remove this(loggedin) user from lits
+                    if (loggedInUserId != data.Results[i].UserId) {
+                        var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'double-blue' : 'double-grey';
+                        var chatStatus = data.Results[i].OnlineAt == null ? 'offline' : (data.Results[i].Status == '1' ? 'active' : 'idle');
+                        str += '<div class="user-row row bg' + data.Results[i].InstallUserStatusId + '" title="' + data.Results[i].GroupOrUsername + '" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',' + (parseInt(data.Results[i].TaskId) > 0 ? 2 : 10) + ',' + data.Results[i].TaskId + ',' + data.Results[i].TaskMultilevelListId + ')">' +
                                 '<div class="user-image">' +
                                     '<div class="img">' +
                                         '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '"></div>' +
@@ -1268,100 +1268,100 @@
                                     '<div class="time">' + (data.Results[i].LastMessageAtFormatted == null ? '' : data.Results[i].LastMessageAtFormatted.split(' ')[0]) + '</div>' +
 	                            '</div>' +
                             '</div>';
-                    }
+                                }
                             });
-                if (total > 0) {
-                    $('#hypChat').parent().find('#chatUnreadCount').show();
-                    $('#hypChat').parent().find('#chatUnreadCount').html(total);
-                } else {
-                    $('#hypChat').parent().find('#chatUnreadCount').hide();
-                }
-                $('.header-msg').html(str);
+                            if (total > 0) {
+                                $('#hypChat').parent().find('#chatUnreadCount').show();
+                                $('#hypChat').parent().find('#chatUnreadCount').html(total);
+                            } else {
+                                $('#hypChat').parent().find('#chatUnreadCount').hide();
+                            }
+                            $('.header-msg').html(str);
                 //GetChatUnReadCount();
-            } else {
-                $('.chat-users-section .list').html('<div class="no-user">No one is online!!!</div>');
-                $('.header-msg').html('<div class="no-user">No one is online!!!</div>');
-            }
-            $('.header-msg').hover(function () {
-                var H = ($(window).height() - 100) + 'px';
-                $('.header-msg').css('height', H);
-            }, function () {
-                $('.header-msg').css('height', '158px');
-            });
-        }
-
-        function SetChatMessageRead(data) {
-            var chatGroupId = data.Object;
-            var users = data.Message.split(',');
-            $(users).each(function (i) {
-                $('#' + chatGroupId).find('.chat-row[userid="' + users[i] + '"]').find('.tick img').attr('src', '../img/double-blue-tick.png');
-                $('#' + chatGroupId).find('.chat-row[userid="' + users[i] + '"]').find('.tick').addClass('read');
-            });
-            //GetChatUnReadCount();
-        }
-
-        function InitializeEmoji() {
-            // Initializes and creates emoji set from sprite sheet
-            window.emojiPicker = new EmojiPicker({
-                emojiable_selector: '[data-emojiable=true]',
-                assetsPath: '../Content/emoji-picker/lib/img/',
-                popupButtonClasses: 'fa fa-smile-o'
-            });
-            // Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
-            // You may want to delay this step if you have dynamically created input fields that appear later in the loading process
-            // It can be called as many times as necessary; previously converted input fields will not be converted again
-            window.emojiPicker.discover();
-            $('.emoji-wysiwyg-editor').attr({ 'onkeydown': "sendChat(event, this);", 'onkeyup': 'sendChatClear(event,this);' });
-            // Add @Mention
-            //var existingText = $('input.mention').val();
-            $('.emoji-wysiwyg-editor.mention').parent().find('.mentions').remove();
-            $('.emoji-wysiwyg-editor.mention').parent().find('.mentions-autocomplete-list').remove();
-            $('.emoji-wysiwyg-editor.mention').mentionsInput({
-                onDataRequest: function (mode, query, callback) {
-                    ajaxExt({
-                        url: '/WebServices/JGWebService.asmx/GetUsers',
-                        type: 'POST',
-                        data: '{ keyword: "' + query + '", chatGroupId:"' + userTobeAddedIntoChatGroupId + '" }',
-                        showThrobber: true,
-                        throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
-                        success: function (data, msg) {
-                            responseData = data.Results;
-                            responseData = _.filter(responseData, function (item) {
-                                return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
-                            });
-                            callback.call(this, responseData);
+                        } else {
+                            $('.chat-users-section .list').html('<div class="no-user">No one is online!!!</div>');
+                            $('.header-msg').html('<div class="no-user">No one is online!!!</div>');
                         }
-                    });
-                }
-            });
-            //if (existingText != undefined && existingText != null) {
-            //    $('input.mention').val(existingText);
-            //}
-            var file = $('.file-send');
-            $(file).dropzone({
-                clickable: true,
-                maxFiles: 1,
-                url: "/chat/ChatAttachmentUpload.aspx",
-                thumbnailWidth: 30,
-                thumbnailHeight: 30,
-                init: function () {
-                    dzClosure = this;
-                    this.on("maxfilesexceeded", function (data) {
-                        alert('you are reached maximum attachment upload limit.');
-                    });
-                    // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
-                    this.on("success", function (file, response) {
-                        if (chat.server == undefined)
-                            chat = $.connection.chatHub;
-                        // Success coding goes here
-                        var filename = response.split("^");
-                        var originalName = filename[2];
-                        var displayName = filename[0];
-                        var fileId = filename[1];
-                        var chatId = $('.chat-box').find('#ChatGroupId').val();
-                        var receiverIds = $('.chat-box').find('#ReceiverIds').val();
-                        //$(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-                        chat.server.sendChatMessage(chatId, '', '<%=(int)JG_Prospect.Common.ChatSource.UserChat %>', receiverIds, fileId, null, null);
+                        $('.header-msg').hover(function () {
+                            var H = ($(window).height() - 100) + 'px';
+                            $('.header-msg').css('height', H);
+                        }, function () {
+                            $('.header-msg').css('height', '158px');
+                        });
+                    }
+
+                    function SetChatMessageRead(data) {
+                        var chatGroupId = data.Object;
+                        var users = data.Message.split(',');
+                        $(users).each(function (i) {
+                            $('#' + chatGroupId).find('.chat-row[userid="' + users[i] + '"]').find('.tick img').attr('src', '../img/double-blue-tick.png');
+                            $('#' + chatGroupId).find('.chat-row[userid="' + users[i] + '"]').find('.tick').addClass('read');
+                        });
+                        //GetChatUnReadCount();
+                    }
+
+                    function InitializeEmoji() {
+                        // Initializes and creates emoji set from sprite sheet
+                        window.emojiPicker = new EmojiPicker({
+                            emojiable_selector: '[data-emojiable=true]',
+                            assetsPath: '../Content/emoji-picker/lib/img/',
+                            popupButtonClasses: 'fa fa-smile-o'
+                        });
+                        // Finds all elements with `emojiable_selector` and converts them to rich emoji input fields
+                        // You may want to delay this step if you have dynamically created input fields that appear later in the loading process
+                        // It can be called as many times as necessary; previously converted input fields will not be converted again
+                        window.emojiPicker.discover();
+                        $('.emoji-wysiwyg-editor').attr({ 'onkeydown': "sendChat(event, this);", 'onkeyup': 'sendChatClear(event,this);' });
+                        // Add @Mention
+                        //var existingText = $('input.mention').val();
+                        $('.emoji-wysiwyg-editor.mention').parent().find('.mentions').remove();
+                        $('.emoji-wysiwyg-editor.mention').parent().find('.mentions-autocomplete-list').remove();
+                        $('.emoji-wysiwyg-editor.mention').mentionsInput({
+                            onDataRequest: function (mode, query, callback) {
+                                ajaxExt({
+                                    url: '/WebServices/JGWebService.asmx/GetUsers',
+                                    type: 'POST',
+                                    data: '{ keyword: "' + query + '", chatGroupId:"' + userTobeAddedIntoChatGroupId + '" }',
+                                    showThrobber: true,
+                                    throbberPosition: { my: "left center", at: "right center", of: $(this), offset: "5 0" },
+                                    success: function (data, msg) {
+                                        responseData = data.Results;
+                                        responseData = _.filter(responseData, function (item) {
+                                            return item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
+                                        });
+                                        callback.call(this, responseData);
+                                    }
+                                });
+                            }
+                        });
+                        //if (existingText != undefined && existingText != null) {
+                        //    $('input.mention').val(existingText);
+                        //}
+                        var file = $('.file-send');
+                        $(file).dropzone({
+                            clickable: true,
+                            maxFiles: 1,
+                            url: "/chat/ChatAttachmentUpload.aspx",
+                            thumbnailWidth: 30,
+                            thumbnailHeight: 30,
+                            init: function () {
+                                dzClosure = this;
+                                this.on("maxfilesexceeded", function (data) {
+                                    alert('you are reached maximum attachment upload limit.');
+                                });
+                                // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
+                                this.on("success", function (file, response) {
+                                    if (chat.server == undefined)
+                                        chat = $.connection.chatHub;
+                                    // Success coding goes here
+                                    var filename = response.split("^");
+                                    var originalName = filename[2];
+                                    var displayName = filename[0];
+                                    var fileId = filename[1];
+                                    var chatId = $('.chat-box').find('#ChatGroupId').val();
+                                    var receiverIds = $('.chat-box').find('#ReceiverIds').val();
+                                    //$(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
+                                    chat.server.sendChatMessage(chatId, '', '<%=(int)JG_Prospect.Common.ChatSource.UserChat %>', receiverIds, fileId, null, null);
                     });
                     this.on("complete", function (file) {
                         this.removeFile(file);
