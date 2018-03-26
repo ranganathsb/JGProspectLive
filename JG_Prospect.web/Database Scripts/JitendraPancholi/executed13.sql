@@ -20,7 +20,7 @@ Go
 -- Description: Add offline user to chatuser table
 -- =============================================    
 /*
-	GetTaskChatMessages 42,0,10
+	GetTaskChatMessages 702,0,10
 */
 CREATE PROCEDURE [dbo].[GetTaskChatMessages]
 	@TaskId int,
@@ -28,6 +28,7 @@ CREATE PROCEDURE [dbo].[GetTaskChatMessages]
 	@ChatSourceId Int = 0
 AS    
 BEGIN
+	Set @ChatSourceId = 2 -- Source is 2 for Tasks
 	IF @TaskMultilevelListId IS NULL Begin Set @TaskMultilevelListId = 0 End
 	
 	IF OBJECT_ID('tempdb..#TempChatMessages') IS NOT NULL DROP TABLE #TempChatMessages  
@@ -76,7 +77,7 @@ BEGIN
 	--Select * From #TempChatMessages S Where S.SortedChatUserIds = @ReceiverIds And S.ChatSourceId = @ChatSourceId
 	If ISNULL(@ChatSourceId,'0') = '0'
 		Begin
-			Select S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
+			Select Distinct S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
 				U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
 				U.UserInstallId, U.Picture, MS.IsRead
 			From #TempChatMessages S With(NoLock) 
@@ -87,7 +88,7 @@ BEGIN
 		End
 	Else
 		Begin
-			Select S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
+			Select Distinct S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
 				U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
 				U.UserInstallId, U.Picture, MS.IsRead
 			From #TempChatMessages S With(NoLock) 

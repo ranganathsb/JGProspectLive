@@ -2631,14 +2631,14 @@ namespace JG_Prospect.WebServices
                 #endregion
                 DataSet taskDetail = TaskGeneratorBLL.Instance.GetTaskDetails(taskId);
                 ChatGroupName = taskId == 0 ? string.Join("-", chatUsers.Select(m => m.GroupOrUsername).ToList())
-                                : taskDetail.Tables[0].Rows[0]["Title"].ToString() + "(#" + taskId + ")";
+                                : taskDetail.Tables[6].Rows[0]["TaskTitle"].ToString();
 
                 // Check if ChatGroupId is already exists
                 var existing = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
                 if (existing != null)
                 {
                     ChatGroupName = taskId == 0 ? existing.ChatGroupName
-                                    : taskDetail.Tables[0].Rows[0]["Title"].ToString() + "(#" + taskId + ")";
+                                    : taskDetail.Tables[6].Rows[0]["TaskTitle"].ToString();
                     existing.ChatUsers.Where(m => userIds.Contains(m.UserId.Value)).ToList().ForEach(m => m.ChatClosed = false);
 
                     SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId)

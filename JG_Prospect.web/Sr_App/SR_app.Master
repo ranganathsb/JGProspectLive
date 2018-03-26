@@ -11,7 +11,7 @@
                             "://" + HttpContext.Current.Request.Url.Authority +
                             HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
 
- %>
+%>
 <!DOCTYPE html>
 <html data-ng-app="JGApp">
 <head id="Head1" runat="server">
@@ -23,7 +23,7 @@
     <%--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">--%>
     <%--<link href="../css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />--%>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css" integrity="sha384-v2Tw72dyUXeU3y4aM2Y0tBJQkGfplr39mxZqlTBDUZAb9BGoC40+rdFCG0m10lXk" crossorigin="anonymous">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/fontawesome.css" integrity="sha384-q3jl8XQu1OpdLgGFvNRnPdj5VIlCvgsDQTQB6owSOHWlAurxul7f+JpUOVdAiJ5P" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/fontawesome.css" integrity="sha384-q3jl8XQu1OpdLgGFvNRnPdj5VIlCvgsDQTQB6owSOHWlAurxul7f+JpUOVdAiJ5P" crossorigin="anonymous">
     <link href="../js/mention/recommended-styles.css?v=<%#RandomGUID %>" rel="stylesheet" />
     <%--<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/redmond/jquery-ui.css" />--%>
 
@@ -33,7 +33,7 @@
 
     <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />--%>
     <link href="../css/jquery-ui.css" rel="stylesheet" />
-    
+
     <link href="../Content/paging.css?v=<%# JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>" rel="stylesheet" />
 
     <script src="../Scripts/jquery-2.2.4.min.js"></script>
@@ -921,7 +921,7 @@
         $.connection.hub.start().done(function () {
             console.log('started...');
             GetOnlineUsers();
-            GetChatUnReadCount();
+            //GetChatUnReadCount();
             //chat.server.getOnlineChatUsers();
             // logic to open chat popup as per query string
             var RcvrID = getUrlVars()["RcvrID"];
@@ -1019,7 +1019,8 @@
                     chat.server.setChatMessageRead(id);
                 }
             }
-            GetChatUnReadCount();
+            GetOnlineUsers();
+            //GetChatUnReadCount();
         };
         chat.client.addUserIntoChatGroupCallback = function (data) {
             $('.emoji-wysiwyg-editor').html('');
@@ -1196,9 +1197,9 @@
                         //$('.chat-box .chats').scrollTop(d.prop("scrollHeight"));
                         $('.chat-box#' + id + ' .chats').animate({ scrollTop: $('.chat-box#' + id + ' .chats').prop("scrollHeight") }, 500);
 
-                        bindChatUsers(data);
+                        GetOnlineUsers();
                         InitializeEmoji();
-                        GetPhoneScripts(sender);                        
+                        GetPhoneScripts(sender);
                     }
                 }
             });
@@ -1206,50 +1207,54 @@
 
         function bindChatUsers(data) {
             data.Results = data.Object.ActiveUsers;
+            var total = 0;
             if (data.Results.length > 1) {
                 // Get this(logged in user) from Cookie
                 var loggedInUserId = getCookie('<%=JG_Prospect.Common.Cookies.UserId%>');
                 var str = '';
                 $.each(data.Results, function (i) {
+                    total += data.Results[i].UnreadCount;
                     // remove this(loggedin) user from lits
                     if (loggedInUserId != data.Results[i].UserId) {
                         var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'double-blue' : 'double-grey';
                         var chatStatus = data.Results[i].OnlineAt == null ? 'offline' : (data.Results[i].Status == '1' ? 'active' : 'idle');
-                        str += '<div title="' + data.Results[i].GroupOrUsername + '" class="user-row bg' + data.Results[i].InstallUserStatusId + '" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',<%=(int)JG_Prospect.Common.ChatSource.UserChat%>,0,0)">' +
+                        str += '<div title="' + data.Results[i].GroupOrUsername + '" class="user-row bg' + data.Results[i].InstallUserStatusId + '" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',<%=(int)JG_Prospect.Common.ChatSource.UserChat%>,' + data.Results[i].TaskId + ',' + data.Results[i].TaskMultilevelListId + ')">' +
                                     '<div class="profile">' +
                                         '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '" title="">' +
                                         (data.Results[i].UserId == null ? '' :
                                         '<div class="status-icon ' + chatStatus + '"></div>' +
                                         '<div class="installid"><a href="#">' + data.Results[i].UserInstallId + '</a></div>') +
-                                    '</div>' +
-                                    '<div class="contents" online-at="' + data.Results[i].OnlineAtFormatted + '">' +
-                                        '<div class="top"><div class="name">' + data.Results[i].GroupOrUsername + ' - <a href="#" title="<%=baseUrl%>Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '">' + data.Results[i].UserInstallId + '</a></div><div class="time">' + (data.Results[i].LastMessageAtFormatted == null ? '' : data.Results[i].LastMessageAtFormatted.split(' ')[0]) + '</div></div>' +
+                                        (parseInt(data.Results[i].UnreadCount) > 0 ? '<span class="unread-chat-count">' + data.Results[i].UnreadCount + '</span>' : '') +
+                        '</div>' +
+                        '<div class="contents" online-at="' + data.Results[i].OnlineAtFormatted + '">' +
+                            '<div class="top"><div class="name">' + (data.Results[i].GroupNameAnchor == '' ? data.Results[i].GroupOrUsername : data.Results[i].GroupNameAnchor) + ' - <a href="#" title="<%=baseUrl%>Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '">' + data.Results[i].UserInstallId + '</a></div><div class="time">' + (data.Results[i].LastMessageAtFormatted == null ? '' : data.Results[i].LastMessageAtFormatted.split(' ')[0]) + '</div></div>' +
                                         '<div class="msg-container">' +
                                             (data.Results[i].LastMessageAtFormatted == null ? '' :
                                             '<div class="tick"><img src="../img/' + clr + '-tick.png"></div>') +
                                             '<div class="msg">' + data.Results[i].LastMessage.split(':-:')[0] + '</div>' +
                                         '</div>' +
                                     '</div></div>';
-                    }
+                                }
                 });
-                $('.chat-users-section .list').html(str);
+                            $('.chat-users-section .list').html(str);
                 // Bind Top Right Corner user list
-                str = '';
-                $.each(data.Results, function (i) {
-                    // remove this(loggedin) user from lits
-                    if (loggedInUserId != data.Results[i].UserId) {
-                        var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'double-blue' : 'double-grey';
-                        var chatStatus = data.Results[i].OnlineAt == null ? 'offline' : (data.Results[i].Status == '1' ? 'active' : 'idle');
-                        str += '<div class="user-row row bg' + data.Results[i].InstallUserStatusId + '" title="' + data.Results[i].GroupOrUsername + '" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',<%=(int)JG_Prospect.Common.ChatSource.UserChat%>,0,0)">' +
+                            str = '';
+                            $.each(data.Results, function (i) {
+                                // remove this(loggedin) user from lits
+                                if (loggedInUserId != data.Results[i].UserId) {
+                                    var clr = data.Results[i].IsRead.toString().toLowerCase() == 'true' ? 'double-blue' : 'double-grey';
+                                    var chatStatus = data.Results[i].OnlineAt == null ? 'offline' : (data.Results[i].Status == '1' ? 'active' : 'idle');
+                                    str += '<div class="user-row row bg' + data.Results[i].InstallUserStatusId + '" title="' + data.Results[i].GroupOrUsername + '" uid="' + data.Results[i].UserId + '" onclick="InitiateChat(this, \'' + data.Results[i].ReceiverIds + '\', \'' + (data.Results[i].UserId == null ? data.Results[i].ChatGroupId : null) + '\',<%=(int)JG_Prospect.Common.ChatSource.UserChat%>,' + data.Results[i].TaskId + ',' + data.Results[i].TaskMultilevelListId + ')">' +
                                 '<div class="user-image">' +
                                     '<div class="img">' +
                                         '<img src="<%=baseUrl %>' + data.Results[i].ProfilePic + '"></div>' +
                                     (data.Results[i].UserId == null ? '' :
 		                            '<div class="status-icon ' + chatStatus + '"></div>' +
 		                            '<div class="installid"><a href="#">' + data.Results[i].UserInstallId + '</a></div>') +
+                                    ((data.Results[i].UnreadCount) > 0 ? '<span class="unread-chat-count">' + data.Results[i].UnreadCount + '</span>' : '') +
                                 '</div>' +
 	                            '<div class="contents">' +
-		                            '<div class="top"><div class="name">' + data.Results[i].GroupOrUsername + ' - <a href="#" title="<%=baseUrl%>Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '">' + data.Results[i].UserInstallId + '</a></div></div>' +
+		                            '<div class="top"><div class="name">' + (data.Results[i].GroupNameAnchor == '' ? data.Results[i].GroupOrUsername : data.Results[i].GroupNameAnchor) + ' - <a href="#" title="<%=baseUrl%>Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '">' + data.Results[i].UserInstallId + '</a></div></div>' +
 		                            '<div class="msg-container">' +
                                         (data.Results[i].LastMessageAtFormatted == null ? '' :
 			                            '<div class="tick"><img src="../img/' + clr + '-tick.png"></div>') +
@@ -1264,9 +1269,15 @@
 	                            '</div>' +
                             '</div>';
                     }
-                });
+                            });
+                if (total > 0) {
+                    $('#hypChat').parent().find('#chatUnreadCount').show();
+                    $('#hypChat').parent().find('#chatUnreadCount').html(total);
+                } else {
+                    $('#hypChat').parent().find('#chatUnreadCount').hide();
+                }
                 $('.header-msg').html(str);
-                GetChatUnReadCount();
+                //GetChatUnReadCount();
             } else {
                 $('.chat-users-section .list').html('<div class="no-user">No one is online!!!</div>');
                 $('.header-msg').html('<div class="no-user">No one is online!!!</div>');
@@ -1286,7 +1297,7 @@
                 $('#' + chatGroupId).find('.chat-row[userid="' + users[i] + '"]').find('.tick img').attr('src', '../img/double-blue-tick.png');
                 $('#' + chatGroupId).find('.chat-row[userid="' + users[i] + '"]').find('.tick').addClass('read');
             });
-            GetChatUnReadCount();
+            //GetChatUnReadCount();
         }
 
         function InitializeEmoji() {
@@ -1428,7 +1439,7 @@
             $('.telecom-dashboard-popup').css({ 'left': ((sW / 2) - (pW / 2)) + 'px', 'top': ((sH / 2) - (pH / 2)) + 'px' });
             window.scrollTo(0, 0);
         }
-
+        /*
         function GetChatUnReadCount() {
             ajaxExt({
                 url: '/WebServices/JGWebService.asmx/GetChatUnReadCount',
@@ -1464,7 +1475,7 @@
                 }
             });
         }
-
+        */
         function GetPhoneScripts(sender) {
             ajaxExt({
                 url: '/WebServices/JGWebService.asmx/GetPhoneScripts',
@@ -1532,7 +1543,7 @@
                         Object: { ActiveUsers: data.Results }
                     };
                     bindChatUsers(obj);
-                    GetChatUnReadCount();
+                    //GetChatUnReadCount();
                     GetPhoneScripts(sender);
                     switch (box) {
                         case 'email':
@@ -1562,7 +1573,7 @@
 
         function showhideScript(sender) {
             var id = $(sender).attr('id');
-            if ($(sender).parent().find('.desc#'+id).is(':visible')) {
+            if ($(sender).parent().find('.desc#' + id).is(':visible')) {
                 $(sender).parent().find('.desc#' + id).slideUp();
             } else {
                 $(sender).parent().find('.desc#' + id).slideDown();

@@ -334,6 +334,10 @@ namespace JG_Prospect.Common.modal
 
         public string GroupOrUsername { get; set; }
         public int? InstallUserStatusId { get; set; } // 
+        public int? TaskId { get; set; }
+        public int? TaskMultilevelListId { get; set; }
+        public int UnreadCount { get; set; }
+        public string GroupNameAnchor { get; set; }
     }
 
     public class ChatUnReadCount

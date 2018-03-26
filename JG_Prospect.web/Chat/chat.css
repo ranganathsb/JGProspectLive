@@ -817,3 +817,5 @@ div.file-send .dz-preview{}
 .header-msg .row.bg6:hover, .list .user-row.bg6:hover{background-color:rgba(255,255,0,0.4);}
 .header-msg .row.bg10:hover, .list .user-row.bg10:hover{background-color:rgba(255,0,255,0.4);}
 .dialer-section .header .group-name{width:85%!important;}
+.group-name a {color: #09f;}
+.group-name a:hover {color: #0386dd;}

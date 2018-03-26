@@ -166,8 +166,8 @@ Go
 -- =============================================      
 /*  
 	GetChatUnReadCount 1152
-	GetChatUnReadCount 901,10
-	GetChatUnReadCount 3797
+	GetChatUnReadCount 901,2
+	GetChatUnReadCount 901
 */  
 Create PROCEDURE GetChatUnReadCount
 	@UserId Int,
@@ -354,7 +354,7 @@ BEGIN
 	begin
 		Select @ChatGroupId = NEWID ()  
 	end
-	Exec SaveChatMessage  @TouchPointSource, @ChatGroupId, @loginUserID, @changeLog, null, @userID
+	Exec SaveChatMessage  @TouchPointSource, @ChatGroupId, @loginUserID, @changeLog, null, @userID,0,0
 
 	Select IDENT_CURRENT('ChatMessage') as UserTouchPointLogID
 END
