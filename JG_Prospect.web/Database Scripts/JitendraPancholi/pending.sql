@@ -454,5 +454,4 @@ ORDER BY CASE WHEN @SortExpression = 'Id ASC' THEN Id END ASC,
  --inner join tblinstallusers I on I.id=n.userid    
  where isnull(UserId,0)>0 and LogDescription like 'Note :%'    
  order by ChangeDateTime desc    
-END  
-  
+END 

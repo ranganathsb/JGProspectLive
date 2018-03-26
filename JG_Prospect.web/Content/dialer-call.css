@@ -193,7 +193,7 @@ div#wrapper {
  .userlist-calling-grid tbody{background: #f57575;}
  .userlist-calling-grid table.header-table{width:100%;border-spacing: 0px;}
  .userlist-calling-grid table.header-table thead tr{background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;}
- .userlist-calling-grid table.header-table tr th, td{width:10%;padding: 10px;border:1px solid #eee;text-align: left;vertical-align:top;}
+ .userlist-calling-grid table.header-table tr th, .userlist-calling-grid table.header-table tr td{width:10%;padding: 10px;border:1px solid #eee;text-align: left;vertical-align:top;}
  .dd .ddChild li {width: 95% !important;}
  .ddOutOfVision {
     position: relative;
@@ -308,6 +308,6 @@ div#wrapper {
 .play-stop span:nth-child(1){color: #A33E3F;}
 .play-stop span:nth-child(2){}
 
-.script-data .tab-1 .title, .script-data .tab-1 .title{display:none;}
+.script-data .tab-1 .title, .script-data .tab-1 .title{}
 .script-data .tab-1{}
 .script-data .tab-2{display:none;}
