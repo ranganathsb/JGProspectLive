@@ -32,7 +32,7 @@
     overflow: hidden;
     width: 120px;
 }
- .userlist-grid table.user-table tr td .userEmails, .userlist-grid table.user-table tr td .userPhones{/*width:210px;*/margin-bottom:3px;}
+ .userlist-grid table.user-table tr td .userEmails, .userlist-grid table.user-table tr td .userPhones{width:210px;margin-bottom:3px;}
  .userlist-grid table.user-table tr td .status{width:150px;}
 .userlist-grid table.user-table tr td .userDesignations{width:110px;}
 .userlist-grid table.user-table tr td .phoneTypes{width:83px;}
@@ -143,3 +143,8 @@
 .Applicant {background-color: #FFFF00;}
 .InstallProspect {background-color: #FFA500;}
 .flagbg{background-image:url(/img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px;}
+.userlist-grid tbody span.pazeSize {color: #15cb00;}
+.userlist-grid tbody span.totalRecords {color: #cc0c0c;}
+.userlist-grid .header-table .grid-overview-totalrecords{    float: left;}
+.userlist-grid .header-table .grid-overview-records-perpage{    float: right;}
+.userlist-grid .header-table .grid-overview-records-perpage > div {width: 60px !important;}

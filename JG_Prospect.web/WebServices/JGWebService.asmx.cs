@@ -2901,7 +2901,7 @@ namespace JG_Prospect.WebServices
                         salesUsers.Add(new SalesUser
                         {
                             Id = Convert.ToInt32(dr["Id"].ToString()),
-                            UserInstallId=dr["UserInstallId"].ToString(),
+                            UserInstallId = dr["UserInstallId"].ToString(),
                             AddedOnFormatted = dr["CreatedDateTime"].ToString(),
                             AddedBy = dr["AddedBy"].ToString(),
                             AddedByInstallId = dr["AddedByUserInstallId"].ToString(),
@@ -2921,6 +2921,12 @@ namespace JG_Prospect.WebServices
                             Source = dr["Source"].ToString(),
                             Status = Convert.ToInt32(dr["Status"].ToString()),
                             StatusName = ((InstallUserStatus)Convert.ToInt32(dr["Status"].ToString())).ToEnumDescription(),
+                            StatusReason = dr["StatusReason"].ToString(),
+                            RejectDetail = dr["RejectDetail"].ToString(),
+                            RejectedByUserName = dr["RejectedByUserName"].ToString(),
+                            RejectedByUserInstallId = dr["RejectedByUserInstallId"].ToString(),
+                            RejectedUserId = string.IsNullOrEmpty(dr["RejectedUserId"].ToString()) ? null : (int?)Convert.ToInt32(dr["RejectedUserId"].ToString()),
+                            InterviewDetail = dr["InterviewDetail"].ToString(),
                             Zip = dr["Zip"].ToString()
                         });
                     }

@@ -15,6 +15,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
     $scope.Paging = function (sender) {
         $('#PageIndex').val(paging.currentPage);
+        paging.pageSize = $('.recordsPerPage').find('option:selected').val();
         var keyword = $('.userKeyword').val().trim();
         var status = $('div.user-status select').find('option:selected').val();
         var designationId = $('div.designationId select').find('option:selected').val();
@@ -23,7 +24,7 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
         var to = $('input.toDate').val();
         var addedBy = $('div.addedBy select').find('option:selected').val();
         var sortBY = 'CreatedDateTime DESC';
-        if (from == '' || from == null)
+        if (from == '' || from == null || from.toLowerCase() == 'all')
             from = '01/01/1999';
         if (to == '' || to == null)
             to = '01/01/2080';
@@ -76,6 +77,11 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
 
                     // Loading Notes
                     ReLoadNotes();
+
+                    //
+                    $('.header-table .pageNumber').html(paging.currentPage+1);
+                    $('.header-table .pazeSize').html(paging.pageSize);
+                    $('.header-table .totalRecords').html($scope.UserList.TotalResults);
                 }, 100);
             });
     }

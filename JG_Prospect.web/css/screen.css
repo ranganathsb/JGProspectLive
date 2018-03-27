@@ -2880,10 +2880,10 @@ ul.auto-complete-users {
 .header-msg .row .contents .msg-container .tick {    float: left;
 }
 .header-msg .row .contents .msg-container .msg {float: left;
-    width: 160px;
+    width: 170px;
     text-overflow: ellipsis;
     white-space: nowrap;    color: #666;
-    overflow: hidden;
+    overflow: hidden;height:15px;
 }
 .header-msg .row .contents .msg-container .counter {float: left;display:none;}
 .header-msg .row .caller{float: left;margin-left:3px;position:relative;

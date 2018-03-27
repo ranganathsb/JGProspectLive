@@ -116,23 +116,29 @@
                         </select>
                     </div>
                 </td>
-                <td>
-                    <input type="checkbox" value="all" name="period" /><span>All</span>
-                    <input type="checkbox" value="all" name="period" /><span>1 Year</span>
-                    <input type="checkbox" value="all" name="period" /><span>Quarter (3 months)</span>
-                    <span>From :<span>*</span><input type="text" class="fromDate" />
+                <td class="search-duration">
+                    <input type="radio" value="all" name="period" checked="checked" /><span>All</span>
+                    <input type="radio" value="1y" name="period" /><span>1 Year</span>
+                    <input type="radio" value="1q" name="period" /><span>Quarter (3 months)</span>
+                    <input type="radio" value="1m" name="period" /><span>1 Month</span>
+                    <input type="radio" value="2w" name="period" /><span>Two Weeks (Pay Period)</span>
+                    <span>From :<span>*</span><input type="text" class="fromDate" value="All" />
                     </span>
-                    <span>To :<span>*</span><input type="text" class="toDate" />
-                    </span>
-                    <input type="checkbox" value="all" name="period" /><span>1 Month</span>
-                    <input type="checkbox" value="all" name="period" /><span>Two Weeks (Pay Period)</span>
-                    <span>
-                        <input type="text" />
-                    </span>
+                    <span>To :<span>*</span><input type="text" class="toDate" value="<%=DateTime.Now.ToShortDateString() %>" />
+                    </span>                    
                 </td>
             </tr>
             <tr>
-                <td colspan="4"></td>
+                <td colspan="4">
+                    <div class="grid-overview-totalrecords"><span class="pageNumber"></span><span> to </span><span class="pazeSize"></span><span> of </span><span class="totalRecords"></span></div>
+                    <div class="grid-overview-records-perpage">Number of Records: <select class="recordsPerPage">
+                        <option value="10">10</option>
+                        <option value="20" selected="selected">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        </select>
+                    </div>
+                </td>
                 <td>
                     <input type="text" class="userKeyword" />
                     <input type="button" value="Search" class="search-user" onclick="searchUsers(this)" />
@@ -177,7 +183,7 @@
                     <div>
                         <img src="<%=baseUrl %>Employee/ProfilePictures/{{User.ProfilePic}}" />
                     </div>
-                    <div><a href="/Sr_App/ViewSalesUser.aspx?id={{User.ProfilePic}}" target="_blank">Edit</a></div>
+                    <div><a href="/Sr_App/ViewSalesUser.aspx?id={{User.Id}}" target="_blank">Edit</a></div>
                 </td>
                 <td>
                     <div><a target="_blank" href="<%=baseUrl %>Sr_App/ViewSalesUser.aspx?id={{User.Id}}">{{User.Id}}</a></div>
@@ -186,6 +192,14 @@
                 </td>
                 <td>
                     <div class="status" stid="{{User.Status}}" uid="{{User.Id}}"></div>
+                    <div class="reason">
+                        <span>{{User.StatusReason}}</span>
+                        <span>{{User.RejectDetail}}</span>
+                        <span>{{User.RejectedByUserName}}</span>
+                        <a ng-if="User.RejectedByUserInstallId != ''" href="/Sr_App/ViewSalesUser.aspx?id={{User.RejectedUserId}}">-{{User.RejectedByUserInstallId}}</a>
+                        <span ng-if="User.InterviewDetail != ''" style="color:red">{{User.InterviewDetail}} (EST)</span>
+                        <span></span>
+                    </div>
                 </td>
                 <td>{{User.Source}}
                     <br />
@@ -761,8 +775,9 @@
             showThrobber: true,
             throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
             success: function (data, msg) {
-                $('.search-user').trigger('click');
-                closePopup();
+                //$('.search-user').trigger('click');
+                //closePopup();
+                window.location.href = '/Sr_App/GoogleCalendarView.aspx';
             }
         })
     }
@@ -780,51 +795,51 @@
             url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
             type: 'POST',
             data: '{ pageNumber: 0, pageSize: 5, userId: ' + userid + ',chatSourceId:<%=(int)JG_Prospect.Common.ChatSource.EditUserPage%> }',
-                showThrobber: true,
-                throbberPosition: { my: "left center", at: "right center", of: $('#user-' + userid), offset: "5 0" },
-                success: function (data, msg) {
-                    if (data.Data.length > 0) {
-                        var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">';
-                        $(data.Data).each(function (i) {
-                            tbl += '<tr iuid="' + installUserId + '" uid="' + data.Data[i].UserID + '" id="' + data.Data[i].UserTouchPointLogID + '">' +
-                                        '<td>' + data.Data[i].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Data[i].UpdatedByUserID + '">' + data.Data[i].SourceUserInstallId + '</a><br/>' + data.Data[i].ChangeDateTimeFormatted + '</td>' +
-                                        '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
-                                    '</tr>';
-                        });
-                        tbl += '</table>';
-                        var tdHeight = $('#user-' + userid).parents('tr').height();
-                        $('#user-' + userid).html(tbl);
+            showThrobber: true,
+            throbberPosition: { my: "left center", at: "right center", of: $('#user-' + userid), offset: "5 0" },
+            success: function (data, msg) {
+                if (data.Data.length > 0) {
+                    var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">';
+                    $(data.Data).each(function (i) {
+                        tbl += '<tr iuid="' + installUserId + '" uid="' + data.Data[i].UserID + '" id="' + data.Data[i].UserTouchPointLogID + '">' +
+                                    '<td>' + data.Data[i].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Data[i].UpdatedByUserID + '">' + data.Data[i].SourceUserInstallId + '</a><br/>' + data.Data[i].ChangeDateTimeFormatted + '</td>' +
+                                    '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
+                                '</tr>';
+                    });
+                    tbl += '</table>';
+                    var tdHeight = $('#user-' + userid).parents('tr').height();
+                    $('#user-' + userid).html(tbl);
 
-                        $('#user-' + userid).css('height', (tdHeight - 36) + 'px');
-                        var tuid = getUrlVars()["TUID"];
-                        var nid = getUrlVars()["NID"];
-                        if (tuid != undefined && nid != undefined) {
-                            $('.notes-table tr#' + nid).addClass('blink-notes');
-                        } else {
-
-                        }
-                        //tribute.attach(document.querySelectorAll('.note-text'));
-                        tribute.attach(document.getElementById('txt-' + userid));
+                    $('#user-' + userid).css('height', (tdHeight - 36) + 'px');
+                    var tuid = getUrlVars()["TUID"];
+                    var nid = getUrlVars()["NID"];
+                    if (tuid != undefined && nid != undefined) {
+                        $('.notes-table tr#' + nid).addClass('blink-notes');
                     } else {
-                        var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">' +
-                                    '<tr uid="' + userid + '"><td>&nbsp;</td><td>&nbsp;</td></tr>' +
-                                    '<tr uid="' + userid + '"><td>&nbsp;</td><td>&nbsp;</td></tr>' +
-                                    '<tr uid="' + userid + '"><td>&nbsp;</td><td>&nbsp;</td></tr>' +
-                                   '</table>';
-                        $('#user-' + userid).html(tbl);
-                        tribute.attach(document.getElementById('txt-' + userid));
-                    }
-                }
-            });
-        }
 
-        function addNotes(sender, uid, txtUid) {
-            var note = $(sender).parents('.notes-inputs').find('.note-text').val();
-            if (note != '')
-                ajaxExt({
-                    url: '/Sr_App/edituser.aspx/AddNotes',
-                    type: 'POST',
-                    data: '{ id: ' + uid + ', note: "' + note + '", touchPointSource: ' + <%=(int)JG_Prospect.Common.TouchPointSource.EditUserPage %> + ' }',
+                    }
+                    //tribute.attach(document.querySelectorAll('.note-text'));
+                    tribute.attach(document.getElementById('txt-' + userid));
+                } else {
+                    var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">' +
+                                '<tr uid="' + userid + '"><td>&nbsp;</td><td>&nbsp;</td></tr>' +
+                                '<tr uid="' + userid + '"><td>&nbsp;</td><td>&nbsp;</td></tr>' +
+                                '<tr uid="' + userid + '"><td>&nbsp;</td><td>&nbsp;</td></tr>' +
+                               '</table>';
+                    $('#user-' + userid).html(tbl);
+                    tribute.attach(document.getElementById('txt-' + userid));
+                }
+            }
+        });
+    }
+
+    function addNotes(sender, uid, txtUid) {
+        var note = $(sender).parents('.notes-inputs').find('.note-text').val();
+        if (note != '')
+            ajaxExt({
+                url: '/Sr_App/edituser.aspx/AddNotes',
+                type: 'POST',
+                data: '{ id: ' + uid + ', note: "' + note + '", touchPointSource: ' + <%=(int)JG_Prospect.Common.TouchPointSource.EditUserPage %> + ' }',
                     showThrobber: true,
                     throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                     success: function (data, msg) {
@@ -837,6 +852,63 @@
         $(document).on('click', '.notes-table tr', function (e) {
             if (!$(e.target).is('a')) {
                 InitiateChat(this, $(this).attr('uid'), null, '<%=(int)JG_Prospect.Common.ChatSource.EditUserPage%>', 0, 0);
+                }
+        });
+
+            $(document).on('click', '.search-duration input[type="radio"]', function (e) {
+                var period = $(this).val();
+                switch (period) {
+                    case 'all':
+                        $('input.fromDate').val('all');
+                        break;
+                    case '1y':
+                        $('input.fromDate').val('<%= DateTime.Now.AddYears(-1).AddDays(-1).ToShortDateString() %>');
+                break;
+            case '1q':
+                $('input.fromDate').val('<%= DateTime.Now.AddMonths(-3).AddDays(-1).ToShortDateString() %>');
+                break;
+            case '2w':
+                $('input.fromDate').val('<%= DateTime.Now.AddDays(-15).ToShortDateString() %>');
+                break;
+        }
+        $('.search-user').trigger('click');
+    });
+    $(function () {
+        var dateFormat = "mm/dd/yy",
+          from = $("input.fromDate")
+            .datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                numberOfMonths: 1
+            })
+            .on("change", function () {
+                to.datepicker("option", "minDate", getDate(this));
+            }),
+          to = $("input.toDate").datepicker({
+              defaultDate: "+1w",
+              changeMonth: true,
+              numberOfMonths: 1
+          })
+          .on("change", function () {
+              from.datepicker("option", "maxDate", getDate(this));
+          });
+
+        function getDate(element) {
+            var date;
+            try {
+                date = $.datepicker.parseDate(dateFormat, element.value);
+            } catch (error) {
+                date = null;
+            }
+
+            return date;
         }
     });
+    $(document).on('keyup', '.userKeyword', function () {
+        $('.search-user').trigger('click');
+    });
+    $(document).on('change', '.recordsPerPage', function () {
+        $('.search-user').trigger('click');
+    });
+
 </script>

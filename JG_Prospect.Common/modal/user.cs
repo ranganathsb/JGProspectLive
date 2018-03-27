@@ -257,6 +257,12 @@ namespace JG_Prospect.Common.modal
         public string LastName { get; set; }
         public int Status { get; set; }
         public string StatusName { get; set; }
+        public string StatusReason { get; set; }
+        public string RejectDetail { get; set; }
+        public string RejectedByUserName { get; set; }
+        public string RejectedByUserInstallId { get; set; }
+        public int? RejectedUserId { get; set; }
+        public string InterviewDetail { get; set; }
         public string Source { get; set; }
         public string AddedBy { get; set; }
         public string AddedByInstallId { get; set; }
