@@ -1107,7 +1107,7 @@ namespace JG_Prospect.Sr_App
             {
                 receiverId = string.Join(",", users.OrderBy(m => m).ToList());
             }
-            List<ChatMessage> chatMessages = ChatBLL.Instance.GetTaskChatMessages(chatSourceId, taskId, taskMultilevelListId).Results;
+            List<ChatMessage> chatMessages = ChatBLL.Instance.GetTaskChatMessages(JGSession.UserId, chatSourceId, taskId, taskMultilevelListId).Results;
             PagingResult<Notes> notes = new PagingResult<Notes>();
             notes.Status = ActionStatus.Successfull;
             notes.TotalResults = chatMessages.Count();
@@ -1154,7 +1154,7 @@ namespace JG_Prospect.Sr_App
             int userID = Convert.ToInt32(JGSession.LoginUserID);
             string ChatGroupId = string.Empty;
             //InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, "Note : " + note, "", touchPointSource);
-            var chat = ChatBLL.Instance.GetTaskChatMessages(touchPointSource, taskId, taskMultilevelListId);
+            var chat = ChatBLL.Instance.GetTaskChatMessages(JGSession.UserId, touchPointSource, taskId, taskMultilevelListId);
             if (chat != null && chat.Results != null && chat.Results.Count() > 0)
             {
                 ChatGroupId = chat.Results[0].ChatGroupId;

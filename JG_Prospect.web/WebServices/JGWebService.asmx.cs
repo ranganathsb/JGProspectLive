@@ -2591,7 +2591,7 @@ namespace JG_Prospect.WebServices
             #region Chat Messages
             List<ChatMessage> messages = taskId == 0 ? ChatBLL.Instance.GetChatMessages(chatGroupId, string.Join(",", userIds.OrderBy(m => m).ToList()), chatSourceId).Results
                                             :
-                                            ChatBLL.Instance.GetTaskChatMessages(chatSourceId, taskId, taskMultilevelListId).Results;
+                                            ChatBLL.Instance.GetTaskChatMessages(JGSession.UserId, chatSourceId, taskId, taskMultilevelListId).Results;
             #endregion
 
             string ChatGroupName = string.Empty;
@@ -2655,7 +2655,7 @@ namespace JG_Prospect.WebServices
                         // Check if sender/receiver has previous chat exists, if yes, then fetch existing ChatGroupId
                         messages = taskId == 0 ? ChatBLL.Instance.GetChatMessages(sender.UserId.Value, Convert.ToInt32(receiverIds), chatSourceId).Results
                                             :
-                                            ChatBLL.Instance.GetTaskChatMessages(chatSourceId, taskId, taskMultilevelListId).Results;
+                                            ChatBLL.Instance.GetTaskChatMessages(JGSession.UserId, chatSourceId, taskId, taskMultilevelListId).Results;
 
                         if (messages != null && messages.Count() > 0)
                             chatGroupId = messages.FirstOrDefault().ChatGroupId;
@@ -3736,7 +3736,7 @@ namespace JG_Prospect.WebServices
                 }
                 foreach (var row in list)
                 {
-                    List<ChatMessage> chatMessages = ChatBLL.Instance.GetTaskChatMessages(chatSourceId, row.ParentTaskId, row.Id).Results;
+                    List<ChatMessage> chatMessages = ChatBLL.Instance.GetTaskChatMessages(JGSession.UserId, chatSourceId, row.ParentTaskId, row.Id).Results;
                     row.Notes = chatMessages.Select(m => new Notes
                     {
                         TaskMultilevelListId = row.Id,
