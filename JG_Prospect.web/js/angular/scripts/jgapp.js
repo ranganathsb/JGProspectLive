@@ -3,7 +3,7 @@ var app = angular.module('JGApp', ['ngSanitize'], function ($compileProvider) {
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file):/);
 });
 var url = '/WebServices/JGWebService.asmx/';
-var sequenceScope, sequenceScopeClosedTasks, sequenceScopeFrozenTasks, sequenceUIGridScope, sequenceScopeTG;
+var sequenceScope, sequenceScopeClosedTasks, sequenceScopeFrozenTasks, sequenceUIGridScope, sequenceScopeTG, sequenceScopePhone;
 
 /*************************************************************************/
 // DIRECTIVES

@@ -456,7 +456,11 @@ namespace JG_Prospect.DAL
                                 ReceiverIds = item["ReceiverIds"].ToString(),
                                 InstallUserStatusId = !string.IsNullOrEmpty(item["UserStatus"].ToString())
                                                                 ? (int?)Convert.ToInt32(item["UserStatus"].ToString()) : null,
-                                Status = (int)ChatUserStatus.Idle
+                                Status = (int)ChatUserStatus.Idle,
+                                TaskId = string.IsNullOrEmpty(item["TaskId"].ToString()) ? 0 : Convert.ToInt32(item["TaskId"].ToString()),
+                                TaskMultilevelListId = string.IsNullOrEmpty(item["TaskMultilevelListId"].ToString()) ? 0 : Convert.ToInt32(item["TaskMultilevelListId"].ToString()),
+                                UnreadCount = Convert.ToInt32(item["UnreadCount"].ToString()),
+                                GroupNameAnchor = item["GroupNameAnchor"].ToString()
                             });
                         }
                     }

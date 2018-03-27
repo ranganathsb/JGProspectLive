@@ -128,11 +128,14 @@ namespace JG_Prospect.Chat.Hubs
                 receiverIds += "," + SenderUserId;
                 ChatBLL.Instance.SaveChatMessage(chatMessage, chatGroupId, receiverIds, SenderUserId);
 
+                taskId = taskId.HasValue ? taskId.Value : 0;
+                taskMultilevelListId = taskMultilevelListId.HasValue ? taskMultilevelListId.Value : 0;
+
                 Clients.Group(chatGroupId).updateClient(new ActionOutput<ChatMessage>
                 {
                     Status = ActionStatus.Successfull,
                     Object = chatMessage,
-                    Message = chatGroupId + "`" + chatGroup.ChatGroupName + "`" + receiverIds + "`" + SenderUserId
+                    Message = chatGroupId + "`" + chatGroup.ChatGroupName + "`" + receiverIds + "`" + SenderUserId + "`" + taskId + "`" + taskMultilevelListId
                 });
             }
             catch (Exception ex)
@@ -294,7 +297,7 @@ namespace JG_Prospect.Chat.Hubs
             {
                 Status = ActionStatus.Successfull,
                 Message = UserId + " User is connected...",
-                Object= status
+                Object = status
             });
             return base.OnConnected();
         }
@@ -440,7 +443,7 @@ namespace JG_Prospect.Chat.Hubs
                                                             .Where(m => m.ChatGroupId == ChatGroupId)
                                                             .FirstOrDefault()
                                                             .ChatUsers
-                                                            .Where(m => m.UserId.Value != UserId)
+                                                            //.Where(m => m.UserId.Value != UserId)
                                                             .Select(m => m.UserId.Value)
                                                             .ToList();
             }

@@ -15,6 +15,8 @@ using System.Web.Script.Services;
 using System.Configuration;
 using System.Web.Script.Serialization;
 using JG_Prospect.Chat.Hubs;
+using static JG_Prospect.Common.JGCommon;
+using static JG_Prospect.Common.JGConstant;
 
 namespace JG_Prospect.WebServices
 {
@@ -576,7 +578,7 @@ namespace JG_Prospect.WebServices
         {
             string strMessage = string.Empty;
             DataSet dtResult = null;
-         
+
             dtResult = TaskGeneratorBLL.Instance.GetCalendarUsersByDate(Date, TaskUserStatuses, UserId);
 
             if (dtResult != null && dtResult.Tables.Count > 0)
@@ -593,7 +595,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public String GetCalendarTasksByDate(string StartDate, string EndDate, string UserId, String DesignationIDs,  string TaskUserStatus)
+        public String GetCalendarTasksByDate(string StartDate, string EndDate, string UserId, String DesignationIDs, string TaskUserStatus)
         {
             string strMessage = string.Empty;
             DataSet dtResult = null;
@@ -2325,6 +2327,72 @@ namespace JG_Prospect.WebServices
             }
         }
 
+        private void SendInterviewEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, int DesignitionId,
+                                            string date, string time, string EmpType, string PayRates, HTMLTemplates objHTMLTemplateType,
+                                            List<Attachment> Attachments = null, string strManager = "")
+        {
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(objHTMLTemplateType, DesignitionId.ToString());
+
+            string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+            string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+            string fullname = FName + " " + LName;
+
+            string strHeader = objHTMLTemplate.Header;
+            string strBody = objHTMLTemplate.Body;
+            string strFooter = objHTMLTemplate.Footer;
+            string strsubject = objHTMLTemplate.Subject;
+
+            strBody = strBody.Replace("#Email#", emailId).Replace("#email#", emailId);
+            strBody = strBody.Replace("#FirstName#", FName);
+            strBody = strBody.Replace("#LastName#", LName);
+            strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
+            strBody = strBody.Replace("#Date#", date).Replace("#date#", date);
+            strBody = strBody.Replace("#Time#", time).Replace("#time#", time);
+            strBody = strBody.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+            strFooter = strFooter.Replace("#Name#", FName).Replace("#name#", FName);
+            strFooter = strFooter.Replace("#Date#", date).Replace("#date#", date);
+            strFooter = strFooter.Replace("#Time#", time).Replace("#time#", time);
+            strFooter = strFooter.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+            strBody = strBody.Replace("Lbl Full name", fullname);
+            strBody = strBody.Replace("LBL position", Designition);
+            strBody = strBody.Replace("Reason", Reason);
+
+            strBody = strBody.Replace("#manager#", strManager);
+
+            strBody = strHeader + strBody + strFooter;
+
+
+            if (status == "OfferMade")
+            {
+                //TODO : commented code for missing directive using Word = Microsoft.Office.Interop.Word;
+                //createForeMenForJobAcceptance(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+            }
+            if (status == "Deactive")
+            {
+                //TODO : commented code for missing directive using Word = Microsoft.Office.Interop.Word;
+                //CreateDeactivationAttachment(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+            }
+
+            List<Attachment> lstAttachments = objHTMLTemplate.Attachments;
+
+            if (Attachments != null)
+            {
+                lstAttachments.AddRange(Attachments);
+            }
+
+            try
+            {
+                JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
+
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
+            }
+            catch
+            {
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('Error while sending email notification on " + emailId + ".');", true);
+            }
+        }
         private void AssignedTaskToUser(int UserID, UInt64 TaskId)
         {
             string ApplicantId = UserID.ToString();
@@ -2563,14 +2631,14 @@ namespace JG_Prospect.WebServices
                 #endregion
                 DataSet taskDetail = TaskGeneratorBLL.Instance.GetTaskDetails(taskId);
                 ChatGroupName = taskId == 0 ? string.Join("-", chatUsers.Select(m => m.GroupOrUsername).ToList())
-                                : taskDetail.Tables[0].Rows[0]["Title"].ToString() + "(#" + taskId + ")";
+                                : taskDetail.Tables[6].Rows[0]["TaskTitle"].ToString();
 
                 // Check if ChatGroupId is already exists
                 var existing = SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId).FirstOrDefault();
                 if (existing != null)
                 {
                     ChatGroupName = taskId == 0 ? existing.ChatGroupName
-                                    : taskDetail.Tables[0].Rows[0]["Title"].ToString() + "(#" + taskId + ")";
+                                    : taskDetail.Tables[6].Rows[0]["TaskTitle"].ToString();
                     existing.ChatUsers.Where(m => userIds.Contains(m.UserId.Value)).ToList().ForEach(m => m.ChatClosed = false);
 
                     SingletonUserChatGroups.Instance.ChatGroups.Where(m => m.ChatGroupId == chatGroupId)
@@ -2642,6 +2710,7 @@ namespace JG_Prospect.WebServices
             }
             #endregion
 
+            messages.ForEach(x => x.IsRead = true);
             ChatMessageActiveUser obj = new ChatMessageActiveUser();
             obj.ChatGroupId = chatGroupId;
             obj.ChatGroupName = ChatGroupName;
@@ -2734,41 +2803,901 @@ namespace JG_Prospect.WebServices
 
         #region Phone
         [WebMethod(EnableSession = true)]
-        public string GetPhoneScripts(string strScriptId)
+        public string GetPhoneScripts(int? id)
         {
-            DataSet ds = new DataSet();
-            int? intScriptId = Convert.ToInt32(strScriptId);
-            if (strScriptId == "0")
-                intScriptId = null;
-            ds = UserBLL.Instance.fetchAllScripts(intScriptId); ;
-            if (ds != null)
+            List<PhoneScript> scripts = UserBLL.Instance.GetPhoneScripts(id);
+            if (scripts != null)
             {
-                if (ds.Tables[0].Rows.Count > 0)
+                List<int> distTypes = scripts.Select(m => m.Type).Distinct().ToList();
+                List<PhoneScriptType> types = new List<PhoneScriptType>();
+                foreach (var item in scripts)
                 {
-                    List<PhoneScript> scripts = new List<PhoneScript>();
-                    foreach (DataRow item in ds.Tables[0].Rows)
-                    {
-                        scripts.Add(new PhoneScript
+                    if (!types.Where(m => m.Type == item.Type).Any())
+                        types.Add(new PhoneScriptType
                         {
-                            Id = Convert.ToInt32(item["intScriptId"]),
-                            Title = item["strScriptName"].ToString(),
-                            DescriptionPlain = item["DescriptionPlain"].ToString()
+                            Type = item.Type,
+                            TypeName = ((ScriptType)item.Type).ToEnumDescription()
                         });
-                    }
-                    //return JsonConvert.SerializeObject(ds.Tables[0]);
-                    return new JavaScriptSerializer().Serialize(new ActionOutput<PhoneScript>
-                    {
-                        Status = ActionStatus.Successfull,
-                        Results = scripts
-                    });
                 }
-                else
+                foreach (var type in types)
                 {
-                    return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+                    foreach (var item in scripts)
+                    {
+                        if (!type.SubTypes.Where(m => m.SubType == item.SubType && m.Type == type.Type).Any())
+                            type.SubTypes.Add(new PhoneScriptSubType
+                            {
+                                Type = type.Type,
+                                SubType = item.SubType,
+                                SubTypeName = ((ScriptSubType)item.SubType).ToEnumDescription(),
+                            });
+                    }
                 }
+                foreach (var type in types)
+                {
+                    foreach (var subType in type.SubTypes)
+                    {
+                        subType.PhoneScripts = scripts.Where(m => m.Type == subType.Type && m.SubType == subType.SubType)
+                                                    .Select(m => new PhoneScript
+                                                    {
+                                                        Title = m.Title,
+                                                        DescriptionPlain = m.DescriptionPlain,
+                                                        Id = m.Id,
+                                                        SubType = m.SubType,
+                                                        Type = m.Type
+                                                    }).ToList();
+                    }
+                }
+
+
+                return new JavaScriptSerializer().Serialize(new ActionOutput<PhoneScriptType>
+                {
+                    Status = ActionStatus.Successfull,
+                    Results = types
+                });
             }
             else
                 return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string GetSalesUsers(string keyword, string status, int designationId, int source,
+                                        DateTime from, DateTime to, int addedByUserId, int startIndex, int pageSize,
+                                        string sortBY)
+        {
+            PagingResult<SalesUser, UserEmail, UserPhone> list = new PagingResult<SalesUser, UserEmail, UserPhone>();
+            List<SalesUser> salesUsers = new List<SalesUser>();
+            DataSet dsSalesUserData = InstallUserBLL.Instance.GetSalesUsersStaticticsAndData
+                                                        (
+                                                            keyword,
+                                                            status,
+                                                            designationId,
+                                                            source,
+                                                            from,
+                                                            to,
+                                                            addedByUserId,
+                                                            startIndex,
+                                                            pageSize,
+                                                            sortBY
+                                                        );
+            if (dsSalesUserData != null)
+            {
+                DataTable dtSalesUser_Statictics_Status = dsSalesUserData.Tables[0];
+                DataTable dtSalesUser_Statictics_AddedBy = dsSalesUserData.Tables[1];
+                DataTable dtSalesUser_Statictics_Designation = dsSalesUserData.Tables[2];
+                DataTable dtSalesUser_Statictics_Source = dsSalesUserData.Tables[3];
+                DataTable dtSalesUser_Grid = dsSalesUserData.Tables[4];
+
+                DataTable dt_UserEmails = dsSalesUserData.Tables[7];
+                DataTable dt_UserPhones = dsSalesUserData.Tables[8];
+
+
+                if (dtSalesUser_Grid.Rows.Count > 0)
+                {
+                    #region Sales User List
+                    //Session["UserGridData"] = dtSalesUser_Grid;
+                    //BindUsers(dtSalesUser_Grid);
+                    foreach (DataRow dr in dtSalesUser_Grid.Rows)
+                    {
+                        salesUsers.Add(new SalesUser
+                        {
+                            Id = Convert.ToInt32(dr["Id"].ToString()),
+                            UserInstallId = dr["UserInstallId"].ToString(),
+                            AddedOnFormatted = dr["CreatedDateTime"].ToString(),
+                            AddedBy = dr["AddedBy"].ToString(),
+                            AddedByInstallId = dr["AddedByUserInstallId"].ToString(),
+                            AddedOn = Convert.ToDateTime(dr["CreatedDateTime"].ToString()),
+                            City = dr["City"].ToString(),
+                            Country = dr["CountryCode"].ToString(),
+                            DesignationId = Convert.ToInt32(dr["DesignationID"].ToString()),
+                            Designation = dr["Designation"].ToString(),
+                            Email = dr["Email"].ToString(),
+                            FirstName = dr["FristName"].ToString(),
+                            JobType = dr["EmpType"].ToString(),
+                            LastName = dr["LastName"].ToString(),
+                            Phone = dr["Phone"].ToString(),
+                            ProfilePic = string.IsNullOrEmpty(dr["picture"].ToString()) ? "default.jpg" : dr["picture"].ToString(),
+                            ResumeFileSavedName = dr["Resumepath"].ToString(),
+                            ResumeFileDisplayName = dr["Resumepath"].ToString().Length > 14 ? dr["Resumepath"].ToString().Substring(14) : dr["Resumepath"].ToString(),
+                            Source = dr["Source"].ToString(),
+                            Status = Convert.ToInt32(dr["Status"].ToString()),
+                            StatusName = ((InstallUserStatus)Convert.ToInt32(dr["Status"].ToString())).ToEnumDescription(),
+                            StatusReason = dr["StatusReason"].ToString(),
+                            RejectDetail = dr["RejectDetail"].ToString(),
+                            RejectedByUserName = dr["RejectedByUserName"].ToString(),
+                            RejectedByUserInstallId = dr["RejectedByUserInstallId"].ToString(),
+                            RejectedUserId = string.IsNullOrEmpty(dr["RejectedUserId"].ToString()) ? null : (int?)Convert.ToInt32(dr["RejectedUserId"].ToString()),
+                            InterviewDetail = dr["InterviewDetail"].ToString(),
+                            Zip = dr["Zip"].ToString()
+                        });
+                    }
+                    #endregion
+
+                    #region User Emails
+                    list.QData = new List<UserEmail>();
+                    foreach (DataRow item in dt_UserEmails.Rows)
+                    {
+                        list.QData.Add(new UserEmail
+                        {
+                            UserId = Convert.ToInt32(item["UserID"].ToString()),
+                            Email = item["emailID"].ToString()
+                        });
+                    }
+                    #endregion
+
+                    #region User Phones
+                    list.RData = new List<UserPhone>();
+                    foreach (DataRow item in dt_UserPhones.Rows)
+                    {
+                        list.RData.Add(new UserPhone
+                        {
+                            UserId = Convert.ToInt32(item["UserID"].ToString()),
+                            PhoneTypeId = Convert.ToInt32(item["PhoneTypeID"].ToString()),
+                            Phone = item["Phone"].ToString()
+                        });
+                    }
+                    #endregion
+                    list.Data = salesUsers;
+                    list.Status = ActionStatus.Successfull;
+                    list.TotalResults = Convert.ToInt32(dsSalesUserData.Tables[6].Rows[0][0].ToString());
+                    return new JavaScriptSerializer().Serialize(list);
+                }
+            }
+            return new JavaScriptSerializer().Serialize(new PagingResult<SalesUser>
+            {
+                Status = ActionStatus.Successfull,
+                TotalResults = 0
+            });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string AddSocial(int userId, int type, string phone, bool primary)
+        {
+            InstallUserBLL.Instance.AddUserEmailOrPhone(userId, phone.Trim(), (type == 7 ? 2 : 1), type.ToString(), "", primary);
+            return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string ChangeUserDesignation(int userId, int designationId)
+        {
+            InstallUserBLL.Instance.ChangeDesignition(userId, designationId);
+            return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string ChangeUserStatus(int userId, int newStatus, int oldStatus)
+        {
+            if (oldStatus == (int)JGConstant.InstallUserStatus.Active &&
+                                (!(Convert.ToString(Session["usertype"]).Contains("Admin")) &&
+                                !(Convert.ToString(Session["usertype"]).Contains("SM"))))
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput
+                {
+                    Status = ActionStatus.Error,
+                    Message = "You dont have rights change the status."
+                });
+            }
+            else if ((
+                         oldStatus == (int)JGConstant.InstallUserStatus.Active &&
+                         newStatus != (int)JGConstant.InstallUserStatus.Deactive
+                    ) && ((Convert.ToString(Session["usertype"]).Contains("Admin")) ||
+                            (Convert.ToString(Session["usertype"]).Contains("SM")))
+                    )
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Message = userId + "," + newStatus + "," + oldStatus,
+                    Object = "overlayPassword" // not found on edituser.aspx
+                });
+            }
+            bool status = CheckRequiredFields(newStatus.ToString(), userId);
+            DataRow user = InstallUserBLL.Instance.getuserdetails(userId).Tables[0].Rows[0];
+            if (!status)
+            {
+                if (newStatus == (int)JGConstant.InstallUserStatus.OfferMade)
+                {
+                    return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                    {
+                        Status = ActionStatus.Successfull,
+                        Message = userId + "," + newStatus + "," + oldStatus + ","
+                                    + user["FristName"].ToString() + " " + user["LastName"].ToString()
+                                    + "," + user["Designation"].ToString()
+                                    + "," + user["Email"].ToString() + "," + "jmgrove"
+                                    + "," + user["DesignationId"].ToString(),
+                        Object = "OverlayPopupOfferMade"
+                    });
+                    /*
+                    hdnFirstName.Value = lblFirstName.Text;
+                    hdnLastName.Value = lblLastName.Text;
+                    txtEmail.Text = lbtnEmail.Text;
+                    txtPassword1.Attributes.Add("value", "jmgrove");
+                    txtpassword2.Attributes.Add("value", "jmgrove");
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
+                    return;
+                    */
+                }
+                else
+                {
+                    return new JavaScriptSerializer().Serialize(new ActionOutput
+                    {
+                        Status = ActionStatus.Error,
+                        Message = "Status cannot be changed as required field for selected status are not field"
+                    });
+                    /*
+                    //binddata();
+                    GetSalesUsersStaticticsAndData();
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed as required field for selected status are not field')", true);
+                    return;
+                    */
+                }
+            }
+            if (
+                (
+                    newStatus == (int)JGConstant.InstallUserStatus.Active ||
+                    newStatus == (int)JGConstant.InstallUserStatus.Deactive
+                ) &&
+                (
+                    !(Convert.ToString(Session["usertype"]).Contains("Admin")) &&
+                    !(Convert.ToString(Session["usertype"]).Contains("SM"))
+                )
+            )
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput
+                {
+                    Status = ActionStatus.Error,
+                    Message = "You dont have permission to Activate or Deactivate user"
+                });
+            }
+            else if (newStatus == (int)JGConstant.InstallUserStatus.Rejected)
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Message = userId + "," + newStatus + "," + oldStatus,
+                    Object = "overlay"
+                });
+            }
+            else if (newStatus == (int)JGConstant.InstallUserStatus.InterviewDate)
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Message = userId + "," + newStatus + "," + oldStatus + ","
+                                    + user["FristName"].ToString() + " " + user["LastName"].ToString()
+                                    + "," + user["Designation"].ToString()
+                                    + "," + user["Email"].ToString() + "," + "jmgrove"
+                                    + "," + user["DesignationId"].ToString(),
+                    Object = "overlayInterviewDate"
+                });
+                /*
+                LoadUsersByRecruiterDesgination(ddlUsers);
+                FillTechTaskDropDown(ddlTechTask, ddlTechSubTask, Convert.ToInt32(ddlDesignationForTask.SelectedValue));
+                ddlInsteviewtime.DataSource = GetTimeIntervals();
+                ddlInsteviewtime.DataBind();
+                dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
+                ddlInsteviewtime.SelectedValue = "10:00 AM";
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayInterviewDate()", true);
+                return;
+                */
+            }
+            else if (
+                        newStatus == (int)JGConstant.InstallUserStatus.Deactive &&
+                        (
+                            (Convert.ToString(Session["usertype"]).Contains("Admin")) &&
+                            (Convert.ToString(Session["usertype"]).Contains("SM"))
+                        )
+                    )
+            {
+                Session["DeactivationStatus"] = "Deactive";
+                return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Message = userId + "," + newStatus + "," + oldStatus,
+                    Object = "overlay"
+                });
+            }
+            else if (newStatus == (int)JGConstant.InstallUserStatus.OfferMade)
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Message = userId + "," + newStatus + "," + oldStatus + ","
+                                    + user["FristName"].ToString() + " " + user["LastName"].ToString()
+                                    + "," + user["Designation"].ToString()
+                                    + "," + user["Email"].ToString() + "," + "jmgrove"
+                                    + "," + user["DesignationId"].ToString(),
+                    Object = "OverlayPopupOfferMade"
+                });
+                /*
+                txtEmail.Text = lbtnEmail.Text;
+                txtPassword1.Attributes.Add("value", "jmgrove");
+                txtpassword2.Attributes.Add("value", "jmgrove");
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
+                return;
+                */
+            }
+
+            if (newStatus == (int)JGConstant.InstallUserStatus.InstallProspect)
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput
+                {
+                    Status = ActionStatus.Error,
+                    Message = "Status cannot be changed to Install Prospect"
+                });
+            }
+
+            if (oldStatus == (int)JGConstant.InstallUserStatus.Active &&
+                (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput
+                {
+                    Status = ActionStatus.Error,
+                    Message = "Status cannot be changed to any other status other than Deactive once user is Active"
+                });
+            }
+            else
+            {
+                // Adding a popUp...
+                InstallUserBLL.Instance.ChangeStatus(newStatus.ToString(), userId, DateTime.Today, DateTime.Now.ToShortTimeString(),
+                                                    Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, "txtReason.Text");
+
+                //Remove user from GitHub Repository
+                if (newStatus == (int)JGConstant.InstallUserStatus.Deactive)
+                {
+                    String GitUserName = InstallUserBLL.Instance.GetUserGithubUserName(userId);
+                    if (!string.IsNullOrEmpty(GitUserName.Trim()))
+                    {
+                        CommonFunction.DeleteUserFromGit(GitUserName, JGConstant.GitRepo.Interview);
+                    }
+                }
+
+                //binddata();
+                //GetSalesUsersStaticticsAndData();
+
+                if (newStatus == (int)JGConstant.InstallUserStatus.Active ||
+                    newStatus == (int)JGConstant.InstallUserStatus.Deactive)
+                    return new JavaScriptSerializer().Serialize(new ActionOutput<string>
+                    {
+                        Status = ActionStatus.Successfull,
+                        Message = userId + "," + newStatus + "," + oldStatus,
+                        Object = "showStatusChangePopUp" // not found on edituser.aspx
+                    });
+                return new JavaScriptSerializer().Serialize(new ActionOutput
+                {
+                    Status = ActionStatus.Successfull,
+                    Message = "Status Changed"
+                });
+            }
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string ChangeUserStatusWithReason(int userId, int newStatus, string reason)
+        {
+            if (Convert.ToString(Session["DeactivationStatus"]) == "Deactive")
+            {
+                DataSet ds = new DataSet();
+                string email = "";
+                string HireDate = "";
+                string EmpType = "";
+                string PayRates = "";
+                ds = InstallUserBLL.Instance.ChangeStatus(newStatus.ToString(), userId, DateTime.Today,
+                        DateTime.Now.ToShortTimeString(),
+                        Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]),
+                        JGSession.IsInstallUser.Value, reason);
+                if (ds.Tables.Count > 0)
+                {
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        if (Convert.ToString(ds.Tables[0].Rows[0][0]) != "")
+                        {
+                            email = Convert.ToString(ds.Tables[0].Rows[0][0]);
+                        }
+                        if (Convert.ToString(ds.Tables[0].Rows[0][1]) != "")
+                        {
+                            HireDate = Convert.ToString(ds.Tables[0].Rows[0][1]);
+                        }
+                        if (Convert.ToString(ds.Tables[0].Rows[0][2]) != "")
+                        {
+                            EmpType = Convert.ToString(ds.Tables[0].Rows[0][2]);
+                        }
+                        if (Convert.ToString(ds.Tables[0].Rows[0][3]) != "")
+                        {
+                            PayRates = Convert.ToString(ds.Tables[0].Rows[0][3]);
+                        }
+                    }
+                }
+                DataRow user = InstallUserBLL.Instance.getuserdetails(userId).Tables[0].Rows[0];
+                SendEmail(email, user["FristName"].ToString(), user["LastName"].ToString(),
+                            "Deactivation", reason, user["Designation"].ToString(),
+                            Convert.ToInt32(user["DesignationId"].ToString()), HireDate, EmpType, PayRates, 0);
+            }
+            else
+            {
+                InstallUserBLL.Instance.ChangeStatus(newStatus.ToString(), userId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, reason);
+            }
+
+            //Remove user from GitHub Repository
+            if (newStatus == (int)JGConstant.InstallUserStatus.Rejected)
+            {
+                String GitUserName = InstallUserBLL.Instance.GetUserGithubUserName(userId);
+                if (!string.IsNullOrEmpty(GitUserName.Trim()))
+                {
+                    CommonFunction.DeleteUserFromGit(GitUserName, JGConstant.GitRepo.Interview);
+                }
+            }
+            return new JavaScriptSerializer().Serialize(new ActionOutput
+            {
+                Status = ActionStatus.Successfull,
+                Message = "Status Changed"
+            });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string UpdateEmpType(int userId, string empType)
+        {
+            InstallUserBLL.Instance.UpdateEmpType(userId, empType);
+            return new JavaScriptSerializer().Serialize(new ActionOutput
+            {
+                Status = ActionStatus.Successfull,
+                Message = "Status Changed"
+            });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string ChangeUserStatusOfferMade(int userId, int newStatus, string newEmail, string password)
+        {
+            InstallUserBLL.Instance.UpdateOfferMade(userId, newEmail, password);
+
+            DataSet ds = new DataSet();
+            string email, HireDate, EmpType, PayRates, Desig, LastName, Address, FirstName;
+            email = HireDate = EmpType = PayRates = Desig = LastName = Address = FirstName = String.Empty;
+
+            ds = InstallUserBLL.Instance.ChangeStatus(newStatus.ToString(), userId, DateTime.Today, DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, "");
+            if (ds.Tables.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["Email"]) != "")
+                    {
+                        email = Convert.ToString(ds.Tables[0].Rows[0]["Email"]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["HireDate"]) != "")
+                    {
+                        HireDate = Convert.ToString(ds.Tables[0].Rows[0]["HireDate"]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["EmpType"]) != "")
+                    {
+                        EmpType = Convert.ToString(ds.Tables[0].Rows[0]["EmpType"]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["PayRates"]) != "")
+                    {
+                        PayRates = Convert.ToString(ds.Tables[0].Rows[0]["PayRates"]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0]["Designation"]) != "")
+                    {
+                        Desig = Convert.ToString(ds.Tables[0].Rows[0]["Designation"]);
+                    }
+                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["FristName"].ToString()))
+                    {
+                        FirstName = ds.Tables[0].Rows[0]["FristName"].ToString();
+                    }
+                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["LastName"].ToString()))
+                    {
+                        LastName = ds.Tables[0].Rows[0]["LastName"].ToString();
+                    }
+                    if (!String.IsNullOrEmpty(ds.Tables[0].Rows[0]["Address"].ToString()))
+                    {
+                        Address = ds.Tables[0].Rows[0]["Address"].ToString();
+                    }
+                }
+            }
+            DataRow user = InstallUserBLL.Instance.getuserdetails(userId).Tables[0].Rows[0];
+            //string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199, 0, Desig);
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Offer_Made_Attachment_Template, user["DesignationId"].ToString());
+            string strHtml = objHTMLTemplate.Header + objHTMLTemplate.Body + objHTMLTemplate.Footer;
+            strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
+            strHtml = strHtml.Replace("#FirstName#", FirstName);
+            strHtml = strHtml.Replace("#LastName#", LastName);
+            strHtml = strHtml.Replace("#Address#", Address);
+            strHtml = strHtml.Replace("#Designation#", Desig);
+            if (!string.IsNullOrEmpty(EmpType))
+            {
+                int intEmpType = 0;
+                int.TryParse(EmpType, out intEmpType);
+
+                if (intEmpType > 0)
+                {
+                    EmpType = CommonFunction.GetEnumDescription((JGConstant.EmploymentType)intEmpType);
+                }
+
+                strHtml = strHtml.Replace("#EmpType#", EmpType);
+
+            }
+            else
+            {
+                strHtml = strHtml.Replace("#EmpType#", "________________");
+            }
+            strHtml = strHtml.Replace("#JoiningDate#", HireDate);
+            if (!string.IsNullOrEmpty(PayRates))
+            {
+                strHtml = strHtml.Replace("#RatePerHour#", PayRates);
+            }
+            else
+            {
+                strHtml = strHtml.Replace("#RatePerHour#", "____");
+            }
+            DateTime dtPayCheckDate;
+            if (!string.IsNullOrEmpty(HireDate))
+            {
+                dtPayCheckDate = Convert.ToDateTime(HireDate);
+            }
+            else
+            {
+                dtPayCheckDate = DateTime.Now;
+            }
+            dtPayCheckDate = new DateTime(dtPayCheckDate.Year, dtPayCheckDate.Month, DateTime.DaysInMonth(dtPayCheckDate.Year, dtPayCheckDate.Month));
+            strHtml = strHtml.Replace("#PayCheckDate#", dtPayCheckDate.ToShortDateString());
+
+            string strPath = JG_Prospect.App_Code.CommonFunction.ConvertHtmlToPdf(strHtml, Server.MapPath(@"~\Sr_App\MailDocument\MailAttachments\"), "Job acceptance letter");
+            List<Attachment> lstAttachments = new List<Attachment>();
+            if (File.Exists(strPath))
+            {
+                Attachment attachment = new Attachment(strPath);
+                attachment.Name = Path.GetFileName(strPath);
+                lstAttachments.Add(attachment);
+            }
+
+            SendEmail(email, FirstName, LastName, "Offer Made", "", Desig, Convert.ToInt32(user["DesignationId"].ToString()), HireDate, EmpType, PayRates,
+                HTMLTemplates.Offer_Made_Auto_Email, lstAttachments);
+
+            return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string GetTechTasks(int designationId)
+        {
+            DataSet dsTechTask;
+            if (designationId == 0)
+            {
+                dsTechTask = TaskGeneratorBLL.Instance.GetAllActiveTechTask();
+            }
+            else
+            {
+                dsTechTask = TaskGeneratorBLL.Instance.GetAllActiveTechTaskForDesignationID(designationId);
+            }
+            List<TechTask> tasks = new List<TechTask>();
+            if (dsTechTask != null && dsTechTask.Tables[0] != null && dsTechTask.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow item in dsTechTask.Tables[0].Rows)
+                {
+                    tasks.Add(new TechTask
+                    {
+                        Id = Convert.ToInt32(item["TaskId"].ToString()),
+                        Title = item["Title"].ToString()
+                    });
+                }
+            }
+            return new JavaScriptSerializer().Serialize(new ActionOutput<TechTask>
+            {
+                Status = ActionStatus.Successfull,
+                Results = tasks
+            });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string GetSubTechTasks(int taskId)
+        {
+            List<SubTechTask> subTasks = new List<SubTechTask>();
+            DataSet dsSubTasks = TaskGeneratorBLL.Instance.GetTaskHierarchy(taskId, CommonFunction.CheckAdminAndItLeadMode());
+            DataTable dtLevel1SubTasks = null;
+            DataTable dtLevel2SubTasks = null;
+            DataTable dtLevel3SubTasks = null;
+
+            if (dsSubTasks != null && dsSubTasks.Tables.Count > 0 && dsSubTasks.Tables[0].Rows.Count > 0)
+            {
+                DataView dvSubTasks = dsSubTasks.Tables[0].DefaultView;
+
+                dvSubTasks.RowFilter = string.Format("TaskId <> {0} AND TaskLevel = 1", taskId);
+                dtLevel1SubTasks = dvSubTasks.ToTable();
+
+                foreach (DataRow drSubTask1 in dtLevel1SubTasks.Rows)
+                {
+                    string strTaskId = Convert.ToString(drSubTask1["TaskId"]);
+                    string strTitle = Convert.ToString(drSubTask1["Title"]);
+
+                    subTasks.Add(new SubTechTask
+                    {
+                        Id = Convert.ToInt32(drSubTask1["TaskId"].ToString()),
+                        Title = drSubTask1["Title"].ToString()
+                    });
+
+                    dvSubTasks.RowFilter = string.Format("ParentTaskId = {0} AND TaskLevel = 2", strTaskId);
+                    dtLevel2SubTasks = dvSubTasks.ToTable();
+
+                    foreach (DataRow drSubTask2 in dtLevel2SubTasks.Rows)
+                    {
+                        strTaskId = Convert.ToString(drSubTask2["TaskId"]);
+                        strTitle = "|--" + Convert.ToString(drSubTask2["Title"]);
+
+                        subTasks.Add(new SubTechTask
+                        {
+                            Id = Convert.ToInt32(drSubTask2["TaskId"].ToString()),
+                            Title = "|--" + drSubTask2["Title"].ToString()
+                        });
+
+                        dvSubTasks.RowFilter = string.Format("ParentTaskId = {0} AND TaskLevel = 3", strTaskId);
+                        dtLevel3SubTasks = dvSubTasks.ToTable();
+
+                        foreach (DataRow drSubTask3 in dtLevel3SubTasks.Rows)
+                        {
+                            strTaskId = Convert.ToString(drSubTask3["TaskId"]);
+                            strTitle = "|----" + Convert.ToString(drSubTask3["Title"]);
+
+                            subTasks.Add(new SubTechTask
+                            {
+                                Id = Convert.ToInt32(drSubTask3["TaskId"].ToString()),
+                                Title = "|----" + drSubTask3["Title"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+
+            return new JavaScriptSerializer().Serialize(new ActionOutput<SubTechTask>
+            {
+                Status = ActionStatus.Successfull,
+                Results = subTasks
+            });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string GetRecruiters()
+        {
+            List<Recruiter> recruiters = new List<Recruiter>();
+            DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, "Admin,Admin Recruiter,Office Manager,Recruiter,ITLead,");
+            if (dsUsers != null && dsUsers.Tables.Count > 0)
+            {
+                DataView dvUsers = dsUsers.Tables[0].DefaultView;
+                dvUsers.RowFilter = string.Format(
+                                                    "[Status] IN ('{0}','{1}')",
+                                                    Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString(),
+                                                    Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString()
+                                                );
+                dvUsers.Sort = "[Status] ASC";
+
+                DataTable dtUsers = dvUsers.ToTable();
+
+                for (int i = 0; i < dtUsers.Rows.Count; i++)
+                {
+                    DataRow objUser = dtUsers.Rows[i];
+                    recruiters.Add(new Recruiter
+                    {
+                        Id = Convert.ToInt32(objUser["Id"].ToString()),
+                        Name = objUser["FristName"].ToString(),
+                        optionCss = Convert.ToInt32(objUser["Status"].ToString()) == (int)JGConstant.InstallUserStatus.Active ? "color-red" : ""
+                    });
+                }
+            }
+
+            return new JavaScriptSerializer().Serialize(new ActionOutput<Recruiter>
+            {
+                Status = ActionStatus.Successfull,
+                Results = recruiters
+            });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string ChangeUserStatusToInterviewDate(string date, int status, int userId, string time,
+                                                        int recruiterId, int taskId, int subTaskId, string recruiterName, string taskName,
+                                                        int designationId, string designationName)
+        {
+            DataRow user = InstallUserBLL.Instance.getuserdetails(userId).Tables[0].Rows[0];
+            DataSet ds = new DataSet();
+            string email = "";
+            string HireDate = "";
+            string EmpType = "";
+            string PayRates = "";
+            string gitusername = string.Empty;
+
+
+            //string InterviewDate = dtInterviewDate.Text;
+            DateTime interviewDate;
+            DateTime.TryParse(date, out interviewDate);
+            if (interviewDate == null)
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput
+                {
+                    Status = ActionStatus.Error,
+                    Message = "Invalid Interview Date, Please verify"
+                });
+            }
+
+            ds = InstallUserBLL.Instance.ChangeStatus(status.ToString(), userId, interviewDate, time, Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, "", recruiterId.ToString());
+            if (ds.Tables.Count > 0)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    if (Convert.ToString(ds.Tables[0].Rows[0][0]) != "")
+                    {
+                        email = Convert.ToString(ds.Tables[0].Rows[0][0]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0][1]) != "")
+                    {
+                        HireDate = Convert.ToString(ds.Tables[0].Rows[0][1]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0][2]) != "")
+                    {
+                        EmpType = Convert.ToString(ds.Tables[0].Rows[0][2]);
+                    }
+                    if (Convert.ToString(ds.Tables[0].Rows[0][3]) != "")
+                    {
+                        PayRates = Convert.ToString(ds.Tables[0].Rows[0][3]);
+                    }
+                    if (ds.Tables[0].Rows[0]["GitUserName"] != null)
+                    {
+                        gitusername = ds.Tables[0].Rows[0]["GitUserName"].ToString();
+                    }
+                }
+            }
+
+            SendInterviewEmail(email, user["FristName"].ToString(), user["LastName"].ToString(),
+                "Interview Date Auto Email", "", user["Designation"].ToString(), Convert.ToInt32(user["DesignationId"].ToString()), date, time, EmpType,
+                PayRates, HTMLTemplates.InterviewDateAutoEmail
+                , null, recruiterName);
+            if (!string.IsNullOrEmpty(gitusername))
+            {
+                CommonFunction.AddUserAsGitcollaborator(gitusername, JGConstant.GitRepo.Interview);
+            }
+
+            //AssignedTask if any or Default
+            //AssignedTaskToUser(Convert.ToInt32(Session["EditId"]), ddlTechTask, ddlTechSubTask);
+            // save assigned user a TASK.
+            bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedToMultipleUsers(Convert.ToUInt64(subTaskId), userId.ToString());
+            // Change task status to assigned = 3.
+            if (isSuccessful)
+                UpdateTaskStatus(Convert.ToInt32(subTaskId), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
+
+            SendEmailToAssignedUsers(userId.ToString(), taskId.ToString(), subTaskId.ToString(), taskName,
+                designationId, designationName);
+            return new JavaScriptSerializer().Serialize(new ActionOutput
+            {
+                Status = ActionStatus.Successfull
+            });
+            // Response.Redirect(JG_Prospect.Common.JGConstant.PG_PATH_MASTER_CALENDAR);
+        }
+
+        private void SendEmailToAssignedUsers(string strInstallUserIDs, string strTaskId, string strSubTaskId,
+            string strTaskTitle, int designationId, string designationName)
+        {
+            try
+            {
+                DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Task_Generator_Auto_Email, JGSession.DesignationId.ToString());
+
+                foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
+
+                    string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                    string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+                    string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
+                    string fullname = FName + " " + LName;
+
+                    string strHeader = objHTMLTemplate.Header;
+                    string strBody = objHTMLTemplate.Body;
+                    string strFooter = objHTMLTemplate.Footer;
+                    string strsubject = objHTMLTemplate.Subject;
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(strTaskId));
+
+                    strsubject = strsubject.Replace("#ID#", strTaskId);
+                    strsubject = strsubject.Replace("#TaskTitleID#", strTaskTitle);
+                    strsubject = strsubject.Replace("#TaskTitle#", strTaskTitle);
+
+                    strBody = strBody.Replace("#ID#", strTaskId);
+                    strBody = strBody.Replace("#TaskTitleID#", strTaskTitle);
+                    strBody = strBody.Replace("#TaskTitle#", strTaskTitle);
+                    strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#email#", emailId);
+                    strBody = strBody.Replace("#Designation(s)#", designationName);
+                    strBody = strBody.Replace("#TaskLink#", string.Format(
+                                                                            "{0}?TaskId={1}&hstid={2}&{3}",
+                                                                            string.Concat(
+                                                                                             HttpContext.Current.Request.Url.Scheme,
+                                                                                            Uri.SchemeDelimiter,
+                                                                                            HttpContext.Current.Request.Url.Host.Split('?')[0],
+                                                                                            "/Sr_App/TaskGenerator.aspx"
+                                                                                         ),
+                                                                            strTaskId,
+                                                                            strSubTaskId,
+                                                                            strTaskLinkTitle
+                                                                        )
+                                            );
+
+
+                    strBody = strBody.Replace("#TaskTitle#", string.Format("{0}?TaskId={1}", HttpContext.Current.Request.Url.ToString().Split('?')[0], strTaskId));
+
+                    strBody = strHeader + strBody + strFooter;
+
+                    string strHTMLTemplateName = "Task Generator Auto Email";
+                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+                    List<Attachment> lstAttachments = new List<Attachment>();
+                    // your remote SMTP server IP.
+                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    {
+                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                        if (File.Exists(sourceDir))
+                        {
+                            Attachment attachment = new Attachment(sourceDir);
+                            attachment.Name = Path.GetFileName(sourceDir);
+                            lstAttachments.Add(attachment);
+                        }
+                    }
+
+                    CommonFunction.SendEmail(HTMLTemplates.Task_Generator_Auto_Email.ToString(), emailId, strsubject, strBody, lstAttachments);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+
+        public bool CheckRequiredFields(string SelectedStatus, int Id)
+        {
+            DataSet dsNew = new DataSet();
+            dsNew = InstallUserBLL.Instance.getuserdetails(Id);
+            if (dsNew.Tables.Count > 0)
+            {
+                if (dsNew.Tables[0].Rows.Count > 0)
+                {
+                    if (SelectedStatus == "Applicant")
+                    {
+                        if (Convert.ToString(dsNew.Tables[0].Rows[0][1]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][2]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][3]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][8]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][38]) == "")
+                        {
+                            //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to Applicant as required fields for it are not filled.')", true);
+                            return false;
+                        }
+                    }
+                    else if (SelectedStatus == "OfferMade" || SelectedStatus == "Offer Made")
+                    {
+                        //if (Convert.ToString(dsNew.Tables[0].Rows[0][1]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][2]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][4]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][5]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][11]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][12]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][13]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][3]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][8]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][38]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][44]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][46]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][48]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][50]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][100]) == "")
+                        if (Convert.ToString(dsNew.Tables[0].Rows[0]["Email"]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0]["Password"]) == "")
+                        {
+                            // txtEmail.Text = Convert.ToString(dsNew.Tables[0].Rows[0]["Email"]);
+                            //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to Offer Made as required fields for it are not filled.')", true);
+                            return false;
+                        }
+                    }
+                    else if (SelectedStatus == "Active")
+                    {
+                        if (Convert.ToString(dsNew.Tables[0].Rows[0][1]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][2]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][3]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][4]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][5]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][7]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][9]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][11]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][12]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][13]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][17]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][16]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][17]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][8]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][18]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][19]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][20]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][35]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][38]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][39]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][44]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][46]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][48]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][50]) == "" || Convert.ToString(dsNew.Tables[0].Rows[0][100]) == "")
+                        {
+                            //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to Offer Made as required fields for it are not filled.')", true); 
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
         }
         #endregion
 

@@ -250,6 +250,8 @@ function applyFunctions($scope, $compile, $http, $timeout, $filter) {
             //Set MouseHover Popup
             $('.chosen-choices').mouseenter(function () {
                 var parent = $(this).parent().parent().attr('class');
+                if (parent == undefined || parent == '')
+                    return false;
                 if (parent.indexOf('chosen-div') >= 0) {
                     if ($(this).find('li').length > 1) {
 

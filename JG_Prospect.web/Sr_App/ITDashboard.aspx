@@ -367,7 +367,7 @@
 
         .note-list {
             display: block;
-            /*height: 66px;*/
+            height: 66px !important;
             overflow-x: hidden;
             overflow-y: auto;
             position: absolute;
@@ -561,8 +561,8 @@
         }
     </style>
     <link href="../css/chosen.css" rel="stylesheet" />
-    <link href="../Styles/dd.css" rel="stylesheet" />
-    <link href="../Content/touchPointlogs.css" rel="stylesheet" />
+    <link href="../Styles/dd.css?v=<%#JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>" rel="stylesheet" />
+    <link href="../Content/touchPointlogs.css?v=<%#JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="right_panel" ng-app="JGApp">
@@ -3019,12 +3019,12 @@
 
         <script type="text/javascript" src="<%=Page.ResolveUrl("~/js/chosen.jquery.js")%>"></script>
 
-        <script src="../js/angular/scripts/jgapp.js"></script>
-        <script src="../js/angular/scripts/TaskSequence.js"></script>
-        <script src="../js/angular/scripts/FrozenTask.js"></script>
-        <script src="../js/TaskSequencing.js"></script>
-        <script src="../js/jquery.dd.min.js"></script>
-        <script src="../js/angular/scripts/ClosedTasls.js"></script>
+        <script src="../js/angular/scripts/jgapp.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
+        <script src="../js/angular/scripts/TaskSequence.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
+        <script src="../js/angular/scripts/FrozenTask.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
+        <script src="../js/TaskSequencing.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
+        <script src="../js/jquery.dd.min.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
+        <script src="../js/angular/scripts/ClosedTasls.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
 
         <script type="text/javascript">
             function Paging(sender) {
@@ -4227,9 +4227,6 @@
                     showThrobber: false,
                     throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
                     success: function (data, msg) {
-                        if (taskId == '657') {
-                            debugger;
-                        }
                         var str = '';
                         if (data.Results.length > 0)
                             str = '<div id="accordionParentTask' + taskId + '"><h2>&nbsp;<strong>Load more</strong></h2><div><div class="row">';
