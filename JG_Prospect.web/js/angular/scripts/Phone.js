@@ -75,13 +75,15 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
                     $('#SalesUserGrid').find('select').find('option').removeAttr('class');
                     $('#SalesUserGrid').find('select').chosen({ width: '100%' });
 
+                    $('.header-table .pageNumber').html(paging.currentPage + 1);
+                    $('.header-table .pazeSize').html(paging.pageSize);
+                    $('.header-table .totalRecords').html($scope.UserList.TotalResults);
+
                     // Loading Notes
                     ReLoadNotes();
 
                     //
-                    $('.header-table .pageNumber').html(paging.currentPage+1);
-                    $('.header-table .pazeSize').html(paging.pageSize);
-                    $('.header-table .totalRecords').html($scope.UserList.TotalResults);
+                    
                 }, 100);
             });
     }
