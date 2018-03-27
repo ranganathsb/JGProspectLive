@@ -148,3 +148,4 @@
 .userlist-grid .header-table .grid-overview-totalrecords{    float: left;}
 .userlist-grid .header-table .grid-overview-records-perpage{    float: right;}
 .userlist-grid .header-table .grid-overview-records-perpage > div {width: 60px !important;}
+#SalesUserGrid img {width:75px;}
