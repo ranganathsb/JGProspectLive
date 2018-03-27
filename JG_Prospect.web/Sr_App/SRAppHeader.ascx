@@ -128,7 +128,7 @@
             <!--Email with # of unread msgs and new font-->
             <li id="test"><a id="hypEmail" class="clsPhoneLink" onclick="InitiateBlankChat(this, 'email')" runat="server" style="color: white;">Emails<label id="emailUnreadCount" class="badge badge-error">0</label><label id="lblUnRead" class="badge badge-error hide"></label></a></li>
             <li>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
-            <li><a id="idPhoneLink" runat="server" class="clsPhoneLink" onclick="InitiateBlankChat(this, 'phone')">Phone / Vmail(0)<label id="lblNewCounter" class="badge badge-error">10</label><label id="lblUnRead" class="badge badge-error hide"></label></a></a></li>
+            <li><a id="idPhoneLink" runat="server" class="clsPhoneLink" href="/Sr_App/autodialer.aspx">Phone / Vmail(0)<label id="lblNewCounter" class="badge badge-error">10</label><label id="lblUnRead" class="badge badge-error hide"></label></a></a></li>
             <li>&nbsp;&nbsp;|&nbsp;&nbsp;</li>
             <li><a id="hypChat" href="#" class="clsPhoneLink" onclick="InitiateBlankChat(this, 'chat');">Chat <label id="chatUnreadCount" style="display:none;" class="badge badge-error"></label><label class="badge badge-error hide"></label></a></a></li>
         </ul>

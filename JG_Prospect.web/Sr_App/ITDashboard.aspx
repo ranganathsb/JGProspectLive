@@ -3069,23 +3069,7 @@
                 var userId = '<%=loggedInUserId%>';
                 addNotes(sender, userId);
             }
-            function addNotes(sender) {
-                var note = $(sender).parent().find('.note-text').val();
-                var tid=$(sender).parents('')
-                var mtid=0
-                if (note != '')
-                    ajaxExt({
-                        url: '/Sr_App/itdashboard.aspx/AddNotes',
-                        type: 'POST',
-                        data: '{ taskId: ' + tid + ', taskMultilevelListId: ' + mtid + ',note:"'+note+'",touchPointSource:<%=(int)JG_Prospect.Common.ChatSource.ITDashboard%> }',
-                        showThrobber: true,
-                        throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
-                        success: function (data, msg) {
-                            $(sender).parent().find('.note-text').val('');
-                            Paging(sender);
-                        }
-                    });
-            }
+            
             var ddlDesigSeqClientIDFrozenTasks = "";
             var ddlDesigSeqClientID;
             function changeTaskStatusClosed(Task) {
@@ -4292,6 +4276,8 @@
                             $(sender).parents('.notes-inputs').find('.note-text').val('');
                             //Paging(sender);
                             LoadNotes($(sender).parents('.notes-section').find('.notes-table').parent(), taskId, taskmultilevellistid);
+                            // Refresh Online users
+                            GetOnlineUsers();
                         }
                     });
             }
