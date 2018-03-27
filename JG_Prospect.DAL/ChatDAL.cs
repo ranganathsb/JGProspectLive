@@ -599,7 +599,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId, string receiverIds, int chatSourceId)
+        public ActionOutput<ChatMessage> GetChatMessages(int LoggedInUserId, string ChatGroupId, string receiverIds, int chatSourceId)
         {
             try
             {
@@ -611,6 +611,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@ChatGroupId", DbType.String, ChatGroupId);
                     database.AddInParameter(command, "@ReceiverIds", DbType.String, receiverIds);
                     database.AddInParameter(command, "@ChatSourceId", DbType.Int32, chatSourceId);
+                    database.AddInParameter(command, "@LoggedInUserId", DbType.Int32, LoggedInUserId);
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
 

@@ -54,9 +54,9 @@ namespace JG_Prospect.BLL
             return ChatDAL.Instance.GetAllChatHistory();
         }
 
-        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId, string receiverIds, int chatSourceId)
+        public ActionOutput<ChatMessage> GetChatMessages(int LoggedInUserId, string ChatGroupId, string receiverIds, int chatSourceId)
         {
-            return ChatDAL.Instance.GetChatMessages(ChatGroupId, receiverIds, chatSourceId);
+            return ChatDAL.Instance.GetChatMessages(LoggedInUserId,ChatGroupId, receiverIds, chatSourceId);
         }
 
         public ActionOutput<ChatMessage> GetTaskChatMessages(int loggedInUserId, int chatSourceId, int TaskId, int TaskMultilevelListId = 0)

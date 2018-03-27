@@ -2567,7 +2567,7 @@ namespace JG_Prospect.WebServices
 
             return new JavaScriptSerializer().Serialize(new ActionOutput<ActiveUser>
             {
-                Results = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList(),
+                Results = SingletonUserChatGroups.Instance.ActiveUsers.OrderByDescending(m => m.LastMessageAt).ToList(),
                 Status = ActionStatus.Successfull
             });
         }
@@ -2589,7 +2589,7 @@ namespace JG_Prospect.WebServices
             List<ChatUser> receivers = ChatBLL.Instance.GetChatUsers(userIds.Where(x => x != JGSession.UserId).ToList()).Results;
 
             #region Chat Messages
-            List<ChatMessage> messages = taskId == 0 ? ChatBLL.Instance.GetChatMessages(chatGroupId, string.Join(",", userIds.OrderBy(m => m).ToList()), chatSourceId).Results
+            List<ChatMessage> messages = taskId == 0 ? ChatBLL.Instance.GetChatMessages(JGSession.UserId, chatGroupId, string.Join(",", userIds.OrderBy(m => m).ToList()), chatSourceId).Results
                                             :
                                             ChatBLL.Instance.GetTaskChatMessages(JGSession.UserId, chatSourceId, taskId, taskMultilevelListId).Results;
             #endregion
@@ -2715,7 +2715,7 @@ namespace JG_Prospect.WebServices
             obj.ChatGroupId = chatGroupId;
             obj.ChatGroupName = ChatGroupName;
             obj.ChatMessages = messages;
-            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
+            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderByDescending(m => m.LastMessageAt).ToList();
 
             return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMessageActiveUser>
             {
@@ -2768,7 +2768,7 @@ namespace JG_Prospect.WebServices
 
             receiverIds = string.Join(",", userIds.OrderBy(m => m).ToList());
 
-            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId, receiverIds, chatSourceId).Results;
+            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(JGSession.UserId, chatGroupId, receiverIds, chatSourceId).Results;
             return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMessage>
             {
                 Results = messages,
@@ -2786,7 +2786,7 @@ namespace JG_Prospect.WebServices
 
             receiverIds = string.Join(",", userIds.OrderBy(m => m).ToList());
 
-            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(chatGroupId, receiverIds, chatSourceId).Results;
+            List<ChatMessage> messages = ChatBLL.Instance.GetChatMessages(JGSession.UserId, chatGroupId, receiverIds, chatSourceId).Results;
             return new JavaScriptSerializer().Serialize(new ActionOutput<ChatMessage>
             {
                 Results = messages,
