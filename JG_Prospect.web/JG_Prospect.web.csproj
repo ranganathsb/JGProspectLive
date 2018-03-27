@@ -1597,6 +1597,7 @@
     <Content Include="datetime\jq\jquery.ui.timepicker.js" />
     <Content Include="EmailStatistics\statistics.txt" />
     <Content Include="Employee\ProfilePictures\chat-group.png" />
+    <Content Include="Employee\ProfilePictures\Default.jpg" />
     <Content Include="Employment_Redirect.aspx" />
     <Content Include="External Dependencies\AjaxControlToolkit.dll" />
     <Content Include="External Dependencies\aspsnippets.facebookapi.dll" />
