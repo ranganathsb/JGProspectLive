@@ -333,7 +333,8 @@ Go
 CREATE PROCEDURE [dbo].[GetChatMessages]
 	@ChatGroupId varchar(100),
 	@ReceiverIds Varchar(800),
-	@ChatSourceId Int = 0
+	@ChatSourceId Int = 0,
+	@LoggedInUserId int = 780
 AS    
 BEGIN
 	IF OBJECT_ID('tempdb..#TempChatMessages') IS NOT NULL DROP TABLE #TempChatMessages  
@@ -369,10 +370,11 @@ BEGIN
 		Begin
 			Select S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
 				U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
-				U.UserInstallId, U.Picture, MS.IsRead
+				U.UserInstallId, U.Picture, --MS.IsRead,
+				IsNull((Select MS.IsRead From ChatMessageReadStatus MS Where MS.ChatMessageId = S.ChatMessageId And ReceiverId = @LoggedInUserId),0) As IsRead
 			From #TempChatMessages S With(NoLock) 
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
-			Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
+			--Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
 			Where S.SortedChatUserIds = @ReceiverIds
 			Order By S.CreatedOn Asc
 		End
@@ -380,10 +382,11 @@ BEGIN
 		Begin
 			Select S.Id, S.ChatGroupId,S.ChatSourceId, S.SenderId, S.TextMessage, S.ChatFileId, S.ReceiverIds, S.CreatedOn,
 				U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
-				U.UserInstallId, U.Picture, MS.IsRead
+				U.UserInstallId, U.Picture,-- MS.IsRead
+				IsNull((Select MS.IsRead From ChatMessageReadStatus MS Where MS.ChatMessageId = S.ChatMessageId And ReceiverId = @LoggedInUserId),0) As IsRead
 			From #TempChatMessages S With(NoLock) 
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
-			Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
+			--Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
 			Where S.SortedChatUserIds = @ReceiverIds And S.ChatSourceId = @ChatSourceId
 			Order By S.CreatedOn Asc
 		End
@@ -512,7 +515,11 @@ Go
 Create PROCEDURE GetOnlineUsers      
  @LoggedInUserId int      
 AS          
-BEGIN      
+BEGIN    
+	/* Delete all entries which are more than 1 day old */
+	Delete From ChatUser Where OnlineAt < DATEADD(DAY, -1, GetDate())
+	/* Delete all entries which are more than 1 day old */
+  
  Declare @Min int = 1, @Max int = 1, @UserId Int, @LastMessage NVarchar(Max), @ChatUserIds Varchar(1000),    
    @MessageId Int, @MessageAt DateTime, @IsRead Bit, @ChatGroupId varchar(100),    
    @ChatRoleId int    

@@ -10,6 +10,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.Services;
 using System.Web.UI;
@@ -1177,6 +1178,30 @@ namespace JG_Prospect.Sr_App
                 MessageAt = DateTime.UtcNow.ToEST(),
                 MessageAtFormatted = DateTime.UtcNow.ToEST().ToString()
             }, ChatGroupId, receiverId, JGSession.UserId);
+
+            bool sendEmail = false;
+            // sort ReceiverIds into Asc
+            List<int?> ids = receiverId.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                       .Select(m => (int?)Convert.ToInt32(m))
+                                       .Distinct()
+                                       .ToList();
+
+            // Remove SenderId From ReceiverIds
+            if (ids.Count() > 0 && ids.Contains(JGSession.UserId))
+                ids.Remove(JGSession.UserId);
+            // Send Email notification to all offline users
+            if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => ids.Contains(m.UserId)).Any())
+            {
+                string baseurl = HttpContext.Current.Request.Url.Scheme + "://" +
+                                    HttpContext.Current.Request.Url.Authority +
+                                    HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
+                foreach (ActiveUser item in SingletonUserChatGroups.Instance.ActiveUsers.Where(m => ids.Contains(m.UserId) && !m.OnlineAt.HasValue).ToList())
+                {
+                    ChatBLL.Instance.SendOfflineChatEmail(userID, item.UserId.Value, strUserInstallId,
+                                                            note, touchPointSource, baseurl, ChatGroupId);
+                }
+            }
+
             return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
         }
     }
