@@ -41,13 +41,15 @@ BEGIN
 		End
 End
 /*
-Insert Into PhoneScript(Type,SubType,Title,Description)Values(1,1,'In Bound & Outbound Phone Calls','In Bound & Outbound Phone Calls')
-Insert Into PhoneScript(Type,SubType,Title,Description)Values(1,2,'In Bound & Outbound Phone Calls','In Bound & Outbound Phone Calls')
-Insert Into PhoneScript(Type,SubType,Title,Description)Values(1,2,'In Bound & Outbound Phone Calls','In Bound & Outbound Phone Calls')
-Insert Into PhoneScript(Type,SubType,Title,Description)Values(1,3,'In Bound & Outbound Phone Calls','In Bound & Outbound Phone Calls')
-Insert Into PhoneScript(Type,SubType,Title,Description)Values(2,1,'In Bound & Outbound Phone Calls','In Bound & Outbound Phone Calls')
-Insert Into PhoneScript(Type,SubType,Title,Description)Values(2,2,'In Bound & Outbound Phone Calls','In Bound & Outbound Phone Calls')
-Insert Into PhoneScript(Type,SubType,Title,Description)Values(2,3,'In Bound & Outbound Phone Calls','In Bound & Outbound Phone Calls')
+
+Insert Into PhoneScript(Type,SubType,Title,Description)Values(1,1,'In Bound Phone Calls','In Bound Phone Calls')
+Insert Into PhoneScript(Type,SubType,Title,Description)Values(1,2,'In Bound Phone Calls','In Bound Phone Calls')
+Insert Into PhoneScript(Type,SubType,Title,Description)Values(1,2,'In Bound Phone Calls','In Bound Phone Calls')
+Insert Into PhoneScript(Type,SubType,Title,Description)Values(1,3,'In Bound Phone Calls','In Bound Phone Calls')
+Insert Into PhoneScript(Type,SubType,Title,Description)Values(2,1,'Outbound Phone Calls','Outbound Phone Calls')
+Insert Into PhoneScript(Type,SubType,Title,Description)Values(2,2,'Outbound Phone Calls','Outbound Phone Calls')
+Insert Into PhoneScript(Type,SubType,Title,Description)Values(2,3,'Outbound Phone Calls','Outbound Phone Calls')
+
 */
 
 Go
@@ -468,7 +470,7 @@ Go
 -- Create date: 04/07/2016  
 -- Description: Load all details of task for edit.  
 -- =============================================  
--- usp_GetTaskDetails 535  
+-- usp_GetTaskDetails 702  
 CREATE PROCEDURE [dbo].[usp_GetTaskDetails]   
 (  
  @TaskId int   

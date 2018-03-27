@@ -173,7 +173,7 @@ div#wrapper {
     z-index: 101;
     border: 1px solid #bbb;
     border-radius: 5px;
-}.call-logs .row .type,.scrips .row .type{display:none;padding-left:0px;}
+}.call-logs .row .type,.scrips .row .type{padding-left:0px;}
  
  .call-logs .row .type .sub-type,.scrips .row .type .sub-type{display:none;    padding-left:10px;}
  .dialer-container {
@@ -271,11 +271,12 @@ div#wrapper {
     font-size: 14px;
 }
  .tabs {
-    float: left;
+    display:inline-block;
     width: 100%;
     top: 1px;
     position: relative;
 }
+ .tabs > div.active{}
  .tabs div {
     padding: 10px;
     float: left;

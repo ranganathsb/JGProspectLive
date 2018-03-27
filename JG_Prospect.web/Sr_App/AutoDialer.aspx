@@ -28,7 +28,7 @@
         }
 
             .dialer-right div.scrips {
-                min-height: 419px;
+                min-height: 539px;
                     padding: 5px;
             }
 
@@ -146,8 +146,8 @@
             <div class="dialer-right">
                 <div class="scrips">
                     <div class="tabs">
-                        <div>Inbound</div>
-                        <div>Outbound</div>
+                        <div onclick="showhideType(this, 1);" class="active">Inbound</div>
+                        <div onclick="showhideType(this, 2);">Outbound</div>
                     </div>
                     <div class="script-data">
                         Loading Scrips...
@@ -182,7 +182,7 @@
                         </tr>
                     </table>
                 </div>
-                <div class="userlist-calling-grid">
+                <div class="userlist-calling-grid" style="display:none">
                     <div>
                         <table class="header-table">
                             <thead>

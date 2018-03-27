@@ -1486,7 +1486,7 @@
                 success: function (data, msg) {
                     var str = '';
                     $.each(data.Results, function (i) {
-                        str += '<div class="row tab-' + data.Results[i].Type + '"><div class="title tab" id="' + data.Results[i].Type + '" onclick="showhideType(this);">' + data.Results[i].TypeName + '</div>';
+                        str += '<div class="row tab-' + data.Results[i].Type + '">';
                         str += '<div class="type" id="' + data.Results[i].Type + '">';
                         $.each(data.Results[i].SubTypes, function (j) {
                             str += '<div class="title" id="' + data.Results[i].SubTypes[j].SubType + '" onclick="showhideSubType(this);">' + data.Results[i].SubTypes[j].SubTypeName + '</div>';
@@ -1579,12 +1579,16 @@
                 $(sender).parent().find('.desc#' + id).slideDown();
             }
         }
-        function showhideType(sender) {
-            if ($(sender).parent().find('.type').is(':visible')) {
-                $(sender).parent().find('.type').slideUp();
-            } else {
-                $(sender).parent().find('.type').slideDown();
-            }
+        function showhideType(sender, id) {
+            $('.script-data > div').hide();
+            $('.script-data .tab-' + id).show();
+            $('.tabs > div').removeClass('active');
+            $(sender).addClass('active');
+            //if ($(sender).parent().find('.type').is(':visible')) {
+            //    $(sender).parent().find('.type').slideUp();
+            //} else {
+            //    $(sender).parent().find('.type').slideDown();
+            //}
         }
         function showhideSubType(sender) {
             var id = $(sender).attr('id');

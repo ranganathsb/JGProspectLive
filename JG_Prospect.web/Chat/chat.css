@@ -624,11 +624,12 @@ body {
 
     .chat-users-section .contents .msg-container .msg {
         float: left;
-        width: 160px;
+        width: 105px;
         text-overflow: ellipsis;
         white-space: nowrap;
         color: #666;
         overflow: hidden;
+        height: 15px;
     }
 
 .chat-users-section .profile .installid {
