@@ -94,7 +94,7 @@ Go
 -- Create date: 9 Jan 2017   
 -- Description: Add offline user to chatuser table
 -- =============================================     
--- [sp_GetHrData] '','0',0,0, 0, NULL, NULL,0,20, 'CreatedDateTime DESC','5','9','6','1'    
+-- [sp_GetHrData] 'kapil','0',0,0, 0, NULL, NULL,0,20, 'CreatedDateTime DESC','5','9','6','1'    
 Create PROCEDURE [dbo].[sp_GetHrData]    
  @SearchTerm VARCHAR(15) = NULL, @Status VARCHAR(50), @DesignationId INT, @SourceId INT, @AddedByUserId INT, @FromDate DATE = NULL,    
  @ToDate DATE = NULL, @PageIndex INT = NULL,  @PageSize INT = NULL, @SortExpression VARCHAR(50), @InterviewDateStatus VARChAR(5) = '5',    

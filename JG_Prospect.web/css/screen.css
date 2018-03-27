@@ -2889,7 +2889,7 @@ ul.auto-complete-users {
 .header-msg .row .caller{float: left;margin-left:3px;position:relative;
     /*font-size: 12px;
     width: 88px;*/}
-.header-msg .row .caller div{float: left;font-size: 20px;}
+.header-msg .row .caller div{float: left;font-size: 15px;margin-top: 1px;}
 .header-msg .row .caller .phone{margin-right: 2px;color: #e55456;}
 .header-msg .row .caller .email{margin-right: 2px;color: #000;}
 .header-msg .row .caller .video{color:#e55456;}

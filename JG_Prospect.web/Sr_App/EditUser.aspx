@@ -629,6 +629,8 @@
                         $(sender).parents('.notes-inputs').find('.note-text').val('');
                         //Paging(sender);
                         LoadNotes(sender, txtUid, uid);
+                        // Refresh Online users
+                        GetOnlineUsers();
                     }
                 });
         }
