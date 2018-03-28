@@ -14,6 +14,7 @@ IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'Get
       DROP PROCEDURE GetTaskChatMessages
   END
 Go
+
  -- =============================================      
 -- Author:  Jitendra Pancholi      
 -- Create date: 9 Jan 2017   
