@@ -18,7 +18,7 @@
 
     <link href="../css/screen.css?v=<%#RandomGUID %>" rel="stylesheet" media="screen" type="text/css" />
     <link href="../css/jquery.ui.theme.css" rel="stylesheet" media="screen" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="//twitter.github.com/bootstrap/assets/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="https://twitter.github.com/bootstrap/assets/css/bootstrap.css">
     <%--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">--%>
     <link href="../css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="../js/mention/recommended-styles.css?v=<%#RandomGUID %>" rel="stylesheet" />
