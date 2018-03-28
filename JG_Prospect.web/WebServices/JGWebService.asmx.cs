@@ -2610,6 +2610,7 @@ namespace JG_Prospect.WebServices
                     ProfilePic = sender.ProfilePic,
                     OnlineAt = sender.OnlineAt,
                     UserId = sender.UserId,
+                    UserInstallId=sender.UserInstallId,
                     OnlineAtFormatted = sender.OnlineAtFormatted,
                     ChatClosed = false
                 });
@@ -2624,13 +2625,14 @@ namespace JG_Prospect.WebServices
                         ProfilePic = receiver.ProfilePic,
                         OnlineAt = receiver.OnlineAt,
                         UserId = receiver.UserId,
+                        UserInstallId = receiver.UserInstallId,
                         OnlineAtFormatted = receiver.OnlineAtFormatted,
                         ChatClosed = false
                     });
                 }
                 #endregion
                 DataSet taskDetail = TaskGeneratorBLL.Instance.GetTaskDetails(taskId);
-                ChatGroupName = taskId == 0 ? string.Join("-", chatUsers.Select(m => m.GroupOrUsername).ToList())
+                ChatGroupName = taskId == 0 ? string.Join(", ", chatUsers.Select(m => m.GroupOrUsername + ":<a href=\"/Sr_App/ViewSalesUser.aspx?id=" + m.UserId + "\">" + m.UserInstallId + "</a>").ToList())
                                 : taskDetail.Tables[6].Rows[0]["TaskTitle"].ToString();
 
                 // Check if ChatGroupId is already exists
@@ -2709,8 +2711,6 @@ namespace JG_Prospect.WebServices
                 }
             }
             #endregion
-
-            messages.ForEach(x => x.IsRead = true);
             ChatMessageActiveUser obj = new ChatMessageActiveUser();
             obj.ChatGroupId = chatGroupId;
             obj.ChatGroupName = ChatGroupName;

@@ -3,7 +3,7 @@
 });
 function callWebServiceMethod($http, methodName, filters, sender) {
     $("#MainThrobberImage").show().position({ my: "left center", at: "right center", of: $(sender), offset: "5 0" });
-    return $http.post(url + methodName, filters);
+    return $http.post(url + methodName, filters);    
 };
 function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
     //var list = '[{"Id": 10},{"Id": 10},{"Id": 10},{"Id": 10},{"Id": 10},]';

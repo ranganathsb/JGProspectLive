@@ -634,9 +634,21 @@ SELECT * from TaskHistory ORDER BY  UpdatedOn DESC
  WHERE tuf.TaskId = @TaskId  
   
   /* Proper Task Title with ID */  /* Table[6] */
-	Declare @ParentTaskId int = null, @ChatGroupName NVarchar(2000) = '', @TempChatGroupName NVarchar(200) = '', @Title NVarchar(1000)
-	Select @TaskId = TaskId, @ParentTaskId = T.ParentTaskId, @TempChatGroupName = T.InstallId, @Title = T.Title + '(<a href="javascript:;">'
-		From tblTask T With(NoLock) Where T.TaskId = @TaskId
+	Declare @ParentTaskId int = null, @ChatGroupName NVarchar(2000) = '', @TempChatGroupName NVarchar(200) = '', 
+			@Title NVarchar(1000), @MainParentTaskId int 
+
+	Select @TaskId = TaskId, @ParentTaskId = T.ParentTaskId, @TempChatGroupName = T.InstallId, 
+			@Title = T.Title From tblTask T With(NoLock) Where T.TaskId = @TaskId
+
+	If @TaskId IS NOT NULL AND @ParentTaskId IS NOT NULL
+			Begin
+				Set @Title = @Title + '<a onclick="event.stopPropagation();" href="/Sr_App/TaskGenerator.aspx?TaskId={MainParentTaskId}&hstid=' + Convert(Varchar(12),@TaskId) + '">'
+			End
+		Else IF @TaskId IS NOT NULL
+			Begin
+				Set @Title = @Title + '<a onclick="event.stopPropagation();" href="/Sr_App/TaskGenerator.aspx?TaskId=' + Convert(Varchar(12),@TaskId) + '">'
+			End
+
 	IF OBJECT_ID('tempdb..#TaskUsers') IS NOT NULL DROP TABLE #TaskUsers   
 	Create Table #TaskUsers(UserId int, Aceptance bit, CreatedOn DateTime)
 	Insert Into #TaskUsers Exec GetTaskUsers @TaskId
@@ -646,11 +658,16 @@ SELECT * from TaskHistory ORDER BY  UpdatedOn DESC
 			Select @TempChatGroupName = T.InstallId, @ParentTaskId = T.ParentTaskId, @TaskId = T.ParentTaskId
 				From tblTask T With(NoLock) Where T.TaskId = @TaskId And T.TaskId = @TaskId
 			Set @ChatGroupName =  @TempChatGroupName + '-' + @ChatGroupName
+			IF @ParentTaskId Is NOT NUll
+				Begin
+					Set @MainParentTaskId = @ParentTaskId
+				End
 		End
 
 	Set @Title = SUBSTRING(@Title + @ChatGroupName, 0, LEN(@Title + @ChatGroupName)) + '</a> : '
+	Set @Title = Replace(@Title,'{MainParentTaskId}',Convert(Varchar(12),@MainParentTaskId))
 
-	Select @Title = @Title + U.FristName + ' ' + U.LastName + '-' + '<a href="javascript:;" uid="'+Convert(Varchar(12),U.Id)+'" target="_blank">'+U.UserInstallId+'</a>' + ', ' From #TaskUsers T With(NoLock) 
+	Select @Title = @Title + U.FristName + ' ' + U.LastName + '-' + '<a href="/Sr_App/ViewSalesUser.aspx?id='+Convert(Varchar(12),U.Id)+'" uid="'+Convert(Varchar(12),U.Id)+'" target="_blank">'+U.UserInstallId+'</a>' + ', ' From #TaskUsers T With(NoLock) 
 	Join tblInstallUsers U With(NoLock) On T.UserId = U.Id
 	Order By U.Id Asc
 
