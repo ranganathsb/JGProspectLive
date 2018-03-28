@@ -12,6 +12,7 @@ using JG_Prospect.Common.modal;
 using System.Xml;
 using System.Web.UI.HtmlControls;
 using System.Data.SqlClient;
+using static JG_Prospect.Common.JGCommon;
 
 namespace JG_Prospect.DAL
 {
@@ -615,7 +616,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public ActionOutput<LoginUser> GetUsers(string keyword, string exceptUserIds = null, int? LoggedInUserId=null)
+        public ActionOutput<LoginUser> GetUsers(string keyword, string exceptUserIds = null, int? LoggedInUserId = null)
         {
             try
             {
@@ -1740,6 +1741,36 @@ namespace JG_Prospect.DAL
                 return null;
 
             }
+        }
+
+        public List<UserSource> GetSourceList()
+        {
+            List<UserSource> list = new List<UserSource>();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("UDP_GetSource");
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    if (returndata != null && returndata.Tables[0] != null)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            list.Add(new UserSource
+                            {
+                                Id = Convert.ToInt32(item["Id"].ToString()),
+                                Source = item["Source"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return list;
         }
 
         public DataSet CheckDuplicateSource(string Source)
@@ -3262,6 +3293,39 @@ namespace JG_Prospect.DAL
             return returndata;
         }
 
+        public List<UserAddedBy> GeAddedBytUsersFormatted()
+        {
+            List<UserAddedBy> list = new List<UserAddedBy>();
+            returndata = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GeAddedBytUsersFilter");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    if (returndata != null && returndata.Tables[0] != null)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            list.Add(new UserAddedBy
+                            {
+                                UserId = Convert.ToInt32(item["Id"].ToString()),
+                                FormattedName = item["FirstName"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+            return list;
+        }
+
         public void UpdateEmpType(int ID, string EmpType)
         {
             try
@@ -3312,7 +3376,7 @@ namespace JG_Prospect.DAL
             return returndata;
         }
 
-        public int UpdateUsersLastLoginTime(int loginUserID,  DateTime LogInTime)
+        public int UpdateUsersLastLoginTime(int loginUserID, DateTime LogInTime)
         {
             try
             {
@@ -3320,7 +3384,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("usp_UpdateUserLoginTimeStamp");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@Id", DbType.Int32, loginUserID);                    
+                    database.AddInParameter(command, "@Id", DbType.Int32, loginUserID);
                     database.AddInParameter(command, "@LastLoginTimeStamp", DbType.DateTime, LogInTime);
                     int retrunVal = database.ExecuteNonQuery(command);
                     return retrunVal;

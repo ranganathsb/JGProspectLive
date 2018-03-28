@@ -128,11 +128,14 @@ namespace JG_Prospect.Chat.Hubs
                 receiverIds += "," + SenderUserId;
                 ChatBLL.Instance.SaveChatMessage(chatMessage, chatGroupId, receiverIds, SenderUserId);
 
+                taskId = taskId.HasValue ? taskId.Value : 0;
+                taskMultilevelListId = taskMultilevelListId.HasValue ? taskMultilevelListId.Value : 0;
+
                 Clients.Group(chatGroupId).updateClient(new ActionOutput<ChatMessage>
                 {
                     Status = ActionStatus.Successfull,
                     Object = chatMessage,
-                    Message = chatGroupId + "`" + chatGroup.ChatGroupName + "`" + receiverIds + "`" + SenderUserId
+                    Message = chatGroupId + "`" + chatGroup.ChatGroupName + "`" + receiverIds + "`" + SenderUserId + "`" + taskId + "`" + taskMultilevelListId
                 });
             }
             catch (Exception ex)
@@ -288,13 +291,13 @@ namespace JG_Prospect.Chat.Hubs
             }
 
             ChatMessageActiveUser obj = new ChatMessageActiveUser();
-            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
+            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderByDescending(m => m.LastMessageAt).ToList();
 
             Clients.All.onConnectedCallback(new ActionOutput<int>
             {
                 Status = ActionStatus.Successfull,
                 Message = UserId + " User is connected...",
-                Object= status
+                Object = status
             });
             return base.OnConnected();
         }
@@ -416,7 +419,7 @@ namespace JG_Prospect.Chat.Hubs
             }
 
             ChatMessageActiveUser obj = new ChatMessageActiveUser();
-            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderBy(m => m.Status).ToList();
+            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderByDescending(m => m.LastMessageAt).ToList();
 
             Clients.All.SetChatUserStatusToIdleCallback(new ActionOutput<ChatMessageActiveUser>
             {
@@ -440,7 +443,7 @@ namespace JG_Prospect.Chat.Hubs
                                                             .Where(m => m.ChatGroupId == ChatGroupId)
                                                             .FirstOrDefault()
                                                             .ChatUsers
-                                                            .Where(m => m.UserId.Value != UserId)
+                                                            //.Where(m => m.UserId.Value != UserId)
                                                             .Select(m => m.UserId.Value)
                                                             .ToList();
             }

@@ -9,7 +9,7 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     
-    <script src="../js/Custom/JgPopUp.js" type="text/javascript"></script>
+    <script src="../js/Custom/JgPopUp.js?v=<%#JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>" type="text/javascript"></script>
     <link type="text/css" href="../css/flags24.css" rel="Stylesheet" />
     <link href="../css/jquery.timepicker.css" rel="stylesheet" />
     <style type="text/css">
@@ -629,6 +629,8 @@
                         $(sender).parents('.notes-inputs').find('.note-text').val('');
                         //Paging(sender);
                         LoadNotes(sender, txtUid, uid);
+                        // Refresh Online users
+                        GetOnlineUsers();
                     }
                 });
         }
@@ -1048,7 +1050,7 @@
             /*background-image:url(../img/starred.png);*/
         }
     </style>
-    <link href="../Styles/dd.css" rel="stylesheet" />
+    <link href="../Styles/dd.css?v=<%#JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <%
@@ -2624,11 +2626,11 @@
         </div>
     </div>
     <script src="../Scripts/angular.min.js"></script>
-    <script src="../js/angular/scripts/jgapp.js"></script>
-    <script src="../js/angular/scripts/edituser-angular.js"></script>
+    <script src="../js/angular/scripts/jgapp.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
+    <script src="../js/angular/scripts/edituser-angular.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
     <script src="../js/jquery.dd.min.js"></script>
     <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
-    <script src="../js/edituser.js"></script>
+    <script src="../js/edituser.js?v=<%=JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>"></script>
 
     <script type="text/javascript">
 

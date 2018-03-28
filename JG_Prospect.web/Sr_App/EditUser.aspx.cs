@@ -45,6 +45,7 @@ namespace JG_Prospect
         #region '--Members--'
         public string notesUserEmail = "";
         public int loggedInUserId = 0;
+       // public string RandomGUID;
         #endregion
 
         #region '--Properties--'
@@ -151,6 +152,7 @@ namespace JG_Prospect
 
         protected void Page_Load(object sender, EventArgs e)
         {
+           // RandomGUID = SingletonGlobal.Instance.RandomGUID;
             CommonFunction.AuthenticateUser();
             loggedInUserId = JGSession.UserId;
             int x = 0;

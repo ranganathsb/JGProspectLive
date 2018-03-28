@@ -8,6 +8,7 @@ using JG_Prospect.Common.modal;
 using System.Data;
 using System.Xml;
 using System.Web.UI.HtmlControls;
+using static JG_Prospect.Common.JGCommon;
 
 namespace JG_Prospect.BLL
 {
@@ -193,6 +194,11 @@ namespace JG_Prospect.BLL
         public DataSet GetSource()
         {
             return InstallUserDAL.Instance.getSource();
+        }
+
+        public List<UserSource> GetSourceList()
+        {
+            return InstallUserDAL.Instance.GetSourceList();
         }
 
         public bool DeleteSource(string Source)
@@ -654,6 +660,11 @@ namespace JG_Prospect.BLL
         public DataSet GeAddedBytUsers()
         {
             return InstallUserDAL.Instance.GeAddedBytUsers();
+        }
+
+        public List<UserAddedBy> GeAddedBytUsersFormatted()
+        {
+            return InstallUserDAL.Instance.GeAddedBytUsersFormatted();
         }
 
         public string AddUserEmails(string hidExtEmail, int UserId)

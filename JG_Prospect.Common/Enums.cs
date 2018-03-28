@@ -1,4 +1,6 @@
-﻿namespace JG_Prospect.Common
+﻿using System.ComponentModel;
+
+namespace JG_Prospect.Common
 {
     public class Enums
     {
@@ -38,5 +40,5 @@
     {
         Active = 1,
         Idle = 2
-    }
+    }    
 }

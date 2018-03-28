@@ -8,6 +8,7 @@ using System.Web.UI.WebControls;
 
 using System.Collections.Generic;
 using JG_Prospect.Common;
+using static JG_Prospect.Common.JGCommon;
 
 namespace JG_Prospect.Utilits
 {
@@ -222,10 +223,59 @@ namespace JG_Prospect.Utilits
             #endregion
         }
 
-        class UserStatus
+        public static List<UserStatus> GetUserStatuses(Boolean Formatted = true)
         {
-            public string Status { get; set; }
-            public string StatusValue { get; set; }
+            List<UserStatus> lstUserStatus = new List<UserStatus>();
+            UserStatus objUserStatus;
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Referral applicant";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.ReferralApplicant).ToString();
+            lstUserStatus.Add(objUserStatus);
+
+            //Task ID - ID#: ITSN042 - Passing the Status Text with HTML elements
+            //for JQuery Image dropdown msDropDown()
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = Formatted ? "Applicant <span class='ddlstatus-per-text' id='ddlstatusApplicant'><img src='../Sr_App/img/yellow-astrek.png' class='fnone'>Applicant Screened : 25%</span>" : "Applicant";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.Applicant).ToString();
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = Formatted ? "Interview Date <span class='ddlstatus-per-text' id='ddlstatusInterviewDate'><img src='../Sr_App/img/purple-astrek.png' class='fnone'>Applicant Screened : 20%</span>" : "Interview Date";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.InterviewDate).ToString();
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Rejected";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.Rejected).ToString();
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = Formatted ? "Offer Made <span class='ddlstatus-per-text' id='ddlstatusOfferMade'><img src='../Sr_App/img/black-astrek.png' class='fnone'>New Hire : 80%</span>" : "Offer Made";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString();
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Active";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString();
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Deactive";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString();
+            lstUserStatus.Add(objUserStatus);
+
+            objUserStatus = new UserStatus();
+            objUserStatus.Status = "Interview Date Expired";
+            objUserStatus.StatusValue = Convert.ToByte(JGConstant.InstallUserStatus.InterviewDateExpired).ToString();
+            lstUserStatus.Add(objUserStatus);
+
+            return lstUserStatus;
+        }
+
+        public static List<UserDesignation> GetUserDesignation(int? Id = null)
+        {
+           return  UserBLL.Instance.GetUserDesignation(Id);
         }
     }
 }

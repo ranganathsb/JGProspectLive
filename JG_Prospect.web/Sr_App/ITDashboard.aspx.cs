@@ -10,6 +10,7 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Script.Serialization;
 using System.Web.Services;
 using System.Web.UI;
@@ -25,10 +26,12 @@ namespace JG_Prospect.Sr_App
         public int loggedInUserId = 0;
         public bool TaskListView = true;
         public int UserDesignationId = 0;
+        //public string RandomGUID;
         #endregion
 
         protected void Page_Load(object sender, EventArgs e)
         {
+           // RandomGUID = SingletonGlobal.Instance.RandomGUID;
             JG_Prospect.App_Code.CommonFunction.AuthenticateUser();
             UserDesignationId = JGSession.DesignationId;
 
@@ -1105,7 +1108,7 @@ namespace JG_Prospect.Sr_App
             {
                 receiverId = string.Join(",", users.OrderBy(m => m).ToList());
             }
-            List<ChatMessage> chatMessages = ChatBLL.Instance.GetTaskChatMessages(chatSourceId, taskId, taskMultilevelListId).Results;
+            List<ChatMessage> chatMessages = ChatBLL.Instance.GetTaskChatMessages(JGSession.UserId, chatSourceId, taskId, taskMultilevelListId).Results;
             PagingResult<Notes> notes = new PagingResult<Notes>();
             notes.Status = ActionStatus.Successfull;
             notes.TotalResults = chatMessages.Count();
@@ -1152,7 +1155,7 @@ namespace JG_Prospect.Sr_App
             int userID = Convert.ToInt32(JGSession.LoginUserID);
             string ChatGroupId = string.Empty;
             //InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.UtcNow, "Note : " + note, "", touchPointSource);
-            var chat = ChatBLL.Instance.GetTaskChatMessages(touchPointSource, taskId, taskMultilevelListId);
+            var chat = ChatBLL.Instance.GetTaskChatMessages(JGSession.UserId, touchPointSource, taskId, taskMultilevelListId);
             if (chat != null && chat.Results != null && chat.Results.Count() > 0)
             {
                 ChatGroupId = chat.Results[0].ChatGroupId;
@@ -1175,6 +1178,30 @@ namespace JG_Prospect.Sr_App
                 MessageAt = DateTime.UtcNow.ToEST(),
                 MessageAtFormatted = DateTime.UtcNow.ToEST().ToString()
             }, ChatGroupId, receiverId, JGSession.UserId);
+
+            bool sendEmail = false;
+            // sort ReceiverIds into Asc
+            List<int?> ids = receiverId.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                                       .Select(m => (int?)Convert.ToInt32(m))
+                                       .Distinct()
+                                       .ToList();
+
+            // Remove SenderId From ReceiverIds
+            if (ids.Count() > 0 && ids.Contains(JGSession.UserId))
+                ids.Remove(JGSession.UserId);
+            // Send Email notification to all offline users
+            if (SingletonUserChatGroups.Instance.ActiveUsers.Where(m => ids.Contains(m.UserId)).Any())
+            {
+                string baseurl = HttpContext.Current.Request.Url.Scheme + "://" +
+                                    HttpContext.Current.Request.Url.Authority +
+                                    HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
+                foreach (ActiveUser item in SingletonUserChatGroups.Instance.ActiveUsers.Where(m => ids.Contains(m.UserId) && !m.OnlineAt.HasValue).ToList())
+                {
+                    ChatBLL.Instance.SendOfflineChatEmail(userID, item.UserId.Value, strUserInstallId,
+                                                            note, touchPointSource, baseurl, ChatGroupId);
+                }
+            }
+
             return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
         }
     }

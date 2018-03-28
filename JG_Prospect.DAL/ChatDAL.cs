@@ -456,7 +456,11 @@ namespace JG_Prospect.DAL
                                 ReceiverIds = item["ReceiverIds"].ToString(),
                                 InstallUserStatusId = !string.IsNullOrEmpty(item["UserStatus"].ToString())
                                                                 ? (int?)Convert.ToInt32(item["UserStatus"].ToString()) : null,
-                                Status = (int)ChatUserStatus.Idle
+                                Status = (int)ChatUserStatus.Idle,
+                                TaskId = string.IsNullOrEmpty(item["TaskId"].ToString()) ? 0 : Convert.ToInt32(item["TaskId"].ToString()),
+                                TaskMultilevelListId = string.IsNullOrEmpty(item["TaskMultilevelListId"].ToString()) ? 0 : Convert.ToInt32(item["TaskMultilevelListId"].ToString()),
+                                UnreadCount = Convert.ToInt32(item["UnreadCount"].ToString()),
+                                GroupNameAnchor = item["GroupNameAnchor"].ToString()
                             });
                         }
                     }
@@ -595,7 +599,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public ActionOutput<ChatMessage> GetChatMessages(string ChatGroupId, string receiverIds, int chatSourceId)
+        public ActionOutput<ChatMessage> GetChatMessages(int LoggedInUserId, string ChatGroupId, string receiverIds, int chatSourceId)
         {
             try
             {
@@ -607,6 +611,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@ChatGroupId", DbType.String, ChatGroupId);
                     database.AddInParameter(command, "@ReceiverIds", DbType.String, receiverIds);
                     database.AddInParameter(command, "@ChatSourceId", DbType.Int32, chatSourceId);
+                    database.AddInParameter(command, "@LoggedInUserId", DbType.Int32, LoggedInUserId);
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
 
@@ -808,7 +813,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public ActionOutput<ChatMessage> GetTaskChatMessages(int chatSourceId, int TaskId, int TaskMultilevelListId = 0)
+        public ActionOutput<ChatMessage> GetTaskChatMessages(int loggedInUserId, int chatSourceId, int TaskId, int TaskMultilevelListId = 0)
         {
             try
             {
@@ -820,6 +825,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
                     database.AddInParameter(command, "@TaskMultilevelListId", DbType.Int32, TaskMultilevelListId);
                     database.AddInParameter(command, "@ChatSourceId", DbType.Int32, chatSourceId);
+                    database.AddInParameter(command, "@LoggedInUserId", DbType.Int32, loggedInUserId);
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
 

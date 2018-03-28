@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -245,6 +246,52 @@ namespace JG_Prospect.Common.modal
 
     }
 
+    public class SalesUser
+    {
+        public int Id { get; set; }
+        public string UserInstallId { get; set; }
+        public string ProfilePic { get; set; }
+        public int DesignationId { get; set; }
+        public string Designation { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public int Status { get; set; }
+        public string StatusName { get; set; }
+        public string StatusReason { get; set; }
+        public string RejectDetail { get; set; }
+        public string RejectedByUserName { get; set; }
+        public string RejectedByUserInstallId { get; set; }
+        public int? RejectedUserId { get; set; }
+        public string InterviewDetail { get; set; }
+        public string Source { get; set; }
+        public string AddedBy { get; set; }
+        public string AddedByInstallId { get; set; }
+        public DateTime AddedOn { get; set; }
+        public string AddedOnFormatted { get; set; }
+        public string Email { get; set; }
+        public string PhoneType { get; set; }
+        public string Phone { get; set; }
+        public string Country { get; set; }
+        public string Zip { get; set; }
+        public string City { get; set; }
+        public string JobType { get; set; }
+        public string ResumeFileDisplayName { get; set; }
+        public string ResumeFileSavedName { get; set; }
+    }
+
+    public class UserEmail
+    {
+        public int UserId { get; set; }
+        public string Email { get; set; }
+    }
+
+    public class UserPhone
+    {
+        public int UserId { get; set; }
+        public int PhoneTypeId { get; set; }
+        public string Phone { get; set; }
+    }
+
     public class LoginUser
     {
         public int ID { get; set; }
@@ -274,9 +321,9 @@ namespace JG_Prospect.Common.modal
         }
         public int? UserId { get; set; }
         public string UserInstallId { get; set; }
-      //  public string FirstName { get; set; }
-       // public string LastName { get; set; }
-       // public string Email { get; set; }
+        //  public string FirstName { get; set; }
+        // public string LastName { get; set; }
+        // public string Email { get; set; }
         public DateTime? OnlineAt { get; set; }
         public string OnlineAtFormatted { get; set; }
         public string ProfilePic { get; set; }
@@ -293,6 +340,10 @@ namespace JG_Prospect.Common.modal
 
         public string GroupOrUsername { get; set; }
         public int? InstallUserStatusId { get; set; } // 
+        public int? TaskId { get; set; }
+        public int? TaskMultilevelListId { get; set; }
+        public int UnreadCount { get; set; }
+        public string GroupNameAnchor { get; set; }
     }
 
     public class ChatUnReadCount
@@ -370,8 +421,51 @@ namespace JG_Prospect.Common.modal
     public class PhoneScript
     {
         public int Id { get; set; }
+        public int Type { get; set; }
+        public int SubType { get; set; }
         public string Title { get; set; }
         public string DescriptionPlain { get; set; }
+    }
+
+    public enum ScriptType
+    {
+        [Description("Inbound Calls")]
+        Inbound = 1,
+        [Description("Outbound Calls")]
+        Outbound = 2
+    }
+
+    public enum ScriptSubType
+    {
+        [Description("Hr Calls")]
+        Hr = 1,
+        [Description("Sales Calls")]
+        Sales = 2,
+        [Description("Customer Services")]
+        Customer = 3
+    }
+
+    public class PhoneScriptType
+    {
+        public PhoneScriptType()
+        {
+            SubTypes = new List<modal.PhoneScriptSubType>();
+        }
+        public int Type { get; set; }
+        public string TypeName { get; set; }
+        public List<PhoneScriptSubType> SubTypes { get; set; }
+    }
+
+    public class PhoneScriptSubType
+    {
+        public PhoneScriptSubType()
+        {
+            PhoneScripts = new List<modal.PhoneScript>();
+        }
+        public int Type { get; set; }
+        public int SubType { get; set; }
+        public string SubTypeName { get; set; }
+        public List<PhoneScript> PhoneScripts { get; set; }
     }
 
     public class TaskMultiLevelList
@@ -427,7 +521,8 @@ namespace JG_Prospect.Common.modal
     {
         SingletonGlobal()
         {
-            RandomGUID = JGConstant.RandomGUID;
+            Random generator = new Random();
+            RandomGUID = generator.Next(0, 999999).ToString("D6");
             ConnectedClients = new List<string>();
         }
 
@@ -451,6 +546,6 @@ namespace JG_Prospect.Common.modal
                 }
                 return instance;
             }
-        }        
+        }
     }
 }
