@@ -2750,7 +2750,7 @@ namespace JG_Prospect.WebServices
                 }
                 #endregion
                 DataSet taskDetail = TaskGeneratorBLL.Instance.GetTaskDetails(taskId);
-                ChatGroupName = taskId == 0 ? string.Join(", ", chatUsers.Select(m => m.GroupOrUsername + ":<a href=\"/Sr_App/ViewSalesUser.aspx?id=" + m.UserId + "\">" + m.UserInstallId + "</a>").ToList())
+                ChatGroupName = taskId == 0 ? string.Join(", ", chatUsers.Select(m => m.GroupOrUsername + ":<a target=\"_blank\" href=\"/Sr_App/ViewSalesUser.aspx?id=" + m.UserId + "\">" + m.UserInstallId + "</a>").ToList())
                                 : taskDetail.Tables[6].Rows[0]["TaskTitle"].ToString();
 
                 // Check if ChatGroupId is already exists

@@ -170,7 +170,8 @@ namespace JG_Prospect.Chat.Hubs
                 SingletonUserChatGroups.Instance.ChatGroups
                                                  .Where(m => m.ChatGroupId == chatGroupId)
                                                  .FirstOrDefault()
-                                                 .ChatGroupName += "-" + receiver.GroupOrUsername;
+                                                 .ChatGroupName += ", " + receiver.GroupOrUsername +
+                                                 ":<a target=\"_blank\" href=\"/Sr_App/ViewSalesUser.aspx?id=" + receiver.UserId + "\">" + receiver.UserInstallId + "</a>";
 
                 newChatGroupName = SingletonUserChatGroups.Instance.ChatGroups
                                                  .Where(m => m.ChatGroupId == chatGroupId)
@@ -290,8 +291,8 @@ namespace JG_Prospect.Chat.Hubs
                 // It was called to instantiate the ChatProcessor 
             }
 
-            ChatMessageActiveUser obj = new ChatMessageActiveUser();
-            obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderByDescending(m => m.LastMessageAt).ToList();
+            //ChatMessageActiveUser obj = new ChatMessageActiveUser();
+            //obj.ActiveUsers = SingletonUserChatGroups.Instance.ActiveUsers.OrderByDescending(m => m.LastMessageAt).ToList();
 
             Clients.All.onConnectedCallback(new ActionOutput<int>
             {
