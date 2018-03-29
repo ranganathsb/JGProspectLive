@@ -1612,6 +1612,70 @@ namespace JG_Prospect.WebServices
             return Id.ToString();
         }
 
+        [WebMethod(EnableSession = true)]
+        public string QuickSaveUserwithEmailOrPhone(String FirstName, String LastName, String Email, String Phone, Int32 AddedByUserId, String DesignationText, Int32 DesignationId)
+        {
+            String returnString = string.Empty;
+
+            user objInstallUser = new user();
+
+            objInstallUser.fristname = FirstName;
+            objInstallUser.lastname = LastName;
+            objInstallUser.email = Email;
+            objInstallUser.phone = Phone;
+            //objInstallUser.designation = DesignationText;
+            //objInstallUser.DesignationID = DesignationId;
+            objInstallUser.AddedBy = AddedByUserId;
+            objInstallUser.status = Convert.ToInt32(JGConstant.InstallUserStatus.Applicant).ToString();
+
+            DataSet ds = InstallUserBLL.Instance.QuickSaveUserWithEmailorPhone(objInstallUser);
+
+            if (ds != null && ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+            {
+                if (Convert.ToBoolean(ds.Tables[0].Rows[0]["PhoneExists"].ToString()) && Convert.ToBoolean(ds.Tables[0].Rows[0]["EmailExists"].ToString()))
+                {
+                    returnString = "Email and Phone number are already exists in database";
+                }
+                else if (Convert.ToBoolean(ds.Tables[0].Rows[0]["PhoneExists"].ToString()))
+                {
+                    returnString = "Phone number is already exists in database";
+                }
+                else if (Convert.ToBoolean(ds.Tables[0].Rows[0]["EmailExists"].ToString()))
+                {
+                    returnString = "Email is already exists in database";
+                }
+                else if (!Convert.ToBoolean(ds.Tables[0].Rows[0]["PhoneExists"].ToString()) && !Convert.ToBoolean(ds.Tables[0].Rows[0]["EmailExists"].ToString()) && String.IsNullOrEmpty(ds.Tables[0].Rows[0]["UserID"].ToString()))
+                {
+                    returnString = "User cannot be saved. Please try again.";
+                }
+                else
+                {
+                    returnString = "User saved successfully!";
+
+                    SendPHPWelcomeEmail(Email);
+                }
+            }
+           
+            return returnString;
+        }
+
+        private void SendPHPWelcomeEmail(String UserEmailId)
+        {
+            DataSet dsUser = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(UserEmailId);
+            String FirstName = string.Empty, LastName = string.Empty, Designation = string.Empty, EmployeeType = string.Empty, UserEmail = String.Empty, DesignationID = String.Empty;
+
+            if (dsUser.Tables.Count > 0 && dsUser.Tables[0].Rows.Count > 0)
+            {
+                FirstName = Convert.ToString(dsUser.Tables[0].Rows[0]["FristName"]);
+                LastName = Convert.ToString(dsUser.Tables[0].Rows[0]["LastName"]);
+                Designation = Convert.ToString(dsUser.Tables[0].Rows[0]["Designation"]);                
+                UserEmail = Convert.ToString(dsUser.Tables[0].Rows[0]["Email"]);
+                DesignationID = Convert.ToString(dsUser.Tables[0].Rows[0]["DesignationID"]);
+            }
+
+            SendHRWelcomeEmail(UserEmail,FirstName,LastName,Designation,Convert.ToInt32(DesignationID),HTMLTemplates.PHP_HR_Welcome_Auto_Email,null,"JMGC-PC");
+      
+        }
 
         private string[] getSUBSubtaskSequencing(string sequence)
         {
@@ -2231,6 +2295,7 @@ namespace JG_Prospect.WebServices
         }
 
         #region "-- Private Methods --"
+
         private void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, int DesignitionId, string HireDate, string EmpType, string PayRates, HTMLTemplates objHTMLTemplateType, List<Attachment> Attachments = null, string strManager = "")
         {
             DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(objHTMLTemplateType, DesignitionId.ToString());
@@ -2393,6 +2458,7 @@ namespace JG_Prospect.WebServices
                 //ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('Error while sending email notification on " + emailId + ".');", true);
             }
         }
+
         private void AssignedTaskToUser(int UserID, UInt64 TaskId)
         {
             string ApplicantId = UserID.ToString();
@@ -2432,6 +2498,58 @@ namespace JG_Prospect.WebServices
             //{
             //    AlertMsg = "Status change was not successfull, Please try again later.";
             //}
+        }
+
+        private void SendHRWelcomeEmail(string emailId, string FName, string LName, string Designition, int DesignitionId ,HTMLTemplates objHTMLTemplateType, List<Attachment> Attachments = null, string strManager = "")
+        {
+            DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(objHTMLTemplateType, DesignitionId.ToString());
+
+            string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+            string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+            string fullname = FName + " " + LName;
+
+            string strHeader = objHTMLTemplate.Header;
+            string strBody = objHTMLTemplate.Body;
+            string strFooter = objHTMLTemplate.Footer;
+            string strsubject = objHTMLTemplate.Subject;
+
+            strBody = strBody.Replace("#Email#", emailId).Replace("#email#", emailId);
+            strBody = strBody.Replace("#FirstName#", FName);
+            strBody = strBody.Replace("#LastName#", LName);
+            strBody = strBody.Replace("#F&L name#", FName + " " + LName).Replace("#F&amp;L name#", FName + " " + LName);
+
+            strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
+            strBody = strBody.Replace("#Date#", "").Replace("#date#", "");
+            strBody = strBody.Replace("#Time#", "").Replace("#time#", "");
+            strBody = strBody.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+            strFooter = strFooter.Replace("#Name#", FName).Replace("#name#", FName);
+            strFooter = strFooter.Replace("#Date#", "").Replace("#date#", "");
+            strFooter = strFooter.Replace("#Time#", "").Replace("#time#", "");
+            strFooter = strFooter.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+            strBody = strBody.Replace("Lbl Full name", fullname);
+            strBody = strBody.Replace("LBL position", Designition);
+            
+            strBody = strBody.Replace("#manager#", strManager);
+
+            strBody = strHeader + strBody + strFooter;
+                        
+            List<Attachment> lstAttachments = objHTMLTemplate.Attachments;
+            
+            if (Attachments != null)
+            {
+                lstAttachments.AddRange(Attachments);
+            }
+
+            try
+            {
+                JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);                
+            }
+            catch
+            {
+                
+            }
         }
 
         #endregion

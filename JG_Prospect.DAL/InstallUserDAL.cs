@@ -3444,6 +3444,45 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet QuickSaveUserWithEmailorPhone(user objuser)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_QuickSaveUserWithEmailorPhone");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@FirstName", DbType.String, objuser.fristname);
+                    database.AddInParameter(command, "@LastName", DbType.String, objuser.lastname);
+                    database.AddInParameter(command, "@Email", DbType.String, objuser.email);
+                    database.AddInParameter(command, "@Phone", DbType.String, objuser.phone);
+                    //database.AddInParameter(command, "@DesignationText", DbType.String, objuser.designation);
+                    //database.AddInParameter(command, "@DesignationID", DbType.String, objuser.DesignationID);
+                    database.AddInParameter(command, "@AddedByUserId", DbType.Int32, objuser.AddedBy);
+                    database.AddInParameter(command, "@Status", DbType.String, objuser.status);
+                    database.AddOutParameter(command, "@Id", DbType.Int32, 1);
+                    database.AddOutParameter(command, "@EmailExists", DbType.Binary, 1);
+                    database.AddOutParameter(command, "@PhoneExists", DbType.Binary, 1);
+
+                    DataSet ds = database.ExecuteDataSet(command);
+
+                                       //bool EmailExists = Convert.ToBoolean(database.GetParameterValue(command, "@EmailExists"));
+                    //bool PhoneExists = Convert.ToBoolean(database.GetParameterValue(command, "@PhoneExists"));
+
+                    return ds;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+
+            }
+        }
+
+
+
         public Boolean UpdateUserProfile(user objuser)
         {
             try
@@ -3455,6 +3494,8 @@ namespace JG_Prospect.DAL
 
                     database.AddInParameter(command, "@UserId", DbType.Int32, objuser.id);
                     database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
+                    database.AddInParameter(command, "@Designation", DbType.String, objuser.designation);
+                    database.AddInParameter(command, "@DesignationId", DbType.String, objuser.DesignationID);
                     database.AddInParameter(command, "@SourceID", DbType.Int32, objuser.SourceId);
                     database.AddInParameter(command, "@Source", DbType.String, objuser.Source);
                     database.AddInParameter(command, "@FristName", DbType.String, objuser.fristname);

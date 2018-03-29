@@ -32,6 +32,7 @@
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
     <UseGlobalApplicationHostFile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -2074,6 +2075,8 @@
     <Content Include="js\angular\templates\pager-template.html" />
     <Content Include="js\button-action.js" />
     <Content Include="js\common-js.js" />
+    <Content Include="js\createsales.js" />
+    <Content Include="js\data.js" />
     <Content Include="js\edituser.js" />
     <Content Include="js\flipclock.min.js" />
     <Content Include="js\angular\scripts\jgapp.js" />

@@ -867,6 +867,11 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.QuickSaveInstallUser(objInstallUser);
         }
 
+        public DataSet QuickSaveUserWithEmailorPhone(user objInstallUser)
+        {
+            return InstallUserDAL.Instance.QuickSaveUserWithEmailorPhone(objInstallUser);
+        }
+
         public DataSet BulkIntsallUserDuplicateCheck(string xmlDoc)
         {
             return InstallUserDAL.Instance.BulkIntsallUserDuplicateCheck(xmlDoc);
