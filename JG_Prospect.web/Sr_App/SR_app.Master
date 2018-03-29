@@ -950,7 +950,7 @@
             if ($('.telecom-dashboard-popup').is(':visible')) {
                 oldchatId = $('.telecom-dashboard-popup').find('#ChatGroupId').val();
             }
-            if (id == oldchatId || oldchatId == 'none') {
+            if ((id == oldchatId || oldchatId == 'none') && !$('.telecom-dashboard-popup').hasClass('minimize')) {
                 var strChat = '<div class="chat-box" id="' + id + '" style="display:block;">' +
                                             '<div class="header"><span class="group-name">' + name +
                                                 '</span><span class="close" onclick="closechat(this)"><i class="fa fa-times" aria-hidden="true"></i></span>' +
@@ -959,6 +959,7 @@
                                             '<input type="hidden" id="TaskId" value="' + taskId + '" />' +
                                             '<input type="hidden" id="TaskMultilevelListId" value="' + taskMultilevelListId + '" />' +
                                             '<input type="hidden" id="ReceiverIds" value="' + receiverIds + '" />' +
+                                            '<input type="hidden" id="ChatSourceId" value="' + chatSourceId + '" />' +
                                             '<div class="chats watermark-logo"></div>' +
                                             '<div class="chat-text">' +
                                                 '<input type="text" data-emojiable="true" class="mention" placeholder="Say Something..." id="chattext" onkeyup="sendChat(event, this);" />' +
@@ -991,7 +992,60 @@
                 var msg = data.Object.Message;
                 var fileid = data.Object.FileId;
                 if (fileid != undefined && fileid != null && fileid != '') {
-                    msg = '<a href="/chat/attachments/' + msg.split(':-:')[1] + '" target="_black">' + msg.split(':-:')[0] + '</a>';
+                    var previewImage = '<img src="/chat/attachments/' + msg.split(':-:')[1] + '" />';
+                    var audioTag = '';
+                    var fileExt = (msg.split(':-:')[0].split('.').pop()).toLowerCase();
+                    switch (fileExt) {
+                        case 'xls':
+                        case 'xlsx':
+                            previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/excel.png" />';
+                            break;
+                        case 'html':
+                        case 'html':
+                            previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/html.png" />';
+                            break;
+                        case 'pdf':
+                            previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/pdf.png" />';
+                            break;
+                        case 'txt':
+                        case 'rtf':
+                            previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/text.png" />';
+                            break;
+                        case 'doc':
+                        case 'docx':
+                            previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/word.png" />';
+                            break;
+                        case 'zip':
+                        case 'rar':
+                            previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/zip.png" />';
+                            break;
+                        case 'mp3':
+                        case 'wav':
+                        case 'ogg':
+                            audioTag = '<audio controls><source src="/chat/attachments/' + msg.split(':-:')[1] + '"></audio>';
+                            break;
+                        case 'mp4':
+                        case 'webm':
+                            audioTag = '<video width="320" height="240" controls><source src="/chat/attachments/' + msg.split(':-:')[1] + '"></audio>';
+                            break;
+                        case 'png':
+                        case 'jpg':
+                        case 'bmp':
+                        case 'jpeg':
+                        case 'gif':
+                            previewImage = '<img src="/chat/attachments/' + msg.split(':-:')[1] + '" />';
+                            break;
+                        default:
+                            previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/file.png" />';
+                            break;
+                    }
+                    if (audioTag != '') {
+                        msg = audioTag;
+                    } else {
+                        msg = '<a href="/chat/attachments/' + msg.split(':-:')[1] + '" target="_black">' +
+                                previewImage +
+                                '</a>';
+                    }
                 }
                 var str = '<div class="chat-row ' + senderReceiver + '" userid="' + data.Object.UserId + '"><div class="profile">' +
                                 '<img src="<%=baseUrl %>' + data.Object.UserProfilePic + '" title="' + data.Object.UserFullname + '" />' +
@@ -1015,7 +1069,7 @@
                     PageTitleNotification.On('New Message!!!', 1000);
                     if (chat.server == undefined)
                         chat = $.connection.chatHub;
-                    // Mark as Read to this message and notify other users by blue tick
+                    // Mark as Read to this message and notify other users by blue tick only if popup is open & maximize
                     chat.server.setChatMessageRead(id);
                 }
             }
@@ -1144,6 +1198,7 @@
                     //$('.chat-container').show();
                     if ($('#' + id).length <= 0) {
                         $('.telecom-dashboard-popup').show();
+                        $('.telecom-dashboard-popup').removeClass('minimize');
                         $('.overlay').show();
                         // Calculate Center
                         var sW = $(window).width();
@@ -1160,6 +1215,7 @@
                                             '<input type="hidden" id="TaskId" value="' + taskId + '" />' +
                                             '<input type="hidden" id="TaskMultilevelListId" value="' + taskMultilevelListId + '" />' +
                                             '<input type="hidden" id="ReceiverIds" value="' + receiverIds + '" />' +
+                                            '<input type="hidden" id="ChatSourceId" value="' + chatSourceId + '" />' +
                                             '<div class="chats watermark-logo"></div>' +
                                             '<div class="chat-text">' +
                                                 '<input type="text" data-emojiable="true" class="mention" placeholder="Say Something..." id="chattext" onkeyup="sendChat(event, this);"  />' +
@@ -1178,7 +1234,60 @@
                             var fileid = data.Object.ChatMessages[i].FileId;
                             var msg = data.Object.ChatMessages[i].Message;
                             if (fileid != undefined && fileid != null && fileid != '') {
-                                msg = '<a href="/chat/attachments/' + msg.split(':-:')[1] + '" target="_black">' + msg.split(':-:')[0] + '</a>';
+                                var previewImage = '<img src="/chat/attachments/' + msg.split(':-:')[1] + '" />';
+                                var audioTag = '';
+                                var fileExt = (msg.split(':-:')[0].split('.').pop()).toLowerCase();
+                                switch (fileExt) {
+                                    case 'xls':
+                                    case 'xlsx':
+                                        previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/excel.png" />';
+                                        break;
+                                    case 'html':
+                                    case 'html':
+                                        previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/html.png" />';
+                                        break;
+                                    case 'pdf':
+                                        previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/pdf.png" />';
+                                        break;
+                                    case 'txt':
+                                    case 'rtf':
+                                        previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/text.png" />';
+                                        break;
+                                    case 'doc':
+                                    case 'docx':
+                                        previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/word.png" />';
+                                        break;
+                                    case 'zip':
+                                    case 'rar':
+                                        previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/zip.png" />';
+                                        break;
+                                    case 'mp3':
+                                    case 'wav':
+                                    case 'ogg':
+                                        audioTag = '<audio controls><source src="/chat/attachments/' + msg.split(':-:')[1] + '"></audio>';
+                                        break;
+                                    case 'mp4':
+                                    case 'webm':
+                                        audioTag = '<video width="320" height="240" controls><source src="/chat/attachments/' + msg.split(':-:')[1] + '"></audio>';
+                                        break;
+                                    case 'png':
+                                    case 'jpg':
+                                    case 'bmp':
+                                    case 'jpeg':
+                                    case 'gif':
+                                        previewImage = '<img src="/chat/attachments/' + msg.split(':-:')[1] + '" />';
+                                        break;
+                                    default:
+                                        previewImage = '<img class="chat-image-preview" src="/chat/previewIcons/file.png" />';
+                                        break;
+                                }
+                                if (audioTag != '') {
+                                    msg = audioTag;
+                                } else {
+                                    msg = '<a href="/chat/attachments/' + msg.split(':-:')[1] + '" target="_black">' +
+                                            previewImage +
+                                            '</a>';
+                                }
                             }
                             var tickColor = data.Object.ChatMessages[i].IsRead.toString().toLowerCase() == 'true' ? 'double-blue' : 'double-grey';
                             str += '<div class="chat-row ' + senderReceiver + '" userid="' + data.Object.ChatMessages[i].UserId + '"><div class="profile">' +
@@ -1227,7 +1336,7 @@
                                         (parseInt(data.Results[i].UnreadCount) > 0 ? '<span class="unread-chat-count">' + data.Results[i].UnreadCount + '</span>' : '') +
                         '</div>' +
                         '<div class="contents" online-at="' + data.Results[i].OnlineAtFormatted + '">' +
-                            '<div class="top"><div class="name">' + (data.Results[i].GroupNameAnchor == '' ? data.Results[i].GroupOrUsername : data.Results[i].GroupNameAnchor) + ' - <a onclick="event.stopPropagation();" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '" title="<%=baseUrl%>Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '">' + data.Results[i].UserInstallId + '</a></div><div class="time">' + (data.Results[i].LastMessageAtFormatted == null ? '' : data.Results[i].LastMessageAtFormatted.split(' ')[0]) + '</div></div>' +
+                            '<div class="top"><div class="name">' + (data.Results[i].GroupNameAnchor == '' ? data.Results[i].GroupOrUsername : data.Results[i].GroupNameAnchor) + ' - <a target="_blank" onclick="event.stopPropagation();" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '" title="<%=baseUrl%>Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '">' + data.Results[i].UserInstallId + '</a></div><div class="time">' + (data.Results[i].LastMessageAtFormatted == null ? '' : data.Results[i].LastMessageAtFormatted.split(' ')[0]) + '</div></div>' +
                                         '<div class="msg-container">' +
                                             (data.Results[i].LastMessageAtFormatted == null ? '' :
                                             '<div class="tick"><img src="../img/' + clr + '-tick.png"></div>') +
@@ -1254,7 +1363,7 @@
                                     ((data.Results[i].UnreadCount) > 0 ? '<span class="unread-chat-count">' + data.Results[i].UnreadCount + '</span>' : '') +
                                 '</div>' +
 	                            '<div class="contents">' +
-		                            '<div class="top"><div class="name">' + (data.Results[i].GroupNameAnchor == '' ? data.Results[i].GroupOrUsername : data.Results[i].GroupNameAnchor) + ' - <a onclick="event.stopPropagation();" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '" title="<%=baseUrl%>Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '">' + data.Results[i].UserInstallId + '</a></div></div>' +
+		                            '<div class="top"><div class="name">' + (data.Results[i].GroupNameAnchor == '' ? data.Results[i].GroupOrUsername : data.Results[i].GroupNameAnchor) + ' - <a target="_blank" onclick="event.stopPropagation();" href="/Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '" title="<%=baseUrl%>Sr_App/ViewSalesUser.aspx?id=' + data.Results[i].UserId + '">' + data.Results[i].UserInstallId + '</a></div></div>' +
 		                            '<div class="msg-container">' +
                                         (data.Results[i].LastMessageAtFormatted == null ? '' :
 			                            '<div class="tick"><img src="../img/' + clr + '-tick.png"></div>') +
@@ -1269,6 +1378,21 @@
                                     '<div class="time">' + (data.Results[i].LastMessageAtFormatted == null ? '' : data.Results[i].LastMessageAtFormatted.split(' ')[0]) + '</div>' +
 	                            '</div>' +
                             '</div>';
+                        // add unread count to ITDashboard Notes if any
+                        if (window.location.href.toLowerCase().indexOf('itdashboard.aspx') > 0) {
+                            var taskId = data.Results[i].TaskId;
+                            var taskMultilevelListId = data.Results[i].TaskMultilevelListId;
+                            $('.notes-section').each(function () {
+                                if ($(this).attr('taskid') == taskId && $(this).attr('taskmultilevellistid') == taskMultilevelListId) {
+                                    if (data.Results[i].UnreadCount > 0) {
+                                        $(this).find('span.unread-chat-count').remove();
+                                        $(this).prepend('<span class="unread-chat-count">' + data.Results[i].UnreadCount + '</span>');
+                                    } else {
+                                        $(this).find('span.unread-chat-count').remove();
+                                    }
+                                }
+                            });
+                        }
                     }
                 });
                 if (total > 0) {
@@ -1352,6 +1476,9 @@
                     });
                     // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
                     this.on("success", function (file, response) {
+                        var chatSourceId = $('.telecom-dashboard-popup').find('#ChatSourceId').val();
+                        var taskId = $('.telecom-dashboard-popup').find('#TaskId').val();
+                        var taskMultilevelListId = $('.telecom-dashboard-popup').find('#TaskMultilevelListId').val();
                         if (chat.server == undefined)
                             chat = $.connection.chatHub;
                         // Success coding goes here
@@ -1362,21 +1489,21 @@
                         var chatId = $('.chat-box').find('#ChatGroupId').val();
                         var receiverIds = $('.chat-box').find('#ReceiverIds').val();
                         //$(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
-                        chat.server.sendChatMessage(chatId, '', '<%=(int)JG_Prospect.Common.ChatSource.UserChat %>', receiverIds, fileId, null, null);
-                                });
-                                this.on("complete", function (file) {
-                                    this.removeFile(file);
-                                });
-                            }
-                        });
-                        //$('div.emoji-menu').off('click');
-                    }
+                        chat.server.sendChatMessage(chatId, '', chatSourceId, receiverIds, fileId, taskId, taskMultilevelListId);
+                    });
+                    this.on("complete", function (file) {
+                        this.removeFile(file);
+                    });
+                }
+            });
+            //$('div.emoji-menu').off('click');
+        }
 
-                    var emailTimer = setInterval(function () {
-                        var frame = document.getElementById('iframe-inbox');
-                        if (frame.contentWindow != null) {
-                            if ($("#iframe-inbox").contents().find("#email") != null && $("#iframe-inbox").contents().find("#email") != undefined) {
-                                frame.contentWindow.postMessage('<%=UserId%>', '*');
+        var emailTimer = setInterval(function () {
+            var frame = document.getElementById('iframe-inbox');
+            if (frame.contentWindow != null) {
+                if ($("#iframe-inbox").contents().find("#email") != null && $("#iframe-inbox").contents().find("#email") != undefined) {
+                    frame.contentWindow.postMessage('<%=UserId%>', '*');
                     clearInterval(emailTimer);
                 }
             }
@@ -1554,6 +1681,7 @@
                             $('.telecom-dashboard-popup').removeClass('fullscreen-email');
                             $('.telecom-dashboard-popup').addClass('fullscreen-chat');
                             $('.telecom-dashboard-popup').find('.popup-title').html('Chat Dashboard');
+                            $('.chat-users-section .list > div:nth-child(1)').trigger('click');
                             break;
                         case 'phone':
                             //GetPhoneScripts(sender);

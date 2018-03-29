@@ -31,7 +31,7 @@ namespace JG_Prospect.Sr_App
 
         protected void Page_Load(object sender, EventArgs e)
         {
-           // RandomGUID = SingletonGlobal.Instance.RandomGUID;
+            // RandomGUID = SingletonGlobal.Instance.RandomGUID;
             JG_Prospect.App_Code.CommonFunction.AuthenticateUser();
             UserDesignationId = JGSession.DesignationId;
 
@@ -1132,7 +1132,8 @@ namespace JG_Prospect.Sr_App
                 SourceUser = m.UserFullname.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[0],
                 SourceUserInstallId = m.UserInstallId,
                 SourceUsername = m.UserFullname,
-                TouchPointSource = m.ChatSourceId
+                TouchPointSource = m.ChatSourceId,
+                IsRead = m.IsRead
             }).OrderByDescending(x => x.ChangeDateTime).OrderByDescending(x => x.ChangeDateTime).Take(5).ToList();
             //PagingResult<Notes> notes = InstallUserBLL.Instance.GetUserTouchPointLogs(pageNumber, pageSize, userId);
             return new JavaScriptSerializer().Serialize(notes);

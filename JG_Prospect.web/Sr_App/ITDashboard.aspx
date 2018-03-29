@@ -4158,9 +4158,13 @@
                     showThrobber: false,
                     throbberPosition: { my: "left center", at: "right center", of: $('.task-' + taskid), offset: "5 0" },
                     success: function (data, msg) {
+                        var unreadCount=0;
                         if (data.Data.length > 0) {
                             var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">';
                             $(data.Data).each(function (i) {
+                                if(data.Data[i].IsRead=='0'){
+                                    unreadCount += 1;
+                                }
                                 tbl += '<tr>' +
                                             '<td>' + data.Data[i].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UpdatedByUserID+'">' + data.Data[i].SourceUserInstallId + '</a><br/>'+data.Data[i].ChangeDateTimeFormatted+'</td>' +
                                             '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
@@ -4184,7 +4188,11 @@
                             $(sender).html(tbl);
                         }
                         $(sender).parents('.notes-section').find('.notes-table').attr('onclick','openChat(this, ' + taskid + ',' + 0 + ',\'' + data.Message + '\')');
-
+                        if(unreadCount>0){
+                            $(sender).parents('.notes-section').prepend('<span class="unread-chat-count">'+unreadCount+'</span>');
+                        }else{
+                            $(sender).parents('.notes-section').find('span.unread-chat-count').remove();
+                        }
                         LoadTaskMultilevelList(sender,taskid);
                     }
                 });
