@@ -328,7 +328,7 @@ Go
 -- Description: Add offline user to chatuser table
 -- =============================================    
 /*
-	GetChatMessages 'b395e80d-e9d3-41c5-91f9-1219413eae57','901,3797',10
+	GetChatMessages 'b395e80d-e9d3-41c5-91f9-1219413eae57','901,3797',2
 */
 CREATE PROCEDURE [dbo].[GetChatMessages]
 	@ChatGroupId varchar(100),
@@ -337,6 +337,7 @@ CREATE PROCEDURE [dbo].[GetChatMessages]
 	@LoggedInUserId int = 780
 AS    
 BEGIN
+
 	IF OBJECT_ID('tempdb..#TempChatMessages') IS NOT NULL DROP TABLE #TempChatMessages  
 	Create Table #TempChatMessages(Id int Primary Key Identity(1,1), 
 			ChatGroupId varchar(100), ChatSourceId int, SenderId int, TextMessage nVarchar(max), ChatFileId int, ReceiverIds varchar(800),
@@ -375,7 +376,7 @@ BEGIN
 			From #TempChatMessages S With(NoLock) 
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
 			--Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
-			Where S.SortedChatUserIds = @ReceiverIds
+			Where S.SortedChatUserIds = @ReceiverIds 
 			Order By S.CreatedOn Asc
 		End
 	Else
@@ -387,7 +388,8 @@ BEGIN
 			From #TempChatMessages S With(NoLock) 
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
 			--Join ChatMessageReadStatus MS With(NoLock) On S.ChatMessageId = MS.ChatMessageId
-			Where S.SortedChatUserIds = @ReceiverIds And S.ChatSourceId = @ChatSourceId
+			Where S.SortedChatUserIds = @ReceiverIds /*And S.ChatSourceId = @ChatSourceId*/
+			And S.ChatSourceId Not in (2)
 			Order By S.CreatedOn Asc
 		End
 END
@@ -893,6 +895,7 @@ BEGIN
 			Join ChatMessageReadStatus MS With(NoLock) On S.Id = MS.ChatMessageId
 		Where ((S.SenderId = @UserId And S.ReceiverIds = Convert(Varchar(12), @ReceiverId))
 			Or (S.SenderId = @ReceiverId And S.ReceiverIds =  Convert(Varchar(12), @UserId)))
-			And S.ChatSourceId = @ChatSourceId
+			/*And S.ChatSourceId = @ChatSourceId*/
+			And S.ChatSourceId Not In (2)
 		Order By S.CreatedOn Asc
 End

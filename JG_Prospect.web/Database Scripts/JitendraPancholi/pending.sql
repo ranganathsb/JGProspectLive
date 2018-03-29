@@ -642,11 +642,11 @@ SELECT * from TaskHistory ORDER BY  UpdatedOn DESC
 
 	If @TaskId IS NOT NULL AND @ParentTaskId IS NOT NULL
 			Begin
-				Set @Title = @Title + '<a onclick="event.stopPropagation();" href="/Sr_App/TaskGenerator.aspx?TaskId={MainParentTaskId}&hstid=' + Convert(Varchar(12),@TaskId) + '">'
+				Set @Title = @Title + ' <a target="_blank" onclick="event.stopPropagation();" href="/Sr_App/TaskGenerator.aspx?TaskId={MainParentTaskId}&hstid=' + Convert(Varchar(12),@TaskId) + '">'
 			End
 		Else IF @TaskId IS NOT NULL
 			Begin
-				Set @Title = @Title + '<a onclick="event.stopPropagation();" href="/Sr_App/TaskGenerator.aspx?TaskId=' + Convert(Varchar(12),@TaskId) + '">'
+				Set @Title = @Title + ' <a target="_blank" onclick="event.stopPropagation();" href="/Sr_App/TaskGenerator.aspx?TaskId=' + Convert(Varchar(12),@TaskId) + '">'
 			End
 
 	IF OBJECT_ID('tempdb..#TaskUsers') IS NOT NULL DROP TABLE #TaskUsers   
@@ -667,7 +667,7 @@ SELECT * from TaskHistory ORDER BY  UpdatedOn DESC
 	Set @Title = SUBSTRING(@Title + @ChatGroupName, 0, LEN(@Title + @ChatGroupName)) + '</a> : '
 	Set @Title = Replace(@Title,'{MainParentTaskId}',Convert(Varchar(12),@MainParentTaskId))
 
-	Select @Title = @Title + U.FristName + ' ' + U.LastName + '-' + '<a href="/Sr_App/ViewSalesUser.aspx?id='+Convert(Varchar(12),U.Id)+'" uid="'+Convert(Varchar(12),U.Id)+'" target="_blank">'+U.UserInstallId+'</a>' + ', ' From #TaskUsers T With(NoLock) 
+	Select @Title = @Title + U.FristName + ' ' + U.LastName + '-' + '<a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+Convert(Varchar(12),U.Id)+'" uid="'+Convert(Varchar(12),U.Id)+'">'+U.UserInstallId+'</a>' + ', ' From #TaskUsers T With(NoLock) 
 	Join tblInstallUsers U With(NoLock) On T.UserId = U.Id
 	Order By U.Id Asc
 
@@ -676,4 +676,119 @@ SELECT * from TaskHistory ORDER BY  UpdatedOn DESC
 	Select @Title As TaskTitle
 	/* Proper Task Title with ID */
 END  
-  
+
+Go
+
+IF EXISTS (SELECT * FROM sys.objects WHERE [name] = N'AfterInsertTblInstallUsers' AND [type] = 'TR')
+BEGIN
+      DROP TRIGGER AfterInsertTblInstallUsers
+END
+Go
+Create  TRIGGER AfterInsertTblInstallUsers 
+   ON  tblInstallUsers
+   AFTER INSERT
+AS 
+BEGIN
+
+	Declare @MessageId int, @ChatSourceId Varchar(200)
+	Declare @SourceId int, @SenderId int, @msg varchar(500), @Createdon Datetime
+
+	Set @ChatSourceId = NewID()
+	
+	--Insert Into tblUserTouchPointLog(UserID, UpdatedByUserID, UpdatedUserInstallID, ChangeDateTime, LogDescription, CurrentUserGUID)
+	SELECT @SenderId = I.Id, @msg = 'User successfully filled in HR form' FROM INSERTED I
+
+			Exec SaveChatMessage 1,@ChatSourceId, @SenderId, @msg,null, '780',null,null
+		/*
+SaveChatMessage
+	@ChatSourceId int,
+	@ChatGroupId Varchar(100),
+	@SenderId int,
+	@TextMessage nvarchar(max),
+	@ChatFileId int,
+	@ReceiverIds varchar(800),
+	@TaskId int = null,
+	@TaskMultilevelListId int =null
+
+	*/
+	
+End
+
+/* Data Correction for Chat
+Update S
+Set S.ReceiverId = 780
+From ChatMessageReadStatus S Join ChatMessage M On S.ChatMessageId = M.Id
+Where LTrim(M.TextMessage) like 'User%'
+
+Update M
+Set M.ReceiverIds = '780'
+From ChatMessage M Where LTrim(M.TextMessage) like 'User%'
+
+
+
+ IF OBJECT_ID('tempdb..#TempChatMessages') IS NOT NULL DROP TABLE #TempChatMessages  
+ Create Table #TempChatMessages(Id int Primary Key Identity(1,1), 
+								SourceId int, SenderId int, Msg varchar(2000), Rid varchar(200),CreatedOn Datetime)
+	Insert Into #TempChatMessages
+       select 1,UpdatedByUserId, LogDescription,UserId,ChangeDateTime
+	   From JGBS.dbo.tblUserTouchPointLog T
+		Join tblInstallUsers U on U.Id = UserId
+		 Where LTrim(LogDescription) like 'User successfully filled in HR form%' 
+		And ChangeDateTime > '2018-01-01'
+		 Order by ChangeDateTime Desc
+
+		 Declare @Min int =1, @Max int =1
+		 Declare @SourceId int, @SenderId int, @msg varchar(500), @Createdon Datetime
+		 Select @Min = Min(Id), @Max = Max(Id) From #TempChatMessages
+
+		 While @Min <= @Max
+			Begin
+				 Select @SourceId = SourceId, @SenderId=SenderId, @msg=Msg, @Createdon= CreatedOn From
+					#TempChatMessages Where Id = @Min
+				Exec SaveChatMessageTemp @SourceId, @SenderId, @msg, '780',@Createdon
+				--Print @Createdon
+					Set @Min = @Min + 1
+			End
+
+
+
+			
+GO
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'SaveChatMessageTemp' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE SaveChatMessageTemp
+  END
+Go
+ -- =============================================      
+-- Author:  Jitendra Pancholi      
+-- Create date: 9 Jan 2017   
+-- Description: Add offline user to chatuser table
+-- =============================================    
+/*
+	SaveChatMessageTemp 3797
+*/
+CREATE PROCEDURE [dbo].[SaveChatMessageTemp]
+	@ChatSourceId int,
+	@SenderId int,
+	@TextMessage nvarchar(max),
+	@ReceiverIds varchar(800),
+	@CreatedOn Datetime
+AS    
+BEGIN
+	Declare @MessageId int, @ChatGroupId varchar(500) = null
+	-- Find ChatGroupId
+	Select top 1 @ChatGroupId = M.ChatGroupId From ChatMessage M With(NoLock) Where M.SenderId = @SenderId And M.ReceiverIds = @ReceiverIds
+	If @ChatGroupId IS NULL
+	Begin
+		Set @ChatGroupId = NewID()
+	End
+	Insert Into ChatMessage(ChatSourceId, SenderId, ChatGroupId, TextMessage, ChatFileId, ReceiverIds, TaskId,TaskMultilevelListId, CreatedOn) 
+	Values
+		(@ChatSourceId, @SenderId, @ChatGroupId, @TextMessage, NULL, @ReceiverIds,NULL,NULL, @CreatedOn)
+	Set @MessageId = IDENT_CURRENT('ChatMessage')
+	Insert Into ChatMessageReadStatus (ChatMessageId, ReceiverId) 
+		Select @MessageId, RESULT from dbo.CSVtoTable(@ReceiverIds,',') Where RESULT > 0
+END
+
+*/
+

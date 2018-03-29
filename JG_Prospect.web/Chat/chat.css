@@ -796,7 +796,7 @@ div.file-send .dz-preview{}
 .telecom-dashboard-popup.minimize{width: 250px;height:40px;bottom: 0px !important;top: auto !important;left: 10px !important;position:fixed;}
 .telecom-dashboard-popup.minimize .header{min-width: 228px;}
 .telecom-dashboard-popup.minimize .content-area{display:none;}
-.telecom-dashboard-popup .unread-chat-count,.header-msg .row .user-image span.unread-chat-count{
+.telecom-dashboard-popup .unread-chat-count,.header-msg .row .user-image span.unread-chat-count,.telecom-dashboard-popup .unread-chat-count, .header-msg .row .user-image span.unread-chat-count, .notes-section .unread-chat-count{
     background: red;
     color: #fff;
     font-size: 10px;
@@ -805,7 +805,9 @@ div.file-send .dz-preview{}
     position: absolute;
     top: 0px;
     left: 0px;
-    box-shadow: 1px 1px 2px #666;}
+    box-shadow: 1px 1px 2px #666;
+    z-index:1;
+}
 .header-msg .row .caller div .time{font-size: 12px;position: absolute;left: 0px;bottom: -22px;}
 .header-msg .row.bg1, .list .user-row.bg1{background-color:rgba(255,0,0,0.2);}
 .header-msg .row.bg2, .list .user-row.bg2{background-color:rgba(0,255,0,0.2);}
@@ -820,3 +822,8 @@ div.file-send .dz-preview{}
 .dialer-section .header .group-name{width:85%!important;}
 .group-name a {color: #09f;}
 .group-name a:hover {color: #0386dd;}
+.msg img.chat-image-preview {
+    max-width: 75px;
+}.msg img {
+    max-width: 500px;
+}

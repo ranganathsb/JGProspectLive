@@ -28,6 +28,7 @@ namespace JG_Prospect.Common.modal
         public string SourceUsername { get; set; }
         public string SourceUserInstallId { get; set; }
         public int TouchPointSource { get; set; }
+        public bool IsRead { get; set; }
     }
 
 

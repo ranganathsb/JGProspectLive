@@ -21,7 +21,7 @@ Go
 -- Description: Add offline user to chatuser table
 -- =============================================    
 /*
-	GetTaskChatMessages 535,0,2,901
+	GetTaskChatMessages 702,0,2,3797
 */
 CREATE PROCEDURE [dbo].[GetTaskChatMessages]
 	@TaskId int,
@@ -83,7 +83,7 @@ BEGIN
 				U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
 				U.UserInstallId, U.Picture, 
 				--Convert(bit,1) As IsRead
-				IsNull((Select MS.IsRead From ChatMessageReadStatus MS Where MS.ChatMessageId = S.ChatMessageId And ReceiverId = @LoggedInUserId),0) As IsRead
+				IsNull((Select MS.IsRead From ChatMessageReadStatus MS Where MS.ChatMessageId = S.ChatMessageId And ReceiverId = @LoggedInUserId),1) As IsRead
 				/*(Select MS.IsRead From ChatMessageReadStatus MS Where MS.ChatMessageId = S.ChatMessageId And S.ReceiverIds like '%'+ Convert(Varchar(12), MS.ReceiverId)+'%') As IsRead*/
 			From #TempChatMessages S With(NoLock) 
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
@@ -97,7 +97,7 @@ BEGIN
 				U.FristName As FirstName, U.LastName, (U.FristName + ' ' + U.LastName) As Fullname,
 				U.UserInstallId, U.Picture, /*MS.IsRead*/
 				--Convert(bit,1) As IsRead
-				IsNull((Select MS.IsRead From ChatMessageReadStatus MS Where MS.ChatMessageId = S.ChatMessageId And ReceiverId = @LoggedInUserId),0) As IsRead
+				IsNull((Select MS.IsRead From ChatMessageReadStatus MS Where MS.ChatMessageId = S.ChatMessageId And ReceiverId = @LoggedInUserId),1) As IsRead
 				/*(Select MS.IsRead From ChatMessageReadStatus MS Where MS.ChatMessageId = S.ChatMessageId And S.ReceiverIds like '%'+ Convert(Varchar(12), MS.ReceiverId)+'%') As IsRead*/
 			From #TempChatMessages S With(NoLock) 
 			Join tblInstallUsers U With(NoLock) On S.SenderId = U.Id
