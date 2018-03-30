@@ -2518,7 +2518,9 @@ namespace JG_Prospect.WebServices
             strBody = strBody.Replace("#FirstName#", FName);
             strBody = strBody.Replace("#LastName#", LName);
             strBody = strBody.Replace("#F&L name#", FName + " " + LName).Replace("#F&amp;L name#", FName + " " + LName);
-            strBody = strBody.Replace(" #Phone number#", String.Concat("OR " ,Phone));
+
+                strBody = strBody.Replace("#Phone number#", String.IsNullOrEmpty( Phone) == true ? Phone : String.Concat("OR ", Phone)); 
+            
             strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
             strBody = strBody.Replace("#Date#", "").Replace("#date#", "");
             strBody = strBody.Replace("#Time#", "").Replace("#time#", "");
