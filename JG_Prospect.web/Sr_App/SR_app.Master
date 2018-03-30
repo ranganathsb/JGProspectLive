@@ -19,7 +19,7 @@
 
     <link href="../css/screen.css?v=<%# JG_Prospect.Common.modal.SingletonGlobal.Instance.RandomGUID %>" rel="stylesheet" media="screen" type="text/css" />
     <link href="../css/jquery.ui.theme.css" rel="stylesheet" media="screen" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="https://twitter.github.com/bootstrap/assets/css/bootstrap.css">
+    <%--<link rel="stylesheet" type="text/css" href="https://twitter.github.com/bootstrap/assets/css/bootstrap.css">--%>
     <%--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">--%>
     <%--<link href="../css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />--%>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css" integrity="sha384-v2Tw72dyUXeU3y4aM2Y0tBJQkGfplr39mxZqlTBDUZAb9BGoC40+rdFCG0m10lXk" crossorigin="anonymous">
@@ -1740,7 +1740,7 @@
         }
 
         function loadEmailIFrame() {
-            $("#iframe-inbox").attr("src", "//web.jmgrovebuildingsupply.com/email/default.aspx");
+            $("#iframe-inbox").attr("src", "https://web.jmgrovebuildingsupply.com/email/default.aspx");
             setTimeout(function () {
                 $("#iframe-inbox").attr("src", "https://web.jmgrovebuildingsupply.com/email/default.aspx");
             }, 3000);

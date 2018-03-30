@@ -1613,7 +1613,7 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
-        public string QuickSaveUserwithEmailOrPhone(String FirstName, String LastName, String Email, String Phone, Int32 AddedByUserId, String DesignationText, Int32 DesignationId)
+        public string QuickSaveUserwithEmailOrPhone(String FirstName, String LastName, String Email, String Phone, Int32 AddedByUserId)
         {
             String returnString = string.Empty;
 

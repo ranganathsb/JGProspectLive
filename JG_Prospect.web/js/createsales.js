@@ -2,7 +2,7 @@
 
     var isPageValid = Page_ClientValidate("vgQuickSave");
 
-    
+
 
     if (isPageValid) {
         ShowAjaxLoader();
@@ -58,10 +58,10 @@
 
 }
 function QuickSaveUserWithEmailorPhone() {
-    debugger;
-    var isPageValid = true;
-    
-    if (isPageValid) {
+
+
+
+    if (ValidateQuickSave()) {
         ShowAjaxLoader();
 
         var postData = {
@@ -83,7 +83,7 @@ function QuickSaveUserWithEmailorPhone() {
                 if (data.d != '') {
                     alert(data.d);
                 }
-                            
+
             }
             else {
                 alert('User cannot be saved. Please try again.');
@@ -92,12 +92,29 @@ function QuickSaveUserWithEmailorPhone() {
         }
 
         function OnQuickSaveUserError(err) {
+            console.log(err);
             HideAjaxLoader();
             alert('User cannot be saved. Please try again.');
         }
 
-        
+
     }
+    else {
+        alert('Please enter either Email or Phone!');
+    }
+
     return false;
+
+}
+
+function ValidateQuickSave() {
+
+    var returnVal = true;
+
+    if (txtEmailQs.val() == '' && txtPhoneQs.val() == '') {
+        returnVal = false;
+    }
+
+    return returnVal;
 
 }
