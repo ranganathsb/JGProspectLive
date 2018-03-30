@@ -100,7 +100,7 @@ function QuickSaveUserWithEmailorPhone() {
 
     }
     else {
-        alert('Please enter either Email or Phone!');
+        alert('Please enter Email!');
     }
 
     return false;
@@ -111,7 +111,7 @@ function ValidateQuickSave() {
 
     var returnVal = true;
 
-    if (txtEmailQs.val() == '' && txtPhoneQs.val() == '') {
+    if (txtEmailQs.val() == '') {
         returnVal = false;
     }
 
