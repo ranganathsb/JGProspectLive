@@ -2129,8 +2129,8 @@ namespace JG_Prospect
                 }
                 else // Else load template from database.
                 {
-
-                    DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.Applicant_Recontact_Auto_Email, DesignationId.ToString());
+                    String Phone = drUser["Phone1"].ToString();
+                    DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.PHP_HR_Welcome_Auto_Email, DesignationId.ToString());
                     HTMLTemlpate = objHTMLTemplate.Header + objHTMLTemplate.Body + objHTMLTemplate.Footer;
 
                     // Store new template to access in loop later.
@@ -2139,7 +2139,9 @@ namespace JG_Prospect
 
                     HTMLTemlpate = HTMLTemlpate.Replace("#name#", String.Concat(drUser["FirstName"].ToString(), " ", drUser["LastName"].ToString()));
                     HTMLTemlpate = HTMLTemlpate.Replace("#Email#", drUser["Email"].ToString());
-                    HTMLTemlpate = HTMLTemlpate.Replace("#Phone number#", drUser["Phone1"].ToString());
+
+                    HTMLTemlpate = HTMLTemlpate.Replace("#Phone number#", String.IsNullOrEmpty(Phone) == true ? Phone : String.Concat("OR ", Phone)); 
+                        
 
                     strSubject = objHTMLTemplate.Subject;
                 }
