@@ -2128,23 +2128,21 @@ namespace JG_Prospect
                     strSubject = dicDesignationSubjectString[DesignationId];
                 }
                 else // Else load template from database.
-                {
-                    String Phone = drUser["Phone1"].ToString();
+                {                    
                     DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.PHP_HR_Welcome_Auto_Email, DesignationId.ToString());
                     HTMLTemlpate = objHTMLTemplate.Header + objHTMLTemplate.Body + objHTMLTemplate.Footer;
 
                     // Store new template to access in loop later.
                     dicDesignationTemplate.Add(DesignationId, HTMLTemlpate);
                     dicDesignationSubjectString.Add(DesignationId, objHTMLTemplate.Subject);
-
-                    HTMLTemlpate = HTMLTemlpate.Replace("#name#", String.Concat(drUser["FirstName"].ToString(), " ", drUser["LastName"].ToString()));
-                    HTMLTemlpate = HTMLTemlpate.Replace("#Email#", drUser["Email"].ToString());
-
-                    HTMLTemlpate = HTMLTemlpate.Replace("#Phone number#", String.IsNullOrEmpty(Phone) == true ? Phone : String.Concat("OR ", Phone)); 
-                        
-
                     strSubject = objHTMLTemplate.Subject;
                 }
+
+                String Phone = drUser["Phone1"].ToString();
+                HTMLTemlpate = HTMLTemlpate.Replace("#name#", String.Concat(drUser["FirstName"].ToString(), " ", drUser["LastName"].ToString()));
+                HTMLTemlpate = HTMLTemlpate.Replace("#Email#", drUser["Email"].ToString());
+
+                HTMLTemlpate = HTMLTemlpate.Replace("#Phone number#", String.IsNullOrEmpty(Phone) == true ? Phone : String.Concat("OR ", Phone));
 
                 recordsProcessed++;
 
@@ -2193,6 +2191,33 @@ namespace JG_Prospect
 
         }
 
+        private void SendCompleted( DataTable dtUniqueRecord, DataRow rowProcessed, Int64 recordsToProcess, Int64 recordsProcess)
+        {
+                dtUniqueRecord.Rows.Add(rowProcessed.ItemArray);
+                dtUniqueRecord.AcceptChanges();
+                rptSuccessFullyEntered.DataSource = dtUniqueRecord;
+                rptSuccessFullyEntered.DataBind();
+
+                if (dtUniqueRecord != null)
+                {
+                    ltlTotalSuccessfulUsersInserted.Text = dtUniqueRecord.Rows.Count.ToString();
+                }
+                else
+                {
+                    ltlTotalSuccessfulUsersInserted.Text = "0";
+                }
+                
+           
+            // If all emails are sent then process its bulk insert.
+            if (recordsToProcess == recordsProcess)
+            {
+                ImportIntsallUsers(dtUniqueRecord);
+                GetSalesUsersStaticticsAndData();
+            }
+
+            upnlBulkUploadStatus.Update();
+
+        }
         public bool SendEmail(string strEmailTemplate, string strToAddress, string strSubject, string strBody, List<Attachment> lstAttachments, DataTable dtUniqueRecords, DataRow drProcessing, Int64 recordsToProcessed, Int64 recordsProcessed, List<AlternateView> lstAlternateView = null)
         {
             bool retValue = false;
@@ -2254,19 +2279,23 @@ namespace JG_Prospect
                                                     Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString())
                                                   );
 
-                    sc.SendCompleted += new SendCompletedEventHandler((s, e) => SendCompletedCallback(s, e, dtUniqueRecords, drProcessing, recordsToProcessed, recordsProcessed));
+                  //  sc.SendCompleted += new SendCompletedEventHandler((s, e) => SendCompletedCallback(s, e, dtUniqueRecords, drProcessing, recordsToProcessed, recordsProcessed));
 
                     NetworkCredential ntw = new NetworkCredential(userName, password);
                     sc.UseDefaultCredentials = false;
                     sc.Credentials = ntw;
                     sc.DeliveryMethod = SmtpDeliveryMethod.Network;
                     sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
-                    sc.SendAsync(Msg, "User Status");
+                    //sc.SendAsync(Msg, "User Status");
+                    sc.Send(Msg);
                     retValue = true;
 
                     Msg = null;
                     sc.Dispose();
                     sc = null;
+
+                    SendCompleted(dtUniqueRecords, drProcessing, recordsToProcessed, recordsProcessed);
+
                 }
                 catch (Exception ex)
                 {
