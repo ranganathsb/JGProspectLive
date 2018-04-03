@@ -109,7 +109,7 @@ function SaveSubTask(Silent) {
                 //PreventScroll = 1;
                 
                 $('#lblStatus').html('Task saved successfully.');
-                $('#<%=hdTaskId.ClientID%>').val(tid);
+                //$('#<%=hdTaskId.ClientID%>').val(tid);
 
                 //URL Processing
                 var url = getUrlVars();
@@ -213,18 +213,18 @@ function SetupNewTaskData(cmdArg, cName, TaskLevel, strInstallId) {
         data: JSON.stringify(postData),
         asynch: false,
         success: function (data) {
-            if (TaskLevel == "2") {
-                var taskid = GetParameterValues('TaskId');                
-                $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
-                $('#<%=hdMainParentId.ClientID%>').val(taskid);                
-                $('#<%=hdTaskId.ClientID%>').val(cmdArg);
-            }
-            else {
-                $('#<%=txtTaskListID.ClientID%>').val(data.d.txtInstallId);
-                $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
+            //if (TaskLevel == "2") {
+            //    var taskid = GetParameterValues('TaskId');                
+            //    $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
+            //    $('#<%=hdMainParentId.ClientID%>').val(taskid);                
+            //    $('#<%=hdTaskId.ClientID%>').val(cmdArg);
+            //}
+            //else {
+            //    $('#<%=txtTaskListID.ClientID%>').val(data.d.txtInstallId);
+            //    $('#<%=hdParentTaskId.ClientID%>').val(data.d.hdParentTaskId);
                 
-                $('#<%=hdTaskId.ClientID%>').val(cmdArg);
-            }
+            //    $('#<%=hdTaskId.ClientID%>').val(cmdArg);
+            //}
 
             ParentTaskId = data.d.hdParentTaskId;
             TaskLvl = data.d.hdTaskLvl;
