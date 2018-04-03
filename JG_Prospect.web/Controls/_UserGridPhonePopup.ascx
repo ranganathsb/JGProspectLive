@@ -11,9 +11,14 @@
         <thead>
             <tr>
                 <th>
-                    <span>User Status</span><span style="color: red">*</span></th>
+                    <span>User Status</span><span style="color: red">*</span>
+                </th>
                 <th>
-                    <span>Designation</span></th>
+                    <span>Saved Reports</span>
+                </th>
+                <th>
+                    <span>Designation</span>
+                </th>
                 <th>
                     <span>Added By</span></th>
                 <th>
@@ -59,6 +64,13 @@
                             <%
                                 }
                             %>
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <div class="user-designations">
+                        <select>
+                            <option value="0">--All--</option>
                         </select>
                     </div>
                 </td>
@@ -129,7 +141,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="4">
+                <td colspan="5">
                     <div class="grid-overview-totalrecords"><span class="pageNumber"></span><span> to </span><span class="pazeSize"></span><span> of </span><span class="totalRecords"></span></div>
                     <div class="grid-overview-records-perpage">Number of Records: <select class="recordsPerPage">
                         <option value="10">10</option>
@@ -178,7 +190,7 @@
             </tr>
         </thead>
         <tbody id="SalesUserGrid" ng-app="JGApp" ng-controller="SalesUserController">
-            <tr ng-repeat="User in UserList.Data" class="{{User.StatusName}}">
+            <tr ng-repeat="User in UserList.Data" class="{{User.StatusName}}" last-called-at="{{User.LastCalledAtFormatted}}" userId ="{{User.Id}}" number="{{User.Phone}}">
                 <td>
                     <div>
                         <img src="<%=baseUrl %>Employee/ProfilePictures/{{User.ProfilePic}}" />
@@ -203,7 +215,7 @@
                 </td>
                 <td>{{User.Source}}
                     <br />
-                    {{User.AddedBy}}-<a href="<%=baseUrl %>Sr_App/ViewSalesUser.aspx?id={{User.Id}}">{{User.AddedByInstallId}}</a>
+                    {{User.AddedBy}}-<a target="_blank" href="<%=baseUrl %>Sr_App/ViewSalesUser.aspx?id={{User.Id}}">{{User.AddedByInstallId}}</a>
                     <br />
                     <span style="color: #ff0000;">{{User.AddedOnFormatted}}</span> (EST)
                 </td>
@@ -259,7 +271,7 @@
                             <input type="button" class="GrdBtnAdd" value="Add Notes" onclick=addNotes(this, "{{User.Id}}", "{{User.UserInstallId}}"')>
                         </div>
                         <div class="second-col">
-                            <textarea class="note-text textbox" id="txt-7241" data-tribute="true"></textarea>
+                            <textarea class="note-text textbox" id="txt-{{User.Id}}" data-tribute="true"></textarea>
                         </div>
                     </div>
                 </td>
@@ -440,7 +452,7 @@
     </div>
 </div>
 <script type="text/javascript">
-    $('.userlist-grid .header-table select').chosen();
+    $('.userlist-grid .header-table select').chosen({ width: '100%' });
     paging.currentPage = 0;
     var Users;
     function searchUsers(sender) {
@@ -784,9 +796,11 @@
 
     function ReLoadNotes() {
         $('.notes-container').each(function (i) {
-            var id = $(this).attr('id').split('-')[1];
-            var installUserId = $(this).attr('uid');
-            LoadNotes($('#user' + id), installUserId, id);
+            if ($(this).attr('id') != undefined && $(this).attr('id') != '' && $(this).attr('id') != null) {
+                var id = $(this).attr('id').split('-')[1];
+                var installUserId = $(this).attr('uid');
+                LoadNotes($('#user' + id), installUserId, id);
+            }
         });
     }
 

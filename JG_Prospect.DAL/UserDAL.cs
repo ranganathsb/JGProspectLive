@@ -210,6 +210,27 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public void UpdatePhoneScript(int id, string title, string desc)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdatePhoneScript");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", DbType.Int32, id);
+                    database.AddInParameter(command, "@Title", DbType.String, title);
+                    database.AddInParameter(command, "@Script", DbType.String, desc);
+                    database.ExecuteScalar(command);
+                    int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));
+                }
+            }
+            catch (Exception ex)
+            {
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+        }
+
         public bool UpdateUser(user objuser, int id)
         {
             try

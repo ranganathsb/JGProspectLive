@@ -3,14 +3,14 @@
 .userlist-grid table.header-table thead tr{background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;}
 .userlist-grid table.header-table tr th, .userlist-grid table.header-table tr td{width:10%;padding: 5px;border:1px solid #eee;text-align: left;vertical-align:top;}
 
-.userlist-grid .header-table td:nth-child(5) {width:40%;}
+.userlist-grid .header-table td:nth-child(6) {width:30%;}
 .userlist-grid tbody input[type="checkbox"]{}
 .userlist-grid tbody input[type="text"]{width: 105px;padding:5px 3px;border-radius: 5px;margin-bottom: 3px;}
-.userlist-grid tbody .social input[type="text"]{width:70px;}
+.userlist-grid tbody .social input[type="text"]{width:70px;margin:0;}
 .social .small div.chosen-container {
     float: left;
 }
-.userlist-grid tbody input[type="button"]{padding: 5px 10px;background: url(/img/main-header-bg.png) repeat-x;color: #fff;cursor: pointer;border-radius: 5px;}
+.userlist-grid tbody input[type="button"]{margin:0; padding: 5px 10px;background: url(/img/main-header-bg.png) repeat-x;color: #fff;cursor: pointer;border-radius: 5px;}
 .userlist-grid tbody span{top: -2px;position: relative;}
 
  .userlist-grid table.user-table{width:100%;border-spacing: 0px;}
@@ -20,11 +20,11 @@
  /*.userlist-grid table.user-table tr th div, .userlist-grid table.user-table tr td div{display: inline-block;width: 100%;margin-bottom:2px;}*/
  .userlist-grid table.user-table tr th div span, .userlist-grid table.user-table tr td div span{float:left;}
  .userlist-grid table.user-table tr th div ul, .userlist-grid table.user-table tr td div ul{float:left;}
- .userlist-grid table.user-table tr th:nth-child(1), .userlist-grid table.user-table tr td:nth-child(1){width:7%;}
- .userlist-grid table.user-table tr th:nth-child(2), .userlist-grid table.user-table tr td:nth-child(2){width:10%;}
+ .userlist-grid table.user-table tr th:nth-child(1), .userlist-grid table.user-table tr td:nth-child(1){width:5%;}
+ .userlist-grid table.user-table tr th:nth-child(2), .userlist-grid table.user-table tr td:nth-child(2){width:9%;}
  .userlist-grid table.user-table tr th:nth-child(3), .userlist-grid table.user-table tr td:nth-child(3){width:10%;}
  .userlist-grid table.user-table tr th:nth-child(4), .userlist-grid table.user-table tr td:nth-child(4){width:10%;}
- .userlist-grid table.user-table tr th:nth-child(5), .userlist-grid table.user-table tr td:nth-child(5){width:19%;}
+ .userlist-grid table.user-table tr th:nth-child(5), .userlist-grid table.user-table tr td:nth-child(5){width:21%;}
  .userlist-grid table.user-table tr th:nth-child(6), .userlist-grid table.user-table tr td:nth-child(6){width:10%;}
  .userlist-grid table.user-table tr th:nth-child(6) div.resume, .userlist-grid table.user-table tr td:nth-child(6) div.resume {
     text-overflow: ellipsis;
@@ -33,11 +33,11 @@
     width: 120px;
 }
  .userlist-grid table.user-table tr td .userEmails, .userlist-grid table.user-table tr td .userPhones{width:210px;margin-bottom:3px;}
- .userlist-grid table.user-table tr td .status{width:150px;}
-.userlist-grid table.user-table tr td .userDesignations{width:110px;}
+ .userlist-grid table.user-table tr td .status{width:130px;}
+.userlist-grid table.user-table tr td .userDesignations{width:100px;}
 .userlist-grid table.user-table tr td .phoneTypes{width:83px;}
 
-.userlist-grid table.user-table tr th, .userlist-grid table.user-table tr td:nth-child(7){width:33%;position:relative;}
+.userlist-grid table.user-table tr th, .userlist-grid table.user-table tr td:nth-child(7){width:35%;position:relative;}
 /*.userlist-grid table.user-table tr td div ul{margin:0px;}
 .userlist-grid table.user-table tr td div span{margin:0px;position:unset;}
 .userlist-grid table.user-table tr td div ul.small {width: 30%;margin-right: 5px;}*/
@@ -148,4 +148,4 @@
 .userlist-grid .header-table .grid-overview-totalrecords{    float: left;}
 .userlist-grid .header-table .grid-overview-records-perpage{    float: right;}
 .userlist-grid .header-table .grid-overview-records-perpage > div {width: 60px !important;}
-#SalesUserGrid img {width:75px;}
+#SalesUserGrid img {width:50px;}

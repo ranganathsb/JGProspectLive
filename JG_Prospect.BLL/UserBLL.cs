@@ -291,5 +291,10 @@ namespace JG_Prospect.BLL
         {
             return UserDAL.Instance.GetUserDesignation(Id);
         }
+
+        public void UpdatePhoneScript(int id, string title, string desc)
+        {
+            UserDAL.Instance.UpdatePhoneScript(id, title, desc);
+        }
     }
 }

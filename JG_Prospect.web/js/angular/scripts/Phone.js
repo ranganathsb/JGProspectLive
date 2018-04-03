@@ -13,6 +13,18 @@ function _applyFunctions($scope, $compile, $http, $timeout, $filter) {
     $scope.UserPhoneList = [];
     $scope.Test = { 'Id': 100 };
 
+    
+    //$scope.Scripts = [];
+
+    //$scope.LoadScript = function (sender) {
+    //    callWebServiceMethod($http, 'GetPhoneScripts', { startIndex: $('#PageIndex').val(), pageSize: paging.pageSize, keyword: keyword, status: status, designationId: designationId, source: source, from: from, to: to, addedByUserId: addedBy, sortBY: sortBY }, sender)
+    //        .then(function (data) {
+    //            RemoveThrobber();
+    //            $scope.Scripts = JSON.parse(data.data.d);
+    //        });
+    //    }
+    //};
+
     $scope.Paging = function (sender) {
         $('#PageIndex').val(paging.currentPage);
         paging.pageSize = $('.recordsPerPage').find('option:selected').val();

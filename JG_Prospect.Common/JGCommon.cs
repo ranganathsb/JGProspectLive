@@ -53,6 +53,26 @@ namespace JG_Prospect.Common
             public string Name { get; set; }
             public string optionCss { get; set; }
         }
+
+        public class callLog
+        {
+            public string mode { get; set; }
+            public DateTime startTime { get; set; }
+            public string num { get; set; }
+            public string dur { get; set; }
+        }
+        public class PhoneCallLog
+        {
+            public int Id { get; set; }
+            public string Mode { get; set; }
+            public string CallerNumber { get; set; }
+            public string ReceiverNumber { get; set; }
+            public int? ReceiverUserId { get; set; }
+            public double CallDurationInSeconds { get; set; }
+            public DateTime CallStartTime { get; set; }
+            public DateTime CreatedOn { get; set; }
+            public int CreatedBy { get; set; }
+        }
         public static string GenerateOTP(int length)
         {
             const string valid = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789011223344556677889900";

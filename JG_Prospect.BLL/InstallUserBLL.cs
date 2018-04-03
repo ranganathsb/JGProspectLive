@@ -883,5 +883,9 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.getInstallUserDetailsById(UserId);
         }
 
+        public void SavePhoneCallLog(PhoneCallLog phLog)
+        {
+            InstallUserDAL.Instance.SavePhoneCallLog(phLog);
+        }
     }
 }

@@ -1969,6 +1969,8 @@
     <Content Include="img\icon_share.JPG" />
     <Content Include="img\image-icon.png" />
     <Content Include="img\inbox.PNG" />
+    <Content Include="img\incoming-green.png" />
+    <Content Include="img\incoming-red.png" />
     <Content Include="img\indent_left.jpg" />
     <Content Include="img\indent_right.jpg" />
     <Content Include="img\jg-construction.jpg" />
@@ -1983,6 +1985,8 @@
     <Content Include="img\min-max.jpg" />
     <Content Include="img\min-max.png" />
     <Content Include="img\movies-icon.png" />
+    <Content Include="img\outgoing-green.png" />
+    <Content Include="img\outgoing-red.png" />
     <Content Include="img\pdf-icon.png" />
     <Content Include="img\pdf.jpg" />
     <Content Include="img\PlusMinus.png" />

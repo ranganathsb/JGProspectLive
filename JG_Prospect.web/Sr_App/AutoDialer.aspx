@@ -29,10 +29,10 @@
 
             .dialer-right div.scrips {
                 min-height: 539px;
-                    padding: 5px;
+                padding: 5px;
             }
 
-            
+
 
         div.userlist-grid {
             float: left;
@@ -54,103 +54,257 @@
     <div class="dialer-container">
         <div id="wrapper">
             <div id="phone">
-                <div id="numberDisplay">
-                    <input type="text" name="to" value="" id="to" placeholder="Phone number">
-                </div>
-                <div id="dialpad" class="button-3">
-                    <ul>
-                        <li class="first">1</li>
-                        <li>2</li>
-                        <li class="last">3</li>
-                        <li class="first">4</li>
-                        <li>5</li>
-                        <li class="last">6</li>
-                        <li class="first">7</li>
-                        <li>8</li>
-                        <li class="last">9</li>
-                        <li class="first">*</li>
-                        <li>0</li>
-                        <li class="last">#</li>
-                    </ul>
-                </div>
-                <div id="actions" class="button-3 deactive">
-                    <ul>
-                        <li class="call" id="make_call" onclick="call();">Call</li>
-                        <li class="skip">Skip</li>
-                        <li class="clear" onclick="hangup();">Clear</li>
-                    </ul>
+                <div class="col-md-4 phone">
+                    <div class="row1">
+                        <input type="hidden" id="appSettings" />
+                        <div class="col-md-12 white-shadow">
+                            <input type="text" name="name" onkeyup="trimSpace(this)" onblur="trimSpace(this)" id="toNumber" class="form-control tel" placeholder="+91801XXXXXXX" value="" />
+                            <div class="num-pad">
+                                <div class="span4">
+                                    <div class="num">
+                                        <div class="txt">
+                                            1
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="num">
+                                        <div class="txt">
+                                            2 <span class="small">
+                                                <p>
+                                                    ABC
+                                                </p>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="num">
+                                        <div class="txt">
+                                            3 <span class="small">
+                                                <p>
+                                                    DEF
+                                                </p>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="num">
+                                        <div class="txt">
+                                            4 <span class="small">
+                                                <p>
+                                                    GHI
+                                                </p>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="num">
+                                        <div class="txt">
+                                            5 <span class="small">
+                                                <p>
+                                                    JKL
+                                                </p>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="num">
+                                        <div class="txt">
+                                            6 <span class="small">
+                                                <p>
+                                                    MNO
+                                                </p>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="num">
+                                        <div class="txt">
+                                            7 <span class="small">
+                                                <p>
+                                                    PQRS
+                                                </p>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="num">
+                                        <div class="txt">
+                                            8 <span class="small">
+                                                <p>
+                                                    TUV
+                                                </p>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="num">
+                                        <div class="txt">
+                                            9 <span class="small">
+                                                <p>
+                                                    WXYZ
+                                                </p>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="num">
+                                        <div class="txt">
+                                            *
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="num">
+                                        <div class="txt">
+                                            0 <span class="small">
+                                                <p>
+                                                    +
+                                                </p>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span4">
+                                    <div class="num">
+                                        <div class="txt">
+                                            #
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix">
+                            </div>
+                            <input type="button" id="makecall" class="btn btn-success btn-block flatbtn" value="CALL" />
+                            <input type="button" class="hangup btn btn-danger btn-block flatbtn" value="HANGUP" />
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                    </div>
                 </div>
                 <div class="button-3">
-                    <span class="label" id="status_txt"></span>
-                    <span id="callDuration">00:00:00</span>
+                    <div class="callinfo">
+                        <h4 id="boundType">Fetching...</h4>
+                        <h4 id="callNum">Fetching...</h4>
+                        <h2 id="callDuration">00:00</h2>
+                    </div>
                 </div>
                 <div class="play-stop">
                     <div class="row">
-                        <span><i class="fas fa-play-circle"></i></span><span><i class="fas fa-stop-circle"></i></span>
+                        <span title="Start" onclick="startAutoDiualer(this)"><i class="fas fa-play-circle"></i></span>
+                        <span title="Stop" onclick="stopAutoDiualer(this)"><i class="fas fa-stop-circle"></i></span>
                     </div>
                 </div>
                 <div class="logger">
-                    <div class="title">Call Log</div>
-                    <div class="tabs">
-                        <div class="in">In</div>
-                        <div class="out">Out</div>
-                    </div>
+                    <div class="title">Recent Calls</div>
                     <div class="log-content">
-                        <div class="row">
-                            <div class="name-phone">919871643627</div>
-                            <div class="datetime">10/10/2018 03:45:12 PM</div>
+                        <div class="user-row row bg1" title="Kapil Pancholi" uid="780">
+                            <div class="user-image">
+                                <div class="img">
+                                    <img src="https://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/5d5cfdfe-228a-4cc9-b069-81a5afd425bb-WIN_20170531_20_47_37_Pro.jpg">
+                                </div>
+                            </div>
+                            <div class="contents">
+                                <div class="top">
+                                    <div class="name">Kapil Pancholi</div>
+                                </div>
+                                <div class="msg-container">
+                                    <div class="tick"><img src="../img/incoming-red.png"></div>
+                                    <div class="msg">04/02/2018 12:24:34 PM</div>
+                                </div>
+                            </div>
+                            <div class="caller">
+                                <div class="video"><i class="fas fa-video" aria-hidden="true"></i></div>
+                                <div class="phone"><i class="fa fa-phone" aria-hidden="true"></i></div>                                
+                                <div class="mic"><i class="fas fa-microphone" aria-hidden="true"></i></div>
+                            </div>
                         </div>
-                        <div class="row">
-                            <div class="name-phone">919871643627</div>
-                            <div class="datetime">10/10/2018 03:45:12 PM</div>
+                        <div class="user-row row bg1" title="Kapil Pancholi" uid="780">
+                            <div class="user-image">
+                                <div class="img">
+                                    <img src="https://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/5d5cfdfe-228a-4cc9-b069-81a5afd425bb-WIN_20170531_20_47_37_Pro.jpg">
+                                </div>
+                            </div>
+                            <div class="contents">
+                                <div class="top">
+                                    <div class="name">Kapil Pancholi</div>
+                                </div>
+                                <div class="msg-container">
+                                    <div class="tick"><img src="../img/incoming-green.png"></div>
+                                    <div class="msg">04/02/2018 12:24:34 PM</div>
+                                </div>
+                            </div>
+                            <div class="caller">
+                                <div class="video"><i class="fas fa-video" aria-hidden="true"></i></div>
+                                <div class="phone"><i class="fa fa-phone" aria-hidden="true"></i></div>                                
+                                <div class="mic"><i class="fas fa-microphone" aria-hidden="true"></i></div>
+                            </div>
                         </div>
-                        <div class="row">
-                            <div class="name-phone">919871643627</div>
-                            <div class="datetime">10/10/2018 03:45:12 PM</div>
+                        <div class="user-row row bg1" title="Kapil Pancholi" uid="780">
+                            <div class="user-image">
+                                <div class="img">
+                                    <img src="https://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/5d5cfdfe-228a-4cc9-b069-81a5afd425bb-WIN_20170531_20_47_37_Pro.jpg">
+                                </div>
+                            </div>
+                            <div class="contents">
+                                <div class="top">
+                                    <div class="name">Kapil Pancholi</div>
+                                </div>
+                                <div class="msg-container">
+                                    <div class="tick"><img src="../img/outgoing-red.png"></div>
+                                    <div class="msg">04/02/2018 12:24:34 PM</div>
+                                </div>
+                            </div>
+                            <div class="caller">
+                                <div class="video"><i class="fas fa-video" aria-hidden="true"></i></div>
+                                <div class="phone"><i class="fa fa-phone" aria-hidden="true"></i></div>                                
+                                <div class="mic"><i class="fas fa-microphone" aria-hidden="true"></i></div>
+                            </div>
                         </div>
-                        <div class="row">
-                            <div class="name-phone">919871643627</div>
-                            <div class="datetime">10/10/2018 03:45:12 PM</div>
-                        </div>
-                        <div class="row">
-                            <div class="name-phone">919871643627</div>
-                            <div class="datetime">10/10/2018 03:45:12 PM</div>
-                        </div>
-                        <div class="row">
-                            <div class="name-phone">919871643627</div>
-                            <div class="datetime">10/10/2018 03:45:12 PM</div>
-                        </div>
-                        <div class="row">
-                            <div class="name-phone">919871643627</div>
-                            <div class="datetime">10/10/2018 03:45:12 PM</div>
-                        </div>
-                        <div class="row">
-                            <div class="name-phone">919871643627</div>
-                            <div class="datetime">10/10/2018 03:45:12 PM</div>
-                        </div>
-                        <div class="row">
-                            <div class="name-phone">919871643627</div>
-                            <div class="datetime">10/10/2018 03:45:12 PM</div>
-                        </div>
-                        <div class="row">
-                            <div class="name-phone">919871643627</div>
-                            <div class="datetime">10/10/2018 03:45:12 PM</div>
-                        </div>
-                        <div class="row">
-                            <div class="name-phone">919871643627</div>
-                            <div class="datetime">10/10/2018 03:45:12 PM</div>
+                        <div class="user-row row bg1" title="Kapil Pancholi" uid="780">
+                            <div class="user-image">
+                                <div class="img">
+                                    <img src="https://web.jmgrovebuildingsupply.com/Employee/ProfilePictures/5d5cfdfe-228a-4cc9-b069-81a5afd425bb-WIN_20170531_20_47_37_Pro.jpg">
+                                </div>
+                            </div>
+                            <div class="contents">
+                                <div class="top">
+                                    <div class="name">Kapil Pancholi</div>
+                                </div>
+                                <div class="msg-container">
+                                    <div class="tick"><img src="../img/outgoing-green.png"></div>
+                                    <div class="msg">04/02/2018 12:24:34 PM</div>
+                                </div>
+                            </div>
+                            <div class="caller">
+                                <div class="video"><i class="fas fa-video" aria-hidden="true"></i></div>
+                                <div class="phone"><i class="fa fa-phone" aria-hidden="true"></i></div>                                
+                                <div class="mic"><i class="fas fa-microphone" aria-hidden="true"></i></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="dialer-right">
+                <input type="hidden" class="script-data" value="" />
                 <div class="scrips">
                     <div class="tabs">
-                        <div onclick="showhideType(this, 1);" class="active">Inbound</div>
-                        <div onclick="showhideType(this, 2);">Outbound</div>
+                        <div onclick="showhideType(this, 1);">Inbound</div>
+                        <div onclick="showhideType(this, 2);" class="active">Outbound</div>
                     </div>
                     <div class="script-data">
-                        Loading Scrips...
+                        <div class="inner-tabs">
+                        </div>
+                        <div class="content">
+                        </div>
                     </div>
                 </div>
                 <div class="phone-stats">
@@ -182,7 +336,7 @@
                         </tr>
                     </table>
                 </div>
-                <div class="userlist-calling-grid" style="display:none">
+                <div class="userlist-calling-grid" style="display: none">
                     <div>
                         <table class="header-table">
                             <thead>
@@ -213,13 +367,19 @@
                 </div>
             </div>
             <uc1:_UserGridPhonePopup runat="server" ID="_UserGridPhonePopup" />
-            
+
         </div>
     </div>
     <script type="text/javascript">
-    $(document).ready(function () {
-        GetPhoneScripts(this);
-        $('.search-user').trigger('click');
-    });
+        
+        $(document).ready(function () {
+            GetPhoneScripts(this);
+            $('.search-user').trigger('click');
+
+            resetSettings();
+            initPhone();
+        });
+
+        
     </script>
 </asp:Content>

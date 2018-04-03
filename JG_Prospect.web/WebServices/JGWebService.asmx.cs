@@ -2610,7 +2610,7 @@ namespace JG_Prospect.WebServices
                     ProfilePic = sender.ProfilePic,
                     OnlineAt = sender.OnlineAt,
                     UserId = sender.UserId,
-                    UserInstallId=sender.UserInstallId,
+                    UserInstallId = sender.UserInstallId,
                     OnlineAtFormatted = sender.OnlineAtFormatted,
                     ChatClosed = false
                 });
@@ -2860,6 +2860,13 @@ namespace JG_Prospect.WebServices
         }
 
         [WebMethod(EnableSession = true)]
+        public string UpdatePhoneScript(int id, string title, string desc)
+        {
+            UserBLL.Instance.UpdatePhoneScript(id, title, desc);
+            return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+        }
+
+        [WebMethod(EnableSession = true)]
         public string GetSalesUsers(string keyword, string status, int designationId, int source,
                                         DateTime from, DateTime to, int addedByUserId, int startIndex, int pageSize,
                                         string sortBY)
@@ -2927,7 +2934,9 @@ namespace JG_Prospect.WebServices
                             RejectedByUserInstallId = dr["RejectedByUserInstallId"].ToString(),
                             RejectedUserId = string.IsNullOrEmpty(dr["RejectedUserId"].ToString()) ? null : (int?)Convert.ToInt32(dr["RejectedUserId"].ToString()),
                             InterviewDetail = dr["InterviewDetail"].ToString(),
-                            Zip = dr["Zip"].ToString()
+                            Zip = dr["Zip"].ToString(),
+                            LastCalledAt = !string.IsNullOrEmpty(dr["LastCalledAt"].ToString()) ? (DateTime?)Convert.ToDateTime(dr["LastCalledAt"].ToString()) : null,
+                            LastCalledAtFormatted = !string.IsNullOrEmpty(dr["LastCalledAt"].ToString()) ? Convert.ToDateTime(dr["LastCalledAt"].ToString()).ToEST().ToString() : ""
                         });
                     }
                     #endregion
@@ -3698,6 +3707,23 @@ namespace JG_Prospect.WebServices
                 }
             }
             return true;
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string savePhoneCallLog(string mode, string num, string dur, DateTime startTime, int? userId)
+        {
+            PhoneCallLog phLog = new PhoneCallLog()
+            {
+                CreatedBy = JGSession.UserId,
+                ReceiverNumber = num,
+                Mode = mode,
+                ReceiverUserId = userId,
+                CallStartTime = startTime.ToEST(),
+                CallerNumber = "12154833098",
+                CallDurationInSeconds = TimeSpan.Parse(dur).TotalSeconds
+            };
+            InstallUserBLL.Instance.SavePhoneCallLog(phLog);
+            return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
         }
         #endregion
 

@@ -616,6 +616,33 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public void SavePhoneCallLog(PhoneCallLog phLog)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("SavePhoneCallLog");
+                    database.AddInParameter(command, "@CallDurationInSeconds", DbType.Decimal, phLog.CallDurationInSeconds);
+                    database.AddInParameter(command, "@CallerNumber", DbType.String, phLog.CallerNumber);
+                    database.AddInParameter(command, "@CallStartTime", DbType.DateTime, phLog.CallStartTime);
+                    database.AddInParameter(command, "@Mode", DbType.String, phLog.Mode);
+                    database.AddInParameter(command, "@CreatedBy", DbType.Int32, phLog.CreatedBy);
+                    database.AddInParameter(command, "@ReceiverNumber", DbType.String, phLog.ReceiverNumber);
+                    database.AddInParameter(command, "@ReceiverUserId", DbType.Int32, phLog.ReceiverUserId);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
         public ActionOutput<LoginUser> GetUsers(string keyword, string exceptUserIds = null, int? LoggedInUserId = null)
         {
             try

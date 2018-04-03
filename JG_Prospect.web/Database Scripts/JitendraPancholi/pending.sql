@@ -94,7 +94,7 @@ Go
 -- Create date: 9 Jan 2017   
 -- Description: Add offline user to chatuser table
 -- =============================================     
--- [sp_GetHrData] 'kapil','0',0,0, 0, NULL, NULL,0,20, 'CreatedDateTime DESC','5','9','6','1'    
+-- [sp_GetHrData] '','0',0,0, 0, NULL, NULL,0,20, 'CreatedDateTime DESC','5','9','6','1'    
 Create PROCEDURE [dbo].[sp_GetHrData]    
  @SearchTerm VARCHAR(15) = NULL, @Status VARCHAR(50), @DesignationId INT, @SourceId INT, @AddedByUserId INT, @FromDate DATE = NULL,    
  @ToDate DATE = NULL, @PageIndex INT = NULL,  @PageSize INT = NULL, @SortExpression VARCHAR(50), @InterviewDateStatus VARChAR(5) = '5',    
@@ -252,13 +252,14 @@ SET NOCOUNT ON;
 SELECT  Id, FristName, LastName, Phone, Zip, Designation, Status, HireDate, InstallId, picture, CreatedDateTime, Source, SourceUser,    
 AddedBy, UserInstallId, InterviewDetail, RejectDetail, RejectedUserId, RejectedByUserName, RejectedByUserInstallId, Email, DesignationID,    
 AddedByUserInstallId, AddedById, EmpType, [Aggregate], PrimaryPhone, CountryCode, Resumepath, TechTaskId, ParentTechTaskId,    
-TechTaskInstallId, bookmarkedUser,  [StatusReason], Country, City    
+TechTaskInstallId, bookmarkedUser,  [StatusReason], Country, City,
+(Select top 1 CallStartTime From PhoneCallLog PCL WIth(NoLOck) Where PCL.ReceiverUserId = SalesUsers.Id Order by CreatedOn Desc) as LastCalledAt   
 FROM SalesUsers    
 WHERE RowNumber >= @StartIndex AND (@PageSize = 0 OR RowNumber < (@StartIndex + @PageSize))    
 group by Id, FristName, LastName, Phone, Zip, Designation, Status, HireDate, InstallId, picture, CreatedDateTime, Source, SourceUser,    
 AddedBy, UserInstallId, InterviewDetail, RejectDetail, RejectedUserId, RejectedByUserName, RejectedByUserInstallId, Email, DesignationID,    
 AddedByUserInstallId, AddedById, EmpType, [Aggregate], PrimaryPhone, CountryCode, Resumepath, TechTaskId, ParentTechTaskId,    
-TechTaskInstallId, bookmarkedUser,  [StatusReason], Country, City    
+TechTaskInstallId, bookmarkedUser,  [StatusReason], Country, City
 ORDER BY CASE WHEN @SortExpression = 'Id ASC' THEN Id END ASC,    
    CASE WHEN @SortExpression = 'Id DESC' THEN Id END DESC,    
    CASE WHEN @SortExpression = 'Status ASC' THEN Status END ASC,    
@@ -792,3 +793,75 @@ END
 
 */
 
+Go
+IF  NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PhoneCallLog]') AND type in (N'U'))
+BEGIN
+	CREATE TABLE [dbo].[PhoneCallLog](
+		Id int Primary Key Identity(1,1),
+		Mode varchar(20) Not Null,
+		CallerNumber varchar(20) not null,
+		ReceiverNumber varchar(20) not null,
+		ReceiverUserId int foreign key references tblInstallUsers(Id),
+		CallDurationInSeconds decimal(18,2) not null,
+		CallStartTime DateTime Not NUll,
+		CreatedOn DateTime not null default(DATEADD(HH,-5,GetUTCDate())),
+		CreatedBy int not null foreign key references tblInstallUsers(Id)
+	) 
+END
+
+
+Go
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'SavePhoneCallLog' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE SavePhoneCallLog
+  END
+Go
+ ---- =============================================  
+-- Author:  Jitendra Pancholi  
+-- Create date: 03/30/2018
+-- Description: Load all details of task for edit.  
+-- =============================================  
+-- SavePhoneCallLog
+ 
+CREATE PROCEDURE [dbo].[SavePhoneCallLog]   
+(  
+	@CallDurationInSeconds decimal(18,2),
+	@CallerNumber varchar(20),
+	@CallStartTime Datetime,
+	@Mode Varchar(20),
+	@CreatedBy int,
+	@ReceiverNumber varchar(20),
+	@ReceiverUserId int = null
+)     
+AS  
+BEGIN
+	Insert Into PhoneCallLog(CallDurationInSeconds, CallerNumber, CallStartTime, Mode, CreatedBy, ReceiverNumber, ReceiverUserId)
+		Values(@CallDurationInSeconds, @CallerNumber, @CallStartTime, @Mode, @CreatedBy, @ReceiverNumber, @ReceiverUserId)
+End
+
+Go
+IF EXISTS(SELECT 1 FROM   INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'UpdatePhoneScript' AND SPECIFIC_SCHEMA = 'dbo')
+  BEGIN
+      DROP PROCEDURE UpdatePhoneScript
+  END
+Go
+ ---- =============================================  
+-- Author:  Jitendra Pancholi  
+-- Create date: 03/30/2018
+-- Description: Load all details of task for edit.  
+-- =============================================  
+-- UpdatePhoneScript
+ 
+CREATE PROCEDURE [dbo].[UpdatePhoneScript]   
+(  
+	@Id int,
+	@Title nvarchar(2000),
+	@Script nVarchar(max)
+)     
+AS  
+BEGIN
+	Update PhoneScript Set
+		Title = @Title,
+		Description = @Script
+	Where Id = @Id
+End
