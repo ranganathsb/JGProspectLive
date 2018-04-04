@@ -57,6 +57,7 @@
                 <div class="col-md-4 phone">
                     <div class="row1">
                         <input type="hidden" id="appSettings" />
+                        <textarea style="display:none;" rows="4" cols="40" id="sendFeedbackComment" placeholder="Optional comments"></textarea>
                         <div class="col-md-12 white-shadow">
                             <input type="text" name="name" onkeyup="trimSpace(this)" onblur="trimSpace(this)" id="toNumber" class="form-control tel" placeholder="+91801XXXXXXX" value="" />
                             <div class="num-pad">

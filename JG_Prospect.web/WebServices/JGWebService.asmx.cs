@@ -2936,7 +2936,8 @@ namespace JG_Prospect.WebServices
                             InterviewDetail = dr["InterviewDetail"].ToString(),
                             Zip = dr["Zip"].ToString(),
                             LastCalledAt = !string.IsNullOrEmpty(dr["LastCalledAt"].ToString()) ? (DateTime?)Convert.ToDateTime(dr["LastCalledAt"].ToString()) : null,
-                            LastCalledAtFormatted = !string.IsNullOrEmpty(dr["LastCalledAt"].ToString()) ? Convert.ToDateTime(dr["LastCalledAt"].ToString()).ToEST().ToString() : ""
+                            LastCalledAtFormatted = !string.IsNullOrEmpty(dr["LastCalledAt"].ToString()) ? Convert.ToDateTime(dr["LastCalledAt"].ToString()).ToEST().ToString() : "",
+                            PhoneCode = dr["PhoneCode"].ToString()
                         });
                     }
                     #endregion
@@ -3724,6 +3725,17 @@ namespace JG_Prospect.WebServices
             };
             InstallUserBLL.Instance.SavePhoneCallLog(phLog);
             return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string GetPhoneCallLog()
+        {
+            return new JavaScriptSerializer().Serialize(
+                new ActionOutput<PhoneCallLog>
+                {
+                    Results= InstallUserBLL.Instance.GetPhoneCallLog(),
+                    Status = ActionStatus.Successfull
+                });
         }
         #endregion
 

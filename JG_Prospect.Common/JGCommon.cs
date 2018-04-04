@@ -72,6 +72,7 @@ namespace JG_Prospect.Common
             public DateTime CallStartTime { get; set; }
             public DateTime CreatedOn { get; set; }
             public int CreatedBy { get; set; }
+            public string ReceiverProfilePic { get; set; }
         }
         public static string GenerateOTP(int length)
         {

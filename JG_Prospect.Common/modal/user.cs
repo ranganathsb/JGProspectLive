@@ -279,6 +279,7 @@ namespace JG_Prospect.Common.modal
         public string ResumeFileSavedName { get; set; }
         public DateTime? LastCalledAt { get; set; }
         public string LastCalledAtFormatted { get; set; }
+        public string PhoneCode { get; set; }
     }
 
     public class UserEmail

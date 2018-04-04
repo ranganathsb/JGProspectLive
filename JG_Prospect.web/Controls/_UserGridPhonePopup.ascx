@@ -190,7 +190,7 @@
             </tr>
         </thead>
         <tbody id="SalesUserGrid" ng-app="JGApp" ng-controller="SalesUserController">
-            <tr ng-repeat="User in UserList.Data" class="{{User.StatusName}}" last-called-at="{{User.LastCalledAtFormatted}}" userId ="{{User.Id}}" number="{{User.Phone}}">
+            <tr ng-repeat="User in UserList.Data" class="{{User.StatusName}}" last-called-at="{{User.LastCalledAtFormatted}}" userId ="{{User.Id}}" number="{{User.PhoneCode}}{{User.Phone}}">
                 <td>
                     <div>
                         <img src="<%=baseUrl %>Employee/ProfilePictures/{{User.ProfilePic}}" />

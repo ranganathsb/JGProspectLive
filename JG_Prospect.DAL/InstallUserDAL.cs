@@ -616,6 +616,46 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public List<PhoneCallLog> GetPhoneCallLog()
+        {
+            List<PhoneCallLog> logs = new List<PhoneCallLog>();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetPhoneCallLog");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow dr in returndata.Tables[0].Rows)
+                        {
+                            logs.Add(new PhoneCallLog
+                            {
+                                CallDurationInSeconds = Convert.ToDouble(dr["CallDurationInSeconds"]),
+                                CallerNumber = dr["CallerNumber"].ToString(),
+                                CallStartTime = Convert.ToDateTime(dr["CallStartTime"]),
+                                CreatedBy=Convert.ToInt32(dr["CreatedBy"]),
+                                CreatedOn = Convert.ToDateTime(dr["CreatedOn"]),
+                                Id = Convert.ToInt32(dr["Id"]),
+                                Mode = dr["Mode"].ToString(),
+                                ReceiverUserId = Convert.ToInt32(dr["ReceiverUserId"]),
+                                ReceiverNumber = dr["ReceiverNumber"].ToString(),
+                                ReceiverProfilePic = dr["ReceiverProfilePic"].ToString()
+                            });
+                        }
+                    }
+                }
+                return logs;
+            }
+            catch (Exception ex)
+            {
+                return logs;
+            }
+        }
+
         public void SavePhoneCallLog(PhoneCallLog phLog)
         {
             try

@@ -1,5 +1,5 @@
-var gapBetweenCall = 10;// seconds
-var gapBetweenRecallingSameUser = 3600;// seconds
+var gapBetweenCall = 10000;// miliseconds
+var gapBetweenRecallingSameUser = 3600000;// miliseconds
 var currentCallingUserId = 0;
 var currentCallingUserNumber = 0;
 var currentCallingSeq = 1;
@@ -331,7 +331,7 @@ function saveCallLog(e) {
     localStorage.setItem('pli_callHis', callLogStr);
     var strObj = { "mode": e.mode, "num": e.num, "dur": e.dur, "startTime": e.startTime };
     // Save call log into database
-    var userId = null;
+    var userId = autoDialerOn == true ? currentCallingUserId : null;
     ajaxExt({
         url: '/WebServices/JGWebService.asmx/savePhoneCallLog',
         type: 'POST',
@@ -395,13 +395,13 @@ $('.hangup').click(function () {
     plivoWebSdk.client.hangup();
     //} else {
     callOff();
-    currentCallingSeq += 1;
+    //currentCallingSeq += 1;
+    ////}
+    //if (autoDialerOn) {
+    //    setTimeout(function () {
+    //        callNextUser();
+    //    }, gapBetweenCall);
     //}
-    if (autoDialerOn) {
-        setTimeout(function () {
-            callNextUser();
-        }, gapBetweenCall);
-    }
 });
 
 $('#tmute').click(function (e) {
@@ -664,8 +664,8 @@ function startAutoDiualer(sender) {
     });
 
     $(sender).attr('title', 'Pause');
-    $(sender).removeClass('fa-play-circle');
-    $(sender).addClass('fa-pause-circle');
+    $(sender).find('i').removeClass('fa-play-circle');
+    $(sender).find('i').addClass('fa-pause-circle');
 
     $.each(salesUsers, function (i) {
         if (salesUsers[i].Seq == currentCallingSeq) {
@@ -694,4 +694,8 @@ function callNextUser() {
 
     $('#phone').find('#toNumber').val(currentCallingUserNumber);
     $('#phone').find('#makecall').trigger('click');
+}
+
+function stopAutoDiualer(sender) {
+    autoDialerOn = false;
 }

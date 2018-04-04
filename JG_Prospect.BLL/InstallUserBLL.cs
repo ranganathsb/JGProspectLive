@@ -887,5 +887,10 @@ namespace JG_Prospect.BLL
         {
             InstallUserDAL.Instance.SavePhoneCallLog(phLog);
         }
+
+        public List<PhoneCallLog> GetPhoneCallLog()
+        {
+            return InstallUserDAL.Instance.GetPhoneCallLog();
+        }
     }
 }
